@@ -170,6 +170,51 @@ a { color: inherit; text-decoration: none; }
 .doc-list a.doc-pdf:hover { background: rgba(226,55,68,0.10); }
 .sec-navy .doc-list a.doc-pdf { border-left-color: var(--red-bright); }
 
+/* 配布資料ダウンロード（フィーチャー） */
+.sec-download { background: var(--paper); padding: 3.5rem 1.5rem; }
+.dl-feature {
+  max-width: var(--max-w); margin: 0 auto;
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-deep) 100%);
+  border-radius: var(--radius); padding: 2.9rem 2.6rem; color: var(--white);
+  position: relative; overflow: hidden;
+  box-shadow: 0 24px 60px -24px rgba(20,29,53,0.65);
+}
+.dl-feature::before {
+  content: ""; position: absolute; top: 0; right: 0; width: 45%; height: 100%;
+  background: radial-gradient(circle at 90% 10%, rgba(226,55,68,0.28), transparent 65%);
+  pointer-events: none;
+}
+.dl-feature > * { position: relative; }
+.dl-badge {
+  display: inline-block; font-family: var(--font-en); font-size: 0.7rem;
+  letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700;
+  background: var(--red); color: #fff; padding: 0.35rem 0.75rem; border-radius: 100px;
+}
+.dl-title {
+  font-family: var(--font-ja-serif); font-size: 1.75rem; line-height: 1.42;
+  margin: 1.05rem 0 0.65rem; font-weight: 600;
+}
+.dl-title span { color: var(--azure-pale); }
+.dl-copy {
+  font-size: 0.9rem; line-height: 1.9; color: rgba(255,255,255,0.82);
+  max-width: 560px; margin-bottom: 1.85rem;
+}
+.dl-btn {
+  display: inline-flex; align-items: center; gap: 0.65rem;
+  background: var(--red); color: #fff; font-weight: 700; font-size: 0.98rem;
+  padding: 0.95rem 1.6rem; border-radius: var(--radius-sm); text-decoration: none;
+  transition: transform 0.15s ease, background 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 10px 24px -10px rgba(226,55,68,0.7);
+}
+.dl-btn:hover { background: var(--red-bright); transform: translateY(-2px); }
+.dl-btn-icon { font-size: 1.05rem; }
+.dl-btn-meta { font-family: var(--font-en); font-weight: 500; font-size: 0.75rem; opacity: 0.9; }
+@media (max-width: 640px) {
+  .dl-feature { padding: 2.1rem 1.5rem; }
+  .dl-title { font-size: 1.4rem; }
+  .dl-btn { flex-wrap: wrap; row-gap: 0.3rem; }
+}
+
 .note {
   font-size: 0.82rem; color: var(--muted); line-height: 1.8;
   padding: 0.85rem 1.1rem; border-left: 3px solid var(--azure-pale);
@@ -249,6 +294,24 @@ footer {
       小澤健祐（おざけん）。AIエージェント時代の実装・活用知見を、記事・登壇・資料として発信し続けています。
       このサイトは、これまで作成したAI関連の解説資料を体系立てて公開するアーカイブです。
     </p>
+  </div>
+</section>
+
+<!-- 配布資料ダウンロード（フィーチャー） -->
+<section class="sec-download">
+  <div class="inner" data-reveal>
+    <div class="dl-feature">
+      <span class="dl-badge">無料配布資料 / Download</span>
+      <h2 class="dl-title">使うAIから、任せるAIへ。<br><span>AIエージェント実装の5レベル 完全版</span></h2>
+      <p class="dl-copy">
+        実装の成熟度を5段階で整理した決定版スライドを、PDFでそのまま配布しています。
+        登壇の予習・社内共有・研修資料として、どうぞご自由にお使いください。
+      </p>
+      <a class="dl-btn" href="01_概念・思想/使うAIから任せるAIへ_AIエージェント実装の5レベル.pdf" download>
+        <span class="dl-btn-icon">⬇</span> PDFをダウンロード
+        <span class="dl-btn-meta">PDF · 約3.5MB · 36ページ</span>
+      </a>
+    </div>
   </div>
 </section>
 
@@ -357,8 +420,6 @@ footer {
         <ul class="doc-list">
           <li><a href="01_概念・思想/5レベル_Copilot.html">AIエージェント実装の5レベル（Copilot編）</a></li>
           <li><a href="01_概念・思想/5レベル_Gemini.html">AIエージェント実装の5レベル（Gemini編）</a></li>
-          <li><a class="doc-pdf" href="01_概念・思想/使うAIから任せるAIへ_AIエージェント実装の5レベル.pdf" download>⬇ 配布用PDF：実装の5レベル 完全版</a></li>
-          <li><a class="doc-pdf" href="01_概念・思想/AXとは何か.pdf" download>⬇ 配布用PDF：AXとは何か</a></li>
           <li><a href="01_概念・思想/human-in-on-the-loop-v2.html">Human in / on the Loop</a></li>
           <li><a href="01_概念・思想/purpose-in-the-agent-era.html">エージェント時代のパーパス論</a></li>
           <li><a href="01_概念・思想/Mythos1.html">Mythos 1</a></li>
@@ -390,10 +451,9 @@ footer {
         <h3>活用・実装</h3>
         <p>どう使いこなすか。現場で効く施策とプロンプトの実践。</p>
         <ul class="doc-list">
-          <li><a href="04_活用・実装/ai-51-master.html">AI活用施策 51選</a></li>
-          <li><a href="04_活用・実装/ai-measures-50.html">AI活用施策 50選</a></li>
+          <li><a href="04_活用・実装/ai-51-master.html">AI推進 51施策 マスターリスト（9カテゴリ一覧）</a></li>
+          <li><a href="04_活用・実装/ai-measures-50.html">AI推進 施策大全 ― 社内会議で使える51の打ち手</a></li>
           <li><a href="04_活用・実装/資料作成.html">AIで資料作成</a></li>
-          <li><a class="doc-pdf" href="99_assets/prompt-engineering-slides.pptx" download>⬇ 登壇スライド：プロンプトエンジニアリング（pptx）</a></li>
         </ul>
       </div>
       <div class="card">
@@ -401,12 +461,11 @@ footer {
         <h3>組織・人材・経営</h3>
         <p>どう組織に根付かせるか。キャリア・人事・予算・資格制度。</p>
         <ul class="doc-list">
-          <li><a href="05_組織・人材・経営/AIエージェント時代のキャリア.html">AIエージェント時代のキャリア</a></li>
-          <li><a href="05_組織・人材・経営/AIキャリア.html">AIキャリア</a></li>
+          <li><a href="05_組織・人材・経営/AIエージェント時代のキャリア.html">AIエージェント時代のキャリア ― 裸の戦いで、何が残るか</a></li>
           <li><a href="05_組織・人材・経営/人事.html">人事</a></li>
-          <li><a href="05_組織・人材・経営/AIエージェント_予算.html">AIエージェント予算（基本編）</a></li>
-          <li><a href="05_組織・人材・経営/AIエージェント予算.html">AIエージェント予算</a></li>
-          <li><a href="05_組織・人材・経営/AIエージェント予算_タクシー.html">AIエージェント予算（タクシー比喩編）</a></li>
+          <li><a href="05_組織・人材・経営/AIエージェント_予算.html">AIエージェント予算① 固定費と変動費で読む</a></li>
+          <li><a href="05_組織・人材・経営/AIエージェント予算.html">AIエージェント予算② 決裁の通し方（見せ方の設計）</a></li>
+          <li><a href="05_組織・人材・経営/AIエージェント予算_タクシー.html">AIエージェント予算③ 定期券からタクシーへ（KPI/ROI）</a></li>
           <li><a href="05_組織・人材・経営/AIエージェント・ストラテジスト.html">AIエージェント・ストラテジスト（資格制度）</a></li>
         </ul>
       </div>
@@ -421,8 +480,8 @@ footer {
     </div>
 
     <p class="note">
-      ※ ⬇マークは配布用のダウンロード資料（PDF / pptx）です。画像素材（99_assets）は一覧には含めていません。
-      全ファイルは <a href="https://github.com/ozaken-AI/ozaken-materials">GitHubリポジトリ</a> の各フォルダから直接ご覧いただけます。
+      ※ 配布用PDF（実装の5レベル 完全版）はページ上部からダウンロードできます。
+      画像素材・登壇スライド等を含む全ファイルは <a href="https://github.com/ozaken-AI/ozaken-materials">GitHubリポジトリ</a> の各フォルダから直接ご覧いただけます。
     </p>
   </div>
 </section>
