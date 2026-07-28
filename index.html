@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小澤健祐（おざけん）| Profile & AI資料アーカイブ</title>
+<meta name="description" content="小澤健祐（おざけん）のプロフィールと、AIエージェント・生成AI活用に関する解説資料アーカイブ。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Shippori+Mincho+B1:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:         #1a1a2e;
+  --navy:        #1f3864;
+  --navy-deep:   #141d35;
+  --azure:       #2e5496;
+  --azure-pale:  #d8e4f0;
+  --paper:       #f8f7f4;
+  --white:       #ffffff;
+  --red:         #e23744;
+  --red-bright:  #ff5d6a;
+  --muted:       #6b7a99;
+
+  --font-ja-sans:  'Zen Kaku Gothic New', sans-serif;
+  --font-ja-serif: 'Shippori Mincho B1', serif;
+  --font-en:       'Hanken Grotesk', sans-serif;
+
+  --max-w: 880px;
+  --sec-pad: 5rem 1.5rem;
+  --radius: 10px;
+  --radius-sm: 6px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-ja-sans);
+  font-size: 16px; line-height: 1.8;
+  color: var(--ink); background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+
+[data-reveal] { opacity: 0; transform: translateY(24px); transition: opacity 0.65s ease, transform 0.65s ease; }
+[data-reveal].visible { opacity: 1; transform: none; }
+
+.inner { max-width: var(--max-w); margin: 0 auto; padding: 0 1.5rem; }
+.sec-light { background: var(--paper); padding: var(--sec-pad); color: var(--ink); }
+.sec-navy  { background: var(--navy);  padding: var(--sec-pad); color: var(--white); }
+
+.eyebrow {
+  display: inline-block; font-family: var(--font-en);
+  font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--azure); background: var(--azure-pale);
+  padding: 3px 10px; border-radius: 4px; margin-bottom: 1.1rem;
+}
+.sec-navy .eyebrow { color: var(--white); background: rgba(255,255,255,0.15); }
+
+.sec-title {
+  font-family: var(--font-ja-serif);
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: 500; line-height: 1.4; margin-bottom: 0.6rem;
+}
+.sec-sub { font-size: 1rem; color: var(--muted); margin-bottom: 2.5rem; line-height: 1.7; }
+.sec-navy .sec-sub { color: rgba(255,255,255,0.7); }
+
+.kicker {
+  font-family: var(--font-ja-serif);
+  font-size: 1.08rem; line-height: 1.9; margin-bottom: 2rem;
+  padding-left: 1.1rem; border-left: 3px solid var(--azure);
+}
+.sec-navy .kicker { border-left-color: var(--azure-pale); color: rgba(255,255,255,0.9); }
+
+.bare { margin: 1.5rem 0; }
+.bare p { font-size: 0.95rem; line-height: 1.95; }
+.sec-navy .bare p { color: rgba(255,255,255,0.8); }
+.bare p + p { margin-top: 1rem; }
+
+.hero {
+  background: var(--navy); padding: 5.5rem 1.5rem 4.5rem;
+  text-align: center; color: var(--white);
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 60% 25%, rgba(46,84,150,0.55) 0%, transparent 65%);
+  pointer-events: none;
+}
+.texture { position: absolute; inset: 0; opacity: 0.16; pointer-events: none; }
+.texture svg { width: 100%; height: 100%; }
+.hero .eyebrow { color: var(--white); background: rgba(255,255,255,0.15); }
+.hero-title {
+  font-family: var(--font-ja-serif);
+  font-size: clamp(1.85rem, 5vw, 2.9rem);
+  font-weight: 500; line-height: 1.4; margin-bottom: 1.2rem; position: relative;
+}
+.hero-copy {
+  font-size: 1.02rem; color: rgba(255,255,255,0.82);
+  max-width: 620px; margin: 0 auto 2.6rem; line-height: 1.9; position: relative;
+}
+.hero-glyph { position: relative; max-width: 640px; margin: 0 auto; }
+.hero-glyph svg { width: 100%; height: auto; display: block; }
+
+.figure {
+  background: var(--white); border-radius: var(--radius);
+  padding: 1.75rem 1.5rem 1.25rem;
+  box-shadow: 0 2px 12px rgba(26,26,46,0.08);
+  margin: 2rem 0 0;
+}
+.sec-navy .figure { background: var(--navy-deep); box-shadow: none; }
+.figure-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.figure svg { width: 100%; height: auto; display: block; }
+.figure text { font-family: var(--font-ja-sans); }
+.figure-cap {
+  font-family: var(--font-en); font-size: 11px; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--muted); margin-top: 1rem; text-align: center;
+}
+.sec-navy .figure-cap { color: rgba(255,255,255,0.5); }
+.fig-title {
+  font-family: var(--font-ja-serif); font-size: 1rem; font-weight: 500;
+  margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--azure-pale);
+}
+.sec-navy .fig-title { color: var(--white); border-bottom-color: rgba(255,255,255,0.15); }
+
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 2rem; }
+.stat {
+  background: var(--white); border-radius: var(--radius);
+  padding: 1.3rem 1rem; text-align: center;
+  box-shadow: 0 2px 8px rgba(26,26,46,0.07); border-top: 3px solid var(--azure);
+}
+.sec-navy .stat { background: var(--navy-deep); box-shadow: none; }
+.stat-num {
+  font-family: var(--font-en); font-size: 2rem; font-weight: 700;
+  line-height: 1.1; color: var(--azure);
+}
+.sec-navy .stat-num { color: var(--azure-pale); }
+.stat-num small { font-size: 0.9rem; font-weight: 600; }
+.stat-label { font-size: 0.78rem; color: var(--muted); margin-top: 0.4rem; line-height: 1.6; }
+.sec-navy .stat-label { color: rgba(255,255,255,0.65); }
+
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; }
+.card {
+  background: var(--white); border-radius: var(--radius);
+  padding: 1.4rem 1.6rem; box-shadow: 0 2px 8px rgba(26,26,46,0.07);
+  border-top: 3px solid var(--azure);
+}
+.sec-navy .card { background: var(--navy-deep); box-shadow: none; }
+.card h3 { font-family: var(--font-ja-serif); font-size: 1rem; font-weight: 500; margin-bottom: 0.45rem; }
+.card p { font-size: 0.85rem; line-height: 1.8; color: var(--muted); }
+.sec-navy .card p { color: rgba(255,255,255,0.68); }
+.card-tag {
+  display: inline-block; font-family: var(--font-en);
+  font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+  color: var(--azure); background: var(--azure-pale);
+  padding: 2px 8px; border-radius: 4px; margin-bottom: 0.6rem;
+}
+.sec-navy .card-tag { color: var(--white); background: rgba(255,255,255,0.15); }
+
+.doc-list { list-style: none; margin-top: 0.9rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.doc-list a {
+  display: block; font-size: 0.85rem; padding: 0.55rem 0.7rem;
+  border-radius: var(--radius-sm); background: rgba(46,84,150,0.06);
+  border-left: 3px solid var(--azure); transition: background 0.2s ease;
+}
+.doc-list a:hover { background: rgba(46,84,150,0.13); }
+.sec-navy .doc-list a { background: rgba(255,255,255,0.06); border-left-color: var(--azure-pale); }
+.sec-navy .doc-list a:hover { background: rgba(255,255,255,0.12); }
+
+.note {
+  font-size: 0.82rem; color: var(--muted); line-height: 1.8;
+  padding: 0.85rem 1.1rem; border-left: 3px solid var(--azure-pale);
+  background: rgba(46,84,150,0.04);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin-top: 1.75rem;
+}
+.sec-navy .note { color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.05); border-left-color: rgba(255,255,255,0.25); }
+
+.summary { text-align: center; max-width: 660px; margin: 0 auto; }
+.summary-text {
+  font-family: var(--font-ja-serif);
+  font-size: clamp(1.12rem, 3vw, 1.45rem);
+  font-weight: 400; line-height: 1.95;
+}
+
+.take {
+  background: var(--navy-deep); border-radius: var(--radius);
+  padding: 1.55rem 1.75rem; display: flex; gap: 1.25rem; align-items: flex-start;
+  margin: 2rem 0 0; border-left: 4px solid var(--red);
+}
+.sec-light .take { background: #fff8f8; border-left: 4px solid var(--red); box-shadow: 0 2px 8px rgba(226,55,68,0.07); }
+.take-avatar {
+  flex-shrink: 0; width: 44px; height: 44px; border-radius: 50%;
+  background: var(--azure); color: var(--white);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-en); font-size: 0.75rem; font-weight: 700;
+}
+.take-label {
+  font-family: var(--font-en); font-size: 10px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--red-bright); margin-bottom: 4px;
+}
+.sec-light .take-label { color: var(--red); }
+.take-author { font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.45rem; }
+.sec-light .take-author { color: var(--muted); }
+.take-text { font-size: 0.89rem; line-height: 1.85; color: rgba(255,255,255,0.88); }
+.sec-light .take-text { color: var(--ink); }
+.hot { color: var(--red-bright); font-weight: 700; }
+.sec-light .hot { color: var(--red); }
+
+.text-azure { color: var(--azure); }
+.fw-bold { font-weight: 700; }
+
+footer {
+  background: var(--navy-deep); padding: 3rem 1.5rem; text-align: center;
+  color: rgba(255,255,255,0.5); font-size: 0.8rem;
+}
+
+@media (max-width: 640px) {
+  :root { --sec-pad: 3.5rem 1rem; }
+  .hero { padding: 4rem 1rem 3.5rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="texture" aria-hidden="true">
+    <svg viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+          <path d="M48 0H0V48" fill="none" stroke="#ffffff" stroke-width="0.7"/>
+        </pattern>
+      </defs>
+      <rect width="1200" height="600" fill="url(#grid)"/>
+      <circle cx="180" cy="140" r="4" fill="#ffffff"/>
+      <circle cx="420" cy="300" r="4" fill="#ffffff"/>
+      <circle cx="760" cy="180" r="4" fill="#ffffff"/>
+      <circle cx="980" cy="420" r="4" fill="#ffffff"/>
+      <path d="M180 140L420 300L760 180L980 420" stroke="#ffffff" stroke-width="1" fill="none"/>
+    </svg>
+  </div>
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Profile</span>
+    <h1 class="hero-title">人間とAIが<br>共存する社会をつくる</h1>
+    <p class="hero-copy">
+      小澤健祐（おざけん）。AIエージェント時代の実装・活用知見を、記事・登壇・資料として発信し続けています。
+      このサイトは、これまで作成したAI関連の解説資料を体系立てて公開するアーカイブです。
+    </p>
+  </div>
+</section>
+
+<!-- 01 プロフィール（ライト） -->
+<section class="sec-light">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 01</span>
+    <h2 class="sec-title">発信し続けることが、活動の軸になっている</h2>
+    <p class="sec-sub">書籍・記事・登壇という3つの形で、AIの可能性と実践知を届けてきた。</p>
+
+    <p class="kicker">
+      『生成AI導入の教科書』『AIエージェントの教科書』の刊行、<span class="fw-bold text-azure">1500本以上</span>のAI関連記事執筆、
+      年間<span class="fw-bold text-azure">300回以上</span>の登壇。発信量そのものが、現場で何が起きているかを掴む手段になっている。
+    </p>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-num">2<small>冊</small></div><div class="stat-label">書籍刊行<br>『生成AI導入の教科書』『AIエージェントの教科書』</div></div>
+      <div class="stat"><div class="stat-num">1500<small>本+</small></div><div class="stat-label">AI関連記事の執筆本数</div></div>
+      <div class="stat"><div class="stat-num">300<small>回+</small></div><div class="stat-label">年間登壇回数</div></div>
+    </div>
+
+    <div class="bare">
+      <p>
+        一般社団法人AICX協会 代表理事、一般社団法人生成AI活用普及協会 常任協議員を務める一方、
+        Cynthialy取締役CCO、Visionary Engine取締役、AI HYVE取締役など複数のAI企業の経営に参画。
+        日本HP、NTTデータグループ、Lightblue、THAなど複数社のアドバイザーも務めている。
+      </p>
+      <p>
+        NewsPicksのAI番組「AI DIVE」メインMC、千葉県船橋市 生成AIアドバイザーとして行政のDX推進にも携わる。
+        NewsPicksプロピッカー、Udemyベストセラー講師、SHIFT AI公式モデレーターとしても活動中。
+      </p>
+      <p>
+        AI領域以外では、2022年にCinematoricoを創業しCOOに就任。PRやフリーカメラマン、
+        日本大学文理学部次世代社会研究センターのプロボノなど、多彩な経験を活かして活動している。
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- 02 関連企業・団体（ネイビー） -->
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 02</span>
+    <h2 class="sec-title">経営に関わる企業・団体は、どれも「実装」を主語にしている</h2>
+    <p class="sec-sub">評論ではなく実装で価値を出す、という一貫した立場から組織に関わっている。</p>
+
+    <div class="cards">
+      <div class="card">
+        <span class="card-tag">代表理事</span>
+        <h3>一般社団法人AICX協会</h3>
+        <p>「分断を超え、体験を変える」。企業のAIエージェント実装を支援する、国内初のAIエージェント特化型業界団体。</p>
+      </div>
+      <div class="card">
+        <span class="card-tag">取締役CCO</span>
+        <h3>Cynthialy株式会社</h3>
+        <p>「AI Work Transformation Company」。生成AI活用の診断からリスキリング研修、定着化までを一気通貫で提供。</p>
+      </div>
+      <div class="card">
+        <span class="card-tag">取締役</span>
+        <h3>株式会社Visionary Engine</h3>
+        <p>「未来を描くビジョナリーのために。」テクノロジーとサービスデザインで事業創出を加速させるファーム。</p>
+      </div>
+      <div class="card">
+        <span class="card-tag">取締役</span>
+        <h3>株式会社AI HYVE</h3>
+        <p>「人材×コンサルティング×マーケティング」を掛け合わせ、AIX/DXに挑む企業の成長を実行支援する。</p>
+      </div>
+      <div class="card">
+        <span class="card-tag">創業者COO</span>
+        <h3>株式会社Cinematorico</h3>
+        <p>「“ストーリー”で世界をトリコに」。映像制作・HP制作・SNSマーケティングまで手掛けるコンテンツカンパニー。</p>
+      </div>
+      <div class="card">
+        <span class="card-tag">常任協議員</span>
+        <h3>一般社団法人生成AI活用普及協会</h3>
+        <p>「生成AIパスポート」など、生成AIの安全な活用知識を広める日本最大級の資格試験を運営。</p>
+      </div>
+    </div>
+
+    <div class="take">
+      <div class="take-avatar">OK</div>
+      <div class="take-body">
+        <div class="take-label">Ozaken's One Point</div>
+        <div class="take-author">小澤健祐（おざけん）</div>
+        <p class="take-text">
+          複数の組織に関わっているのは器用貧乏だからではなく、<span class="hot">実装の現場を複数持つ</span>ことでしか
+          見えない知見があるからだ。1社の中だけにいては、AIエージェント導入のパターンは意外と見えてこない。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 資料アーカイブ（ライト） -->
+<section class="sec-light">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 03</span>
+    <h2 class="sec-title">資料アーカイブ ── AIエージェント・生成AI活用の解説資料</h2>
+    <p class="sec-sub">登壇・執筆のために作成した資料を、テーマごとに公開しています。</p>
+
+    <div class="cards">
+      <div class="card">
+        <span class="card-tag">01</span>
+        <h3>AIエージェント・5段階レベル</h3>
+        <p>「使うAI」から「任せるAI」へ。実装の成熟度を5段階で整理した解説。</p>
+        <ul class="doc-list">
+          <li><a href="01_AIエージェント_5段階レベル/5レベル_Copilot.html">5レベル（Copilot編）</a></li>
+          <li><a href="01_AIエージェント_5段階レベル/5レベル_Gemini.html">5レベル（Gemini編）</a></li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="card-tag">02</span>
+        <h3>AIエージェント資格制度</h3>
+        <p>AIエージェント・ストラテジスト等、実装人材の資格制度について。</p>
+        <ul class="doc-list">
+          <li><a href="02_AIエージェント_資格制度/AIエージェント・ストラテジスト.html">AIエージェント・ストラテジスト</a></li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="card-tag">03</span>
+        <h3>AIエージェントの予算</h3>
+        <p>AIエージェント導入の予算感・コスト構造を扱った記事群。</p>
+        <ul class="doc-list">
+          <li><a href="03_AIエージェント_予算/AIエージェント_予算.html">AIエージェント予算（基本編）</a></li>
+          <li><a href="03_AIエージェント_予算/AIエージェント予算.html">AIエージェント予算</a></li>
+          <li><a href="03_AIエージェント_予算/AIエージェント予算_タクシー.html">AIエージェント予算（タクシー比喩編）</a></li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="card-tag">04</span>
+        <h3>AIエージェント時代のキャリア</h3>
+        <p>AIエージェントが当たり前になる時代に、個人のキャリアはどう変わるか。</p>
+        <ul class="doc-list">
+          <li><a href="04_AIエージェント_キャリア/AIエージェント時代のキャリア.html">AIエージェント時代のキャリア</a></li>
+          <li><a href="04_AIエージェント_キャリア/AIキャリア.html">AIキャリア</a></li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="card-tag">05</span>
+        <h3>AI活用施策まとめ</h3>
+        <p>現場で使えるAI活用施策を50〜51個まとめた実践リスト。</p>
+        <ul class="doc-list">
+          <li><a href="05_AI活用施策まとめ/ai-51-master.html">AI活用施策 51選</a></li>
+          <li><a href="05_AI活用施策まとめ/ai-measures-50.html">AI活用施策 50選</a></li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="card-tag">07</span>
+        <h3>業界動向・解説記事</h3>
+        <p>Google I/O、OpenAI、ChatGPT Work、モデル使い分けなど、業界動向の解説記事。</p>
+        <ul class="doc-list">
+          <li><a href="07_業界動向_解説記事/ChatGPT_Work_解説資料.html">ChatGPT Work 解説資料</a></li>
+          <li><a href="07_業界動向_解説記事/google-io-2026-v2.html">Google I/O 2026 解説</a></li>
+          <li><a href="07_業界動向_解説記事/openai-fde.html">OpenAI FDEとは</a></li>
+          <li><a href="07_業界動向_解説記事/human-in-on-the-loop-v2.html">Human in/on the Loop</a></li>
+          <li><a href="07_業界動向_解説記事/purpose-in-the-agent-era.html">エージェント時代のパーパス論</a></li>
+          <li><a href="07_業界動向_解説記事/AI音声.html">AI音声</a></li>
+          <li><a href="07_業界動向_解説記事/モデル使い分け.html">モデル使い分け</a></li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="card-tag">08</span>
+        <h3>Cowork関連</h3>
+        <p>Claude「Cowork」に関する解説資料。</p>
+        <ul class="doc-list">
+          <li><a href="08_Cowork関連/Cowork.html">Cowork解説資料</a></li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="card-tag">09</span>
+        <h3>Mythos</h3>
+        <p>Mythosプロジェクトに関する資料。</p>
+        <ul class="doc-list">
+          <li><a href="09_Mythos/Mythos1.html">Mythos 1</a></li>
+          <li><a href="09_Mythos/Mythos2.html">Mythos 2</a></li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="card-tag">10</span>
+        <h3>人事・法務</h3>
+        <p>人事関連資料、個人情報保護法の解説。</p>
+        <ul class="doc-list">
+          <li><a href="10_人事_法務/人事.html">人事</a></li>
+          <li><a href="10_人事_法務/個人情報保護法.html">個人情報保護法</a></li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="card-tag">13</span>
+        <h3>その他</h3>
+        <p>分類外の資料。</p>
+        <ul class="doc-list">
+          <li><a href="13_その他/資料作成.html">資料作成</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="note">
+      ※ 06（AXとは）・11（登壇資料スライド）・12（画像素材）はPDF/pptx/画像のみのため、このアーカイブ一覧には含めていません。
+      リポジトリ内の各フォルダから直接ご覧いただけます。
+    </p>
+  </div>
+</section>
+
+<!-- SUMMARY -->
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <div class="summary">
+      <span class="eyebrow">Summary</span>
+      <p class="summary-text">
+        使うAIから、任せるAIへ。<br>
+        現場で得た知見を、これからも発信し続けます。
+      </p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2026 小澤健祐（おざけん）/ 一般社団法人AICX協会</p>
+</footer>
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
