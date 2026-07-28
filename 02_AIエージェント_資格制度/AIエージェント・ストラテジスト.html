@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>「使う人」から「設計する人」へ ─ AIエージェント・ストラテジストが必要な理由 | おざけん</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Shippori+Mincho+B1:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   OZAKEN WEB STYLE — DESIGN SYSTEM v3
+   ============================================================ */
+:root {
+  --ink:         #1a1a2e;
+  --navy:        #1f3864;
+  --navy-deep:   #141d35;
+  --azure:       #2e5496;
+  --azure-pale:  #d8e4f0;
+  --paper:       #f8f7f4;
+  --white:       #ffffff;
+  --red:         #e23744;
+  --red-bright:  #ff5d6a;
+  --muted:       #6b7a99;
+
+  --font-ja-sans:  'Zen Kaku Gothic New', sans-serif;
+  --font-ja-serif: 'Shippori Mincho B1', serif;
+  --font-en:       'Hanken Grotesk', sans-serif;
+
+  --max-w: 860px;
+  --sec-pad: 5rem 1.5rem;
+  --radius: 10px;
+  --radius-sm: 6px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-ja-sans);
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--ink);
+  background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+[data-reveal].visible { opacity: 1; transform: none; }
+
+.inner { max-width: var(--max-w); margin: 0 auto; padding: 0 1.5rem; }
+
+.sec-light { background: var(--paper); padding: var(--sec-pad); color: var(--ink); }
+.sec-navy { background: var(--navy); padding: var(--sec-pad); color: var(--white); }
+
+.eyebrow {
+  display: inline-block;
+  font-family: var(--font-en);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--azure);
+  background: var(--azure-pale);
+  padding: 3px 10px;
+  border-radius: 4px;
+  margin-bottom: 1.1rem;
+}
+.sec-navy .eyebrow { color: var(--white); background: rgba(255,255,255,0.15); }
+
+.sec-title {
+  font-family: var(--font-ja-serif);
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: 500;
+  line-height: 1.4;
+  margin-bottom: 0.6rem;
+}
+.sec-sub { font-size: 1rem; color: var(--muted); margin-bottom: 2.5rem; line-height: 1.7; }
+.sec-navy .sec-sub { color: rgba(255,255,255,0.7); }
+
+.hero {
+  background: var(--navy);
+  padding: 6rem 1.5rem 5rem;
+  text-align: center;
+  color: var(--white);
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 60% 30%, rgba(46,84,150,0.5) 0%, transparent 65%);
+  pointer-events: none;
+}
+.hero .eyebrow { color: var(--white); background: rgba(255,255,255,0.15); }
+.hero-title {
+  font-family: var(--font-ja-serif);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 500;
+  line-height: 1.35;
+  margin-bottom: 1.2rem;
+  position: relative;
+}
+.hero-copy {
+  font-size: 1.05rem;
+  color: rgba(255,255,255,0.8);
+  max-width: 600px;
+  margin: 0 auto 2.4rem;
+  line-height: 1.8;
+  position: relative;
+}
+.hero-cta { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; position: relative; }
+
+.btn-primary {
+  display: inline-block;
+  font-family: var(--font-en);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  background: var(--azure);
+  color: var(--white);
+  padding: 0.75rem 2rem;
+  border-radius: var(--radius-sm);
+  transition: opacity 0.2s;
+}
+.btn-primary:hover { opacity: 0.85; }
+.btn-secondary {
+  display: inline-block;
+  font-family: var(--font-en);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--white);
+  padding: 0.75rem 2rem;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid rgba(255,255,255,0.5);
+  transition: border-color 0.2s;
+}
+.btn-secondary:hover { border-color: var(--white); }
+
+.stepper { display: flex; flex-direction: column; gap: 1.5rem; }
+.step {
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 1.5rem 1.75rem;
+  border-left: 4px solid var(--azure);
+  box-shadow: 0 2px 8px rgba(26,26,46,0.06);
+}
+.sec-navy .step { background: var(--navy-deep); border-left-color: var(--azure); box-shadow: none; }
+.step-num {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--azure);
+  color: var(--white);
+  font-family: var(--font-en);
+  font-size: 0.9rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+}
+.step-body h3 { font-family: var(--font-ja-serif); font-size: 1.05rem; font-weight: 500; margin-bottom: 0.35rem; }
+.step-body p { font-size: 0.9rem; line-height: 1.75; color: var(--muted); }
+.sec-navy .step-body p { color: rgba(255,255,255,0.65); }
+
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; }
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 1.5rem 1.75rem;
+  box-shadow: 0 2px 8px rgba(26,26,46,0.07);
+  border-top: 3px solid var(--azure);
+}
+.sec-navy .card { background: var(--navy-deep); box-shadow: none; }
+.card-icon { width: 36px; height: 36px; margin-bottom: 1rem; color: var(--azure); }
+.sec-navy .card-icon { color: var(--azure-pale); }
+.card h3 { font-family: var(--font-ja-serif); font-size: 1rem; font-weight: 500; margin-bottom: 0.5rem; }
+.card p { font-size: 0.875rem; line-height: 1.75; color: var(--muted); }
+.sec-navy .card p { color: rgba(255,255,255,0.65); }
+
+.vs { display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: center; }
+.vs-card { background: var(--white); border-radius: var(--radius); padding: 1.5rem; box-shadow: 0 2px 8px rgba(26,26,46,0.07); }
+.sec-navy .vs-card { background: var(--navy-deep); box-shadow: none; }
+.vs-badge {
+  font-family: var(--font-en);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+  display: inline-block;
+  margin-bottom: 0.75rem;
+}
+.vs-badge.pos { background: var(--azure-pale); color: var(--azure); }
+.vs-badge.neg { background: #fde8ea; color: var(--red); }
+.sec-navy .vs-badge.neg { background: rgba(226,55,68,0.2); color: var(--red-bright); }
+.vs-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--azure);
+  color: var(--white);
+  font-family: var(--font-en);
+  font-size: 0.8rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin: 0 auto;
+}
+.vs-card h3 { font-family: var(--font-ja-serif); font-size: 1.05rem; font-weight: 500; margin-bottom: 0.5rem; }
+.vs-card p { font-size: 0.875rem; line-height: 1.75; color: var(--muted); }
+.sec-navy .vs-card p { color: rgba(255,255,255,0.65); }
+
+.deep { background: var(--navy-deep); border-radius: var(--radius); padding: 2rem 2.25rem; border-left: 4px solid var(--azure); margin: 1.5rem 0; }
+.deep h3 { font-family: var(--font-ja-serif); font-size: 1.15rem; font-weight: 500; margin-bottom: 0.75rem; color: var(--white); }
+.deep p { font-size: 0.9rem; line-height: 1.8; color: rgba(255,255,255,0.75); }
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+@media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+.two-col-item h3 { font-family: var(--font-ja-serif); font-size: 1.05rem; font-weight: 500; margin-bottom: 0.6rem; padding-bottom: 0.4rem; border-bottom: 2px solid var(--azure); }
+.two-col-item p { font-size: 0.9rem; line-height: 1.8; color: var(--muted); }
+.sec-navy .two-col-item p { color: rgba(255,255,255,0.7); }
+
+.note {
+  font-size: 0.825rem;
+  color: var(--muted);
+  line-height: 1.75;
+  padding: 0.75rem 1rem;
+  border-left: 3px solid var(--azure-pale);
+  background: rgba(46,84,150,0.04);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  margin-top: 1rem;
+}
+
+.summary { text-align: center; max-width: 640px; margin: 0 auto; }
+.summary-text { font-family: var(--font-ja-serif); font-size: clamp(1.15rem, 3vw, 1.45rem); font-weight: 400; line-height: 1.8; margin-bottom: 2rem; }
+
+.take {
+  background: var(--navy-deep);
+  border-radius: var(--radius);
+  padding: 1.5rem 1.75rem;
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+  margin: 2rem 0;
+  border-left: 4px solid var(--red);
+}
+.sec-light .take { background: #fff8f8; border-left: 4px solid var(--red); box-shadow: 0 2px 8px rgba(226,55,68,0.07); }
+.take-avatar {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--azure);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-en);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.take-label { font-family: var(--font-en); font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--red-bright); margin-bottom: 4px; }
+.sec-light .take-label { color: var(--red); }
+.take-author { font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem; }
+.sec-light .take-author { color: var(--muted); }
+.take-text { font-size: 0.9rem; line-height: 1.8; color: rgba(255,255,255,0.88); }
+.sec-light .take-text { color: var(--ink); }
+.hot { color: var(--red-bright); font-weight: 700; }
+.sec-light .hot { color: var(--red); }
+
+footer { background: var(--navy-deep); padding: 3rem 1.5rem; text-align: center; color: rgba(255,255,255,0.5); font-size: 0.8rem; }
+footer a { color: rgba(255,255,255,0.7); }
+
+.text-azure { color: var(--azure); }
+.text-red   { color: var(--red); }
+.sec-navy .text-red { color: var(--red-bright); }
+.fw-bold { font-weight: 700; }
+.font-serif { font-family: var(--font-ja-serif); }
+
+/* 段階スペクトラム用の補助 */
+.spectrum-tag {
+  font-family: var(--font-en);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--azure);
+  background: var(--azure-pale);
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+}
+.sec-navy .spectrum-tag { color: var(--white); background: rgba(255,255,255,0.15); }
+.lead {
+  font-size: 1.05rem;
+  line-height: 1.95;
+  margin-bottom: 1.5rem;
+}
+.sec-navy .lead { color: rgba(255,255,255,0.85); }
+
+@media (max-width: 640px) {
+  :root { --sec-pad: 3.5rem 1rem; }
+  .vs { grid-template-columns: 1fr; }
+  .vs-label { display: none; }
+  .hero { padding: 4rem 1rem 3.5rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================= HERO ============================================= -->
+<section class="hero">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Why AI Agent Strategist</span>
+    <h1 class="hero-title">「使う人」から「設計する人」へ。<br>AIエージェント・ストラテジストが<br>必要な理由</h1>
+    <p class="hero-copy">単発プロンプトから自律型エージェントへ。AIが「作業」を引き受けるほど、人間の価値は「操作する力」ではなく「設計する力」に移る。その境界線に立つ職能を解きほぐす。</p>
+    <div class="hero-cta">
+      <a href="#thesis" class="btn-primary">論点を読む</a>
+      <a href="#cert" class="btn-secondary">認定資格を見る</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================= SECTION 1：点→線→面→立体 ============================================= -->
+<section class="sec-light" id="thesis">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 01 ─ Spectrum</span>
+    <h2 class="sec-title">AIは「単発プロンプト」から「自律型エージェント」へ、次元を上げてきた</h2>
+    <p class="sec-sub">同じ「AIを使う」でも、その中身はこの数年で別物になった。私はこの進化を <span class="text-azure fw-bold">点→線→面→立体</span> という4段階で整理している。次元が上がるほど、人間がやることは「打ち込む」から「託す」へ移っていく。</p>
+
+    <div class="stepper">
+      <div class="step">
+        <div class="step-num">点</div>
+        <div class="step-body">
+          <h3>単発プロンプト<span class="spectrum-tag">POINT</span></h3>
+          <p>1回の指示に1回の出力。人間が毎回考え、毎回打ち込む。AIは「賢い電卓」であり、成果は完全に操作者の腕に依存する。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">線</div>
+        <div class="step-body">
+          <h3>定型ワークフロー<span class="spectrum-tag">LINE</span></h3>
+          <p>プロンプトを連鎖させ、入力→加工→出力の流れをつくる。レール上を走る自動化。決められた線の上でしか動けない。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">面</div>
+        <div class="step-body">
+          <h3>複数ツール・複数AIの連携<span class="spectrum-tag">PLANE</span></h3>
+          <p>検索・ファイル・社内システムを横断し、複数の処理を並行で扱う。点と線が面に広がり、対応できる業務の幅が一気に増える。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">体</div>
+        <div class="step-body">
+          <h3>自律型エージェント<span class="spectrum-tag">SOLID</span></h3>
+          <p>ゴールだけを与えれば、ルートをAI自身が決めて動き続ける。人間は逐一操作しない。ここで初めて「任せる」が成立する。</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="note">※「点→線→面→立体」は、AIの自律度＝「ルートを誰が決めるか」を軸にした段階モデル。点・線では人間がルートを握り、立体ではAIがルートを決める。</p>
+  </div>
+</section>
+
+<!-- ============================================= SECTION 2：作る→使う→任せる / doer→director ============================================= -->
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 02 ─ Role Shift</span>
+    <h2 class="sec-title">自律化は、人間の役割を「作業者」から「設計者」へ押し上げる</h2>
+    <p class="sec-sub">AIとの関わり方も同じく進化する。<span class="text-red fw-bold">作るAI → 使うAI → 任せるAI</span>。そして「任せる」段階に入った瞬間、人間に求められる能力が根本から変わる。</p>
+
+    <div class="stepper">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h3>作るAI ─ コンテンツを生成させる</h3>
+          <p>文章・画像・コードをアウトプットさせる段階。人間がプロンプトで細かく指示し、AIは出力する。主役はあくまで人間。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3>使うAI ─ 業務に組み込む</h3>
+          <p>日々の業務にAIを道具として埋め込む段階。効率は上がるが、判断と進行はまだ人間が握っている。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h3>任せるAI ─ 業務の主語をAIにする</h3>
+          <p>エージェントが目的に向かって自走する段階。人間の仕事は「やること」ではなく「何を・なぜ・どこまで任せるかを決めること」に変わる。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="deep">
+      <h3>doer から director へ</h3>
+      <p>「作る・使う」までは、AIをうまく操作できる人＝<strong>doer（作業者）</strong>が強かった。だが「任せる」に入ると、操作そのものはAIが引き受ける。価値が移るのは、目的・範囲・ガードレールを設計する<strong>director（設計者）</strong>だ。AIが優秀になるほど、優秀な作業者の希少価値は下がり、優秀な設計者の希少価値が上がる。これは逆説ではなく、自律化の必然である。</p>
+    </div>
+
+    <div class="take">
+      <div class="take-avatar">OK</div>
+      <div class="take-body">
+        <div class="take-label">Ozaken's One Point</div>
+        <div class="take-author">小澤健祐（おざけん）</div>
+        <p class="take-text">
+          世の中の議論は「AIを使いこなせる人になろう」に偏りすぎている。だが年間300回以上現場に立って断言できるのは、自律型エージェントの時代に分かれ目になるのは「使えるか」ではなく <span class="hot">設計できるか</span> だということ。プロンプトの上手さは、AIが賢くなるほど価値が目減りする。逆に「何を任せるべきか」を決める力は、AIが賢くなるほど効いてくる。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================= SECTION 3：脱プロンプト→コンテキスト設計 / 3つのエンジニアリング ============================================= -->
+<section class="sec-light">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 03 ─ The Paradox</span>
+    <h2 class="sec-title">自律化が進むほど、「設計」の難易度はむしろ上がる</h2>
+    <p class="lead">「全部AIに任せられるなら、人間は楽になる」——これは半分しか正しくない。逐一の操作からは解放される。しかし、自走するエージェントが暴走せず・的を外さず・ROIを生むように<strong>事前に設計する</strong>仕事は、むしろ高度化する。脱プロンプトの先に必要なのは、3つの設計領域だ。</p>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <rect x="8" y="8" width="20" height="20" rx="3" stroke="currentColor" stroke-width="2"/>
+            <rect x="12" y="12" width="12" height="12" rx="2" fill="currentColor" opacity="0.25"/>
+          </svg>
+        </div>
+        <h3>コンテキスト設計</h3>
+        <p>AIに「何を前提に・何を見て」判断させるか。社内情報・ルール・目的を構造化して与える。脱プロンプトの本丸はここにある。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="2"/>
+            <circle cx="24" cy="24" r="5" stroke="currentColor" stroke-width="2"/>
+            <path d="M16 16l4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3>ハーネス設計</h3>
+        <p>エージェントに使わせるツール・権限・連携先を組む「外側の器」。何ができて何ができないかの境界＝ガードレールを設計する。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <circle cx="18" cy="18" r="12" stroke="currentColor" stroke-width="2"/>
+            <path d="M18 10v8l5 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3>ループ設計</h3>
+        <p>自走を回し続ける仕組み。どこで止め、どこで人間が確認し、どう改善を回すか。任せきりにせず制御する循環を組む。</p>
+      </div>
+    </div>
+
+    <p class="note">この3つは技術論に見えて、本質は「業務をどう再定義するか」という<strong>経営・業務設計の問題</strong>。だからこそ、ツールを触れる人だけでは完結しない。</p>
+  </div>
+</section>
+
+<!-- ============================================= SECTION 4：ストラテジスト vs アーキテクト ============================================= -->
+<section class="sec-navy" id="cert">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 04 ─ Definition</span>
+    <h2 class="sec-title">「作る人」だけでは、エージェントは事業価値にならない</h2>
+    <p class="sec-sub">エージェント実装には、性格の異なる2つの役割が要る。AICX協会はこれを2つの認定資格として定義した。混同されがちだが、担う問いがまるで違う。</p>
+
+    <div class="vs">
+      <div class="vs-card">
+        <span class="vs-badge pos">STRATEGIST</span>
+        <h3>AIエージェント・ストラテジスト</h3>
+        <p>「何を・なぜ・どこまで任せるか」を決める人。業務のどこにエージェントを置けば事業が変わるかを見極め、戦略とROIを設計する。<strong>director（設計者）</strong>の職能。</p>
+      </div>
+      <div class="vs-label">vs</div>
+      <div class="vs-card">
+        <span class="vs-badge neg">ARCHITECT</span>
+        <h3>AIエージェント・アーキテクト</h3>
+        <p>「どう作るか」を担う人。ツール選定・連携・ハーネスを組み、エージェントを実装し運用する。設計図を現実に落とす<strong>builder（実装者）</strong>の職能。</p>
+      </div>
+    </div>
+
+    <div class="deep">
+      <h3>なぜストラテジストが先に立つのか</h3>
+      <p>技術的に動くエージェントは、もう誰でも作れる時代になりつつある。だが「動く」と「効く」は別問題だ。間違った業務に正しく実装しても、生まれるのはコストだけ。<strong>どの業務を・どんな順番で・どこまで自律化すれば事業インパクトが出るか</strong>——この上流を外すと、後工程のアーキテクトがどれだけ優秀でも投資は回収できない。だからストラテジストは、実装の前に立つ羅針盤になる。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================= SECTION 5：ストラテジストの設計領域 × AXフェーズ ============================================= -->
+<section class="sec-light">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 05 ─ What They Design</span>
+    <h2 class="sec-title">ストラテジストは、組織を AX1 から AX4 へ導く設計者だ</h2>
+    <p class="sec-sub">AI変革には段階がある。私が使う <span class="text-azure fw-bold">AXフェーズ（AX1〜AX4）</span> で言えば、ストラテジストの仕事は「今どこにいて、次にどの業務を、どこまで自律化するか」を描き、組織を次の次元へ押し上げることに尽きる。</p>
+
+    <div class="cards">
+      <div class="card">
+        <h3>AX1 ─ 個の効率化</h3>
+        <p>個人がAIで作業を速くする段階。ストラテジストはここを「ゴール」と勘違いさせず、組織変革の入り口として位置づける。</p>
+      </div>
+      <div class="card">
+        <h3>AX2 ─ 業務の再設計</h3>
+        <p>個別タスクではなく業務プロセス単位でAIを前提に組み替える。どの業務に投資すべきかの優先順位づけが要になる。</p>
+      </div>
+      <div class="card">
+        <h3>AX3 ─ エージェントへの委譲</h3>
+        <p>業務の主語をエージェントに移す段階。任せる範囲・ガードレール・ROIを設計し、「効く自律化」を実現する。</p>
+      </div>
+      <div class="card">
+        <h3>AX4 ─ 組織モデルの変容</h3>
+        <p>人とエージェントが協働する前提で、組織・役割・評価そのものを描き直す。ストラテジストの設計が最も問われる段階。</p>
+      </div>
+    </div>
+
+    <div class="take">
+      <div class="take-avatar">OK</div>
+      <div class="take-body">
+        <div class="take-label">Ozaken's One Point</div>
+        <div class="take-author">小澤健祐（おざけん）</div>
+        <p class="take-text">
+          エージェント導入プロジェクトがつまずく原因の大半は、技術ではない。「誰も上流のROIを設計しないまま作り始めた」ことだ。PoCは動いたのに事業が動かない——この典型は、ストラテジスト不在のサインそのもの。本当に効くのは、最初に <span class="hot">問いの設計</span> ができる人を置くこと。80点で始めて改善するのは大賛成だが、「どの業務を80点で始めるか」だけは設計しなければならない。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================= SUMMARY ============================================= -->
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <div class="summary">
+      <span class="eyebrow">Summary</span>
+      <p class="summary-text">
+        単発プロンプトから自律型エージェントへ。<br>
+        AIが「作業」を引き受ける時代に<br>
+        価値を持つのは、使える人ではなく<br>
+        <span class="font-serif text-red">設計できる人</span>だ。
+      </p>
+      <a href="#thesis" class="btn-primary">もう一度読む</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>AIエージェント・ストラテジスト ─ 国内初のAIエージェント実装人材 認定資格</p>
+  <p>&copy; 2026 小澤健祐（おざけん）/ <a href="#">一般社団法人AICX協会</a></p>
+</footer>
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

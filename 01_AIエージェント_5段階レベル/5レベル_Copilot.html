@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Microsoft Copilot Studio 解説デッキ ｜ おざけん</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#1a1a4e; --ink:#1a1a2e; --grey-box:#f0efed; --grey-box2:#e6e6ee;
+    --orb:#ededed; --orb-bd:#d4d4da; --muted:#8a8a93; --desc:#6a6a73; --red:#e23744;
+    --font-ja:'Zen Kaku Gothic New', sans-serif; --font-en:'Hanken Grotesk', sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:#e9e9ee;font-family:var(--font-ja);color:var(--ink);padding:32px 16px;}
+  .slide{max-width:1200px;margin:0 auto 28px;background:#fff;padding:46px 54px 42px;border-radius:14px;box-shadow:0 12px 40px rgba(26,26,46,0.12);}
+
+  .head-top{display:flex;justify-content:space-between;align-items:baseline;gap:16px;}
+  .eyebrow{font-family:var(--font-en);font-size:13px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);}
+  .chapter{font-family:var(--font-en);font-size:14px;font-weight:700;white-space:nowrap;}
+  .chapter .c-navy{color:var(--navy);}
+  .chapter .c-grey{color:var(--muted);font-weight:500;}
+  .title{font-size:clamp(24px,3.4vw,42px);font-weight:700;line-height:1.34;margin-top:18px;letter-spacing:.01em;}
+  .title .accent{color:var(--navy);}
+  .lead{font-size:15px;color:var(--desc);margin-top:14px;line-height:1.7;max-width:790px;}
+  .content{margin-top:42px;}
+
+  .grid{display:grid;grid-template-columns:repeat(5,1fr);gap:18px;margin-top:50px;}
+  .col{display:flex;flex-direction:column;align-items:center;text-align:center;}
+  .box{background:var(--grey-box);border-radius:12px;padding:16px 14px;width:100%;min-height:182px;display:flex;flex-direction:column;align-items:center;}
+  .box .stage{font-size:17px;font-weight:700;color:var(--ink);line-height:1.35;}
+  .box .product{font-size:15px;font-weight:700;color:var(--navy);margin-top:6px;line-height:1.3;}
+  .box .desc{font-size:13px;font-weight:500;color:var(--desc);margin-top:9px;line-height:1.62;}
+  .box .desc .hot{color:var(--red);font-weight:700;}
+  .rail svg{display:block;width:100%;height:auto;}
+  .orb svg{display:block;width:118px;height:118px;margin:0 auto;}
+  .shape{font-size:25px;font-weight:700;color:var(--ink);margin-top:10px;letter-spacing:.05em;}
+  .annot{display:grid;grid-template-columns:repeat(5,1fr);gap:18px;margin-top:26px;}
+  .bracket{text-align:center;}
+  .bracket .line{height:9px;border:2px solid var(--navy);border-top:none;border-radius:0 0 7px 7px;margin:0 14px;}
+  .bracket .lbl{margin-top:9px;font-size:14px;font-weight:700;color:var(--navy);line-height:1.4;}
+  .bracket.human{grid-column:2 / 4;}
+  .bracket.ai{grid-column:4 / 5;}
+  .bracket.ai .line{border-color:var(--red);}
+  .bracket.ai .lbl{color:var(--red);}
+
+  .gboxes{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px;}
+  .gbox{background:var(--grey-box);border-radius:12px;padding:22px 20px;}
+  .gbox .ic{width:34px;height:34px;color:var(--navy);margin-bottom:13px;}
+  .gbox .tag{display:inline-block;font-family:var(--font-en);font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--navy);background:var(--grey-box2);padding:2px 8px;border-radius:4px;margin-bottom:11px;}
+  .gbox h3{font-size:16px;font-weight:700;color:var(--ink);margin-bottom:7px;line-height:1.4;}
+  .gbox p{font-size:13px;color:var(--desc);line-height:1.65;}
+
+  .flow{display:flex;align-items:center;gap:0;}
+  .flow-box{flex:1;background:var(--grey-box);border-radius:12px;padding:20px 16px;text-align:center;}
+  .flow-box .k{font-family:var(--font-en);font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;}
+  .flow-box h3{font-size:16px;font-weight:700;color:var(--navy);margin:5px 0 8px;}
+  .flow-box p{font-size:12.5px;color:var(--desc);line-height:1.6;}
+  .flow-arrow{flex:0 0 60px;display:flex;justify-content:center;align-items:center;}
+  .flow-arrow svg{width:52px;height:38px;}
+
+  .nsteps{display:grid;grid-template-columns:1fr 1fr;gap:16px 30px;}
+  .nstep{display:flex;gap:14px;align-items:flex-start;}
+  .nnum{flex:0 0 34px;width:34px;height:34px;border-radius:50%;background:var(--navy);color:#fff;font-family:var(--font-en);font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;margin-top:2px;}
+  .nstep h3{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:3px;}
+  .nstep p{font-size:12.5px;color:var(--desc);line-height:1.58;}
+
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:26px;}
+  .two h3{font-size:16px;font-weight:700;color:var(--ink);border-bottom:2px solid var(--navy);padding-bottom:7px;margin-bottom:11px;}
+  .two p{font-size:13px;color:var(--desc);line-height:1.72;}
+  .two .danger{border-bottom-color:var(--red);}
+  .best{margin-top:22px;background:var(--grey-box);border-radius:12px;padding:18px 20px;border-left:4px solid var(--navy);}
+  .best .tag{display:inline-block;font-family:var(--font-en);font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--navy);margin-bottom:7px;}
+  .best h3{font-size:15px;font-weight:700;margin-bottom:6px;}
+  .best p{font-size:13px;color:var(--desc);line-height:1.7;}
+
+  .note{margin-top:18px;font-size:12px;color:var(--muted);line-height:1.6;padding-left:12px;border-left:3px solid var(--grey-box2);}
+  .foot{margin-top:30px;font-size:11.5px;color:var(--muted);line-height:1.6;text-align:right;}
+  b{color:var(--ink);font-weight:700;}
+
+  @media (max-width:760px){
+    .slide{padding:26px 18px;}
+    .grid{gap:7px;} .box{min-height:150px;padding:10px 7px;}
+    .box .stage{font-size:12.5px;} .box .product{font-size:10.5px;} .box .desc{font-size:9.5px;margin-top:5px;}
+    .shape{font-size:17px;} .orb svg{width:70px;} .bracket .lbl{font-size:10px;}
+    .flow{flex-direction:column;} .flow-arrow svg{transform:rotate(90deg);} .flow-arrow{flex-basis:34px;}
+    .nsteps{grid-template-columns:1fr;} .two{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ===================== SLIDE 1：位置づけ ===================== -->
+<div class="slide">
+  <div class="head-top">
+    <span class="eyebrow">Connecting dots to lines, planes, solids</span>
+    <span class="chapter"><span class="c-navy">COPILOT × STUDIO × COWORK</span><span class="c-grey"> ・ 使い分け</span></span>
+  </div>
+  <h1 class="title">AIエージェントの実現ステップ：<span class="accent">点を線に、面を立体に。</span></h1>
+
+  <div class="grid">
+    <!-- 1 点 -->
+    <div class="col">
+      <div class="box"><div class="stage">単発プロンプト</div><div class="product">Microsoft 365 Copilot</div><div class="desc">M365アプリ内で質問→回答。都度の指示でタスクを片づける。</div></div>
+      <div class="rail"><svg viewBox="0 0 240 200" xmlns="http://www.w3.org/2000/svg">
+        <line x1="120" y1="0" x2="120" y2="200" stroke="#1a1a4e" stroke-width="2" stroke-dasharray="10 5 2 5"/>
+        <polygon points="32,95 32,105 42,100" fill="#1a1a4e"/><polygon points="50,92 50,108 62,100" fill="#1a1a4e"/><polygon points="70,88 70,112 84,100" fill="#1a1a4e"/>
+        <circle cx="120" cy="100" r="14" fill="#1a1a4e"/>
+        <line x1="150" y1="90" x2="150" y2="110" stroke="#1a1a4e" stroke-width="3"/><line x1="159" y1="90" x2="159" y2="110" stroke="#1a1a4e" stroke-width="3"/><line x1="168" y1="90" x2="168" y2="110" stroke="#1a1a4e" stroke-width="3"/>
+        <path d="M178,90 L200,90 L200,82 L222,100 L200,118 L200,110 L178,110 Z" fill="#1a1a4e"/>
+      </svg></div>
+      <div class="orb"><svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg"><circle cx="80" cy="80" r="70" fill="#ededed" stroke="#d4d4da" stroke-width="2"/><circle cx="80" cy="80" r="10" fill="#1a1a4e"/></svg></div>
+      <div class="shape">点</div>
+    </div>
+    <!-- 2 線 Copilot エージェント -->
+    <div class="col">
+      <div class="box"><div class="stage">チャットボット構築</div><div class="product">Copilot エージェント（軽量）</div><div class="desc">指示とナレッジを与えた“自作の特化AI”。人間がルートを決める。</div></div>
+      <div class="rail"><svg viewBox="0 0 240 200" xmlns="http://www.w3.org/2000/svg">
+        <line x1="120" y1="0" x2="120" y2="200" stroke="#1a1a4e" stroke-width="2" stroke-dasharray="10 5 2 5"/>
+        <polygon points="32,95 32,105 42,100" fill="#1a1a4e"/><polygon points="50,92 50,108 62,100" fill="#1a1a4e"/><polygon points="70,88 70,112 84,100" fill="#1a1a4e"/>
+        <circle cx="120" cy="100" r="14" fill="#1a1a4e"/>
+        <line x1="150" y1="90" x2="150" y2="110" stroke="#1a1a4e" stroke-width="3"/><line x1="159" y1="90" x2="159" y2="110" stroke="#1a1a4e" stroke-width="3"/><line x1="168" y1="90" x2="168" y2="110" stroke="#1a1a4e" stroke-width="3"/>
+        <path d="M178,90 L200,90 L200,82 L222,100 L200,118 L200,110 L178,110 Z" fill="#1a1a4e"/>
+      </svg></div>
+      <div class="orb"><svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg"><circle cx="80" cy="80" r="70" fill="#ededed" stroke="#d4d4da" stroke-width="2"/><line x1="55" y1="80" x2="105" y2="80" stroke="#1a1a4e" stroke-width="5"/><circle cx="55" cy="80" r="9" fill="#1a1a4e"/><circle cx="105" cy="80" r="9" fill="#1a1a4e"/></svg></div>
+      <div class="shape">線</div>
+    </div>
+    <!-- 3 線 Copilot Studio -->
+    <div class="col">
+      <div class="box"><div class="stage">ワークフロー構築</div><div class="product">Copilot Studio</div><div class="desc">トピックとフローを組んで業務を自動化。ルートは人間が設計する。</div></div>
+      <div class="rail"><svg viewBox="0 0 240 200" xmlns="http://www.w3.org/2000/svg">
+        <line x1="120" y1="0" x2="120" y2="200" stroke="#1a1a4e" stroke-width="2" stroke-dasharray="10 5 2 5"/>
+        <polygon points="32,95 32,105 42,100" fill="#1a1a4e"/><polygon points="50,92 50,108 62,100" fill="#1a1a4e"/><polygon points="70,88 70,112 84,100" fill="#1a1a4e"/>
+        <circle cx="120" cy="100" r="14" fill="#1a1a4e"/>
+        <line x1="150" y1="90" x2="150" y2="110" stroke="#1a1a4e" stroke-width="3"/><line x1="159" y1="90" x2="159" y2="110" stroke="#1a1a4e" stroke-width="3"/><line x1="168" y1="90" x2="168" y2="110" stroke="#1a1a4e" stroke-width="3"/>
+        <path d="M178,90 L200,90 L200,82 L222,100 L200,118 L200,110 L178,110 Z" fill="#1a1a4e"/>
+      </svg></div>
+      <div class="orb"><svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg"><circle cx="80" cy="80" r="70" fill="#ededed" stroke="#d4d4da" stroke-width="2"/><line x1="45" y1="80" x2="115" y2="80" stroke="#1a1a4e" stroke-width="5"/><circle cx="45" cy="80" r="9" fill="#1a1a4e"/><circle cx="80" cy="80" r="9" fill="#1a1a4e"/><circle cx="115" cy="80" r="9" fill="#1a1a4e"/></svg></div>
+      <div class="shape">線</div>
+    </div>
+    <!-- 4 面 Copilot Cowork -->
+    <div class="col">
+      <div class="box"><div class="stage">半自律型エージェント</div><div class="product">Copilot Cowork</div><div class="desc">目的を渡せば、<span class="hot">ルートも自分で探索</span>して実行する。</div></div>
+      <div class="rail"><svg viewBox="0 0 240 200" xmlns="http://www.w3.org/2000/svg">
+        <line x1="120" y1="0" x2="120" y2="200" stroke="#1a1a4e" stroke-width="2" stroke-dasharray="10 5 2 5"/>
+        <polygon points="32,95 32,105 42,100" fill="#1a1a4e"/><polygon points="50,92 50,108 62,100" fill="#1a1a4e"/><polygon points="70,88 70,112 84,100" fill="#1a1a4e"/>
+        <circle cx="120" cy="100" r="14" fill="#1a1a4e"/>
+        <line x1="150" y1="90" x2="150" y2="110" stroke="#1a1a4e" stroke-width="3"/><line x1="159" y1="90" x2="159" y2="110" stroke="#1a1a4e" stroke-width="3"/><line x1="168" y1="90" x2="168" y2="110" stroke="#1a1a4e" stroke-width="3"/>
+        <path d="M178,90 L200,90 L200,82 L222,100 L200,118 L200,110 L178,110 Z" fill="#1a1a4e"/>
+      </svg></div>
+      <div class="orb"><svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg"><circle cx="80" cy="80" r="70" fill="#ededed" stroke="#d4d4da" stroke-width="2"/><rect x="52" y="52" width="56" height="56" fill="none" stroke="#1a1a4e" stroke-width="4"/></svg></div>
+      <div class="shape">面</div>
+    </div>
+    <!-- 5 立体 -->
+    <div class="col">
+      <div class="box"><div class="stage">完全自律型エージェント</div><div class="product">これから（Agent 365 ほか）</div><div class="desc">複数エージェントが連携し、業務そのものを自律的に動かす。</div></div>
+      <div class="rail"><svg viewBox="0 0 240 200" xmlns="http://www.w3.org/2000/svg">
+        <line x1="120" y1="0" x2="120" y2="200" stroke="#1a1a4e" stroke-width="2" stroke-dasharray="10 5 2 5"/>
+        <polygon points="32,95 32,105 42,100" fill="#1a1a4e"/><polygon points="50,92 50,108 62,100" fill="#1a1a4e"/><polygon points="70,88 70,112 84,100" fill="#1a1a4e"/>
+        <circle cx="120" cy="100" r="14" fill="#1a1a4e"/>
+        <line x1="150" y1="90" x2="150" y2="110" stroke="#1a1a4e" stroke-width="3"/><line x1="159" y1="90" x2="159" y2="110" stroke="#1a1a4e" stroke-width="3"/><line x1="168" y1="90" x2="168" y2="110" stroke="#1a1a4e" stroke-width="3"/>
+        <path d="M178,90 L200,90 L200,82 L222,100 L200,118 L200,110 L178,110 Z" fill="#1a1a4e"/>
+      </svg></div>
+      <div class="orb"><svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg"><circle cx="80" cy="80" r="70" fill="#ededed" stroke="#d4d4da" stroke-width="2"/><rect x="50" y="62" width="52" height="52" fill="none" stroke="#1a1a4e" stroke-width="3"/><rect x="72" y="40" width="52" height="52" fill="none" stroke="#1a1a4e" stroke-width="3"/><line x1="50" y1="62" x2="72" y2="40" stroke="#1a1a4e" stroke-width="3"/><line x1="102" y1="62" x2="124" y2="40" stroke="#1a1a4e" stroke-width="3"/><line x1="50" y1="114" x2="72" y2="92" stroke="#1a1a4e" stroke-width="3"/><line x1="102" y1="114" x2="124" y2="92" stroke="#1a1a4e" stroke-width="3"/></svg></div>
+      <div class="shape">立体</div>
+    </div>
+  </div>
+
+  <div class="annot">
+    <div class="bracket human"><div class="line"></div><div class="lbl">人間がルートを決める</div></div>
+    <div class="bracket ai"><div class="line"></div><div class="lbl">AIがルートも探索（半自律）</div></div>
+  </div>
+  <p class="note">※ Copilot Cowork は2026年3月にFrontierでプレビュー提供が始まり、2026年6月16日に一般提供（GA）。Microsoft 365 Copilotライセンス＋従量課金（Copilotクレジット）で利用します。</p>
+</div>
+
+<!-- ===================== SLIDE 2：とは ===================== -->
+<div class="slide">
+  <div class="head-top">
+    <span class="eyebrow">What is Copilot Studio</span>
+    <span class="chapter"><span class="c-navy">CHAPTER 02</span><span class="c-grey"> ・ 概要</span></span>
+  </div>
+  <h1 class="title">Copilot Studioは、<span class="accent">M365の資産で“エージェント”をつくる</span>場所。</h1>
+  <p class="lead">Microsoftが提供する、ノーコード〜ローコードのAIエージェント開発プラットフォーム（旧 Power Virtual Agents）。SharePoint・Teams・Outlook・Dataverseなど既存のMicrosoft 365資産をそのまま活かし、FAQボットから複数ステップを自律実行するエージェントまで、同じ画面で構築・公開できます。</p>
+  <div class="content">
+    <div class="gboxes">
+      <div class="gbox">
+        <div class="ic"><svg width="34" height="34" viewBox="0 0 36 36" fill="none"><rect x="8" y="8" width="20" height="20" rx="3" stroke="currentColor" stroke-width="2"/><rect x="12" y="12" width="12" height="12" rx="2" fill="currentColor" opacity="0.25"/></svg></div>
+        <span class="tag">LOW CODE</span>
+        <h3>専門知識がなくても作れる</h3>
+        <p>プログラミング不要で、会話形式の説明とビジュアルデザイナーからエージェントを設計・テスト・公開できます。</p>
+      </div>
+      <div class="gbox">
+        <div class="ic"><svg width="34" height="34" viewBox="0 0 36 36" fill="none"><circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="2"/><circle cx="24" cy="24" r="5" stroke="currentColor" stroke-width="2"/><path d="M16 16l4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <span class="tag">M365 NATIVE</span>
+        <h3>既存資産をそのまま活用</h3>
+        <p>SharePoint・Teams・Outlook・Dataverseとほぼ設定ゼロで連携。MCP対応・1,400超のコネクタで外部にも接続します。</p>
+      </div>
+      <div class="gbox">
+        <div class="ic"><svg width="34" height="34" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="6" fill="currentColor"/><circle cx="18" cy="18" r="12" stroke="currentColor" stroke-width="1.5" opacity="0.3"/></svg></div>
+        <span class="tag">AGENTIC</span>
+        <h3>自律エージェントまで一気通貫</h3>
+        <p>単純なFAQボットから、トリガーを起点に背後で動く自律エージェントまで、同じプラットフォームで構築できます。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SLIDE 3：仕組み ===================== -->
+<div class="slide">
+  <div class="head-top">
+    <span class="eyebrow">How it works</span>
+    <span class="chapter"><span class="c-navy">CHAPTER 03</span><span class="c-grey"> ・ 構造</span></span>
+  </div>
+  <h1 class="title">エージェントは<span class="accent">「3つの要素」</span>で動く。</h1>
+  <p class="lead">Copilot Studioのエージェントは、いつ動くか（トリガー）・何をするか（フロー／アクション）・何を根拠にするか（ナレッジ）の組み合わせ。実処理はPower Automateと連携して走らせます。</p>
+  <div class="content">
+    <div class="flow">
+      <div class="flow-box">
+        <div class="k">TRIGGER</div>
+        <h3>いつ動くか</h3>
+        <p>会話・スケジュール・イベントで起動。「メール受信」など自律トリガーで人を待たずに動かすことも。</p>
+      </div>
+      <div class="flow-arrow"><svg viewBox="0 0 64 40" xmlns="http://www.w3.org/2000/svg"><polygon points="4,16 4,24 11,20" fill="#1a1a4e"/><polygon points="13,13 13,27 22,20" fill="#1a1a4e"/><path d="M28,14 L46,14 L46,8 L60,20 L46,32 L46,26 L28,26 Z" fill="#1a1a4e"/></svg></div>
+      <div class="flow-box">
+        <div class="k">FLOW / ACTION</div>
+        <h3>何をするか</h3>
+        <p>Power Automateフローやコネクタで実処理。承認、データ更新、Teams通知などを順番に実行します。</p>
+      </div>
+      <div class="flow-arrow"><svg viewBox="0 0 64 40" xmlns="http://www.w3.org/2000/svg"><polygon points="4,16 4,24 11,20" fill="#1a1a4e"/><polygon points="13,13 13,27 22,20" fill="#1a1a4e"/><path d="M28,14 L46,14 L46,8 L60,20 L46,32 L46,26 L28,26 Z" fill="#1a1a4e"/></svg></div>
+      <div class="flow-box">
+        <div class="k">KNOWLEDGE</div>
+        <h3>何を根拠にするか</h3>
+        <p>SharePoint・OneDrive・Webを参照し、トピックを手で書かなくても生成的に回答を組み立てます。</p>
+      </div>
+    </div>
+    <p class="note">※ 作ったエージェントは Teams・自社Web・Microsoft 365 Copilot など複数チャネルへ公開でき、社内外で同じ体験を一元提供できます。</p>
+  </div>
+</div>
+
+<!-- ===================== SLIDE 4：できること ===================== -->
+<div class="slide">
+  <div class="head-top">
+    <span class="eyebrow">Use cases</span>
+    <span class="chapter"><span class="c-navy">CHAPTER 04</span><span class="c-grey"> ・ 活用</span></span>
+  </div>
+  <h1 class="title">まずは、この<span class="accent">「社内で閉じる業務」</span>から。</h1>
+  <p class="lead">すでにMicrosoft 365を使っている組織ほど、追加インフラなしで始められます。</p>
+  <div class="content">
+    <div class="gboxes">
+      <div class="gbox">
+        <div class="ic"><svg width="34" height="34" viewBox="0 0 36 36" fill="none"><circle cx="16" cy="16" r="9" stroke="currentColor" stroke-width="2"/><path d="M23 23l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <h3>社内ナレッジ検索ボット</h3>
+        <p>SharePointや社内文書を根拠に、問い合わせ・FAQへ自動応答。Teamsから誰でも質問できます。</p>
+      </div>
+      <div class="gbox">
+        <div class="ic"><svg width="34" height="34" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="12" stroke="currentColor" stroke-width="2"/><path d="M18 10v8l5 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3>定期情報収集・レポート</h3>
+        <p>スケジュール起動で関連情報を自動収集し、要約レポートを定時配信。日々の情報整理を任せられます。</p>
+      </div>
+      <div class="gbox">
+        <div class="ic"><svg width="34" height="34" viewBox="0 0 36 36" fill="none"><path d="M8 18h20M22 12l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3>業務プロセスの自動化</h3>
+        <p>Power Automate連携で、経費申請→金額で承認者を自動選定→Teams承認カード送信→記録までを一気通貫で。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SLIDE 5：作り方 ===================== -->
+<div class="slide">
+  <div class="head-top">
+    <span class="eyebrow">Build your first agent</span>
+    <span class="chapter"><span class="c-navy">CHAPTER 05</span><span class="c-grey"> ・ 手順</span></span>
+  </div>
+  <h1 class="title">はじめての1体を、<span class="accent">5ステップ</span>でつくる。</h1>
+  <p class="lead">例：「SharePointの社内規程を根拠に、Teamsで質問に答えるFAQボット」。</p>
+  <div class="content">
+    <div class="nsteps">
+      <div class="nstep"><div class="nnum">1</div><div><h3>Studioにアクセス</h3><p>copilotstudio.microsoft.com を開く。作成者ライセンスと環境（Power Platform）が必要です。</p></div></div>
+      <div class="nstep"><div class="nnum">2</div><div><h3>会話形式で説明＋ナレッジ追加</h3><p>「何をするエージェントか」を文章で説明し、SharePointサイトなどをナレッジソースに指定。</p></div></div>
+      <div class="nstep"><div class="nnum">3</div><div><h3>トピック・アクションを設定</h3><p>指示やトリガーを定義。必要に応じてPower Automateフローやコネクタを接続します。</p></div></div>
+      <div class="nstep"><div class="nnum">4</div><div><h3>テストする</h3><p>デプロイ前にテストパネルで動作確認。まず80点で動かし、応答を見ながら指示を磨きます。</p></div></div>
+      <div class="nstep"><div class="nnum">5</div><div><h3>公開する</h3><p>Teams・Web・M365 Copilotへ展開。事前にIT部門とDLP（許可コネクタ）ポリシーを合意しておくと安全。</p></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SLIDE 6：料金・注意 ===================== -->
+<div class="slide">
+  <div class="head-top">
+    <span class="eyebrow">Before you start</span>
+    <span class="chapter"><span class="c-navy">CHAPTER 06</span><span class="c-grey"> ・ 導入前に</span></span>
+  </div>
+  <h1 class="title">料金・前提と、<span class="accent">「混同しやすい点」</span>を先に押さえる。</h1>
+  <div class="content">
+    <div class="two">
+      <div>
+        <h3>料金・利用の前提</h3>
+        <p>課金は<b>Copilotクレジットの従量制</b>（前払いパックあり）で、Azureサブスクが前提です。ライセンスは<b>「作成する人」に付与</b>し、使うだけのエンドユーザーには必ずしも不要——1,000人規模でも作成者が5名なら5人分という設計です。M365 Copilot保有者は追加コストを最小化できます。</p>
+      </div>
+      <div>
+        <h3 class="danger">混同しやすい点（重要）</h3>
+        <p>Microsoftは名前が似た製品が多く要注意。<b>Copilot Studio＝AIを“作る”開発環境</b>、<b>Copilot Cowork＝仕事を“任せる”自律エージェント</b>、<b>Copilotエージェント＝特化型の自作AI</b>と整理を。なおTeamsのクラシックエージェント作成は2026年6月末に廃止予定です。</p>
+      </div>
+    </div>
+    <div class="best">
+      <span class="tag">BEST PRACTICE</span>
+      <h3>「作る＝Studio／実処理＝Power Automate／任せる＝Cowork」で役割分担</h3>
+      <p>すでにMicrosoft 365を入れているなら、追加インフラほぼゼロで本番稼働できるのが最大の強み。社内ナレッジや承認フローはStudio＋Power Automateで仕組み化し、ゴール駆動で丸ごと委ねたい業務はCoworkへ——この切り分けが現実解です。</p>
+    </div>
+    <p class="note">※ 料金・ライセンス・提供範囲は頻繁に更新されます。導入前に必ずMicrosoft公式の最新情報をご確認ください（本資料は2026年6月時点）。</p>
+  </div>
+  <p class="foot">© 2026 小澤健祐（おざけん）/ AICX協会　｜　出典：Microsoft Learn・Microsoft 365 Blog・各社解説記事（2026年6月時点）</p>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>「記録されない現場」の終わり ― AI音声が拓く、CX HUBの時代 | おざけん</title>
+<meta name="description" content="形だけのVOCをやめる。AI音声による会話の全量記録と、CX HUBによる顧客体験の再統合。小澤健祐（おざけん）">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Shippori+Mincho+B1:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   OZAKEN WEB STYLE — DESIGN SYSTEM v4
+   ============================================================ */
+
+:root {
+  --ink:         #1a1a2e;
+  --navy:        #1f3864;
+  --navy-deep:   #141d35;
+  --azure:       #2e5496;
+  --azure-pale:  #d8e4f0;
+  --paper:       #f8f7f4;
+  --white:       #ffffff;
+  --red:         #e23744;
+  --red-bright:  #ff5d6a;
+  --muted:       #6b7a99;
+
+  --font-ja-sans:  'Zen Kaku Gothic New', sans-serif;
+  --font-ja-serif: 'Shippori Mincho B1', serif;
+  --font-en:       'Hanken Grotesk', sans-serif;
+
+  --max-w: 880px;
+  --sec-pad: 5.5rem 1.5rem;
+  --radius: 10px;
+  --radius-sm: 6px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-ja-sans);
+  font-size: 16px;
+  line-height: 1.85;
+  color: var(--ink);
+  background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+
+/* ----- 読み進みプログレスバー ----- */
+#progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  width: 0%;
+  background: var(--azure);
+  z-index: 99;
+  transition: width 0.1s linear;
+}
+
+/* ----- スクロール演出 -----
+   既定は「表示済み」。JSが有効なときだけ .js-reveal が付き、隠してからフェードインさせる。
+   これによりJS非実行時・スクリーンショット時も必ずテキストが写る。 */
+[data-reveal] { opacity: 1; transform: none; }
+.js-reveal [data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+.js-reveal [data-reveal].visible { opacity: 1; transform: none; }
+
+/* ----- 共通レイアウト ----- */
+.inner { max-width: var(--max-w); margin: 0 auto; padding: 0 1.5rem; position: relative; z-index: 1; }
+
+.sec-light {
+  background: var(--paper);
+  padding: var(--sec-pad);
+  color: var(--ink);
+  position: relative;
+  overflow: hidden;
+}
+.sec-light::before {
+  content: '';
+  position: absolute;
+  top: -20%; right: -10%;
+  width: 60%; height: 80%;
+  background: radial-gradient(circle at 60% 40%, rgba(46,84,150,0.09) 0%, transparent 65%);
+  pointer-events: none;
+}
+.sec-light.alt::before {
+  top: auto; bottom: -20%; right: auto; left: -10%;
+  background: radial-gradient(circle at 40% 60%, rgba(226,55,68,0.07) 0%, transparent 65%);
+}
+.sec-navy {
+  background: var(--navy);
+  padding: var(--sec-pad);
+  color: var(--white);
+  position: relative;
+  overflow: hidden;
+}
+.sec-navy::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: radial-gradient(rgba(255,255,255,0.09) 1px, transparent 1px);
+  background-size: 22px 22px;
+  pointer-events: none;
+}
+.sec-navy::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(115deg, rgba(46,84,150,0.55) 0%, transparent 55%);
+  pointer-events: none;
+}
+
+/* ----- eyebrow ----- */
+.eyebrow {
+  display: inline-block;
+  font-family: var(--font-en);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--azure);
+  background: var(--azure-pale);
+  padding: 3px 10px;
+  border-radius: 4px;
+}
+.sec-navy .eyebrow { color: var(--white); background: rgba(255,255,255,0.15); }
+
+/* ----- kicker ----- */
+.kicker { display: flex; align-items: center; gap: 0.9rem; margin-bottom: 1.1rem; }
+.kicker-num {
+  font-family: var(--font-en);
+  font-size: 2.6rem;
+  font-weight: 700;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1.2px var(--azure);
+  letter-spacing: -0.02em;
+}
+.sec-navy .kicker-num { -webkit-text-stroke: 1.2px rgba(255,255,255,0.55); }
+.kicker-line { flex: 0 0 46px; height: 1px; background: var(--azure); opacity: 0.5; }
+.sec-navy .kicker-line { background: rgba(255,255,255,0.5); }
+
+/* ----- 見出し ----- */
+.sec-title {
+  font-family: var(--font-ja-serif);
+  font-size: clamp(1.55rem, 3.8vw, 2.1rem);
+  font-weight: 500;
+  line-height: 1.5;
+  margin-bottom: 0.7rem;
+  letter-spacing: 0.01em;
+}
+.sec-sub { font-size: 1rem; color: var(--muted); margin-bottom: 2.5rem; line-height: 1.85; }
+.sec-navy .sec-sub { color: rgba(255,255,255,0.7); }
+
+.body-text { font-size: 0.95rem; line-height: 1.95; margin-bottom: 1.25rem; }
+.sec-navy .body-text { color: rgba(255,255,255,0.82); }
+.lead { font-family: var(--font-ja-serif); font-size: 1.12rem; line-height: 1.9; margin-bottom: 1.6rem; }
+
+/* ============================================================
+   HERO（表紙）
+   ============================================================ */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 6.5rem 1.5rem 5.5rem;
+  background: var(--navy-deep);
+  color: var(--white);
+  overflow: hidden;
+}
+/* 縦のヘアライングリッド */
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: repeating-linear-gradient(90deg, rgba(255,255,255,0.055) 0 1px, transparent 1px 12.5%);
+  pointer-events: none;
+}
+/* 斜めのazureグロー */
+.hero::after {
+  content: '';
+  position: absolute; inset: -20%;
+  background:
+    radial-gradient(ellipse at 78% 18%, rgba(46,84,150,0.85) 0%, transparent 55%),
+    radial-gradient(ellipse at 8% 88%, rgba(46,84,150,0.45) 0%, transparent 55%);
+  pointer-events: none;
+}
+/* ゴーストタイプ "CX HUB" */
+.hero-ghost {
+  position: absolute;
+  right: 2%;
+  bottom: 4%;
+  text-align: right;
+  font-family: var(--font-en);
+  font-size: clamp(4.5rem, 15vw, 13rem);
+  font-weight: 700;
+  line-height: 0.82;
+  letter-spacing: -0.035em;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(255,255,255,0.11);
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+.hero-inner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1060px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 0.8fr);
+  gap: 3.5rem;
+  align-items: end;
+}
+.hero-rule {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+.hero-rule span:first-child {
+  flex: 0 0 56px;
+  height: 1px;
+  background: var(--red-bright);
+}
+.hero-tag {
+  font-family: var(--font-en);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.62);
+}
+.hero-title {
+  font-family: var(--font-ja-serif);
+  font-size: clamp(2rem, 5.6vw, 3.4rem);
+  font-weight: 500;
+  line-height: 1.36;
+  letter-spacing: 0.005em;
+  margin-bottom: 1.4rem;
+}
+.hero-title .accent { color: var(--azure-pale); }
+.hero-sub {
+  font-family: var(--font-ja-serif);
+  font-size: clamp(1rem, 2.3vw, 1.28rem);
+  font-weight: 400;
+  color: rgba(255,255,255,0.85);
+  line-height: 1.75;
+  margin-bottom: 1.8rem;
+  padding-left: 1.1rem;
+  border-left: 2px solid rgba(255,255,255,0.3);
+}
+.hero-copy {
+  font-size: 0.94rem;
+  color: rgba(255,255,255,0.68);
+  max-width: 560px;
+  line-height: 1.95;
+}
+/* 右レール */
+.hero-rail { border-left: 1px solid rgba(255,255,255,0.16); padding-left: 1.6rem; }
+.hero-rail-h {
+  font-family: var(--font-en);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 0.9rem;
+}
+.hero-idx { list-style: none; margin-bottom: 2rem; }
+.hero-idx li {
+  display: flex;
+  gap: 0.7rem;
+  align-items: baseline;
+  font-size: 0.8rem;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.62);
+  padding: 0.28rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  transition: color 0.2s;
+}
+.hero-idx li:hover { color: var(--white); }
+.hero-idx .n {
+  font-family: var(--font-en);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--azure-pale);
+  flex: 0 0 auto;
+}
+.hero-speaker { font-size: 0.82rem; line-height: 1.75; color: rgba(255,255,255,0.75); }
+.hero-speaker strong {
+  display: block;
+  font-family: var(--font-ja-serif);
+  font-size: 1.02rem;
+  font-weight: 500;
+  color: var(--white);
+  margin-bottom: 0.25rem;
+}
+.hero-scroll {
+  position: absolute;
+  left: 50%;
+  bottom: 1.6rem;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-en);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  color: rgba(255,255,255,0.4);
+}
+.hero-scroll i { display: block; width: 1px; height: 34px; background: rgba(255,255,255,0.25); position: relative; overflow: hidden; }
+.hero-scroll i::after {
+  content: '';
+  position: absolute; left: 0; top: -34px;
+  width: 1px; height: 34px;
+  background: var(--azure-pale);
+  animation: scrollDot 2s ease-in-out infinite;
+}
+@keyframes scrollDot { 0% { top: -34px; } 60%,100% { top: 34px; } }
+
+/* 表紙は最初から全要素を配置する（アニメーションなし）。
+   スクリーンショット・PDF化・印刷でも確実にテキストが写るようにするため。 */
+.rise { opacity: 1; transform: none; animation: none; }
+@media (prefers-reduced-motion: reduce) {
+  .hero-scroll i::after { animation: none; }
+}
+
+@media (max-width: 900px) {
+  .hero-inner { grid-template-columns: 1fr; gap: 2.5rem; align-items: start; }
+  .hero-rail { border-left: none; border-top: 1px solid rgba(255,255,255,0.16); padding-left: 0; padding-top: 1.5rem; }
+}
+@media (max-width: 640px) {
+  .hero { min-height: auto; padding: 5rem 1.2rem 4.5rem; }
+  .hero-ghost { font-size: 4.2rem; bottom: 2%; right: 4%; }
+  .hero-scroll { display: none; }
+}
+
+/* ----- ステッパー ----- */
+.stepper { display: flex; flex-direction: column; gap: 1.1rem; }
+.step {
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 1.4rem 1.7rem;
+  border-left: 4px solid var(--azure);
+  box-shadow: 0 2px 8px rgba(26,26,46,0.06);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.step:hover { transform: translateY(-3px); box-shadow: 0 10px 26px rgba(26,26,46,0.12); }
+.sec-navy .step {
+  background: rgba(20,29,53,0.78);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-left: 4px solid var(--azure);
+  box-shadow: none;
+}
+.sec-navy .step:hover { box-shadow: 0 10px 26px rgba(0,0,0,0.3); }
+.step-num {
+  flex-shrink: 0;
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: var(--azure);
+  color: var(--white);
+  font-family: var(--font-en);
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 3px;
+}
+.step-body h3 { font-family: var(--font-ja-serif); font-size: 1.05rem; font-weight: 500; margin-bottom: 0.35rem; }
+.step-body p { font-size: 0.885rem; line-height: 1.85; color: var(--muted); }
+.sec-navy .step-body p { color: rgba(255,255,255,0.68); }
+
+/* ----- カードグリッド ----- */
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; }
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 1.5rem 1.6rem;
+  box-shadow: 0 2px 8px rgba(26,26,46,0.07);
+  border-top: 3px solid var(--azure);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.card:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(26,26,46,0.13); }
+.sec-navy .card {
+  background: rgba(20,29,53,0.78);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-top: 3px solid var(--azure-pale);
+  box-shadow: none;
+}
+.sec-navy .card:hover { box-shadow: 0 12px 28px rgba(0,0,0,0.32); }
+.card-icon { width: 34px; height: 34px; margin-bottom: 0.9rem; color: var(--azure); }
+.sec-navy .card-icon { color: var(--azure-pale); }
+.card h3 { font-family: var(--font-ja-serif); font-size: 1rem; font-weight: 500; margin-bottom: 0.5rem; line-height: 1.55; }
+.card p { font-size: 0.865rem; line-height: 1.85; color: var(--muted); }
+.sec-navy .card p { color: rgba(255,255,255,0.68); }
+.card-num {
+  font-family: var(--font-en);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--azure);
+  display: block;
+  margin-bottom: 0.4rem;
+}
+.sec-navy .card-num { color: var(--azure-pale); }
+
+/* ----- VS比較 ----- */
+.vs { display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: center; }
+.vs-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 1.5rem 1.6rem;
+  box-shadow: 0 2px 8px rgba(26,26,46,0.07);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.vs-card:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(26,26,46,0.13); }
+.sec-navy .vs-card { background: rgba(20,29,53,0.78); border: 1px solid rgba(255,255,255,0.08); box-shadow: none; }
+.vs-badge {
+  font-family: var(--font-en);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 3px 9px;
+  border-radius: 4px;
+  display: inline-block;
+  margin-bottom: 0.8rem;
+}
+.vs-badge.pos { background: var(--azure-pale); color: var(--azure); }
+.vs-badge.neg { background: #fde8ea; color: var(--red); }
+.sec-navy .vs-badge.neg { background: rgba(226,55,68,0.2); color: var(--red-bright); }
+.vs-label {
+  display: flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--azure);
+  color: var(--white);
+  font-family: var(--font-en);
+  font-size: 0.78rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin: 0 auto;
+}
+.vs-card h3 { font-family: var(--font-ja-serif); font-size: 1.05rem; font-weight: 500; margin-bottom: 0.5rem; line-height: 1.55; }
+.vs-card p { font-size: 0.865rem; line-height: 1.85; color: var(--muted); }
+.sec-navy .vs-card p { color: rgba(255,255,255,0.68); }
+
+/* ----- 深掘りブロック ----- */
+.deep {
+  background: rgba(20,29,53,0.85);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius);
+  padding: 1.9rem 2.1rem;
+  border-left: 4px solid var(--azure-pale);
+  margin: 1.8rem 0;
+}
+.deep h3 { font-family: var(--font-ja-serif); font-size: 1.12rem; font-weight: 500; margin-bottom: 0.7rem; color: var(--white); }
+.deep p { font-size: 0.895rem; line-height: 1.9; color: rgba(255,255,255,0.78); }
+
+/* ----- 2カラム対比 ----- */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+@media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+.two-col-item h3 {
+  font-family: var(--font-ja-serif);
+  font-size: 1.05rem;
+  font-weight: 500;
+  margin-bottom: 0.6rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 2px solid var(--azure);
+}
+.two-col-item p { font-size: 0.885rem; line-height: 1.9; color: var(--muted); }
+.sec-navy .two-col-item p { color: rgba(255,255,255,0.72); }
+.sec-navy .two-col-item h3 { border-bottom-color: var(--azure-pale); }
+
+/* ----- 図（figure） ----- */
+.figure {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 1.6rem 1.6rem 1.2rem;
+  box-shadow: 0 2px 10px rgba(26,26,46,0.07);
+  margin: 1.8rem 0;
+}
+.sec-navy .figure { background: rgba(20,29,53,0.6); border: 1px solid rgba(255,255,255,0.1); box-shadow: none; }
+.figure svg { width: 100%; height: auto; display: block; }
+.figure-cap {
+  font-size: 0.8rem;
+  line-height: 1.8;
+  color: var(--muted);
+  margin-top: 0.9rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid rgba(46,84,150,0.15);
+}
+.sec-navy .figure-cap { color: rgba(255,255,255,0.6); border-top-color: rgba(255,255,255,0.14); }
+
+/* ----- bare ----- */
+.bare { list-style: none; margin: 1.4rem 0; }
+.bare li { position: relative; padding-left: 1.4rem; margin-bottom: 0.75rem; font-size: 0.92rem; line-height: 1.9; }
+.bare li::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0.72em;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--azure);
+}
+.sec-navy .bare li { color: rgba(255,255,255,0.82); }
+.sec-navy .bare li::before { background: var(--azure-pale); }
+
+/* ----- 数値ハイライト ----- */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.25rem; margin: 1.8rem 0; }
+.stat { background: rgba(20,29,53,0.78); border: 1px solid rgba(255,255,255,0.09); border-radius: var(--radius); padding: 1.4rem 1.5rem; }
+.sec-light .stat { background: var(--white); border: 1px solid rgba(46,84,150,0.14); }
+.stat-num {
+  font-family: var(--font-en);
+  font-size: 2.1rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--azure-pale);
+  display: block;
+  margin-bottom: 0.4rem;
+}
+.sec-light .stat-num { color: var(--azure); }
+.stat-num.hotnum { color: var(--red-bright); }
+.sec-light .stat-num.hotnum { color: var(--red); }
+.stat p { font-size: 0.82rem; line-height: 1.75; color: rgba(255,255,255,0.68); }
+.sec-light .stat p { color: var(--muted); }
+
+/* ----- 注記 ----- */
+.note {
+  font-size: 0.815rem;
+  color: var(--muted);
+  line-height: 1.8;
+  padding: 0.8rem 1.05rem;
+  border-left: 3px solid var(--azure-pale);
+  background: rgba(46,84,150,0.05);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  margin-top: 1.4rem;
+}
+.sec-navy .note { color: rgba(255,255,255,0.62); background: rgba(255,255,255,0.05); border-left-color: rgba(255,255,255,0.3); }
+
+/* ----- まとめ ----- */
+.summary { text-align: center; max-width: 700px; margin: 0 auto; }
+.summary .eyebrow { margin-bottom: 1.5rem; }
+.summary-text {
+  font-family: var(--font-ja-serif);
+  font-size: clamp(1.2rem, 3.2vw, 1.6rem);
+  font-weight: 400;
+  line-height: 1.95;
+  margin-bottom: 1.8rem;
+}
+.summary-note { font-size: 0.9rem; color: rgba(255,255,255,0.65); line-height: 1.9; }
+
+/* ----- おざけんのワンポイント ----- */
+.take {
+  background: rgba(20,29,53,0.9);
+  border-radius: var(--radius);
+  padding: 1.5rem 1.7rem;
+  display: flex;
+  gap: 1.2rem;
+  align-items: flex-start;
+  margin: 2rem 0;
+  border-left: 4px solid var(--red);
+}
+.sec-light .take { background: #fff8f8; border-left: 4px solid var(--red); box-shadow: 0 2px 8px rgba(226,55,68,0.07); }
+.take-avatar {
+  flex-shrink: 0;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--azure);
+  color: var(--white);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-en);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.take-label {
+  font-family: var(--font-en);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--red-bright);
+  margin-bottom: 3px;
+}
+.sec-light .take-label { color: var(--red); }
+.take-author { font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem; }
+.sec-light .take-author { color: var(--muted); }
+.take-text { font-size: 0.9rem; line-height: 1.9; color: rgba(255,255,255,0.88); }
+.sec-light .take-text { color: var(--ink); }
+.hot { color: var(--red-bright); font-weight: 700; }
+.sec-light .hot { color: var(--red); }
+
+/* ----- フッター ----- */
+footer {
+  background: var(--navy-deep);
+  padding: 3.5rem 1.5rem;
+  color: rgba(255,255,255,0.55);
+  font-size: 0.82rem;
+  line-height: 1.9;
+}
+footer .inner { max-width: var(--max-w); }
+footer h3 { font-family: var(--font-ja-serif); font-size: 1rem; font-weight: 500; color: var(--white); margin-bottom: 0.7rem; }
+footer .copy { margin-top: 2rem; padding-top: 1.2rem; border-top: 1px solid rgba(255,255,255,0.12); font-size: 0.75rem; color: rgba(255,255,255,0.35); }
+
+/* ----- ユーティリティ ----- */
+.text-azure { color: var(--azure); }
+.sec-navy .text-azure { color: var(--azure-pale); }
+.fw-bold { font-weight: 700; }
+.font-serif { font-family: var(--font-ja-serif); }
+.mt-lg { margin-top: 2.4rem; }
+
+/* ----- 印刷・PDF出力 ----- */
+@media print {
+  .js-reveal [data-reveal], [data-reveal], .rise { opacity: 1 !important; transform: none !important; }
+  #progress, .hero-scroll { display: none; }
+  .hero { min-height: auto; }
+  section { break-inside: avoid; }
+}
+
+/* ----- レスポンシブ ----- */
+@media (max-width: 640px) {
+  :root { --sec-pad: 3.8rem 1rem; }
+  .vs { grid-template-columns: 1fr; }
+  .vs-label { display: none; }
+  .kicker-num { font-size: 2rem; }
+  .take { flex-direction: column; gap: 0.9rem; }
+}
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<!-- =============================================
+  HERO（表紙）
+  ============================================= -->
+<section class="hero">
+  <div class="hero-ghost">CX<br>HUB</div>
+  <div class="hero-inner">
+
+    <div>
+      <div class="hero-rule rise d1">
+        <span></span>
+        <span class="hero-tag">Keynote &nbsp;/&nbsp; Voice AI &times; Customer Experience</span>
+      </div>
+      <h1 class="hero-title rise d2">
+        「記録されない現場」<br>の<span class="accent">終わり</span>
+      </h1>
+      <p class="hero-sub rise d3">
+        AI音声が拓く、現場コミュニケーションDXの新時代<br>
+        ― 分断された顧客体験を、CX HUBへ統合する
+      </p>
+      <p class="hero-copy rise d4">
+        営業・接客・コールセンターの会話は、これまで記録に残らず活用しづらい「眠れる資産」でした。
+        AI音声技術はこれをデータに変え、業務改善から不正防止、カスハラ対策までを支えます。
+        しかし本当の論点はその先にあります。バラバラに効率化しても、顧客体験は良くならない。
+        本講演では、会話データを軸に部門の分断をつなぎ直す「CX HUB」という考え方を提示します。
+      </p>
+    </div>
+
+    <aside class="hero-rail rise d5">
+      <div class="hero-rail-h">Contents</div>
+      <ul class="hero-idx">
+        <li><span class="n">01</span><a href="#s01">形だけのVOC、3つの罠</a></li>
+        <li><span class="n">02</span><a href="#s02">記録されない現場</a></li>
+        <li><span class="n">03</span><a href="#s03">本質は精度でなく「全量」</a></li>
+        <li><span class="n">04</span><a href="#s04">バラバラのAIは体験を変えない</a></li>
+        <li><span class="n">05</span><a href="#s05">CX HUBという解</a></li>
+        <li><span class="n">06</span><a href="#s06">CX HUBのつくり方</a></li>
+        <li><span class="n">07</span><a href="#s07">なぜ、いまなのか</a></li>
+      </ul>
+      <div class="hero-speaker">
+        <strong>小澤健祐（おざけん）</strong>
+        一般社団法人AICX協会 代表理事<br>
+        Cynthialy CCO ／ 経産省WG委員<br>
+        著書『生成AI導入の教科書』『AIエージェントの教科書』
+      </div>
+    </aside>
+
+  </div>
+  <div class="hero-scroll"><span>SCROLL</span><i></i></div>
+</section>
+
+<!-- =============================================
+  01（ライト）形だけのVOC
+  ============================================= -->
+<section class="sec-light" id="s01">
+  <div class="inner" data-reveal>
+    <div class="kicker">
+      <span class="kicker-num">01</span>
+      <span class="kicker-line"></span>
+      <span class="eyebrow">Hollow VOC</span>
+    </div>
+    <h2 class="sec-title">「VOCがある」と「顧客の声が届いている」は、<br>まったく別のことだ</h2>
+    <p class="sec-sub">多くの企業にVOC活動はある。だが、それが経営や商品の意思決定を実際に変えた回数を数えると、たいていゼロに近い。</p>
+
+    <p class="lead">
+      VOC（Voice of Customer）が形だけになるのは、担当者の努力不足ではありません。
+      いまのVOCが立っている前提そのものに、構造的な穴が3つあるからです。
+    </p>
+
+    <div class="cards">
+      <div class="card">
+        <span class="card-num">TRAP 01</span>
+        <h3>サンプリングの罠</h3>
+        <p>アンケートに答えてくれる顧客の声しか集まらない。本当に知るべき「何も言わずに離れていった顧客」の声は、構造上ぜったいに入ってこない。</p>
+      </div>
+      <div class="card">
+        <span class="card-num">TRAP 02</span>
+        <h3>集計の罠</h3>
+        <p>スコアにした瞬間に理由が消える。NPSが3ポイント下がったことは分かっても、「どの会話の、どの一言で下がったのか」は永遠に分からない。</p>
+      </div>
+      <div class="card">
+        <span class="card-num">TRAP 03</span>
+        <h3>所有の罠</h3>
+        <p>VOCが部署の資産になる。マーケのVOC、営業のVOC、CSのVOCが別々に存在し、フォーマットも定義も違うため、決して統合されない。</p>
+      </div>
+    </div>
+
+    <p class="body-text mt-lg">
+      3つに共通するのは、<span class="fw-bold text-azure">VOCが「わざわざ集めに行く活動」として設計されている</span>ことです。
+      集めに行く以上、範囲・粒度・タイミングには必ず限界がある。限界のあるデータは、経営が意思決定の根拠にするには弱すぎる。
+      だから使われない。だから形だけになる。
+      そして最後の「所有の罠」こそが、本日の主題である<span class="fw-bold text-azure">顧客体験の分断</span>の入口になっています。
+    </p>
+  </div>
+</section>
+
+<!-- =============================================
+  02（ネイビー）記録されない現場
+  ============================================= -->
+<section class="sec-navy" id="s02">
+  <div class="inner" data-reveal>
+    <div class="kicker">
+      <span class="kicker-num">02</span>
+      <span class="kicker-line"></span>
+      <span class="eyebrow">Vanishing Conversations</span>
+    </div>
+    <h2 class="sec-title">企業で最も価値の高いデータは、<br>いまも「音のまま」消えている</h2>
+    <p class="sec-sub">商談、店頭での接客、電話。顧客が最も本音を出す場所は、そのほとんどが記録されていない。</p>
+
+    <p class="body-text">
+      顧客と企業のあいだで交わされる情報量を思い浮かべてください。
+      メール、チャット、フォーム、アンケート。これらはすでにテキストとして残り、検索も分析もできます。
+      しかし総量で見れば、これらは氷山の一角です。圧倒的な情報量は、いまも<span class="fw-bold">音声</span>で交わされている。
+    </p>
+
+    <div class="figure" data-reveal>
+      <svg viewBox="0 0 720 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="顧客との会話の総量に対して、記録として残るもの、経営に届くものが段階的に減っていくことを示すファネル図">
+        <rect x="40" y="46" width="640" height="50" rx="4" fill="rgba(216,228,240,0.16)" stroke="#d8e4f0" stroke-width="1.4"/>
+        <text x="360" y="77" text-anchor="middle" font-family="'Zen Kaku Gothic New', sans-serif" font-size="14" fill="#ffffff">顧客と交わされる会話の総量（商談・接客・電話）</text>
+        <path d="M40 96 L680 96 L505 140 L215 140 Z" fill="rgba(255,255,255,0.06)"/>
+        <rect x="215" y="140" width="290" height="50" rx="4" fill="#2e5496" stroke="#d8e4f0" stroke-width="1.2"/>
+        <text x="360" y="171" text-anchor="middle" font-family="'Zen Kaku Gothic New', sans-serif" font-size="13" fill="#ffffff">記録・構造化されて残るもの</text>
+        <path d="M215 190 L505 190 L405 234 L315 234 Z" fill="rgba(255,255,255,0.06)"/>
+        <rect x="315" y="234" width="90" height="42" rx="4" fill="#ff5d6a"/>
+        <text x="360" y="261" text-anchor="middle" font-family="'Zen Kaku Gothic New', sans-serif" font-size="12" fill="#ffffff">VOC</text>
+        <line x1="405" y1="255" x2="520" y2="255" stroke="rgba(255,255,255,0.35)" stroke-width="1" stroke-dasharray="3 3"/>
+        <text x="528" y="251" font-family="'Zen Kaku Gothic New', sans-serif" font-size="12" fill="rgba(255,255,255,0.85)">経営の意思決定に</text>
+        <text x="528" y="268" font-family="'Zen Kaku Gothic New', sans-serif" font-size="12" fill="rgba(255,255,255,0.85)">実際に届くもの</text>
+        <text x="40" y="30" font-family="'Hanken Grotesk', sans-serif" font-size="11" font-weight="600" letter-spacing="0.1em" fill="rgba(255,255,255,0.45)">VOLUME OF CUSTOMER CONVERSATION</text>
+      </svg>
+      <p class="figure-cap">概念図。顧客と交わされた会話のうち、構造化されたデータとして残るのは一部にすぎず、さらにそのうち経営の意思決定に届くのはごく一部にとどまる。VOCの「量」ではなく、この落差そのものが課題である。</p>
+    </div>
+
+    <div class="deep">
+      <h3>記録されないことの、本当のコスト</h3>
+      <p>
+        記録がないと、失注理由は「価格」で片付きます。現場の判断は検証できず、育成は背中を見せる方式に戻ります。
+        クレームは「言った・言わない」になり、従業員を守る証跡も残りません。
+        つまり記録の欠落は、マーケティング精度・人材育成・法務リスクという、性質のまったく異なる3つの損失を同時に生み続けている。
+        どれも単体では「その部署の課題」に見えるため、経営課題として束ねられないまま放置されてきました。
+      </p>
+    </div>
+
+    <div class="take">
+      <div class="take-avatar">OK</div>
+      <div class="take-body">
+        <div class="take-label">Ozaken's One Point</div>
+        <div class="take-author">小澤健祐（おざけん）</div>
+        <p class="take-text">
+          「VOCはやっています」と答える企業の実態を聞いていくと、その多くが年1〜2回のアンケートです。
+          でも顧客が本音を漏らすのは、自由記述欄ではなく、断られた商談の最後の30秒や、電話を切る直前のひと言のほうです。
+          そこが録れていない限り、VOCはいつまでも<span class="hot">建前の集計</span>で終わります。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+  03（ライト）全量化
+  ============================================= -->
+<section class="sec-light" id="s03">
+  <div class="inner" data-reveal>
+    <div class="kicker">
+      <span class="kicker-num">03</span>
+      <span class="kicker-line"></span>
+      <span class="eyebrow">From Sample to Total</span>
+    </div>
+    <h2 class="sec-title">AI音声の本質は「精度」ではない。<br>会話が“全量”になったことだ</h2>
+    <p class="sec-sub">認識精度の話は、もう主戦場ではない。変わったのは、記録が例外ではなく既定になったという一点。</p>
+
+    <div class="vs">
+      <div class="vs-card">
+        <span class="vs-badge neg">これまで</span>
+        <h3>サンプリング型のVOC</h3>
+        <p>一部の会話を、事後に、人手で拾う。記録は「特別なとき」に行う例外的な作業。母数が小さいため、示唆はいつも「感覚の裏づけ」止まりになる。</p>
+      </div>
+      <div class="vs-label">vs</div>
+      <div class="vs-card">
+        <span class="vs-badge pos">これから</span>
+        <h3>全量型のコミュニケーションデータ</h3>
+        <p>すべての会話が既定でデータになる。記録しないことのほうが例外になる。母数が全量になった瞬間、比較・傾向・異常検知という別次元の分析が成立する。</p>
+      </div>
+    </div>
+
+    <p class="body-text mt-lg">この転換を可能にしたのは単一のブレイクスルーではなく、3つの変化が同時に起きたことです。</p>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">
+          <svg width="34" height="34" viewBox="0 0 36 36" fill="none">
+            <path d="M6 18h3M13 11v14M19 7v22M25 12v12M31 18h-3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3>精度が業務水準に乗った</h3>
+        <p>専門用語、電話回線の音質、複数話者の重なり。これまで実務導入を阻んできた条件下でも、実用に耐える水準に到達した。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">
+          <svg width="34" height="34" viewBox="0 0 36 36" fill="none">
+            <path d="M8 26V14M14 26V19M20 26V11M26 26V22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M6 30h24" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3>コストが桁で下がった</h3>
+        <p>「重要な商談だけ」ではなく「全通話・全商談」を回しても成立する単価になった。全量化は技術問題ではなく、単価の問題だった。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">
+          <svg width="34" height="34" viewBox="0 0 36 36" fill="none">
+            <path d="M20 6l-8 14h8l-4 10 12-16h-8z" fill="currentColor" opacity="0.9"/>
+          </svg>
+        </div>
+        <h3>リアルタイムになった</h3>
+        <p>事後分析だけでなく、会話の最中に介入できる。「振り返りの材料」から「その場で効く支援」へ、価値の出どころが移った。</p>
+      </div>
+    </div>
+
+    <p class="note">
+      ※ 本資料では、音声認識・話者分離・要約・分析までを含む一連の技術群を総称して「AI音声技術」と表記しています。
+    </p>
+  </div>
+</section>
+
+<!-- =============================================
+  04（ネイビー）バラバラのAIエージェント
+  ============================================= -->
+<section class="sec-navy" id="s04">
+  <div class="inner" data-reveal>
+    <div class="kicker">
+      <span class="kicker-num">04</span>
+      <span class="kicker-line"></span>
+      <span class="eyebrow">The Local Optimum Trap</span>
+    </div>
+    <h2 class="sec-title">AIエージェントをバラバラに入れても、<br>顧客体験は最大化しない</h2>
+    <p class="sec-sub">いま多くの企業で起きているのは、部門ごとのAI導入競争です。マーケは制作を、営業は議事録を、CSは一次応答を自動化する。それぞれ確かに速くなる。</p>
+
+    <p class="body-text">
+      問題は、その効率化が<span class="fw-bold">すべて部門の内側で完結している</span>ことです。
+      顧客体験が壊れるのは部門の内側ではなく、部門と部門のあいだ、つまり「継ぎ目」です。
+      そして継ぎ目は、組織図上、誰の担当でもありません。誰の担当でもない場所は、どんなに各部門が最適化しても改善されない。
+    </p>
+
+    <div class="figure" data-reveal>
+      <svg viewBox="0 0 720 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="顧客ジャーニーの各区間はAIで高速化される一方、区間と区間の継ぎ目では文脈が渡らず断絶していることを示す図">
+        <text x="20" y="26" font-family="'Hanken Grotesk', sans-serif" font-size="11" font-weight="600" letter-spacing="0.1em" fill="rgba(255,255,255,0.45)">THE SEAMS</text>
+        <text x="700" y="26" text-anchor="end" font-family="'Zen Kaku Gothic New', sans-serif" font-size="11" fill="rgba(255,255,255,0.6)">各区間はAIで高速化される</text>
+
+        <!-- 高速化矢印 -->
+        <path d="M60 68 L168 68 M224 68 L332 68 M388 68 L496 68 M552 68 L660 68" stroke="#d8e4f0" stroke-width="2" opacity="0.65"/>
+        <path d="M168 68 l-8 -4 l0 8 z M332 68 l-8 -4 l0 8 z M496 68 l-8 -4 l0 8 z M660 68 l-8 -4 l0 8 z" fill="#d8e4f0" opacity="0.8"/>
+
+        <!-- 区間 -->
+        <rect x="40" y="88" width="148" height="44" rx="4" fill="#2e5496" stroke="#d8e4f0" stroke-width="1"/>
+        <text x="114" y="108" text-anchor="middle" font-family="'Zen Kaku Gothic New', sans-serif" font-size="12" fill="#ffffff">マーケティング</text>
+        <text x="114" y="124" text-anchor="middle" font-family="'Hanken Grotesk', sans-serif" font-size="9.5" fill="#d8e4f0">AWARENESS</text>
+
+        <rect x="204" y="88" width="148" height="44" rx="4" fill="#2e5496" stroke="#d8e4f0" stroke-width="1"/>
+        <text x="278" y="108" text-anchor="middle" font-family="'Zen Kaku Gothic New', sans-serif" font-size="12" fill="#ffffff">営業・商談</text>
+        <text x="278" y="124" text-anchor="middle" font-family="'Hanken Grotesk', sans-serif" font-size="9.5" fill="#d8e4f0">CONSIDERATION</text>
+
+        <rect x="368" y="88" width="148" height="44" rx="4" fill="#2e5496" stroke="#d8e4f0" stroke-width="1"/>
+        <text x="442" y="108" text-anchor="middle" font-family="'Zen Kaku Gothic New', sans-serif" font-size="12" fill="#ffffff">契約・導入</text>
+        <text x="442" y="124" text-anchor="middle" font-family="'Hanken Grotesk', sans-serif" font-size="9.5" fill="#d8e4f0">ONBOARDING</text>
+
+        <rect x="532" y="88" width="148" height="44" rx="4" fill="#2e5496" stroke="#d8e4f0" stroke-width="1"/>
+        <text x="606" y="108" text-anchor="middle" font-family="'Zen Kaku Gothic New', sans-serif" font-size="12" fill="#ffffff">利用・問い合わせ</text>
+        <text x="606" y="124" text-anchor="middle" font-family="'Hanken Grotesk', sans-serif" font-size="9.5" fill="#d8e4f0">SUPPORT</text>
+
+        <!-- 継ぎ目の断絶 -->
+        <path d="M196 80 L196 140 M360 80 L360 140 M524 80 L524 140" stroke="#ff5d6a" stroke-width="1.4" stroke-dasharray="4 3"/>
+        <path d="M191 105 l10 10 M201 105 l-10 10" stroke="#ff5d6a" stroke-width="1.6"/>
+        <path d="M355 105 l10 10 M365 105 l-10 10" stroke="#ff5d6a" stroke-width="1.6"/>
+        <path d="M519 105 l10 10 M529 105 l-10 10" stroke="#ff5d6a" stroke-width="1.6"/>
+        <text x="360" y="160" text-anchor="middle" font-family="'Zen Kaku Gothic New', sans-serif" font-size="12" fill="#ff5d6a">継ぎ目では文脈が渡らない ― ここは、どの部門の担当でもない</text>
+
+        <!-- 顧客の一本線 -->
+        <path d="M40 196 L672 196" stroke="rgba(255,255,255,0.75)" stroke-width="1.6"/>
+        <path d="M672 196 l-9 -4.5 l0 9 z" fill="rgba(255,255,255,0.85)"/>
+        <circle cx="40" cy="196" r="5" fill="#ffffff"/>
+        <text x="360" y="224" text-anchor="middle" font-family="'Shippori Mincho B1', serif" font-size="14" fill="#ffffff">顧客は、この4区間を「ひとつの体験」として記憶する</text>
+      </svg>
+      <p class="figure-cap">部門ごとのAI導入は、上段の矢印（区間内の速度）を伸ばす。しかし顧客が体験の悪さを感じるのは、赤い破線の位置、つまり区間と区間のあいだである。ここを埋めない限り、体験の総和は変わらない。</p>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <span class="card-num">SIDE EFFECT 01</span>
+        <h3>断絶が“高速化”する</h3>
+        <p>人が担当していた頃は、気を利かせて越境する余地があった。自動化するとその余地が消える。部分最適のAIは、分断をより速く、より正確に再生産する。</p>
+      </div>
+      <div class="card">
+        <span class="card-num">SIDE EFFECT 02</span>
+        <h3>文脈が部門ごとに分岐する</h3>
+        <p>エージェントはそれぞれ自分の部門のデータで動く。結果、同じ顧客について営業のAIとCSのAIが違う前提を持つ。分岐した文脈は、放っておくと戻らない。</p>
+      </div>
+      <div class="card">
+        <span class="card-num">SIDE EFFECT 03</span>
+        <h3>成果報告とCSATが逆行する</h3>
+        <p>各部門は「処理時間◯％削減」を報告できる。しかし顧客満足は動かない。全部門が成功報告をしているのに体験が良くならない、という奇妙な状態が生まれる。</p>
+      </div>
+    </div>
+
+    <div class="deep">
+      <h3>「AIエージェントを何体入れたか」は、KPIにならない</h3>
+      <p>
+        導入数を進捗指標にすると、部門は独立して導入を進めるのが最短になります。
+        するとエージェントが増えるほど、文脈の分岐点も増えていく。これは効率化の失敗ではなく、
+        <span class="fw-bold">効率化の単位を部門に置いたこと</span>の必然的な帰結です。
+        効率化そのものを否定する必要はありません。問うべきは順番です。
+        文脈を共有する土台を先に置いてから自動化するのか、自動化してから統合を試みるのか。
+        後者を選んだ企業が、数年後に「AI統合プロジェクト」という二度目の投資を強いられています。
+      </p>
+    </div>
+
+    <div class="take">
+      <div class="take-avatar">OK</div>
+      <div class="take-body">
+        <div class="take-label">Ozaken's One Point</div>
+        <div class="take-author">小澤健祐（おざけん）</div>
+        <p class="take-text">
+          AIエージェントの導入体数を役員会で報告している企業をよく見かけますが、あの指標は危険です。
+          体数が増えるほど、顧客の文脈が分岐する地点も増えるからです。
+          数えるべきは導入数ではなく、<span class="hot">共有された文脈</span>がいくつの部門にまたがっているか。
+          増やすべきはエージェントではなく、その範囲のほうです。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+  05（ライト）CX HUB
+  ============================================= -->
+<section class="sec-light alt" id="s05">
+  <div class="inner" data-reveal>
+    <div class="kicker">
+      <span class="kicker-num">05</span>
+      <span class="kicker-line"></span>
+      <span class="eyebrow">CX Hub</span>
+    </div>
+    <h2 class="sec-title">分断をつなぎ直す一点は、<br>組織再編ではなく「CX HUB」だ</h2>
+    <p class="sec-sub">顧客は、ひとつの会社と付き合っているつもりでいる。しかし企業の側は、4つの別々の窓口として顧客に接している。</p>
+
+    <p class="lead">
+      CX HUBとは、部門を横断して顧客との会話と文脈を集約し、<br>
+      人にもAIエージェントにも同じ文脈を供給する共通層のことです。
+    </p>
+
+    <div class="figure" data-reveal>
+      <svg viewBox="0 0 720 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="左：部門ごとに別々のVOCを持ち分断されている状態。右：共通のCX HUB層の上に各部門とAIエージェントが乗り、文脈を共有している状態。">
+        <!-- Panel A -->
+        <text x="15" y="20" font-family="'Hanken Grotesk', sans-serif" font-size="11" font-weight="700" letter-spacing="0.1em" fill="#6b7a99">BEFORE</text>
+        <circle cx="170" cy="52" r="22" fill="#ffffff" stroke="#2e5496" stroke-width="1.6"/>
+        <text x="170" y="57" text-anchor="middle" font-family="'Zen Kaku Gothic New', sans-serif" font-size="12" fill="#1a1a2e">顧客</text>
+        <path d="M170 74 L50 104 M170 74 L130 104 M170 74 L210 104 M170 74 L290 104" stroke="#6b7a99" stroke-width="1" opacity="0.6"/>
+        <rect x="15" y="104" width="70" height="32" rx="4" fill="#ffffff" stroke="#2e5496" stroke-width="1.2"/>
+        <text x="50" y="124" text-anchor="middle" font-family="'Zen Kaku Gothic New', sans-serif" font-size="11" fill="#1a1a2e">マーケ</text>
+        <rect x="95" y="104" width="70" height="32" rx="4" fill="#ffffff" stroke="#2e5496" stroke-width="1.2"/>
+        <text x="130" y="124" text-anchor="middle" font-family="'Zen Kaku Gothic New', sans-serif" font-size="11" fill="#1a1a2e">営業</text>
+        <rect x="175" y="104" width="70" height="32" rx="4" fill="#ffffff" stroke="#2e5496" stroke-width="1.2"/>
+        <text x="210" y="124" text-anchor="middle" font-family="'Zen Kaku Gothic New', sans-serif" font-size="11" fill="#1a1a2e">CS</text>
+        <rect x="255" y="104" width="70" height="32" rx="4" fill="#ffffff" stroke="#2e5496" stroke-width="1.2"/>
+        <text x="290" y="124" text-anchor="middle" font-family="'Zen Kaku Gothic New', sans-serif" font-size="11" fill="#1a1a2e">店舗</text>
+        <rect x="15" y="158" width="70" height="28" rx="3" fill="#eef2f7" stroke="#6b7a99" stroke-width="1" stroke-dasharray="3 2"/>
+        <text x="50" y="176" text-anchor="middle" font-family="'Hanken Grotesk', sans-serif" font-size="10" font-weight="600" fill="#6b7a99">AI + VOC</text>
+        <rect x="95" y="158" width="70" height="28" rx="3" fill="#eef2f7" stroke="#6b7a99" stroke-width="1" stroke-dasharray="3 2"/>
+        <text x="130" y="176" text-anchor="middle" font-family="'Hanken Grotesk', sans-serif" font-size="10" font-weight="600" fill="#6b7a99">AI + VOC</text>
+        <rect x="175" y="158" width="70" height="28" rx="3" fill="#eef2f7" stroke="#6b7a99" stroke-width="1" stroke-dasharray="3 2"/>
+        <text x="210" y="176" text-anchor="middle" font-family="'Hanken Grotesk', sans-serif" font-size="10" font-weight="600" fill="#6b7a99">AI + VOC</text>
+        <rect x="255" y="158" width="70" height="28" rx="3" fill="#eef2f7" stroke="#6b7a99" stroke-width="1" stroke-dasharray="3 2"/>
+        <text x="290" y="176" text-anchor="middle" font-family="'Hanken Grotesk', sans-serif" font-size="10" font-weight="600" fill="#6b7a99">AI + VOC</text>
+        <path d="M50 136 L50 158 M130 136 L130 158 M210 136 L210 158 M290 136 L290 158" stroke="#6b7a99" stroke-width="1"/>
+        <path d="M85 172 L95 172 M165 172 L175 172 M245 172 L255 172" stroke="#e23744" stroke-width="1.4" stroke-dasharray="2 2"/>
+        <path d="M86 168 l8 8 M94 168 l-8 8" stroke="#e23744" stroke-width="1.4"/>
+        <path d="M166 168 l8 8 M174 168 l-8 8" stroke="#e23744" stroke-width="1.4"/>
+        <path d="M246 168 l8 8 M254 168 l-8 8" stroke="#e23744" stroke-width="1.4"/>
+        <text x="170" y="216" text-anchor="middle" font-family="'Shippori Mincho B1', serif" font-size="14" fill="#1a1a2e">部門ごとに、別々の顧客像を持つ</text>
+        <text x="170" y="240" text-anchor="middle" font-family="'Zen Kaku Gothic New', sans-serif" font-size="11" fill="#6b7a99">同じ顧客に、4回同じ説明をさせている</text>
+
+        <path d="M360 20 L360 250" stroke="#6b7a99" stroke-width="1" stroke-dasharray="4 4" opacity="0.5"/>
+
+        <!-- Panel B -->
+        <text x="395" y="20" font-family="'Hanken Grotesk', sans-serif" font-size="11" font-weight="700" letter-spacing="0.1em" fill="#2e5496">AFTER — CX HUB</text>
+        <circle cx="550" cy="52" r="22" fill="#2e5496"/>
+        <text x="550" y="57" text-anchor="middle" font-family="'Zen Kaku Gothic New', sans-serif" font-size="12" fill="#ffffff">顧客</text>
+        <path d="M550 74 L430 104 M550 74 L510 104 M550 74 L590 104 M550 74 L670 104" stroke="#2e5496" stroke-width="1" opacity="0.7"/>
+        <rect x="395" y="104" width="70" height="32" rx="4" fill="#ffffff" stroke="#2e5496" stroke-width="1.2"/>
+        <text x="430" y="124" text-anchor="middle" font-family="'Zen Kaku Gothic New', sans-serif" font-size="11" fill="#1a1a2e">マーケ</text>
+        <rect x="475" y="104" width="70" height="32" rx="4" fill="#ffffff" stroke="#2e5496" stroke-width="1.2"/>
+        <text x="510" y="124" text-anchor="middle" font-family="'Zen Kaku Gothic New', sans-serif" font-size="11" fill="#1a1a2e">営業</text>
+        <rect x="555" y="104" width="70" height="32" rx="4" fill="#ffffff" stroke="#2e5496" stroke-width="1.2"/>
+        <text x="590" y="124" text-anchor="middle" font-family="'Zen Kaku Gothic New', sans-serif" font-size="11" fill="#1a1a2e">CS</text>
+        <rect x="635" y="104" width="70" height="32" rx="4" fill="#ffffff" stroke="#2e5496" stroke-width="1.2"/>
+        <text x="670" y="124" text-anchor="middle" font-family="'Zen Kaku Gothic New', sans-serif" font-size="11" fill="#1a1a2e">店舗</text>
+        <path d="M430 136 L430 156 M510 136 L510 156 M590 136 L590 156 M670 136 L670 156" stroke="#2e5496" stroke-width="1.4"/>
+        <path d="M427 152 l3 5 l3 -5 M507 152 l3 5 l3 -5 M587 152 l3 5 l3 -5 M667 152 l3 5 l3 -5" fill="#2e5496"/>
+        <rect x="395" y="158" width="310" height="42" rx="5" fill="#2e5496"/>
+        <text x="550" y="177" text-anchor="middle" font-family="'Hanken Grotesk', sans-serif" font-size="13" font-weight="700" letter-spacing="0.12em" fill="#ffffff">CX HUB</text>
+        <text x="550" y="192" text-anchor="middle" font-family="'Zen Kaku Gothic New', sans-serif" font-size="10.5" fill="#d8e4f0">会話データ／共通の文脈／AIエージェント基盤</text>
+        <text x="550" y="216" text-anchor="middle" font-family="'Shippori Mincho B1', serif" font-size="14" fill="#1a1a2e">全部門とAIが、ひとつの文脈を共有する</text>
+        <text x="550" y="240" text-anchor="middle" font-family="'Zen Kaku Gothic New', sans-serif" font-size="11" fill="#6b7a99">説明は一度きり。続きから会話が始まる</text>
+      </svg>
+      <p class="figure-cap">左右の違いは、AIの有無ではありません。左にもAIはある。違うのは、そのAIが部門の持ち物か、共通層の上に乗っているか。分断の正体は「データがないこと」ではなく「データの持ち主が部門であること」だ。</p>
+    </div>
+
+    <p class="body-text mt-lg">CX HUBが担う機能は、次の3つに整理できます。</p>
+
+    <div class="cards">
+      <div class="card">
+        <span class="card-num">FUNCTION 01</span>
+        <h3>収集：会話を部門の所有物にしない</h3>
+        <p>電話・商談・店頭・チャットの会話を、発生した部門の資産ではなく全社の共通資産として集める。ここを部門ごとの契約・部門ごとのツールで進めると、その時点で統合の芽が絶たれる。</p>
+      </div>
+      <div class="card">
+        <span class="card-num">FUNCTION 02</span>
+        <h3>文脈化：顧客ごとの一本の線に束ね直す</h3>
+        <p>チャネル別・案件別に散った記録を、「この顧客に何が起きているか」という連続した一本の文脈に組み直す。要約の量産ではなく、時系列の再構成がここでの仕事になる。</p>
+      </div>
+      <div class="card">
+        <span class="card-num">FUNCTION 03</span>
+        <h3>供給：人とAIの両方に、その場で渡す</h3>
+        <p>文脈をレポートとして配るのではなく、判断が起きる瞬間に供給する。人には画面上で、AIエージェントには実行時のコンテキストとして。ここまで到達して初めてHUBと呼べる。</p>
+      </div>
+    </div>
+
+    <div class="two-col mt-lg">
+      <div class="two-col-item">
+        <h3>CX HUBは、新設部署のことではない</h3>
+        <p>「CX統括部をつくる」という話に変換された瞬間、この構想は数年単位で止まります。必要なのは箱ではなく機能です。既存のどこかが、この3機能を引き受ければいい。</p>
+      </div>
+      <div class="two-col-item">
+        <h3>最も近い位置にいるのは、コンタクトセンター</h3>
+        <p>顧客との対話データが最も豊富で、業務フローが明確で、AI活用の試行錯誤を誰よりも積んできた。コストセンターと呼ばれてきた組織が、体験の司令塔に転じる余地はここにあります。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+  06（ネイビー）つくり方
+  ============================================= -->
+<section class="sec-navy" id="s06">
+  <div class="inner" data-reveal>
+    <div class="kicker">
+      <span class="kicker-num">06</span>
+      <span class="kicker-line"></span>
+      <span class="eyebrow">Building the Hub</span>
+    </div>
+    <h2 class="sec-title">CX HUBは、大規模統合からは生まれない<br>― 5つのステップ</h2>
+    <p class="sec-sub">全社データ統合プロジェクトとして起案すると、まず通らない。通っても、成果が出る前に予算が尽きる。</p>
+
+    <div class="figure" data-reveal>
+      <svg viewBox="0 0 720 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="会話・構造化・文脈化・行動の4段階が循環し、行動の変化が次の会話を変えるループ図">
+        <circle cx="90" cy="80" r="36" fill="rgba(216,228,240,0.14)" stroke="#d8e4f0" stroke-width="1.4"/>
+        <text x="90" y="86" text-anchor="middle" font-family="'Shippori Mincho B1', serif" font-size="16" fill="#ffffff">会話</text>
+        <circle cx="270" cy="80" r="36" fill="rgba(216,228,240,0.14)" stroke="#d8e4f0" stroke-width="1.4"/>
+        <text x="270" y="86" text-anchor="middle" font-family="'Shippori Mincho B1', serif" font-size="16" fill="#ffffff">構造化</text>
+        <circle cx="450" cy="80" r="36" fill="rgba(216,228,240,0.14)" stroke="#d8e4f0" stroke-width="1.4"/>
+        <text x="450" y="86" text-anchor="middle" font-family="'Shippori Mincho B1', serif" font-size="16" fill="#ffffff">文脈化</text>
+        <circle cx="630" cy="80" r="36" fill="#ff5d6a"/>
+        <text x="630" y="86" text-anchor="middle" font-family="'Shippori Mincho B1', serif" font-size="16" fill="#ffffff">行動</text>
+        <path d="M126 80 L228 80" stroke="rgba(255,255,255,0.5)" stroke-width="1.4"/>
+        <path d="M228 80 l-8 -4 l0 8 z" fill="rgba(255,255,255,0.6)"/>
+        <path d="M306 80 L408 80" stroke="rgba(255,255,255,0.5)" stroke-width="1.4"/>
+        <path d="M408 80 l-8 -4 l0 8 z" fill="rgba(255,255,255,0.6)"/>
+        <path d="M486 80 L588 80" stroke="rgba(255,255,255,0.5)" stroke-width="1.4"/>
+        <path d="M588 80 l-8 -4 l0 8 z" fill="rgba(255,255,255,0.6)"/>
+        <text x="90" y="140" text-anchor="middle" font-family="'Zen Kaku Gothic New', sans-serif" font-size="11" fill="rgba(255,255,255,0.7)">全量で録る</text>
+        <text x="270" y="140" text-anchor="middle" font-family="'Zen Kaku Gothic New', sans-serif" font-size="11" fill="rgba(255,255,255,0.7)">要約・タグ付け</text>
+        <text x="450" y="140" text-anchor="middle" font-family="'Zen Kaku Gothic New', sans-serif" font-size="11" fill="rgba(255,255,255,0.7)">意思決定の単位に翻訳</text>
+        <text x="630" y="140" text-anchor="middle" font-family="'Zen Kaku Gothic New', sans-serif" font-size="11" fill="rgba(255,255,255,0.7)">人とAIが動く</text>
+        <path d="M630 120 C630 200, 90 200, 90 120" stroke="rgba(255,255,255,0.4)" stroke-width="1.4" stroke-dasharray="5 4" fill="none"/>
+        <path d="M90 120 l-4 10 l8 0 z" fill="rgba(255,255,255,0.55)"/>
+        <text x="360" y="212" text-anchor="middle" font-family="'Zen Kaku Gothic New', sans-serif" font-size="12" fill="rgba(255,255,255,0.75)">行動が変われば、次の会話の中身が変わる ― ここが回って初めて「HUB」になる</text>
+        <text x="20" y="24" font-family="'Hanken Grotesk', sans-serif" font-size="11" font-weight="600" letter-spacing="0.1em" fill="rgba(255,255,255,0.45)">THE CX LOOP</text>
+      </svg>
+      <p class="figure-cap">多くの導入は「構造化」で止まる。要約が量産され、誰も読まないダッシュボードが増える。価値が出るのは「文脈化」以降、つまり誰のどの判断に差し込むかを設計したときからである。</p>
+    </div>
+
+    <div class="stepper mt-lg">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h3>変えたい意思決定を、先に1つ決める</h3>
+          <p>「顧客理解を深める」では動きません。「失注理由の分類を、営業の自己申告から会話ベースに置き換える」まで具体化する。データ収集の設計は、この1つが決まってからでいい。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3>範囲を絞って、しかし全量で始める</h3>
+          <p>「全社の一部の会話」ではなく「1チャネル・1部門の全部の会話」。サンプリングを残した瞬間に、従来のVOCと同じ限界に戻ります。狭く、けれど全量で。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h3>同意・保管・権限のルールを先に敷く</h3>
+          <p>録音の告知、保存期間、誰がどこまで聴けるか。後追いで整備しようとしたプロジェクトは、ほぼ例外なく法務・情シスの段階で止まります。ここは最初に通す。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h3>部門横断の共通タグを、たった1本だけ通す</h3>
+          <p>全項目の統一を目指すと必ず頓挫します。「顧客の困りごと分類」など、マーケ・営業・CSが同じ意味で使える軸を1本だけ通す。これがCX HUBの最小の橋であり、2本目以降はここに接ぎ木していけます。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <h3>AIエージェントは、共通層の上にだけ立てる</h3>
+          <p>部門が新しいエージェントを立てるとき、「どの文脈を参照し、結果をどこに戻すか」を条件にする。この一つのルールがあるだけで、増えるほど分断する構造が、増えるほど賢くなる構造に反転します。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="deep">
+      <h3>「AIに要約させる」で止めない</h3>
+      <p>
+        音声データ活用が要約の導入で終わっている企業は少なくありません。要約は入口であって出口ではない。
+        成果が出ている組織に共通しているのは、その先で「誰の、どの判断に、どのタイミングで差し込むか」まで設計していることです。
+        AIエージェント時代のVOCは、読み物としてのレポートではなく、実行時に参照される
+        <span class="fw-bold">コンテキスト</span>として供給されなければ、何も動かしません。
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+  07（ライト）なぜ、いまなのか
+  ============================================= -->
+<section class="sec-light" id="s07">
+  <div class="inner" data-reveal>
+    <div class="kicker">
+      <span class="kicker-num">07</span>
+      <span class="kicker-line"></span>
+      <span class="eyebrow">Why Now</span>
+    </div>
+    <h2 class="sec-title">2026年10月、記録は「やった方がいいこと」から<br>「やっていないと説明できないこと」になる</h2>
+    <p class="sec-sub">改正労働施策総合推進法により、カスタマーハラスメント対策が全事業主の措置義務となる。会話の記録は、その中核をなす。</p>
+
+    <div class="stats">
+      <div class="stat">
+        <span class="stat-num">2026.10.1</span>
+        <p>改正労働施策総合推進法の施行日。従業員を雇用するすべての事業主が対象で、企業規模による経過措置はない。</p>
+      </div>
+      <div class="stat">
+        <span class="stat-num">27.9<span style="font-size:1.1rem">%</span></span>
+        <p>過去3年間に労働者から「顧客等からの著しい迷惑行為」の相談があったと回答した企業の割合（厚生労働省・令和5年度実態調査）。前回調査比8.4ポイント増。</p>
+      </div>
+      <div class="stat">
+        <span class="stat-num hotnum">46.8<span style="font-size:1.1rem">%</span></span>
+        <p>直近2年以内にカスハラ被害にあったと回答した従業員の割合（UAゼンセン・2024年調査／約3万3千件の有効回答）。</p>
+      </div>
+    </div>
+
+    <p class="body-text">
+      義務化されるのは「気をつけること」ではなく<span class="fw-bold text-azure">雇用管理上の措置</span>です。
+      窓口を置き、方針を定め、事案が起きたときに適切に対処し、被害を受けた従業員をケアする。
+      その一連が機能していたと後から説明するには、何が起きたのかを示す記録が要ります。記録のない対策は、運用実態を証明できません。
+    </p>
+
+    <p class="body-text">
+      ここに、CX HUBを立ち上げる現実的な足がかりがあります。
+      守りの目的で導入した全量記録は、そのまま攻めのVOC基盤に転用できる。逆に、別々の要件として調達してしまえば、
+      <span class="fw-bold">二重投資になったうえに、データがまた部門ごとに分断される</span>。
+      期日のある守りの要件を、統合された土台をつくる機会として使えるかどうか。判断のタイミングは、いまです。
+    </p>
+
+    <p class="body-text mt-lg fw-bold">経営が問うべきなのは、「どのツールを入れるか」ではありません。</p>
+
+    <div class="cards">
+      <div class="card">
+        <span class="card-num">Q 01</span>
+        <h3>顧客の不満は、いま誰の机の上で止まっているか</h3>
+        <p>現場は気づいている。届いていないだけです。どの階層で止まっているかを特定できれば、必要なのはツールではなく経路の設計だと分かります。</p>
+      </div>
+      <div class="card">
+        <span class="card-num">Q 02</span>
+        <h3>同じ顧客について、部門ごとに違う説明ができてしまわないか</h3>
+        <p>マーケ・営業・CSに同じ顧客の状況を説明させてみる。答えが食い違うなら、それが体験の分断そのものです。統合の必要性は、この一手で可視化できます。</p>
+      </div>
+      <div class="card">
+        <span class="card-num">Q 03</span>
+        <h3>いま増やしているAIは、共通の文脈の上に立っているか</h3>
+        <p>立っていなければ、導入するほど分断は強固になります。止める必要はありません。順番を、いま入れ替えるだけです。</p>
+      </div>
+    </div>
+
+    <ul class="bare mt-lg">
+      <li>会話を全量データにすることは、もはや技術課題ではなく、意思決定と運用設計の課題である。</li>
+      <li>部門ごとの効率化は、体験の総和を増やさない。継ぎ目を埋めない限り、顧客の見る景色は変わらない。</li>
+      <li>部門横断は組織再編からではなく、共通のデータ軸を1本通すことから始めるのが現実的である。</li>
+      <li>守り（カスハラ・不正防止）と攻め（VOC・CX）を、同じ土台の上で設計する。分けると二重投資になる。</li>
+    </ul>
+
+    <p class="note">
+      出典：厚生労働省「令和5年度 職場のハラスメントに関する実態調査」／UAゼンセン「カスタマーハラスメント対策アンケート調査結果」（2024年6月公表）／改正労働施策総合推進法（令和7年法律第63号、2025年6月11日公布、2026年10月1日施行、指針は2026年2月26日公布）。制度の詳細は最新の厚生労働省指針をご確認ください。
+    </p>
+  </div>
+</section>
+
+<!-- =============================================
+  まとめ（ネイビー）
+  ============================================= -->
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <div class="summary">
+      <span class="eyebrow">Summary</span>
+      <p class="summary-text">
+        AIエージェントの数を競う時代は、じきに終わる。<br>
+        問われるのは、それらが<br>
+        同じ顧客の文脈を見ているかどうかだ。
+      </p>
+      <p class="summary-note">
+        記録されない現場が終わるとき、変わるのは業務効率だけではありません。<br>
+        部門ごとにばらばらだった顧客像が一本になり、企業はようやく、顧客が見ているのと同じ景色を見られるようになります。<br>
+        AI音声技術は、そのCX HUBをつくるための最初のインフラです。
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+  フッター
+  ============================================= -->
+<footer>
+  <div class="inner">
+    <h3>小澤健祐（おざけん）</h3>
+    <p>
+      人間とAIが共存する社会をつくる｜著書『生成AI導入の教科書』『AIエージェントの教科書』｜AICX協会代表理事｜
+      AI Agent Day主催・国内初のAIエージェント資格創設｜経産省WG委員｜Cynthialy CCO｜日本HP・船橋市など複数社アドバイザー
+    </p>
+    <p class="copy">&copy; 2026 小澤健祐（おざけん） / 一般社団法人AICX協会</p>
+  </div>
+</footer>
+
+<script>
+/* スクロール演出
+   既定CSSは「表示済み」。ここで .js-reveal を付けて初めて非表示→フェードインになる。
+   IntersectionObserverが使えない環境では付けないので、そのまま全文が表示される。 */
+if ('IntersectionObserver' in window) {
+  document.documentElement.classList.add('js-reveal');
+}
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08 });
+document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
+
+/* 読み進みプログレスバー */
+const bar = document.getElementById('progress');
+const onScroll = () => {
+  const h = document.documentElement;
+  const max = h.scrollHeight - h.clientHeight;
+  bar.style.width = max > 0 ? (h.scrollTop / max) * 100 + '%' : '0%';
+};
+window.addEventListener('scroll', onScroll, { passive: true });
+onScroll();
+</script>
+</body>
+</html>

@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>令和8年 個人情報保護法改正｜AI特例と日米欧中の比較｜おざけん</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Shippori+Mincho+B1:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   OZAKEN WEB STYLE — DESIGN SYSTEM
+   ============================================================ */
+:root {
+  --ink:#1a1a2e; --navy:#1f3864; --navy-deep:#141d35; --azure:#2e5496;
+  --azure-pale:#d8e4f0; --paper:#f8f7f4; --white:#ffffff;
+  --red:#e23744; --red-bright:#ff5d6a; --muted:#6b7a99;
+  --font-ja-sans:'Zen Kaku Gothic New',sans-serif;
+  --font-ja-serif:'Shippori Mincho B1',serif;
+  --font-en:'Hanken Grotesk',sans-serif;
+  --max-w:900px; --sec-pad:5rem 1.5rem; --radius:10px; --radius-sm:6px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--font-ja-sans);font-size:16px;line-height:1.8;color:var(--ink);background:var(--paper);-webkit-font-smoothing:antialiased;}
+img{max-width:100%;display:block;}
+a{color:inherit;text-decoration:none;}
+[data-reveal]{opacity:0;transform:translateY(24px);transition:opacity 0.65s ease,transform 0.65s ease;}
+[data-reveal].visible{opacity:1;transform:none;}
+.inner{max-width:var(--max-w);margin:0 auto;padding:0 1.5rem;}
+.sec-light{background:var(--paper);padding:var(--sec-pad);color:var(--ink);}
+.sec-navy{background:var(--navy);padding:var(--sec-pad);color:var(--white);}
+
+.eyebrow{display:inline-block;font-family:var(--font-en);font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--azure);background:var(--azure-pale);padding:3px 10px;border-radius:4px;margin-bottom:1.1rem;}
+.sec-navy .eyebrow{color:var(--white);background:rgba(255,255,255,0.15);}
+
+.sec-title{font-family:var(--font-ja-serif);font-size:clamp(1.6rem,4vw,2.2rem);font-weight:500;line-height:1.4;margin-bottom:0.6rem;}
+.sec-sub{font-size:1rem;color:var(--muted);margin-bottom:2.2rem;line-height:1.75;}
+.sec-navy .sec-sub{color:rgba(255,255,255,0.7);}
+.lead{font-size:0.95rem;line-height:1.9;margin-bottom:0.5rem;}
+.sec-navy .lead{color:rgba(255,255,255,0.85);}
+
+.hero{background:var(--navy);padding:6rem 1.5rem 5rem;text-align:center;color:var(--white);position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 60% 30%,rgba(46,84,150,0.5) 0%,transparent 65%);pointer-events:none;}
+.hero .eyebrow{color:var(--white);background:rgba(255,255,255,0.15);}
+.hero-title{font-family:var(--font-ja-serif);font-size:clamp(2rem,5vw,3rem);font-weight:500;line-height:1.35;margin-bottom:1.2rem;position:relative;}
+.hero-copy{font-size:1.05rem;color:rgba(255,255,255,0.8);max-width:640px;margin:0 auto;line-height:1.85;position:relative;}
+
+/* 用語の初出インライン解説 */
+.termdef{display:flex;gap:0.9rem;align-items:flex-start;background:rgba(46,84,150,0.05);border-left:3px solid var(--azure);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:0.9rem 1.1rem;margin:1rem 0;}
+.sec-navy .termdef{background:rgba(255,255,255,0.06);border-left-color:var(--azure-pale);}
+.termdef-badge{font-family:var(--font-en);font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--azure);background:var(--azure-pale);padding:2px 7px;border-radius:4px;flex-shrink:0;margin-top:3px;}
+.sec-navy .termdef-badge{color:var(--white);background:rgba(255,255,255,0.15);}
+.termdef-word{font-family:var(--font-ja-serif);font-weight:600;color:var(--ink);font-size:0.95rem;margin-bottom:2px;display:block;}
+.sec-navy .termdef-word{color:var(--white);}
+.termdef-body{font-size:0.85rem;line-height:1.7;color:var(--muted);}
+.sec-navy .termdef-body{color:rgba(255,255,255,0.7);}
+.termdef.key{border-left-color:var(--red);}
+.termdef.key .termdef-badge{color:var(--red);background:#fde8ea;}
+
+/* 適用ゾーン図（zonechart） */
+.zonechart{margin:1.75rem 0 0;border-radius:var(--radius);overflow:hidden;background:var(--white);box-shadow:0 4px 18px rgba(26,26,46,0.10);}
+.sec-navy .zonechart{background:var(--navy-deep);box-shadow:none;}
+.zc-head{background:var(--navy);color:var(--white);padding:1.05rem 1.35rem;display:flex;gap:0.8rem;align-items:center;}
+.zc-rule{font-family:var(--font-en);font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;background:rgba(255,255,255,0.16);padding:4px 9px;border-radius:4px;flex-shrink:0;align-self:flex-start;margin-top:2px;}
+.zc-head p{font-size:0.92rem;line-height:1.55;font-family:var(--font-ja-serif);}
+.zc-head .zc-hot{color:var(--red-bright);font-weight:600;}
+.zone{display:flex;gap:1.1rem;align-items:flex-start;padding:1.25rem 1.35rem;border-left:5px solid var(--azure);border-top:1px solid rgba(26,26,46,0.06);}
+.sec-navy .zone{border-top-color:rgba(255,255,255,0.08);}
+.zone.ok{border-left-color:var(--azure);}
+.zone.gray{border-left-color:var(--muted);}
+.zone.ng{border-left-color:var(--red);}
+.zone-mark{flex-shrink:0;width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:700;color:var(--white);line-height:1;}
+.zone.ok .zone-mark{background:var(--azure);}
+.zone.gray .zone-mark{background:var(--muted);}
+.zone.ng .zone-mark{background:var(--red);}
+.zone-body{flex:1;min-width:0;}
+.zone-status{font-family:var(--font-en);font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;}
+.zone.ok .zone-status{color:var(--azure);}
+.zone.gray .zone-status{color:var(--muted);}
+.zone.ng .zone-status{color:var(--red);}
+.sec-navy .zone.ok .zone-status{color:var(--azure-pale);}
+.sec-navy .zone.ng .zone-status{color:var(--red-bright);}
+.zone-title{font-family:var(--font-ja-serif);font-size:1.08rem;font-weight:600;margin-bottom:0.35rem;}
+.zone-reason{font-size:0.85rem;line-height:1.7;color:var(--muted);margin-bottom:0.65rem;}
+.sec-navy .zone-reason{color:rgba(255,255,255,0.65);}
+.zone-chips{display:flex;flex-wrap:wrap;gap:0.4rem;}
+.chip{font-size:0.72rem;font-weight:500;color:var(--azure);background:var(--azure-pale);padding:2px 10px;border-radius:999px;}
+.sec-navy .chip{color:var(--white);background:rgba(255,255,255,0.12);}
+.zone.ng .chip{color:var(--red);background:#fde8ea;}
+.sec-navy .zone.ng .chip{color:var(--red-bright);background:rgba(226,55,68,0.18);}
+
+/* ステッパー */
+.stepper{display:flex;flex-direction:column;gap:1.5rem;}
+.step{display:flex;gap:1.25rem;align-items:flex-start;background:var(--white);border-radius:var(--radius);padding:1.5rem 1.75rem;border-left:4px solid var(--azure);box-shadow:0 2px 8px rgba(26,26,46,0.06);transition:transform .25s ease,box-shadow .25s ease;}
+.step:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(26,26,46,0.10);}
+.sec-navy .step{background:var(--navy-deep);border-left-color:var(--azure);box-shadow:none;}
+.sec-navy .step:hover{box-shadow:0 6px 18px rgba(0,0,0,0.25);}
+.step-num{flex-shrink:0;width:36px;height:36px;border-radius:50%;background:var(--azure);color:var(--white);font-family:var(--font-en);font-size:0.9rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:2px;}
+.step-body h3{font-family:var(--font-ja-serif);font-size:1.05rem;font-weight:500;margin-bottom:0.35rem;}
+.step-body p{font-size:0.9rem;line-height:1.75;color:var(--muted);}
+.sec-navy .step-body p{color:rgba(255,255,255,0.65);}
+
+/* カード */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.25rem;}
+.card{background:var(--white);border-radius:var(--radius);padding:1.5rem 1.75rem;box-shadow:0 2px 8px rgba(26,26,46,0.07);border-top:3px solid var(--azure);transition:transform .25s ease,box-shadow .25s ease;}
+.card:hover{transform:translateY(-3px);box-shadow:0 8px 22px rgba(26,26,46,0.12);}
+.sec-navy .card{background:var(--navy-deep);box-shadow:none;}
+.sec-navy .card:hover{box-shadow:0 8px 22px rgba(0,0,0,0.28);}
+.card h3{font-family:var(--font-ja-serif);font-size:1.02rem;font-weight:500;margin-bottom:0.5rem;}
+.card p{font-size:0.875rem;line-height:1.75;color:var(--muted);}
+.sec-navy .card p{color:rgba(255,255,255,0.65);}
+.card-fields{margin-top:0.75rem;padding-top:0.7rem;border-top:1px dashed rgba(46,84,150,0.28);font-size:0.8rem;line-height:1.65;color:var(--ink);}
+.sec-navy .card-fields{border-top-color:rgba(255,255,255,0.18);color:rgba(255,255,255,0.8);}
+.cf-label{display:inline-block;font-size:10px;font-weight:700;color:var(--azure);background:var(--azure-pale);padding:1px 7px;border-radius:3px;margin-right:6px;}
+.sec-navy .cf-label{color:var(--white);background:rgba(255,255,255,0.16);}
+.card-tag{display:inline-block;font-family:var(--font-en);font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--azure);background:var(--azure-pale);padding:2px 8px;border-radius:4px;margin-bottom:0.7rem;}
+.sec-navy .card-tag{color:var(--white);background:rgba(255,255,255,0.15);}
+
+/* VS */
+.vs{display:grid;grid-template-columns:1fr auto 1fr;gap:1rem;align-items:center;}
+.vs-card{background:var(--white);border-radius:var(--radius);padding:1.5rem;box-shadow:0 2px 8px rgba(26,26,46,0.07);}
+.sec-navy .vs-card{background:var(--navy-deep);box-shadow:none;}
+.vs-badge{font-family:var(--font-en);font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:3px 8px;border-radius:4px;display:inline-block;margin-bottom:0.75rem;}
+.vs-badge.pos{background:var(--azure-pale);color:var(--azure);}
+.vs-badge.neg{background:#fde8ea;color:var(--red);}
+.sec-navy .vs-badge.neg{background:rgba(226,55,68,0.2);color:var(--red-bright);}
+.vs-label{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;background:var(--azure);color:var(--white);font-family:var(--font-en);font-size:0.8rem;font-weight:700;flex-shrink:0;margin:0 auto;}
+.vs-card h3{font-family:var(--font-ja-serif);font-size:1.05rem;font-weight:500;margin-bottom:0.5rem;}
+.vs-card p{font-size:0.875rem;line-height:1.75;color:var(--muted);}
+.sec-navy .vs-card p{color:rgba(255,255,255,0.65);}
+
+/* 深掘り */
+.deep{background:var(--navy-deep);border-radius:var(--radius);padding:2rem 2.25rem;border-left:4px solid var(--azure);margin:1.5rem 0;}
+.deep h3{font-family:var(--font-ja-serif);font-size:1.15rem;font-weight:500;margin-bottom:0.75rem;color:var(--white);}
+.deep p{font-size:0.9rem;line-height:1.8;color:rgba(255,255,255,0.75);}
+
+/* 2カラム */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:2rem;}
+@media (max-width:640px){.two-col{grid-template-columns:1fr;}}
+.two-col-item h3{font-family:var(--font-ja-serif);font-size:1.05rem;font-weight:500;margin-bottom:0.6rem;padding-bottom:0.4rem;border-bottom:2px solid var(--azure);}
+.two-col-item p{font-size:0.9rem;line-height:1.8;color:var(--muted);}
+.sec-navy .two-col-item p{color:rgba(255,255,255,0.7);}
+
+/* 注記 */
+.note{font-size:0.825rem;color:var(--muted);line-height:1.75;padding:0.75rem 1rem;border-left:3px solid var(--azure-pale);background:rgba(46,84,150,0.04);border-radius:0 var(--radius-sm) var(--radius-sm) 0;margin-top:1.5rem;}
+.sec-navy .note{color:rgba(255,255,255,0.6);background:rgba(255,255,255,0.05);border-left-color:rgba(255,255,255,0.25);}
+
+/* まとめ */
+.summary{text-align:center;max-width:680px;margin:0 auto;}
+.summary-text{font-family:var(--font-ja-serif);font-size:clamp(1.15rem,3vw,1.45rem);font-weight:400;line-height:1.9;}
+
+/* take */
+.take{background:var(--navy-deep);border-radius:var(--radius);padding:1.5rem 1.75rem;display:flex;gap:1.25rem;align-items:flex-start;margin:2rem 0 0;border-left:4px solid var(--red);}
+.sec-light .take{background:#fff8f8;border-left:4px solid var(--red);box-shadow:0 2px 8px rgba(226,55,68,0.07);}
+.take-avatar{flex-shrink:0;width:44px;height:44px;border-radius:50%;background:var(--azure);color:var(--white);display:flex;align-items:center;justify-content:center;font-family:var(--font-en);font-size:0.75rem;font-weight:700;letter-spacing:0.02em;}
+.take-label{font-family:var(--font-en);font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--red-bright);margin-bottom:4px;}
+.sec-light .take-label{color:var(--red);}
+.take-author{font-size:0.75rem;color:rgba(255,255,255,0.5);margin-bottom:0.5rem;}
+.sec-light .take-author{color:var(--muted);}
+.take-text{font-size:0.9rem;line-height:1.8;color:rgba(255,255,255,0.88);}
+.sec-light .take-text{color:var(--ink);}
+.hot{color:var(--red-bright);font-weight:700;}
+.sec-light .hot{color:var(--red);}
+
+/* 残る課題（issue） */
+.issue{border-left:4px solid var(--red);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:1.15rem 1.35rem;margin:1.6rem 0 0;background:#fff8f8;}
+.sec-navy .issue{background:rgba(226,55,68,0.12);}
+.issue-label{font-family:var(--font-en);font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--red);margin-bottom:5px;}
+.sec-navy .issue-label{color:var(--red-bright);}
+.issue h4{font-family:var(--font-ja-serif);font-size:1.05rem;font-weight:600;line-height:1.5;margin-bottom:0.4rem;color:var(--ink);}
+.sec-navy .issue h4{color:var(--white);}
+.issue p{font-size:0.88rem;line-height:1.78;color:var(--ink);}
+.sec-navy .issue p{color:rgba(255,255,255,0.82);}
+
+/* 賛否対比（debate） */
+.debate{display:flex;flex-direction:column;gap:1.15rem;margin-top:1.5rem;}
+.debate-row{background:var(--white);border-radius:var(--radius);box-shadow:0 2px 10px rgba(26,26,46,0.08);overflow:hidden;}
+.debate-topic{background:var(--navy);color:var(--white);font-family:var(--font-ja-serif);font-weight:500;font-size:0.98rem;line-height:1.5;padding:0.8rem 1.25rem;}
+.debate-topic .dt-num{font-family:var(--font-en);font-weight:700;color:var(--azure-pale);margin-right:0.5rem;}
+.debate-cols{display:grid;grid-template-columns:1fr 1fr;}
+@media(max-width:640px){.debate-cols{grid-template-columns:1fr;}}
+.debate-side{padding:1.1rem 1.25rem;}
+.debate-side.con{border-right:1px solid rgba(26,26,46,0.09);}
+@media(max-width:640px){.debate-side.con{border-right:none;border-bottom:1px solid rgba(26,26,46,0.09);}}
+.side-label{font-family:var(--font-en);font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:5px;display:flex;align-items:center;gap:6px;}
+.side-label::before{content:"";width:9px;height:9px;border-radius:50%;display:inline-block;}
+.debate-side.con .side-label{color:var(--red);}
+.debate-side.con .side-label::before{background:var(--red);}
+.debate-side.pro .side-label{color:var(--azure);}
+.debate-side.pro .side-label::before{background:var(--azure);}
+.debate-side p{font-size:0.84rem;line-height:1.72;color:var(--ink);}
+.subhead{font-family:var(--font-ja-serif);font-size:clamp(1.2rem,3vw,1.45rem);font-weight:500;line-height:1.4;margin:2.75rem 0 0.4rem;}
+
+/* タイムライン */
+.timeline{display:flex;flex-wrap:wrap;gap:0.6rem;margin:0 0 2.2rem;}
+.tl-item{font-family:var(--font-en);font-size:0.8rem;font-weight:600;color:var(--azure);background:var(--azure-pale);padding:0.35rem 0.85rem;border-radius:999px;}
+.tl-item span{font-family:var(--font-ja-sans);color:var(--ink);font-weight:500;}
+
+footer{background:var(--navy-deep);padding:3rem 1.5rem;text-align:center;color:rgba(255,255,255,0.5);font-size:0.8rem;}
+footer a{color:rgba(255,255,255,0.7);}
+.text-azure{color:var(--azure);}.text-red{color:var(--red);}.sec-navy .text-red{color:var(--red-bright);}
+.fw-bold{font-weight:700;}.font-serif{font-family:var(--font-ja-serif);}
+
+@media (max-width:640px){:root{--sec-pad:3.5rem 1rem;}.vs{grid-template-columns:1fr;}.vs-label{display:none;}.hero{padding:4rem 1rem 3.5rem;}.zone{padding:1.1rem 1rem;gap:0.85rem;}.zone-mark{width:40px;height:40px;font-size:1.3rem;}}
+</style>
+</head>
+<body>
+
+<!-- ============================= HERO ============================= -->
+<section class="hero">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">APPI 2026 / Global View</span>
+    <h1 class="hero-title">令和8年 個人情報保護法改正<br>「AI開発に使える特例」の<br>本当の射程と、日・米・欧・中の比較</h1>
+    <p class="hero-copy">
+      2026年7月10日に成立した改正の核心は、AI開発・統計作成なら本人同意なしに個人データを使える特例。
+      ただし、これは生成AIの学習を自由化する話とは限らない。何に効いて何に効かないのか、なぜ生データが要るのか、
+      加工情報の分類、そして各国スタンスの違いまで、用語をその都度おさえながら立体的に整理する。
+    </p>
+  </div>
+</section>
+
+<!-- ============================= S1 改正の全体像（ライト） ============================= -->
+<section class="sec-light">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 01 / What Changed</span>
+    <h2 class="sec-title">改正の主役は「AI開発なら同意不要」という特例</h2>
+    <p class="sec-sub">3年ごと見直しに基づく大規模改正。4つの柱のうち、AX（AI変革）に最も効くのが同意規制の緩和だ。</p>
+
+    <div class="timeline">
+      <div class="tl-item">2026.04.07 <span>閣議決定</span></div>
+      <div class="tl-item">2026.07.10 <span>参院で可決・成立</span></div>
+      <div class="tl-item">2028 <span>全面施行の見込み</span></div>
+    </div>
+
+    <p class="lead">
+      核心は、統計作成等（AI開発を含む）に限って、本人同意なしに<strong>個人情報</strong>を使える特例だ。まずこの「個人情報」と、緩和の対象になる2つの言葉を押さえておきたい。
+    </p>
+
+    <div class="termdef">
+      <span class="termdef-badge">用語</span>
+      <div>
+        <span class="termdef-word">個人情報</span>
+        <span class="termdef-body">生存する個人に関する情報で、氏名や生年月日・住所等の記述、または個人識別符号によって特定の個人を識別できるもの。利用や提供には原則として本人同意が必要になる。</span>
+      </div>
+    </div>
+    <div class="termdef">
+      <span class="termdef-badge">用語</span>
+      <div>
+        <span class="termdef-word">第三者提供</span>
+        <span class="termdef-body">個人データを本人以外の第三者に渡すこと。原則は本人同意が必要。届出を前提に同意なしで渡す「オプトアウト提供」の例外があるが、後述の要配慮個人情報はその対象外。</span>
+      </div>
+    </div>
+    <div class="termdef">
+      <span class="termdef-badge">用語</span>
+      <div>
+        <span class="termdef-word">要配慮個人情報</span>
+        <span class="termdef-body">人種・信条・社会的身分・病歴・犯罪歴・犯罪被害など、不当な差別や偏見が生じないよう取扱いに特に配慮を要する情報。取得と第三者提供に原則同意が必要で、今回の特例が「同意なし取得」を認めて議論を呼んだのがこの類型。なお氏名・住所はこれには当たらない。</span>
+      </div>
+    </div>
+
+    <div class="cards" style="margin-top:2rem;">
+      <div class="card">
+        <span class="card-tag">Pillar 01</span>
+        <h3>AI開発・統計作成の特例</h3>
+        <p>統計作成等（AI開発を含む）に限れば、本人同意なしに個人データの第三者提供や、公開された要配慮個人情報の取得が可能に。利用目的による制限・第三者提供の同意原則を緩和する。</p>
+      </div>
+      <div class="card">
+        <span class="card-tag">Pillar 02</span>
+        <h3>課徴金制度の新設</h3>
+        <p>不適正利用・不正取得・違法な第三者提供・統計特例違反のうち、大規模（本人1,000人が基準）で悪質な違反に、違反で得た財産上の利益相当額を課す。個情法で初の金銭制裁。</p>
+      </div>
+      <div class="card">
+        <span class="card-tag">Pillar 03</span>
+        <h3>顔特徴データ等の規律</h3>
+        <p>顔特徴データ等について、取扱いに関する一定の事項の周知を義務化。利用停止等請求の要件を緩和し、届出による同意なしの第三者提供（オプトアウト提供）を禁止する。</p>
+      </div>
+      <div class="card">
+        <span class="card-tag">Pillar 04</span>
+        <h3>こどもの保護強化</h3>
+        <p>16歳未満の個人情報は原則、法定代理人の同意を要するなど、未成年に対する保護を上乗せする。</p>
+      </div>
+    </div>
+
+    <p class="note">
+      ※ この「AI開発を含む」が実際に何を指すのかは、拡大解釈が起きやすい最重要ポイント。Section 03 で切り分ける。施行は公布から2年以内（2028年頃見込み）。本資料は解説目的の整理であり、法的助言ではありません。
+    </p>
+  </div>
+</section>
+
+<!-- ============================= S2 なぜ必要か＝マクロ（ネイビー） ============================= -->
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 02 / Why Now</span>
+    <h2 class="sec-title">これは"プライバシー法"の話ではない。AI国産化の産業政策だ</h2>
+    <p class="sec-sub">前節の特例を「プライバシー規制の緩和」とだけ読むと狙いを見誤る。政府がここまで踏み込んだ理由は、大きく3つに整理できる。</p>
+
+    <div class="deep">
+      <h3>大臣の言葉に出た本音</h3>
+      <p>
+        松本尚デジタル相は改正の狙いについて、AI開発には多様なデータを取り込むことが不可欠で、それが滞れば日本のAI開発・利活用に大きな障害が生じる、と説明している。
+        つまりこの改正は、純粋なプライバシー法の議論としてではなく、AIを国産で育てるための産業政策として設計されている。背景には、AIを国家戦略に据えて大型投資と制度整備を進める政府の方針がある。
+      </p>
+    </div>
+
+    <div class="cards" style="margin-top:1.5rem;">
+      <div class="card">
+        <span class="card-tag">Driver 01</span>
+        <h3>データがなければ、精度は上がらない</h3>
+        <p>AIの性能は学習データの量と多様性に大きく左右される。だが現行の同意原則の下では、良質な日本語データや業界特化データを集めるコストと不確実性が高く、開発の実質的なボトルネックになっていた。</p>
+      </div>
+      <div class="card">
+        <span class="card-tag">Driver 02</span>
+        <h3>各国が緩めるなか、日本だけ縛れば負ける</h3>
+        <p>米国はもともと緩く、EUもAI学習に「正当な利益」を根拠として認めた。日本だけが厳格な同意要件を維持すれば、AI開発の国際競争力が下がるという危機感が背景にある。改正は産業政策の色が濃い。</p>
+      </div>
+      <div class="card">
+        <span class="card-tag">Driver 03</span>
+        <h3>眠っているデータを、使えるようにする</h3>
+        <p>病院に蓄積された臨床データは、病歴など要配慮個人情報の同意の壁で、市中病院が学術研究例外に依拠できず死蔵されがちだった。改正は病院等を学術研究機関等に含めることを明示（国保有データの民間開放は、同じ政策パッケージの別の関連法が担う）。</p>
+      </div>
+    </div>
+
+    <p class="note">
+      つまり「保護の後退」ではなく、利活用の拡大と抑止の強化を同時に狙った改正。だからこそ緩和とセットで、課徴金という強い制裁が導入された（Section 07参照）。
+    </p>
+  </div>
+</section>
+
+<!-- ============================= S3 何に使える特例か＝射程（ライト） ★グラフィック ============================= -->
+<section class="sec-light">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 03 / What It's For</span>
+    <h2 class="sec-title">この特例は「LLMのため」ではない。統計・機械学習の道具だ</h2>
+    <p class="sec-sub">「AI開発を含む」の一言が拡大解釈を生む。ここを最初に切り分けておかないと、議論が必ずごちゃつく。</p>
+
+    <p class="lead">
+      特例の背骨は、条文の定義にある一本の縛り——<strong>成果物が「個人に関する情報」であってはならない</strong>。この一線で、何に効いて何に効かないかがきれいに分かれる。
+    </p>
+
+    <!-- 適用ゾーン図 -->
+    <div class="zonechart">
+      <div class="zc-head">
+        <span class="zc-rule">大原則</span>
+        <p>成果物が<span class="zc-hot">「個人に関する情報」であってはならない</span> — これが特例の一本の背骨。出力が"個人"か"集計"かで扱いが決まる。</p>
+      </div>
+
+      <div class="zone ok">
+        <div class="zone-mark">○</div>
+        <div class="zone-body">
+          <div class="zone-status">本命 / Fits</div>
+          <div class="zone-title">統計・機械学習</div>
+          <p class="zone-reason">傾向・集計・汎用モデルを作る用途。出力が特定の個人にならないので、特例に素直に乗る。今回の緩和が本当に効く中心はここ。</p>
+          <div class="zone-chips">
+            <span class="chip">需要予測</span><span class="chip">異常検知</span><span class="chip">傾向分析</span><span class="chip">分類モデル</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="zone gray">
+        <div class="zone-mark">△</div>
+        <div class="zone-body">
+          <div class="zone-status">グレーゾーン / Unsettled</div>
+          <div class="zone-title">LLM（生成AI）の事前学習</div>
+          <p class="zone-reason">生成モデルは学習データを断片的に吐き出す（regurgitation）ため、「個人が出ない」と言い切りにくい。どこまで含むかは委員会規則・ガイドライン待ちで、まだ未確定。</p>
+          <div class="zone-chips">
+            <span class="chip">事前学習</span><span class="chip">ファインチューニング</span><span class="chip">RAG</span><span class="chip">評価データ作成</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="zone ng">
+        <div class="zone-mark">✕</div>
+        <div class="zone-body">
+          <div class="zone-status">想定外 / Out</div>
+          <div class="zone-title">個人単位の出力</div>
+          <p class="zone-reason">統計的な手法を使っていても、成果物が個人に関する情報ならこの特例の外。統計の名を借りたプロファイリングは通らない。</p>
+          <div class="zone-chips">
+            <span class="chip">個人スコア</span><span class="chip">属性推定</span><span class="chip">信用力</span><span class="chip">疾病リスク</span><span class="chip">採否可能性</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:2.75rem;">
+      <span class="eyebrow">Use Cases</span>
+      <h3 style="font-family:var(--font-ja-serif);font-size:clamp(1.25rem,3.2vw,1.55rem);font-weight:500;line-height:1.4;margin-bottom:0.5rem;">○ゾーンで、これまで作りづらかったモデルが動き出す</h3>
+      <p class="sec-sub" style="margin-bottom:1.6rem;">同意の壁やデータの分断で止まっていた“個人を出力しない”モデルが、具体的にこう作りやすくなる（個人スコアや属性推定のような個人単位の出力は、統計手法でも対象外）。</p>
+
+      <div class="cards">
+        <div class="card">
+          <span class="card-tag">医療</span>
+          <h3>重症化・早期発見の予測</h3>
+          <p><strong class="text-azure">従来</strong>：複数病院の症例と病歴（要配慮）が要るのに、市中病院は学術研究例外に依拠できず、同意の壁で症例が集まらなかった。<br><strong class="text-azure">特例で</strong>：病院を学術研究機関等に含め、公開情報の要配慮取得も可能に。希少症例を削らず横断学習でき、精度を上げやすい。</p>
+          <p class="card-fields"><span class="cf-label">必要な項目例</span>年齢・性別・身長・体重・血圧・血液検査値・診断名・病歴・服薬歴・検査日時（同一人物の時系列で紐づけ）</p>
+        </div>
+        <div class="card">
+          <span class="card-tag">創薬・治験</span>
+          <h3>候補探索と患者層の傾向解析</h3>
+          <p><strong class="text-azure">従来</strong>：希少疾患名や特異な検査値は匿名加工で真っ先に削られ、レアケースを学習できなかった。<br><strong class="text-azure">特例で</strong>：粒度を保った生データで傾向を解析でき、治験対象の絞り込みや副作用シグナルの検知に使いやすい。</p>
+          <p class="card-fields"><span class="cf-label">必要な項目例</span>年齢・性別・診断名（希少疾患名を含む）・遺伝子/バイオマーカー・検査値（特異値を含む）・投薬内容・副作用の有無・転帰</p>
+        </div>
+        <div class="card">
+          <span class="card-tag">金融</span>
+          <h3>不正・マネロン検知（異常検知）</h3>
+          <p><strong class="text-azure">従来</strong>：単一機関のデータだけでは検知力が頭打ち。複数機関の突合は本人同意・委託の整理で難しかった。<br><strong class="text-azure">特例で</strong>：横断データで異常検知モデルを作れる。※個人ごとの信用スコア作成は対象外、検知＝集計モデルは○。</p>
+          <p class="card-fields"><span class="cf-label">必要な項目例</span>取引日時・金額・送金元/送金先・口座ID・取引種別・端末/IP等のメタ情報・取引履歴（時系列パターンが主。氏名そのものより挙動が効く）</p>
+        </div>
+        <div class="card">
+          <span class="card-tag">小売・製造</span>
+          <h3>需要予測とサプライチェーン最適化</h3>
+          <p><strong class="text-azure">従来</strong>：複数事業者の購買・在庫データを跨ぐ学習が、提供の壁で進みにくかった。<br><strong class="text-azure">特例で</strong>：横断データで需要予測・在庫最適化・不良検知など、個人を出力しないモデルを構築しやすい。</p>
+          <p class="card-fields"><span class="cf-label">必要な項目例</span>購買日時・商品カテゴリ・数量・価格・店舗/地域・在庫データ・顧客ID単位の購買履歴（会員属性：年代・性別）</p>
+        </div>
+        <div class="card">
+          <span class="card-tag">モビリティ・都市</span>
+          <h3>交通需要・防災リスクの予測</h3>
+          <p><strong class="text-azure">従来</strong>：位置情報（準識別子）を含む生データを跨ぐ解析が難しかった。<br><strong class="text-azure">特例で</strong>：交通需要予測、渋滞・事故リスクの傾向分析、インフラ異常検知など、集計出力のモデルが作りやすい。</p>
+          <p class="card-fields"><span class="cf-label">必要な項目例</span>位置情報（GPS/基地局）・移動時刻・移動経路・交通手段・端末ID・気象/センサーデータ（同一端末の移動を時系列で紐づけ）</p>
+        </div>
+        <div class="card">
+          <span class="card-tag">横断連携</span>
+          <h3>複数事業者データの統計モデル</h3>
+          <p><strong class="text-azure">従来</strong>：A社・B社のデータを本人ごとに突合して統計を作ることは、委託の整理では難しかった（PPC Q&A）。<br><strong class="text-azure">特例で</strong>：統計作成等目的に限り、横断的なデータ連携で傾向・汎用モデルを作る新たな選択肢が開いた。特例が本命とする領域。</p>
+          <p class="card-fields"><span class="cf-label">必要な項目例</span>各社の顧客ID・属性（年代・性別・地域）・行動/購買/利用履歴（本人ごとに突合される共通キー＋時系列）</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="note">
+      共通点は「バラバラの事業者・機関にまたがるデータを、同意を個別に取らずに横断学習できる」こと。逆に「統計作成等」にAIの機械学習・ファインチューニング・RAG・評価データ作成のどこまで含まれるかは条文だけでは確定しておらず、委員会規則・ガイドライン・Q&Aで外縁が固まっていく領域です。
+    </p>
+
+    <div class="take">
+      <div class="take-avatar">OK</div>
+      <div class="take-body">
+        <div class="take-label">Ozaken's One Point</div>
+        <div class="take-author">小澤健祐（おざけん）</div>
+        <p class="take-text">
+          「個人情報保護法が改正されて、生成AIの学習データが自由になった」——この一行の要約が、いちばん危ない。
+          今回の特例が素直に効くのは、需要予測や異常検知のような“個人を出力しない”統計・機械学習だ。LLMの事前学習に生データを流す話は「成果物が個人であってはならない」要件と吐き出し問題に正面からぶつかる。
+          AIと一括りにした瞬間、議論はほぼ必ず<span class="hot">混線</span>する。
+        </p>
+      </div>
+    </div>
+
+    <div class="issue">
+      <div class="issue-label">残る課題 01 / Open Issue</div>
+      <h4>法案が「AI」を抽象的に使いすぎている</h4>
+      <p>条文も報道も「AI開発」とひとくくりにするため、「ChatGPTのような生成AIに自分の情報が学習されてしまうのでは」という誤解が広がりやすい。実際に効く中心は“個人を出力しない”統計・機械学習であり、LLMの事前学習は未確定——この線引きを制度側も発信側も明示しないと、不信だけが独り歩きしてしまう。用語の解像度を上げることが、そのまま信頼の設計になる。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= S4 加工情報の分類＋なぜ生データか（ネイビー） ============================= -->
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 04 / Data Categories</span>
+    <h2 class="sec-title">「加工情報」は4つ。そして、なぜ生データが要るのか</h2>
+    <p class="sec-sub">法は、特定のしやすさと使える範囲で情報を段階的に分ける。まず入れ子を押さえ、そのうえで「なぜ匿名化では足りないのか」に進む。</p>
+
+    <div class="termdef">
+      <span class="termdef-badge">用語</span>
+      <div>
+        <span class="termdef-word">個人データ／保有個人データ</span>
+        <span class="termdef-body">「個人データ」は、個人情報をデータベース化したもの。第三者提供規制などの対象になる。さらに事業者が開示・訂正・削除の権限を持つものが「保有個人データ」で、本人の開示請求権等が及ぶ。個人情報 ⊃ 個人データ ⊃ 保有個人データ という入れ子の関係にある。</span>
+      </div>
+    </div>
+
+    <div class="cards" style="margin-top:1.5rem;">
+      <div class="card">
+        <span class="card-tag">Raw</span>
+        <h3>個人情報</h3>
+        <p>特定の個人を識別できる情報（氏名・住所等を含む）。利用・第三者提供に原則同意が必要。今回の特例が「生データのまま」使えるようにしたのがこの類型。</p>
+      </div>
+      <div class="card">
+        <span class="card-tag">Pseudonymized</span>
+        <h3>仮名加工情報</h3>
+        <p>他の情報と照合しない限り個人を特定できないよう加工。氏名等は削るが、特異値や希少疾患名の削除は不要。対応表が残りうるため復元の余地があり、原則として第三者提供は禁止（主に社内利用向け）。</p>
+      </div>
+      <div class="card">
+        <span class="card-tag">Anonymized</span>
+        <h3>匿名加工情報</h3>
+        <p>特定の個人を識別できず、かつ復元もできないように加工。特異値・希少値の削除まで求められる厳しい基準。その代わり本人同意なしで第三者提供が可能。</p>
+      </div>
+      <div class="card">
+        <span class="card-tag">Related</span>
+        <h3>個人関連情報</h3>
+        <p>Cookieや閲覧履歴など、単体では個人を特定しないが個人に関連する情報。提供先で個人データになることが想定される場合は、同意取得の確認が必要。</p>
+      </div>
+    </div>
+
+    <p class="note">
+      復元しやすい順は 個人情報 ＞ 仮名加工 ＞ 匿名加工。第三者提供の自由度は逆で 匿名加工 ＞ 仮名加工 ＞ 個人情報。今回の特例が新しいのは、この序列を飛び越えて「実名を含む生データのまま、統計作成等に限って使える」道を開いた点にある。
+    </p>
+
+    <div class="deep">
+      <h3>なぜ匿名加工では足りず、生データが要るのか</h3>
+      <p>
+        名前を消しても、組み合わせで個人は割れる。よく知られた例では、郵便番号・生年月日・性別の3つだけで人口の大半が一意に特定できてしまう。住所や郵便番号はその代表格だ。
+        だから本当に匿名加工するには、住所を「東京都」に丸め、年齢を「40代」にし、希少疾患名や特異な値を削る——という “粗くする加工” が必須になる。そしてこの加工が、AI学習にとっては致命的になる。
+      </p>
+    </div>
+
+    <div class="stepper">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h3>信号がぼやける</h3>
+          <p>AIは細かい相関から学ぶ。属性をバケツに丸めると、本来学ばせたいパターンそのものが消える。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3>縦のつながりが切れる</h3>
+          <p>匿名加工は「同一人物と分からなくする」処理。同じ人の時系列（診断→手術→転帰）を意図的にバラすため、longitudinalな構造が失われる。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h3>レアケースが真っ先に消える</h3>
+          <p>特異値・希少疾患の除去は、モデルに最も学ばせたいエッジケースの削除でもある。非構造テキストでは文脈から特定できるため「名前だけ置換」はほぼ機能しない。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="take">
+      <div class="take-avatar">OK</div>
+      <div class="take-body">
+        <div class="take-label">Ozaken's One Point</div>
+        <div class="take-author">小澤健祐（おざけん）</div>
+        <p class="take-text">
+          AIが本当に欲しいのは「名前」そのものではなく、加工で失われる粒度・紐付け・レアケースだ。名前の文字列はむしろ無価値なことも多い。
+          だから「加工すると有用性が落ちる」はかなり共有された感覚だが、「実名・住所という記述が絶対必要」かは<span class="hot">用途次第</span>。ここを混同すると議論がずれる。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= S5 国際比較（ライト） ============================= -->
+<section class="sec-light">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 05 / Global Comparison</span>
+    <h2 class="sec-title">日・米・欧・中で、AIへのデータの"入口"はこう違う</h2>
+    <p class="sec-sub">同じ「AI学習にどう個人データを使わせるか」でも、根っこの発想が国ごとに違う。日本の特例は、この地図のどこに置かれるのか。</p>
+
+    <div class="cards">
+      <div class="card">
+        <span class="card-tag">Japan</span>
+        <h3>日本：同意原則＋AI特例の"中間解"</h3>
+        <p>原則は本人同意ベース。今回の改正で、統計作成等に限り、公表・書面合意・目的限定を条件に、実名を含む生データを同意なしで使える特例を新設（違反は課徴金）。監督は個人情報保護委員会。規制の重さは欧州と米国の中間に位置づく。</p>
+      </div>
+      <div class="card">
+        <span class="card-tag">EU</span>
+        <h3>EU：権利ベースで世界最厳</h3>
+        <p>GDPR（EU一般データ保護規則）の下、処理には同意等の「適法根拠」が必須。EDPBは2024年12月、AI学習に"正当な利益"を根拠にできると認めたが、3ステップ審査が要る無条件ではない。2026年のガイドラインは公開データのスクレイピングにもGDPRを適用し、事前のデータ最小化と厳格な匿名化を要求する。</p>
+      </div>
+      <div class="card">
+        <span class="card-tag">USA</span>
+        <h3>米国：オプトアウト基調で最も緩い</h3>
+        <p>連邦の包括的プライバシー法は不在。HIPAA（医療）等の分野別法＋州法の寄せ集めで、2026年時点で20を超える州が包括法を制定。多くはオプトアウト型（拒否権）で、既定ではAI学習に使いやすい。最厳はカリフォルニア（CCPA/CPRA、専門機関CPPA、自動意思決定ADMT規則が2026年1月施行）。</p>
+      </div>
+      <div class="card">
+        <span class="card-tag">China</span>
+        <h3>中国：民間には厳格、国家には広範</h3>
+        <p>PIPL（中国個人情報保護法）・データセキュリティ法・サイバーセキュリティ法の三層。企業には同意（機微情報・越境は"個別同意"）を求め、越境移転も安全評価・標準契約・認証の3ルートで厳しく縛る。一方で国家情報法7条等により、国家安全機関・公安機関は企業や個人に保有情報を提供させ広範に収集できる。二面性が特徴だ。</p>
+      </div>
+    </div>
+
+    <div class="two-col" style="margin-top:2.5rem;">
+      <div class="two-col-item">
+        <h3>比較の"軸"は合法化の入口</h3>
+        <p>各国の違いは、突き詰めると「AI学習データをどう適法にするか」の入口設計に表れる。米国＝オプトアウト（既定でOK）、EU＝正当な利益（審査つき）、日本＝同意＋特例、中国＝同意＋国家管理。この軸で並べると各国が同じ地図に載る。データ確保のしやすさで見れば 米国 ＞ 日本（特例後）＞ EU。</p>
+      </div>
+      <div class="two-col-item">
+        <h3>中国だけは論点が"二層"</h3>
+        <p>中国は民間・越境の規制が世界有数に厳しい一方、国家アクセスにはアクセス制限・手続き・独立承認・透明性の規定がない。日本の個人情報保護委員会自身が、国家安全機関等は広範な情報収集・監視が可能と分析している。「企業から個人を守る」規制は強いが「国家から個人を守る」枠組みはほぼ空白、という二層構造だ。</p>
+      </div>
+    </div>
+
+    <p class="note">
+      ※ 各国制度は簡略化したスナップショットです。国家アクセスに関する記述は日本の個人情報保護委員会による中国法の分析等に基づきます。EUのDigital Omnibusや中国の下位規則など流動的な論点も多く、実務では最新の一次情報の確認が必要です。
+    </p>
+  </div>
+</section>
+
+<!-- ============================= S6 出口とリスク対策（ネイビー） ============================= -->
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 06 / Safeguards</span>
+    <h2 class="sec-title">生データを流す代わりの「歯止め」は4点セット</h2>
+    <p class="sec-sub">無条件ではない。入口を緩めた分、限定・公表・契約・制裁で縛る設計になっている。まず、この歯止めの主語と登場人物を押さえたい。</p>
+
+    <div class="termdef key">
+      <span class="termdef-badge">重要用語</span>
+      <div>
+        <span class="termdef-word">個人情報取扱事業者</span>
+        <span class="termdef-body">個人情報データベース等を事業に使っている者。法人・個人、営利・非営利を問わない（国の機関・地方公共団体等は別枠）。法の義務はすべてこの"主語"にかかる。特例で提供を受けられるのも「個人情報取扱事業者か行政機関等」に限られ、事業実体のない一般個人やネットへの一般公開は対象外。</span>
+      </div>
+    </div>
+    <div class="termdef">
+      <span class="termdef-badge">用語</span>
+      <div>
+        <span class="termdef-word">オプトアウト（届出制度）</span>
+        <span class="termdef-body">あらかじめ通知・公表等をしたうえで、本人が求めれば提供を止める前提で、同意なしに第三者提供する仕組み（要配慮個人情報は対象外）。今回の改正では、闇名簿対策として、提供先の身元と利用目的の確認が提供元に義務づけられた。なお、統計作成等特例の担保はオプトアウトではなく、公表・書面合意・目的外利用の禁止による。</span>
+      </div>
+    </div>
+    <div class="termdef">
+      <span class="termdef-badge">用語</span>
+      <div>
+        <span class="termdef-word">個人情報保護委員会（PPC）</span>
+        <span class="termdef-body">個人情報保護法を所管する独立監督機関。ガイドラインの策定、事業者への監督・指導、そして今回新設された課徴金など、執行の主体。改正の実務ルールは、今後このPPCの政令・ガイドラインで具体化される。</span>
+      </div>
+    </div>
+
+    <div class="cards" style="margin-top:2rem;">
+      <div class="card">
+        <span class="card-tag">Guard 01</span>
+        <h3>利用目的の限定</h3>
+        <p>使途は統計作成等に限定し、個人が特定される結果は出さないことが前提。提供先も民間の個人情報取扱事業者か行政機関等に限られる。</p>
+      </div>
+      <div class="card">
+        <span class="card-tag">Guard 02</span>
+        <h3>事前公表</h3>
+        <p>提供元・提供先の両社が、社名と実施する統計作成等の内容を、ウェブ等の見やすい場所で事前に公表する義務を負う。</p>
+      </div>
+      <div class="card">
+        <span class="card-tag">Guard 03</span>
+        <h3>書面契約</h3>
+        <p>「統計情報等の作成」のみを目的とする提供である旨を、提供元・提供先間で書面により合意することが必須。受け取り側の目的外流用は直接の法令違反となる。</p>
+      </div>
+      <div class="card">
+        <span class="card-tag">Guard 04</span>
+        <h3>目的外利用の禁止＋課徴金</h3>
+        <p>取得者・提供先は統計作成等以外の目的外利用と第三者提供が禁止。これに反した「統計特例違反」は課徴金の対象になる（大規模・悪質な違反が対象）。</p>
+      </div>
+    </div>
+
+    <p class="note">
+      ただし、次世代医療基盤法のような認定・審査を挟まないため、事前公表を本人が実際に認知できるか、書面合意や目的外利用禁止の実効性を誰が監督するのか、といった実務上の穴は残る。
+    </p>
+
+    <div class="issue">
+      <div class="issue-label">残る課題 02 / Open Issue</div>
+      <h4>リスク対策は「安心が伝わる形」で示せていない</h4>
+      <p>目的外利用の禁止・書面合意・事前公表、そして統計特例違反への課徴金と、歯止めは一応そろっている。だが「だから安全です」が本人に届く設計にはなっていない。何が守られ、違反したら何が起きるのかを、事業者と制度の双方が分かりやすく可視化すること——それこそが、緩和を不安なく前に進めるための最大のリスク対策になる。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= S7 担保と賛否の論点（ライト） ============================= -->
+<section class="sec-light">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 07 / Safeguards &amp; Debate</span>
+    <h2 class="sec-title">担保は十分か——分析と、国会の賛否</h2>
+    <p class="sec-sub">同じ“谷を埋める”でも、次世代医療基盤法と今回の特例は設計思想が真逆。この非対称が、国会で最大の争点になった。</p>
+
+    <div class="vs">
+      <div class="vs-card">
+        <span class="vs-badge pos">次世代医療基盤法</span>
+        <h3>認定業者が間に立つ事前チェック型</h3>
+        <p>国が認定した専門業者（認定匿名加工／仮名加工医療情報作成事業者。日立製作所など）が医療機関からデータを集約・加工し、研究機関等へ提供。審査委員会、本人への事前通知＋オプトアウト、再識別禁止で縛る。2024年施行の改正で、希少疾患名や特異な検査値を含む仮名加工医療情報にも踏み込んだ。</p>
+      </div>
+      <div class="vs-label">vs</div>
+      <div class="vs-card">
+        <span class="vs-badge neg">個情法の新特例</span>
+        <h3>事業者間契約＋事後の課徴金型</h3>
+        <p>認定業者を介さず、事業者同士の契約と公表という自主規律、そして事後の課徴金という制裁で担保する。スピードは出るが事前の歯止めは薄く、要配慮個人情報まで本人の知らないうちにAI開発へ回りうる点に懸念の声がある。</p>
+      </div>
+    </div>
+
+    <p class="note">
+      次世代医療基盤法が仮名加工にまで踏み込めたのは、審査委員会と再識別禁止の専門業者という重い担保があったから。今回の特例はそれを認定なしでAI開発全般に広げた分、事前の手綱が緩い。この「担保の軽さ」こそ、国会での賛否が割れた核心だった。
+    </p>
+
+    <h3 class="subhead">国会の賛否——反対論と、それへの反論</h3>
+    <p class="sec-sub" style="margin-bottom:1.4rem;">2026年7月、立憲民主党・共産党・公明党・参政党・沖縄の風が反対し、要配慮個人情報を特例の対象外とする修正案は否決。自民・維新・国民民主・チームみらい等の賛成多数で可決・成立した。主な対立軸を、どちらにも肩入れせず並べる。</p>
+
+    <div class="debate">
+      <div class="debate-row">
+        <div class="debate-topic"><span class="dt-num">01</span>機微情報（要配慮個人情報）を同意なく提供すること</div>
+        <div class="debate-cols">
+          <div class="debate-side con">
+            <div class="side-label">反対の論拠</div>
+            <p>病歴・信条・障害・犯罪歴など、他人に知られたくない機微情報を本人同意なく提供・取得できるのは、個人情報保護の概念を根底から覆す。だからこそ「要配慮個人情報は特例の対象外にすべき」と修正案を出した。</p>
+          </div>
+          <div class="debate-side pro">
+            <div class="side-label">これへの反論</div>
+            <p>対象は「統計作成等」に厳格限定され、成果物が個人に関する情報であってはならない。個人を特定する利用・提供は禁止のまま。同意取得が困難で公益性の高い医療AI・創薬でデータが死蔵していた問題を、公表・書面合意・目的限定で代替しつつ解く。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="debate-row">
+        <div class="debate-topic"><span class="dt-num">02</span>入口を緩めた割に、出口（漏洩時）の担保が弱い</div>
+        <div class="debate-cols">
+          <div class="debate-side con">
+            <div class="side-label">反対の論拠</div>
+            <p>課徴金の対象は「本人1,000人超かつ違法収益」の大規模違反だけで、安全管理義務違反・目的外利用・要配慮の不正取得は対象外。委員会自身が必要と認めた差止請求制度も消えた。次世代医療基盤法のような認定・審査もなく、抑止力が弱い。</p>
+          </div>
+          <div class="debate-side pro">
+            <div class="side-label">これへの反論</div>
+            <p>個情法で初の課徴金を導入し、刑事罰の引き上げ・不正取得罪の新設・命令要件の緩和もセット（入口緩和＋出口強化）。1,000人・重大違反への限定は、経済活動への過度な萎縮を避けつつ悪質な“やり得”を狙い撃ちする設計。細目は委員会規則で補完予定。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="debate-row">
+        <div class="debate-topic"><span class="dt-num">03</span>氏名・住所などの識別子削除を義務づけていない</div>
+        <div class="debate-cols">
+          <div class="debate-side con">
+            <div class="side-label">反対の論拠</div>
+            <p>実名・住所のまま機微情報が流れるのは危険。せめて氏名・住所等の識別子削除を法律上義務づけるべきで、そうすれば漏洩時の被害を大きく抑えられる。</p>
+          </div>
+          <div class="debate-side pro">
+            <div class="side-label">これへの反論</div>
+            <p>識別子削除・粒度粗化（匿名加工）では、AIや統計の有用性が失われてしまう(＝“谷”)。だから生データのまま統計作成等に限る特例を作った。削除義務化は特例の意義を失わせるため、目的限定・目的外利用禁止・課徴金で担保する設計を選んだ。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="debate-row">
+        <div class="debate-topic"><span class="dt-num">04</span>「統計作成等」を口実にした国家の濫用リスク</div>
+        <div class="debate-cols">
+          <div class="debate-side con">
+            <div class="side-label">反対の論拠</div>
+            <p>国家が「統計作成等」を名目に国民の病歴等を収集できる仕組みは、権力の悪用に道を開く。過去には反対運動の住民の病歴を警察が違法収集し、裁判所が削除を命じた確定判決もある。</p>
+          </div>
+          <div class="debate-side pro">
+            <div class="side-label">これへの反論</div>
+            <p>提供先は民間事業者・行政機関等に限定、目的は個人を特定しない統計作成等に限定、公表義務で透明性を確保。違法な収集はそもそも不適正利用・不正取得として規律・課徴金の対象で、本特例が正当化するものではない。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="note">
+      立憲民主党は「一度立ち止まり、法案を撤回して出し直すべき」とも主張したが、法案は成立した。反対・賛成いずれの論拠も、最終的には施行（2028年見込み）までの委員会規則・ガイドラインが、懸念にどこまで具体的に応えられるかにかかっている。
+    </p>
+  </div>
+</section>
+
+<!-- ============================= Summary（ネイビー） ============================= -->
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <div class="summary">
+      <span class="eyebrow">Summary</span>
+      <p class="summary-text">
+        「生成AIの学習が自由になった」ではない。<br>
+        効くのは"個人を出力しない"統計・機械学習。<br>
+        本当の争点は、誰が・どこで・<br>
+        生データの出口を見張るか、だ。
+      </p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2026 小澤健祐（おざけん）/ AICX協会</p>
+</footer>
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+}, { threshold: 0.1 });
+document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

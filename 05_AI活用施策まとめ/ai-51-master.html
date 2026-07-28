@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI推進 51施策マスター｜おざけん</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@500;600;700&family=Shippori+Mincho+B1:wght@500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1a1a2e;--navy:#1f3864;--navy-deep:#141d35;--azure:#2e5496;
+  --azure-pale:#d8e4f0;--paper:#f4f5f7;--white:#ffffff;--red:#e23744;--muted:#6b7a99;
+  --f-sans:'Zen Kaku Gothic New',sans-serif;--f-serif:'Shippori Mincho B1',serif;--f-en:'Hanken Grotesk',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{font-family:var(--f-sans);color:var(--ink);background:var(--navy-deep);-webkit-font-smoothing:antialiased;}
+
+.poster{height:100vh;display:flex;flex-direction:column;background:var(--paper);padding:14px 18px 10px;overflow:hidden;}
+
+/* ヘッダー */
+.top{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;border-bottom:2px solid var(--navy);padding-bottom:9px;margin-bottom:11px;flex-shrink:0;}
+.top-l .eyebrow{font-family:var(--f-en);font-size:9.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--azure);}
+.top-l h1{font-family:var(--f-serif);font-size:clamp(18px,2.1vw,25px);font-weight:600;line-height:1.15;margin-top:2px;color:var(--navy);}
+.top-l h1 b{color:var(--azure);}
+.top-l p{font-size:11px;color:var(--muted);margin-top:3px;}
+.top-r{display:flex;align-items:center;gap:14px;flex-shrink:0;}
+.legend{display:flex;gap:10px;}
+.lg{display:flex;align-items:center;gap:5px;font-size:10.5px;color:var(--ink);}
+.lg i{width:11px;height:11px;border-radius:3px;display:inline-block;}
+.lg .b{background:#bcd3ec;} .lg .d{background:var(--azure);} .lg .e{background:var(--navy);}
+.stats{display:flex;gap:7px;}
+.stat{text-align:center;background:var(--navy);color:#fff;border-radius:7px;padding:4px 10px;}
+.stat b{font-family:var(--f-en);font-size:16px;font-weight:700;line-height:1;display:block;}
+.stat span{font-size:8.5px;opacity:.8;letter-spacing:.03em;}
+
+/* グリッド */
+.grid{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:11px;min-height:0;}
+.col{display:flex;flex-direction:column;gap:9px;min-height:0;}
+.block{background:var(--white);border-radius:9px;border-top:3px solid var(--azure);padding:8px 11px 9px;box-shadow:0 1px 5px rgba(26,26,46,.07);display:flex;flex-direction:column;}
+.cat{display:flex;align-items:center;gap:6px;margin-bottom:5px;padding-bottom:5px;border-bottom:1px dashed #e0e3e8;}
+.cat .cn{font-family:var(--f-serif);font-size:13px;color:var(--azure);font-weight:600;}
+.cat .cj{font-family:var(--f-serif);font-size:13.5px;font-weight:600;color:var(--navy);}
+.cat .ce{font-family:var(--f-en);font-size:8.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);}
+.cat .cc{margin-left:auto;font-family:var(--f-en);font-size:9px;font-weight:700;color:var(--azure);background:var(--azure-pale);padding:1px 7px;border-radius:10px;}
+.items{display:flex;flex-direction:column;gap:2px;}
+.it{display:flex;align-items:flex-start;gap:7px;line-height:1.28;}
+.it .n{flex-shrink:0;font-family:var(--f-en);font-size:9.5px;font-weight:700;width:21px;height:16px;display:flex;align-items:center;justify-content:center;border-radius:4px;margin-top:1px;}
+.it .n.b{background:#bcd3ec;color:var(--navy);}
+.it .n.d{background:var(--azure);color:#fff;}
+.it .n.e{background:var(--navy);color:#fff;}
+.it .t{font-size:11px;color:var(--ink);font-weight:500;}
+
+.foot{flex-shrink:0;display:flex;justify-content:space-between;align-items:center;margin-top:9px;font-size:9.5px;color:var(--muted);}
+.foot b{color:var(--navy);}
+
+@media (max-width:900px){
+  .poster{height:auto;min-height:100vh;overflow:visible;}
+  .grid{grid-template-columns:1fr;}
+  .top{flex-wrap:wrap;}
+}
+</style>
+</head>
+<body>
+<div class="poster">
+
+  <div class="top">
+    <div class="top-l">
+      <div class="eyebrow">AI Transformation ・ Master List</div>
+      <h1>AI推進の<b>51施策</b>マスター</h1>
+      <p>経営戦略から事業化まで、社内会議でそのまま使える打ち手の全体像。</p>
+    </div>
+    <div class="top-r">
+      <div class="legend">
+        <span class="lg"><i class="b"></i>基盤</span>
+        <span class="lg"><i class="d"></i>推進</span>
+        <span class="lg"><i class="e"></i>発展</span>
+      </div>
+      <div class="stats">
+        <div class="stat"><b>51</b><span>施策</span></div>
+        <div class="stat"><b>9</b><span>カテゴリ</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid">
+
+    <!-- 列1 -->
+    <div class="col">
+      <div class="block">
+        <div class="cat"><span class="cn">①</span><span class="cj">経営戦略</span><span class="ce">Strategy</span><span class="cc">5</span></div>
+        <div class="items">
+          <div class="it"><span class="n b">01</span><span class="t">活用戦略の策定</span></div>
+          <div class="it"><span class="n b">02</span><span class="t">経営層自身のエージェント活用</span></div>
+          <div class="it"><span class="n b">03</span><span class="t">活用レベルの自己診断</span></div>
+          <div class="it"><span class="n d">04</span><span class="t">AI投資のROI・予算設計</span></div>
+          <div class="it"><span class="n d">05</span><span class="t">全社KPI／OKRへの組み込み</span></div>
+        </div>
+      </div>
+      <div class="block">
+        <div class="cat"><span class="cn">②</span><span class="cj">組織改革</span><span class="ce">Organization</span><span class="cc">6</span></div>
+        <div class="items">
+          <div class="it"><span class="n b">06</span><span class="t">全社アセスメント</span></div>
+          <div class="it"><span class="n b">07</span><span class="t">CoEの組成</span></div>
+          <div class="it"><span class="n d">08</span><span class="t">AIエージェント運営委員会</span></div>
+          <div class="it"><span class="n d">09</span><span class="t">アンバサダー制度</span></div>
+          <div class="it"><span class="n d">10</span><span class="t">情シス×人事の融合体制</span></div>
+          <div class="it"><span class="n b">11</span><span class="t">パイロット部門の選定・PoC設計</span></div>
+        </div>
+      </div>
+      <div class="block">
+        <div class="cat"><span class="cn">③</span><span class="cj">人事制度</span><span class="ce">HR</span><span class="cc">5</span></div>
+        <div class="items">
+          <div class="it"><span class="n d">12</span><span class="t">評価制度への組み込み</span></div>
+          <div class="it"><span class="n b">13</span><span class="t">AI人材の採用・配置</span></div>
+          <div class="it"><span class="n e">14</span><span class="t">現場開発者への育成パス</span></div>
+          <div class="it"><span class="n e">15</span><span class="t">職務定義書（JD）の再設計</span></div>
+          <div class="it"><span class="n e">16</span><span class="t">AI時代のキャリアパス設計</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 列2 -->
+    <div class="col">
+      <div class="block">
+        <div class="cat"><span class="cn">④</span><span class="cj">教育・研修</span><span class="ce">Education</span><span class="cc">6</span></div>
+        <div class="items">
+          <div class="it"><span class="n b">17</span><span class="t">階層別教育プログラム</span></div>
+          <div class="it"><span class="n d">18</span><span class="t">ドメイン別研修</span></div>
+          <div class="it"><span class="n d">19</span><span class="t">ハンズオンWS</span></div>
+          <div class="it"><span class="n d">20</span><span class="t">外部認定資格の取得支援</span></div>
+          <div class="it"><span class="n b">21</span><span class="t">経営層向けエグゼクティブ研修</span></div>
+          <div class="it"><span class="n b">22</span><span class="t">リテラシー資格の全社取得</span></div>
+        </div>
+      </div>
+      <div class="block">
+        <div class="cat"><span class="cn">⑤</span><span class="cj">情報共有</span><span class="ce">Information</span><span class="cc">6</span></div>
+        <div class="items">
+          <div class="it"><span class="n d">23</span><span class="t">成功事例の社内共有</span></div>
+          <div class="it"><span class="n b">24</span><span class="t">社内コミュニケーション基盤</span></div>
+          <div class="it"><span class="n d">25</span><span class="t">経営層による発信</span></div>
+          <div class="it"><span class="n d">26</span><span class="t">社内AIコミュニティ（CoP）運営</span></div>
+          <div class="it"><span class="n d">27</span><span class="t">プロンプト/エージェント/WF共有ライブラリ</span></div>
+          <div class="it"><span class="n d">28</span><span class="t">社内AI活用コンテストの開催</span></div>
+        </div>
+      </div>
+      <div class="block">
+        <div class="cat"><span class="cn">⑥</span><span class="cj">コンテキスト資産</span><span class="ce">Context</span><span class="cc">6</span></div>
+        <div class="items">
+          <div class="it"><span class="n b">29</span><span class="t">コンテキスト資産の棚卸し</span></div>
+          <div class="it"><span class="n d">30</span><span class="t">コンテキスト資産DBの構築</span></div>
+          <div class="it"><span class="n d">31</span><span class="t">業務SOPのエージェント対応化</span></div>
+          <div class="it"><span class="n d">32</span><span class="t">MVV・ブランドのコンテキスト化</span></div>
+          <div class="it"><span class="n d">33</span><span class="t">判断基準の形式知化</span></div>
+          <div class="it"><span class="n e">34</span><span class="t">コンテキストの鮮度管理・更新運用</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 列3 -->
+    <div class="col">
+      <div class="block">
+        <div class="cat"><span class="cn">⑦</span><span class="cj">システム実装</span><span class="ce">System</span><span class="cc">8</span></div>
+        <div class="items">
+          <div class="it"><span class="n b">35</span><span class="t">セキュアなAI環境の構築</span></div>
+          <div class="it"><span class="n d">36</span><span class="t">業務システム連携（MCP/API）</span></div>
+          <div class="it"><span class="n d">37</span><span class="t">RAG・社内ナレッジ検索基盤</span></div>
+          <div class="it"><span class="n b">38</span><span class="t">ツール権限・ガバナンス設計</span></div>
+          <div class="it"><span class="n d">39</span><span class="t">ヒューマンインザループ設計</span></div>
+          <div class="it"><span class="n e">40</span><span class="t">マルチエージェント設計</span></div>
+          <div class="it"><span class="n e">41</span><span class="t">エージェントの評価・テスト</span></div>
+          <div class="it"><span class="n e">42</span><span class="t">バイブコーディング内製化</span></div>
+        </div>
+      </div>
+      <div class="block">
+        <div class="cat"><span class="cn">⑧</span><span class="cj">改善・ガバナンス</span><span class="ce">Governance</span><span class="cc">5</span></div>
+        <div class="items">
+          <div class="it"><span class="n b">43</span><span class="t">AI利用ガイドライン／ポリシー策定</span></div>
+          <div class="it"><span class="n d">44</span><span class="t">アウトカム指標ダッシュボード</span></div>
+          <div class="it"><span class="n d">45</span><span class="t">ログ・モニタリング基盤</span></div>
+          <div class="it"><span class="n d">46</span><span class="t">野良化対策のガバナンス</span></div>
+          <div class="it"><span class="n e">47</span><span class="t">ガイドラインの定期更新</span></div>
+        </div>
+      </div>
+      <div class="block">
+        <div class="cat"><span class="cn">⑨</span><span class="cj">事業化</span><span class="ce">Business</span><span class="cc">4</span></div>
+        <div class="items">
+          <div class="it"><span class="n e">48</span><span class="t">既存事業へのエージェント組み込み</span></div>
+          <div class="it"><span class="n e">49</span><span class="t">顧客向けエージェント（CX）の提供</span></div>
+          <div class="it"><span class="n e">50</span><span class="t">エージェント前提の新規事業</span></div>
+          <div class="it"><span class="n e">51</span><span class="t">業界連携・エコシステム構築</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="foot">
+    <span>着手フェーズ：<b>基盤 15</b> → <b>推進 24</b> → <b>発展 12</b>／上流から埋めるのが鉄則。</span>
+    <span>&copy; 2026 小澤健祐（おざけん）／ 一般社団法人AICX協会</span>
+  </div>
+
+</div>
+</body>
+</html>

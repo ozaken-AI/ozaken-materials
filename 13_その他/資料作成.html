@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>資料作成の基礎理論 ― 組織で資料を資産化する設計ガイド | おざけん</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Shippori+Mincho+B1:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   OZAKEN WEB STYLE — DESIGN SYSTEM v3
+   ============================================================ */
+:root {
+  --ink:         #1a1a2e;
+  --navy:        #1f3864;
+  --navy-deep:   #141d35;
+  --azure:       #2e5496;
+  --azure-pale:  #d8e4f0;
+  --paper:       #f8f7f4;
+  --white:       #ffffff;
+  --red:         #e23744;
+  --red-bright:  #ff5d6a;
+  --muted:       #6b7a99;
+
+  --font-ja-sans:  'Zen Kaku Gothic New', sans-serif;
+  --font-ja-serif: 'Shippori Mincho B1', serif;
+  --font-en:       'Hanken Grotesk', sans-serif;
+
+  --max-w: 860px;
+  --sec-pad: 5rem 1.5rem;
+  --radius: 10px;
+  --radius-sm: 6px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-ja-sans);
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--ink);
+  background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+[data-reveal].visible { opacity: 1; transform: none; }
+
+.inner { max-width: var(--max-w); margin: 0 auto; padding: 0 1.5rem; }
+.sec-light { background: var(--paper); padding: var(--sec-pad); color: var(--ink); }
+.sec-navy { background: var(--navy); padding: var(--sec-pad); color: var(--white); }
+
+.eyebrow {
+  display: inline-block;
+  font-family: var(--font-en);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--azure);
+  background: var(--azure-pale);
+  padding: 3px 10px;
+  border-radius: 4px;
+  margin-bottom: 1.1rem;
+}
+.sec-navy .eyebrow { color: var(--white); background: rgba(255,255,255,0.15); }
+
+.sec-title {
+  font-family: var(--font-ja-serif);
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: 500;
+  line-height: 1.4;
+  margin-bottom: 0.6rem;
+}
+.sec-sub { font-size: 1rem; color: var(--muted); margin-bottom: 2.5rem; line-height: 1.7; }
+.sec-navy .sec-sub { color: rgba(255,255,255,0.7); }
+
+.hero {
+  background: var(--navy);
+  padding: 6rem 1.5rem 5rem;
+  text-align: center;
+  color: var(--white);
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 60% 30%, rgba(46,84,150,0.5) 0%, transparent 65%);
+  pointer-events: none;
+}
+.hero .eyebrow { color: var(--white); background: rgba(255,255,255,0.15); }
+.hero-title {
+  font-family: var(--font-ja-serif);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 500;
+  line-height: 1.35;
+  margin-bottom: 1.2rem;
+  position: relative;
+}
+.hero-copy {
+  font-size: 1.05rem;
+  color: rgba(255,255,255,0.8);
+  max-width: 580px;
+  margin: 0 auto 2.4rem;
+  line-height: 1.8;
+  position: relative;
+}
+.hero-cta { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; position: relative; }
+
+.btn-primary {
+  display: inline-block;
+  font-family: var(--font-en);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  background: var(--azure);
+  color: var(--white);
+  padding: 0.75rem 2rem;
+  border-radius: var(--radius-sm);
+  transition: opacity 0.2s;
+}
+.btn-primary:hover { opacity: 0.85; }
+.btn-secondary {
+  display: inline-block;
+  font-family: var(--font-en);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--white);
+  padding: 0.75rem 2rem;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid rgba(255,255,255,0.5);
+  transition: border-color 0.2s;
+}
+.btn-secondary:hover { border-color: var(--white); }
+
+.stepper { display: flex; flex-direction: column; gap: 1.5rem; }
+.step {
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 1.5rem 1.75rem;
+  border-left: 4px solid var(--azure);
+  box-shadow: 0 2px 8px rgba(26,26,46,0.06);
+}
+.sec-navy .step { background: var(--navy-deep); border-left-color: var(--azure); box-shadow: none; }
+.step-num {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--azure);
+  color: var(--white);
+  font-family: var(--font-en);
+  font-size: 0.9rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+}
+.step-body h3 { font-family: var(--font-ja-serif); font-size: 1.05rem; font-weight: 500; margin-bottom: 0.35rem; }
+.step-body p { font-size: 0.9rem; line-height: 1.75; color: var(--muted); }
+.sec-navy .step-body p { color: rgba(255,255,255,0.65); }
+
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; }
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 1.5rem 1.75rem;
+  box-shadow: 0 2px 8px rgba(26,26,46,0.07);
+  border-top: 3px solid var(--azure);
+}
+.sec-navy .card { background: var(--navy-deep); box-shadow: none; }
+.card-icon { width: 36px; height: 36px; margin-bottom: 1rem; color: var(--azure); }
+.sec-navy .card-icon { color: var(--azure-pale); }
+.card h3 { font-family: var(--font-ja-serif); font-size: 1rem; font-weight: 500; margin-bottom: 0.5rem; }
+.card p { font-size: 0.875rem; line-height: 1.75; color: var(--muted); }
+.sec-navy .card p { color: rgba(255,255,255,0.65); }
+
+.vs { display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: center; }
+.vs-card { background: var(--white); border-radius: var(--radius); padding: 1.5rem; box-shadow: 0 2px 8px rgba(26,26,46,0.07); }
+.sec-navy .vs-card { background: var(--navy-deep); box-shadow: none; }
+.vs-badge {
+  font-family: var(--font-en);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+  display: inline-block;
+  margin-bottom: 0.75rem;
+}
+.vs-badge.pos { background: var(--azure-pale); color: var(--azure); }
+.vs-badge.neg { background: #fde8ea; color: var(--red); }
+.sec-navy .vs-badge.neg { background: rgba(226,55,68,0.2); color: var(--red-bright); }
+.vs-label {
+  display: flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--azure); color: var(--white);
+  font-family: var(--font-en); font-size: 0.8rem; font-weight: 700;
+  flex-shrink: 0; margin: 0 auto;
+}
+.vs-card h3 { font-family: var(--font-ja-serif); font-size: 1.05rem; font-weight: 500; margin-bottom: 0.5rem; }
+.vs-card p { font-size: 0.875rem; line-height: 1.75; color: var(--muted); }
+.sec-navy .vs-card p { color: rgba(255,255,255,0.65); }
+
+.deep { background: var(--navy-deep); border-radius: var(--radius); padding: 2rem 2.25rem; border-left: 4px solid var(--azure); margin: 1.5rem 0; }
+.deep h3 { font-family: var(--font-ja-serif); font-size: 1.15rem; font-weight: 500; margin-bottom: 0.75rem; color: var(--white); }
+.deep p { font-size: 0.9rem; line-height: 1.8; color: rgba(255,255,255,0.75); }
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+@media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+.two-col-item h3 { font-family: var(--font-ja-serif); font-size: 1.05rem; font-weight: 500; margin-bottom: 0.6rem; padding-bottom: 0.4rem; border-bottom: 2px solid var(--azure); }
+.two-col-item p { font-size: 0.9rem; line-height: 1.8; color: var(--muted); }
+.sec-navy .two-col-item p { color: rgba(255,255,255,0.7); }
+
+.note { font-size: 0.825rem; color: var(--muted); line-height: 1.75; padding: 0.75rem 1rem; border-left: 3px solid var(--azure-pale); background: rgba(46,84,150,0.04); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin-top: 1rem; }
+
+.summary { text-align: center; max-width: 640px; margin: 0 auto; }
+.summary-text { font-family: var(--font-ja-serif); font-size: clamp(1.15rem, 3vw, 1.45rem); font-weight: 400; line-height: 1.8; margin-bottom: 2rem; }
+
+.take { background: var(--navy-deep); border-radius: var(--radius); padding: 1.5rem 1.75rem; display: flex; gap: 1.25rem; align-items: flex-start; margin: 2rem 0; border-left: 4px solid var(--red); }
+.sec-light .take { background: #fff8f8; border-left: 4px solid var(--red); box-shadow: 0 2px 8px rgba(226,55,68,0.07); }
+.take-avatar { flex-shrink: 0; width: 44px; height: 44px; border-radius: 50%; background: var(--azure); color: var(--white); display: flex; align-items: center; justify-content: center; font-family: var(--font-en); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.02em; }
+.take-label { font-family: var(--font-en); font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--red-bright); margin-bottom: 4px; }
+.sec-light .take-label { color: var(--red); }
+.take-author { font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem; }
+.sec-light .take-author { color: var(--muted); }
+.take-text { font-size: 0.9rem; line-height: 1.8; color: rgba(255,255,255,0.88); }
+.sec-light .take-text { color: var(--ink); }
+.hot { color: var(--red-bright); font-weight: 700; }
+.sec-light .hot { color: var(--red); }
+
+/* チェックリスト（現場ルール用の小コンポーネント） */
+.checklist { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; margin-top: 0.5rem; }
+.checklist li { display: flex; gap: 0.7rem; align-items: flex-start; font-size: 0.9rem; line-height: 1.7; }
+.checklist li::before {
+  content: '✓';
+  flex-shrink: 0;
+  width: 22px; height: 22px;
+  margin-top: 3px;
+  border-radius: 5px;
+  background: var(--azure-pale);
+  color: var(--azure);
+  font-family: var(--font-en);
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+.sec-navy .checklist li::before { background: rgba(255,255,255,0.14); color: var(--azure-pale); }
+.sec-navy .checklist li { color: rgba(255,255,255,0.82); }
+
+/* 命名規則のコードチップ */
+.code-chip {
+  display: inline-block;
+  font-family: var(--font-en);
+  font-size: 0.82rem;
+  font-weight: 500;
+  background: var(--navy-deep);
+  color: var(--azure-pale);
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--radius-sm);
+  margin: 0.4rem 0;
+  letter-spacing: 0.02em;
+}
+.sec-light .code-chip { background: #eef2f8; color: var(--azure); border: 1px solid var(--azure-pale); }
+
+footer { background: var(--navy-deep); padding: 3rem 1.5rem; text-align: center; color: rgba(255,255,255,0.5); font-size: 0.8rem; }
+footer a { color: rgba(255,255,255,0.7); }
+
+.text-azure { color: var(--azure); }
+.text-red { color: var(--red); }
+.sec-navy .text-red { color: var(--red-bright); }
+.fw-bold { font-weight: 700; }
+.font-serif { font-family: var(--font-ja-serif); }
+
+@media (max-width: 640px) {
+  :root { --sec-pad: 3.5rem 1rem; }
+  .vs { grid-template-columns: 1fr; }
+  .vs-label { display: none; }
+  .hero { padding: 4rem 1rem 3.5rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================= HERO ============================================= -->
+<section class="hero">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Document Design Theory</span>
+    <h1 class="hero-title">資料作成は「センス」ではなく<br>組織の「仕組み」である</h1>
+    <p class="hero-copy">
+      上手い人だけが速く・きれいに作れる状態は、組織にとって最大のボトルネックだ。
+      属人化したスキルを、誰でも再現できる設計理論とテンプレート運用に変える。
+      ―― 現場で本当に回る、組織のための資料作成ガイド。
+    </p>
+    <div class="hero-cta">
+      <a href="#theory" class="btn-primary">基礎理論を読む</a>
+      <a href="#template" class="btn-secondary">テンプレ運用へ</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================= S1：問題提起（ライト） ============================================= -->
+<section class="sec-light">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 01 ― Problem</span>
+    <h2 class="sec-title">なぜ、組織の資料作成は<br>毎回ゼロから始まるのか</h2>
+    <p class="sec-sub">個人の資料術は無数にある。だが組織で詰まる原因は「作り方」ではなく「作り直し続けていること」にある。まずは詰まりの正体を3つに分解する。</p>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <circle cx="18" cy="18" r="6" fill="currentColor"/>
+            <circle cx="18" cy="18" r="12" stroke="currentColor" stroke-width="1.5" opacity="0.3"/>
+          </svg>
+        </div>
+        <h3>構造の再発明</h3>
+        <p>表紙・章立て・結論の置き方を、担当者ごとに毎回考え直している。本来は使い回せる「型」に、最も多くの時間が溶けている。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <rect x="8" y="8" width="20" height="20" rx="3" stroke="currentColor" stroke-width="2"/>
+            <rect x="12" y="12" width="12" height="12" rx="2" fill="currentColor" opacity="0.25"/>
+          </svg>
+        </div>
+        <h3>見た目のばらつき</h3>
+        <p>フォント・色・余白が人によって違い、同じ会社の資料に見えない。トンマナの逸脱は信頼を削るが、個人の美意識任せでは揃わない。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="2"/>
+            <circle cx="24" cy="24" r="5" stroke="currentColor" stroke-width="2"/>
+            <path d="M16 16l4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3>知見の死蔵</h3>
+        <p>過去に通った良い提案書がフォルダの奥で眠っている。再利用される仕組みがないため、組織の中で知見が一度きりで消える。</p>
+      </div>
+    </div>
+
+    <p class="note">※ ここで言う「資料」は、提案書・社内決裁・報告書・登壇スライドなど、意思決定や行動を動かすための文書全般を指す。</p>
+  </div>
+</section>
+
+<!-- ============================================= S2：基礎理論（ネイビー） ============================================= -->
+<section class="sec-navy" id="theory">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 02 ― Theory</span>
+    <h2 class="sec-title">資料作成の基礎理論 ― 3つの原則</h2>
+    <p class="sec-sub">組織で再現するために、まず「何を揃え、何を個人に委ねるか」を理論として固定する。揃えるべきは不変項（構造・規格）、委ねるべきは可変項（中身の論理）だ。</p>
+
+    <div class="stepper">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h3>原則1：資料は「意思決定を動かす道具」である</h3>
+          <p>美しさや情報量がゴールではない。読み手に「何を判断・行動してほしいか」を1つ決めることが出発点。目的が定義できれば、入れる情報と捨てる情報が自動的に決まる。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3>原則2：構造は使い回せる、中身は使い回せない</h3>
+          <p>「課題→原因→打ち手→効果→投資」のような論理の骨格は、案件が変わっても通用する。だから組織は構造をテンプレ化し、担当者は中身の論理だけに集中させる。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h3>原則3：デザインは美意識ではなく「規格」である</h3>
+          <p>色・フォント・余白を個人の趣味で決めさせない。組織で1セットのデザイントークン（規格値）を定め、誰が作っても同じ顔になる状態をつくる。これが信頼の土台になる。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="deep">
+      <h3>「目的 → 構造 → 表現」の順を絶対に逆流させない</h3>
+      <p>
+        現場で最も多い失敗は、目的が曖昧なままパワーポイントを開き、いきなり装飾から始めることだ。
+        資料作成は上から流す。まず目的（誰のどの判断か）、次に構造（論理の骨格）、最後に表現（図解・配色）。
+        この順番を守るだけで、手戻りは劇的に減る。逆流すると、きれいだが何も決まらない資料が量産される。
+      </p>
+    </div>
+
+    <div class="take">
+      <div class="take-avatar">OK</div>
+      <div class="take-body">
+        <div class="take-label">Ozaken's One Point</div>
+        <div class="take-author">小澤健祐（おざけん）</div>
+        <p class="take-text">
+          年間300回以上登壇して断言できるのは、資料が速くて強い組織は例外なく「個人のスキルに頼っていない」ということ。
+          上手い人を増やそうとするのは筋が悪い。上手い人がいなくても<span class="hot">同じ質が出る型</span>を整備する方が、桁違いに効く。
+          資料作成は才能の問題ではなく、在庫管理の問題だと考えた方が現実に合っている。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================= S3：設計フェーズ（ライト） ============================================= -->
+<section class="sec-light">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 03 ― Design Phase</span>
+    <h2 class="sec-title">作り始める前に決める、5つのこと</h2>
+    <p class="sec-sub">資料作成の質は、最初の15分でほぼ決まる。パワポを開く前に、この5つを言語化してから着手するルールを組織に敷く。</p>
+
+    <div class="stepper">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h3>読み手と、求めるアクションを1つに絞る</h3>
+          <p>「誰が読み、その人に何をしてほしいか」を一文で書く。例：決裁者に予算承認をもらう／現場に新フローを浸透させる。これがブレると全ページがブレる。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3>「1資料＝1結論」を先に書く</h3>
+          <p>その資料が通った時に相手の口から出てほしい一言を、最初に決める。各ページの結論ではなく、資料全体で動かす意思決定を1つに定める。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h3>読み手の前提知識レベルを見積もる</h3>
+          <p>専門用語をどこまで噛み砕くか、背景説明をどれだけ入れるかは相手の理解度で決まる。社内向けと社外向けで情報の深さを変える判断をここで行う。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h3>配布形態を確定する（投影／印刷／送付／据え置き）</h3>
+          <p>その場で口頭補足する投影資料と、送りつけて一人で読ませる資料では、1ページの情報密度が真逆になる。形態を決めずに作ると、どちらにも中途半端になる。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <h3>使うテンプレ・素材の所在を確認する</h3>
+          <p>ゼロから作らないために、流用できる正本テンプレ・過去の良い事例・図版素材の場所を先に押さえる。これが次章のテンプレ管理に直結する。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================= S4：標準ステップ（ネイビー） ============================================= -->
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 04 ― Production Flow</span>
+    <h2 class="sec-title">制作の標準ステップ ― 装飾は最後</h2>
+    <p class="sec-sub">組織で品質を揃えるなら、作る順番そのものを標準化する。鍵は「デザインに入る前に構造をレビューに通す」こと。ここを飛ばすから手戻りが起きる。</p>
+
+    <div class="stepper">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h3>アウトラインで論理を固める（テキストのみ）</h3>
+          <p>まず箇条書きで論理の骨格を組む。この段階ではスライドを1枚も作らない。文章で筋が通っていない資料は、どれだけ装飾しても通らない。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3>各ページの結論を1行で書き切る（メッセージライン）</h3>
+          <p>1ページ＝1メッセージ。各ページの見出しを「結論の一文」にする。見出しだけ拾い読みして話が通れば、構造は正しい。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h3>骨子レビューを通す（最重要・ここで止める）</h3>
+          <p>装飾前のアウトライン段階で、上司や関係者にロジックを当てる。完成版になってから方向性のダメ出しを受ける事故を、構造の段階で潰す。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h3>テンプレートに流し込む</h3>
+          <p>承認された骨子を、組織の正本テンプレに落とす。表紙・章扉・本文レイアウトはすでに用意されているので、ここで配置に悩む時間はゼロになる。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <h3>ビジュアル化する（図解・グラフ）</h3>
+          <p>文字で書いた論理を、図とグラフに翻訳する。比較は図、推移はグラフ、構造は箱と矢印。装飾のためではなく、理解を速めるために図にする。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">6</div>
+        <div class="step-body">
+          <h3>仕上げレビュー（トンマナ・数字・誤字）</h3>
+          <p>最後にチェックリストで機械的に詰める。フォント・配色の逸脱、数字の整合、固有名詞の表記ゆれ。内容ではなく品質を担保する最終ゲート。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================= S5：テンプレート管理（ライト） ============================================= -->
+<section class="sec-light" id="template">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 05 ― Template Operation</span>
+    <h2 class="sec-title">テンプレート管理 ―<br>組織の資料を「資産」に変える</h2>
+    <p class="sec-sub">テンプレは「作って配って終わり」では必ず腐る。誰が、どこで、どう更新し続けるかまで設計して初めて資産になる。組織で回すための5つの要件。</p>
+
+    <div class="cards">
+      <div class="card">
+        <h3>① 正本を1つに（Single Source of Truth）</h3>
+        <p>「最新版がどこにあるか分からない」を撲滅する。共有ドライブに正本フォルダを1つ決め、コピーが独り歩きしない運用にする。</p>
+      </div>
+      <div class="card">
+        <h3>② 命名規則を統一する</h3>
+        <p>検索性と版管理の生命線。下記の規則を全社で固定し、ファイル名を見れば用途と新旧が一瞬で分かる状態にする。</p>
+      </div>
+      <div class="card">
+        <h3>③ 部品単位で管理する</h3>
+        <p>1枚物だけでなく、表紙・章扉・図解パーツ・グラフ・会社紹介・クロージングを部品として切り出し、組み合わせて使える状態にする。</p>
+      </div>
+      <div class="card">
+        <h3>④ 編集権限を分ける</h3>
+        <p>マスターを編集できる人を限定し、利用者はコピーから作る。誰でもマスターを触れる状態は、トンマナ崩壊の最大の原因になる。</p>
+      </div>
+      <div class="card">
+        <h3>⑤ 更新サイクルを決める</h3>
+        <p>四半期に一度の棚卸しを定例化。古い実績数字・旧ロゴ・使われないテンプレを定期的に削る。放置されたテンプレは負債になる。</p>
+      </div>
+      <div class="card">
+        <h3>⑥ 良い事例を昇格させる</h3>
+        <p>実際に通った提案書・評価の高かった資料を、テンプレ／事例ライブラリに昇格させる仕組みを持つ。現場の成功を組織の標準に変える。</p>
+      </div>
+    </div>
+
+    <div class="two-col" style="margin-top:2.5rem;">
+      <div class="two-col-item">
+        <h3>命名規則の例</h3>
+        <p>用途・版・更新日を固定順で並べる。半角統一・日付は8桁にすると並び替えで自動的に時系列になる。</p>
+        <span class="code-chip">提案書_標準_v3_20260601.pptx</span><br>
+        <span class="code-chip">報告書_月次_v2_20260515.pptx</span><br>
+        <span class="code-chip">図解パーツ_共通_v1_20260401.pptx</span>
+      </div>
+      <div class="two-col-item">
+        <h3>フォルダ構成の例</h3>
+        <p>「正本」と「アーカイブ」を物理的に分ける。利用者が触れるのは正本フォルダだけ。旧版は消さずアーカイブへ退避する。</p>
+        <span class="code-chip">/01_正本テンプレート（編集権限・限定）</span><br>
+        <span class="code-chip">/02_部品ライブラリ</span><br>
+        <span class="code-chip">/03_事例（通った資料）</span><br>
+        <span class="code-chip">/99_アーカイブ（旧版）</span>
+      </div>
+    </div>
+
+    <div class="take">
+      <div class="take-avatar">OK</div>
+      <div class="take-body">
+        <div class="take-label">Ozaken's One Point</div>
+        <div class="take-author">小澤健祐（おざけん）</div>
+        <p class="take-text">
+          テンプレ運用が崩れる原因は、技術でもツールでもなく「持ち主が決まっていないこと」だ。
+          オーナーが不在のテンプレは、半年で全員が自己流コピーを使い始め、ただのフォルダに戻る。
+          だから最初に決めるべきは命名規則より先に、<span class="hot">テンプレオーナーを1人立てる</span>こと。
+          ルールは人がいて初めて維持される。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================= S6：個人技 vs 仕組み（ネイビー） ============================================= -->
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 06 ― Skill vs System</span>
+    <h2 class="sec-title">「個人の上手さ」と「組織の仕組み」は別物だ</h2>
+    <p class="sec-sub">資料研修で個人スキルを底上げしても、組織の生産性は思ったほど上がらない。投資対効果が大きいのは、個人を鍛えることではなく、仕組みに置き換えることだ。</p>
+
+    <div class="vs">
+      <div class="vs-card">
+        <span class="vs-badge neg">属人モデル</span>
+        <h3>上手い人に依存する</h3>
+        <p>品質はその人のコンディション次第。退職・異動で知見が消え、繁忙期はその人がボトルネックになる。再現性がない。</p>
+      </div>
+      <div class="vs-label">vs</div>
+      <div class="vs-card">
+        <span class="vs-badge pos">仕組みモデル</span>
+        <h3>型と運用に依存する</h3>
+        <p>誰が作っても一定品質が出る。新人でもテンプレに乗れば即戦力になり、知見はライブラリに蓄積され続ける。スケールする。</p>
+      </div>
+    </div>
+
+    <div class="deep">
+      <h3>仕組み化は「個人の創意」を奪わない</h3>
+      <p>
+        型を決めると創造性が死ぬ、という反論は逆だ。構造と装飾という「考えても差がつかない部分」を仕組みに任せるから、
+        担当者は中身の論理・ストーリー・打ち手という「本当に頭を使うべき部分」に集中できる。
+        テンプレは創意の檻ではなく、創意を注ぐ先を絞り込む装置だと考えるといい。
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================= S7：現場運用ルール（ライト） ============================================= -->
+<section class="sec-light">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 07 ― Field Rules</span>
+    <h2 class="sec-title">現場で回し続けるための運用ルール</h2>
+    <p class="sec-sub">理論とテンプレを「使われ続ける状態」に保つための、現場の最低限ルール。立派な制度より、守られる小さなルールの方が効く。</p>
+
+    <div class="two-col">
+      <div class="two-col-item">
+        <h3>守るべきこと</h3>
+        <ul class="checklist">
+          <li>テンプレオーナーを1人決め、更新責任を明確にする</li>
+          <li>レビューは「骨子」と「仕上げ」の2段階に分ける</li>
+          <li>作る前に必ず正本テンプレと過去事例を探す</li>
+          <li>通った資料は事例ライブラリに昇格させる</li>
+          <li>四半期に一度、テンプレの棚卸しを定例化する</li>
+        </ul>
+      </div>
+      <div class="two-col-item">
+        <h3>やってはいけないこと</h3>
+        <ul class="checklist">
+          <li>目的が決まらないままパワポを開くこと</li>
+          <li>マスターテンプレを個人が勝手に書き換えること</li>
+          <li>フォント・配色を案件ごとに独自判断で変えること</li>
+          <li>完成版になってから方向性をレビューに出すこと</li>
+          <li>良い資料を作った本人のフォルダに死蔵させること</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="deep" style="background:var(--navy); margin-top:2.5rem;">
+      <h3>ミニマム導入：まず「禁止事項リスト1枚」から始める</h3>
+      <p>
+        いきなり完璧なテンプレ体系は作れない。最初の一歩は、上の「やってはいけないこと」を1枚のルール表にして共有するだけでいい。
+        禁止事項を揃えるだけで、資料のばらつきは目に見えて減る。80点で始めて、運用しながら整えていくのが組織導入の現実解だ。
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================= SUMMARY（ネイビー） ============================================= -->
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <div class="summary">
+      <span class="eyebrow">Summary</span>
+      <p class="summary-text">
+        組織に必要なのは、<br>
+        「資料が上手い人」ではなく<br>
+        「上手い人がいなくても同じ質が出る仕組み」だ。
+      </p>
+      <a href="#theory" class="btn-primary">基礎理論をもう一度読む</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================= FOOTER ============================================= -->
+<footer>
+  <p>資料作成の基礎理論 ― 組織で資料を資産化する設計ガイド</p>
+  <p style="margin-top:0.5rem;">&copy; 2026 小澤健祐（おざけん）/ 一般社団法人AICX協会</p>
+</footer>
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

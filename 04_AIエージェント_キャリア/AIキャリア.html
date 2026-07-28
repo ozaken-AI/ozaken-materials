@@ -1,0 +1,1713 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIエージェント時代のキャリア ― 裸の戦いで、何が残るか | おざけん</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Shippori+Mincho+B1:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   OZAKEN WEB STYLE — DESIGN SYSTEM v4
+   ============================================================ */
+
+:root {
+  --ink:         #1a1a2e;
+  --navy:        #1f3864;
+  --navy-deep:   #141d35;
+  --azure:       #2e5496;
+  --azure-pale:  #d8e4f0;
+  --paper:       #f8f7f4;
+  --white:       #ffffff;
+  --red:         #e23744;
+  --red-bright:  #ff5d6a;
+  --muted:       #6b7a99;
+
+  --font-ja-sans:  'Zen Kaku Gothic New', sans-serif;
+  --font-ja-serif: 'Shippori Mincho B1', serif;
+  --font-en:       'Hanken Grotesk', sans-serif;
+
+  --max-w: 860px;
+  --sec-pad: 5rem 1.5rem;
+  --radius: 10px;
+  --radius-sm: 6px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-ja-sans);
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--ink);
+  background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+
+/* ----- スクロール演出（JS有効時のみ隠す。既定は可視＝撮影・印刷で消えない） ----- */
+[data-reveal] { opacity: 1; transform: none; }
+html.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+html.js [data-reveal].visible { opacity: 1; transform: none; }
+
+/* ----- 共通レイアウト ----- */
+.inner { max-width: var(--max-w); margin: 0 auto; padding: 0 1.5rem; position: relative; z-index: 1; }
+
+.sec-light {
+  background: var(--paper);
+  padding: var(--sec-pad);
+  color: var(--ink);
+  position: relative;
+  overflow: hidden;
+}
+.sec-navy {
+  background: var(--navy);
+  padding: var(--sec-pad);
+  color: var(--white);
+  position: relative;
+  overflow: hidden;
+}
+
+/* ----- v4: texture（背景の格子テクスチャ） ----- */
+.texture::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(46,84,150,0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(46,84,150,0.055) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: radial-gradient(ellipse at 70% 20%, #000 0%, transparent 72%);
+  -webkit-mask-image: radial-gradient(ellipse at 70% 20%, #000 0%, transparent 72%);
+  pointer-events: none;
+}
+.sec-navy.texture::before {
+  background-image:
+    linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px);
+}
+
+/* ----- eyebrow ----- */
+.eyebrow {
+  display: inline-block;
+  font-family: var(--font-en);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--azure);
+  background: var(--azure-pale);
+  padding: 3px 10px;
+  border-radius: 4px;
+  margin-bottom: 1.1rem;
+}
+.sec-navy .eyebrow { color: var(--white); background: rgba(255,255,255,0.15); }
+
+/* ----- v4: kicker（章番号＋英題） ----- */
+.kicker {
+  display: flex;
+  align-items: baseline;
+  gap: 0.7rem;
+  margin-bottom: 0.7rem;
+}
+.kicker-num {
+  font-family: var(--font-en);
+  font-size: 2.6rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--azure);
+  opacity: 0.28;
+}
+.sec-navy .kicker-num { color: var(--azure-pale); opacity: 0.35; }
+.kicker-en {
+  font-family: var(--font-en);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding-bottom: 0.2rem;
+  border-bottom: 1.5px solid var(--azure);
+}
+.sec-navy .kicker-en { color: rgba(255,255,255,0.65); border-bottom-color: var(--azure-pale); }
+
+/* ----- 見出し ----- */
+.sec-title {
+  font-family: var(--font-ja-serif);
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: 500;
+  line-height: 1.45;
+  margin-bottom: 0.6rem;
+}
+.sec-sub {
+  font-size: 1rem;
+  color: var(--muted);
+  margin-bottom: 2.5rem;
+  line-height: 1.7;
+}
+.sec-navy .sec-sub { color: rgba(255,255,255,0.7); }
+
+.body-text { font-size: 0.95rem; line-height: 1.95; color: var(--ink); margin-bottom: 1.25rem; }
+.sec-navy .body-text { color: rgba(255,255,255,0.82); }
+
+/* ----- ヒーロー（v4：エディトリアル・フルビュー） ----- */
+.hero {
+  position: relative;
+  min-height: 92svh;
+  display: flex;
+  align-items: center;
+  padding: 7rem 1.5rem 4rem;
+  background: var(--navy);
+  color: var(--white);
+  overflow: hidden;
+  text-align: left;
+}
+.hero-bg { position: absolute; inset: 0; pointer-events: none; }
+.hero-glow {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 20% 15%, rgba(46,84,150,0.8) 0%, transparent 60%), radial-gradient(ellipse at 85% 80%, rgba(46,84,150,0.35) 0%, transparent 55%);
+}
+.hero-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.055) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: radial-gradient(ellipse at 65% 40%, #000 0%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse at 65% 40%, #000 0%, transparent 78%);
+}
+.hero-ghost {
+  position: absolute;
+  right: -3vw; top: 42%;
+  transform: translateY(-50%);
+  font-family: var(--font-en);
+  font-size: clamp(9rem, 27vw, 23rem);
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  line-height: 0.8;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(216,228,240,0.18);
+  user-select: none;
+}
+.hero-inner { position: relative; z-index: 2; width: 100%; }
+.hero-kicker {
+  display: flex; align-items: center; gap: 0.9rem;
+  font-family: var(--font-en);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: rgba(255,255,255,0.62);
+  margin-bottom: 1.5rem;
+}
+.hero-rule { width: 54px; height: 1px; background: var(--red-bright); display: inline-block; flex-shrink: 0; }
+.hero-title {
+  font-family: var(--font-ja-serif);
+  font-size: clamp(2.3rem, 6.6vw, 4rem);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0.015em;
+  margin-bottom: 1.5rem;
+}
+.hero-title-em {
+  background: linear-gradient(transparent 60%, rgba(226,55,68,0.55) 60%, rgba(226,55,68,0.55) 88%, transparent 88%);
+}
+.hero-lead {
+  font-family: var(--font-ja-serif);
+  font-size: clamp(1rem, 2.4vw, 1.2rem);
+  color: var(--azure-pale);
+  margin-bottom: 0.9rem;
+  letter-spacing: 0.02em;
+}
+.hero-copy {
+  font-size: 0.98rem;
+  line-height: 1.95;
+  color: rgba(255,255,255,0.76);
+  max-width: 540px;
+}
+.hero-foot {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  gap: 1.5rem; flex-wrap: wrap;
+  margin-top: 3.2rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid rgba(255,255,255,0.14);
+  max-width: 540px;
+}
+.hero-meta {
+  font-family: var(--font-en);
+  font-size: 0.72rem; letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.5);
+}
+.hero-scroll {
+  display: flex; align-items: center; gap: 0.7rem;
+  font-family: var(--font-en);
+  font-size: 9px; font-weight: 700; letter-spacing: 0.16em;
+  color: rgba(255,255,255,0.45);
+}
+.hero-scroll i {
+  position: relative; display: block;
+  width: 46px; height: 1px;
+  background: rgba(255,255,255,0.22);
+  overflow: hidden;
+}
+.hero-scroll i::after {
+  content: ''; position: absolute; top: 0; left: 0;
+  width: 16px; height: 1px; background: var(--red-bright);
+  animation: scrolldot 2.4s ease-in-out infinite;
+}
+@keyframes scrolldot {
+  0% { transform: translateX(-16px); }
+  100% { transform: translateX(46px); }
+}
+/* ファーストビューは最初から全表示（登場アニメなし） */
+[data-anim] { opacity: 1; transform: none; animation: none; }
+@media print {
+  /* アニメ・スクロール演出を無効化し、必ず可視にする */
+  [data-anim], [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+  .hero-scroll i::after, .hero-water { animation: none !important; }
+  /* 背景色・文字色を印刷に出す（白文字が消えないように） */
+  *, *::before, *::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  /* ヒーローが1ページ丸ごと空白にならないよう高さを緩める */
+  .hero { min-height: auto; padding: 3rem 1.5rem; }
+  .hero-scroll { display: none; }
+  /* セクションの途中改ページを抑制 */
+  section { break-inside: avoid; }
+  .diagram, .card, .step, .vs-card, .take, .bare { break-inside: avoid; }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-anim], [data-reveal] { animation: none !important; opacity: 1 !important; transform: none !important; }
+  .hero-scroll i::after { animation: none !important; }
+}
+
+/* ----- 小見出し ----- */
+.sub-head {
+  font-family: var(--font-ja-serif);
+  font-size: 1.2rem; font-weight: 500;
+  margin: 2.8rem 0 1.2rem;
+  padding-left: 0.75rem;
+  border-left: 3px solid var(--azure);
+}
+
+/* ----- v4: figure（数値ビジュアル） ----- */
+.figures {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+.figure {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 1.4rem 1.25rem;
+  border-top: 3px solid var(--azure);
+  box-shadow: 0 2px 8px rgba(26,26,46,0.07);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.figure:hover { transform: translateY(-4px); box-shadow: 0 10px 24px rgba(26,26,46,0.12); }
+.sec-navy .figure { background: var(--navy-deep); box-shadow: none; }
+.sec-navy .figure:hover { box-shadow: 0 10px 24px rgba(0,0,0,0.35); }
+.figure-num {
+  font-family: var(--font-en);
+  font-size: 2.4rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--azure);
+  letter-spacing: -0.02em;
+}
+.sec-navy .figure-num { color: var(--azure-pale); }
+.figure-num.warn { color: var(--red); }
+.sec-navy .figure-num.warn { color: var(--red-bright); }
+.figure-label {
+  font-size: 0.8rem;
+  line-height: 1.65;
+  color: var(--muted);
+  margin-top: 0.4rem;
+}
+.sec-navy .figure-label { color: rgba(255,255,255,0.62); }
+.figure-src {
+  font-family: var(--font-en);
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  color: var(--azure);
+  opacity: 0.75;
+  margin-top: 0.5rem;
+}
+.sec-navy .figure-src { color: var(--azure-pale); }
+
+/* ----- ステッパー ----- */
+.stepper { display: flex; flex-direction: column; gap: 1.1rem; }
+.step {
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 1.5rem 1.75rem;
+  border-left: 4px solid var(--azure);
+  box-shadow: 0 2px 8px rgba(26,26,46,0.06);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.step:hover { transform: translateX(4px); box-shadow: 0 8px 20px rgba(26,26,46,0.1); }
+.sec-navy .step { background: var(--navy-deep); border-left-color: var(--azure); box-shadow: none; }
+.sec-navy .step:hover { box-shadow: 0 8px 20px rgba(0,0,0,0.35); }
+.step-num {
+  flex-shrink: 0;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--azure);
+  color: var(--white);
+  font-family: var(--font-en);
+  font-size: 0.9rem;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 2px;
+}
+.step-body h3 {
+  font-family: var(--font-ja-serif);
+  font-size: 1.05rem;
+  font-weight: 500;
+  margin-bottom: 0.35rem;
+}
+.step-body p { font-size: 0.9rem; line-height: 1.8; color: var(--muted); }
+.sec-navy .step-body p { color: rgba(255,255,255,0.68); }
+
+/* ----- カードグリッド ----- */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+}
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 1.5rem 1.75rem;
+  box-shadow: 0 2px 8px rgba(26,26,46,0.07);
+  border-top: 3px solid var(--azure);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.card:hover { transform: translateY(-4px); box-shadow: 0 12px 26px rgba(26,26,46,0.12); }
+.sec-navy .card { background: var(--navy-deep); box-shadow: none; }
+.sec-navy .card:hover { box-shadow: 0 12px 26px rgba(0,0,0,0.35); }
+.card-icon { width: 36px; height: 36px; margin-bottom: 1rem; color: var(--azure); }
+.sec-navy .card-icon { color: var(--azure-pale); }
+.card h3 {
+  font-family: var(--font-ja-serif);
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+.card p { font-size: 0.875rem; line-height: 1.8; color: var(--muted); }
+.sec-navy .card p { color: rgba(255,255,255,0.68); }
+
+/* ----- VS比較 ----- */
+.vs { display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: center; }
+.vs-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(26,26,46,0.07);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.vs-card:hover { transform: translateY(-4px); box-shadow: 0 12px 26px rgba(26,26,46,0.12); }
+.sec-navy .vs-card { background: var(--navy-deep); box-shadow: none; }
+.vs-badge {
+  font-family: var(--font-en);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 4px;
+  display: inline-block; margin-bottom: 0.75rem;
+}
+.vs-badge.pos { background: var(--azure-pale); color: var(--azure); }
+.vs-badge.neg { background: #fde8ea; color: var(--red); }
+.sec-navy .vs-badge.neg { background: rgba(226,55,68,0.2); color: var(--red-bright); }
+.vs-label {
+  display: flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--azure); color: var(--white);
+  font-family: var(--font-en); font-size: 0.8rem; font-weight: 700;
+  flex-shrink: 0; margin: 0 auto;
+}
+.vs-card h3 {
+  font-family: var(--font-ja-serif);
+  font-size: 1.05rem; font-weight: 500; margin-bottom: 0.5rem;
+}
+.vs-card p { font-size: 0.875rem; line-height: 1.8; color: var(--muted); }
+.sec-navy .vs-card p { color: rgba(255,255,255,0.68); }
+
+/* ----- 深掘りブロック ----- */
+.deep {
+  background: var(--navy-deep);
+  border-radius: var(--radius);
+  padding: 2rem 2.25rem;
+  border-left: 4px solid var(--azure);
+  margin: 1.5rem 0;
+}
+.deep h3 {
+  font-family: var(--font-ja-serif);
+  font-size: 1.15rem; font-weight: 500;
+  margin-bottom: 0.75rem; color: var(--white);
+}
+.deep p { font-size: 0.9rem; line-height: 1.9; color: rgba(255,255,255,0.75); }
+
+/* ----- 2カラム対比 ----- */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+@media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+.two-col-item h3 {
+  font-family: var(--font-ja-serif);
+  font-size: 1.05rem; font-weight: 500;
+  margin-bottom: 0.6rem; padding-bottom: 0.4rem;
+  border-bottom: 2px solid var(--azure);
+}
+.two-col-item p { font-size: 0.9rem; line-height: 1.85; color: var(--muted); }
+.sec-navy .two-col-item p { color: rgba(255,255,255,0.72); }
+
+/* ----- 注記 ----- */
+.note {
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.8;
+  padding: 0.75rem 1rem;
+  border-left: 3px solid var(--azure-pale);
+  background: rgba(46,84,150,0.04);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  margin-top: 1.25rem;
+}
+.sec-navy .note {
+  color: rgba(255,255,255,0.6);
+  background: rgba(255,255,255,0.05);
+  border-left-color: rgba(255,255,255,0.25);
+}
+
+/* ----- まとめ ----- */
+.summary { text-align: center; max-width: 640px; margin: 0 auto; }
+.summary-text {
+  font-family: var(--font-ja-serif);
+  font-size: clamp(1.15rem, 3vw, 1.5rem);
+  font-weight: 400; line-height: 1.9;
+  margin-bottom: 1.5rem;
+}
+
+/* ----- おざけんのワンポイント ----- */
+.take {
+  background: var(--navy-deep);
+  border-radius: var(--radius);
+  padding: 1.5rem 1.75rem;
+  display: flex; gap: 1.25rem; align-items: flex-start;
+  margin: 2rem 0 0;
+  border-left: 4px solid var(--red);
+}
+.sec-light .take {
+  background: #fff8f8;
+  border-left: 4px solid var(--red);
+  box-shadow: 0 2px 8px rgba(226,55,68,0.07);
+}
+.take-avatar {
+  flex-shrink: 0; width: 44px; height: 44px; border-radius: 50%;
+  background: var(--azure); color: var(--white);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-en); font-size: 0.75rem; font-weight: 700;
+}
+.take-label {
+  font-family: var(--font-en);
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--red-bright); margin-bottom: 4px;
+}
+.sec-light .take-label { color: var(--red); }
+.take-author { font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem; }
+.sec-light .take-author { color: var(--muted); }
+.take-text { font-size: 0.9rem; line-height: 1.9; color: rgba(255,255,255,0.88); }
+.sec-light .take-text { color: var(--ink); }
+.hot { color: var(--red-bright); font-weight: 700; }
+.sec-light .hot { color: var(--red); }
+
+/* ----- フッター ----- */
+footer {
+  background: var(--navy-deep);
+  padding: 3rem 1.5rem;
+  text-align: center;
+  color: rgba(255,255,255,0.5);
+  font-size: 0.8rem;
+}
+footer a { color: rgba(255,255,255,0.7); }
+
+/* ----- ユーティリティ ----- */
+.text-azure { color: var(--azure); }
+.sec-navy .text-azure { color: var(--azure-pale); }
+.fw-bold { font-weight: 700; }
+.font-serif { font-family: var(--font-ja-serif); }
+.mt-lg { margin-top: 2.5rem; }
+
+
+/* ----- v4: diagram（図版フレーム） ----- */
+.diagram {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 1.75rem 1.5rem 1.5rem;
+  border-top: 3px solid var(--azure);
+  box-shadow: 0 2px 8px rgba(26,26,46,0.07);
+  margin: 1.75rem 0;
+  transition: box-shadow 0.25s ease;
+}
+.diagram:hover { box-shadow: 0 12px 28px rgba(26,26,46,0.12); }
+.sec-navy .diagram { background: var(--navy-deep); box-shadow: none; }
+.sec-navy .diagram:hover { box-shadow: 0 12px 28px rgba(0,0,0,0.35); }
+.diagram-title {
+  font-family: var(--font-ja-serif);
+  font-size: 0.98rem;
+  font-weight: 500;
+  margin-bottom: 1.1rem;
+  padding-left: 0.7rem;
+  border-left: 3px solid var(--azure);
+}
+.diagram svg { width: 100%; height: auto; display: block; overflow: visible; }
+.diagram-cap {
+  font-size: 0.78rem;
+  line-height: 1.7;
+  color: var(--muted);
+  margin-top: 1.1rem;
+  padding-top: 0.8rem;
+  border-top: 1px dashed rgba(46,84,150,0.25);
+}
+.sec-navy .diagram-cap { color: rgba(255,255,255,0.6); border-top-color: rgba(255,255,255,0.2); }
+
+/* SVG内テキスト */
+.lb  { font-family: var(--font-ja-sans); font-size: 13px; font-weight: 500; fill: var(--ink); }
+.lbs { font-family: var(--font-ja-sans); font-size: 11px; font-weight: 400; fill: var(--muted); }
+.lbe { font-family: var(--font-en); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; fill: var(--azure); }
+.lbn { font-family: var(--font-en); font-size: 20px; font-weight: 700; fill: var(--azure); }
+.sec-navy .lb  { fill: rgba(255,255,255,0.92); }
+.sec-navy .lbs { fill: rgba(255,255,255,0.6); }
+.sec-navy .lbe { fill: var(--azure-pale); }
+.sec-navy .lbn { fill: var(--azure-pale); }
+.lb-red { fill: var(--red) !important; }
+.sec-navy .lb-red { fill: var(--red-bright) !important; }
+
+/* ----- v4: バー比較 ----- */
+.bars { display: flex; flex-direction: column; gap: 0.85rem; }
+.bar-row { display: grid; grid-template-columns: minmax(120px, 190px) 1fr 52px; align-items: center; gap: 0.75rem; }
+.bar-name { font-size: 0.82rem; line-height: 1.5; }
+.bar-track { height: 15px; border-radius: 8px; background: rgba(46,84,150,0.1); overflow: hidden; }
+.sec-navy .bar-track { background: rgba(255,255,255,0.1); }
+.bar-fill { height: 100%; border-radius: 8px; background: var(--azure); transition: width 1.1s cubic-bezier(0.22,1,0.36,1); }
+.bar-fill.warn { background: var(--red); }
+.sec-navy .bar-fill.warn { background: var(--red-bright); }
+.bar-val { font-family: var(--font-en); font-size: 0.9rem; font-weight: 700; color: var(--azure); text-align: right; }
+.sec-navy .bar-val { color: var(--azure-pale); }
+.bar-val.warn { color: var(--red); }
+.sec-navy .bar-val.warn { color: var(--red-bright); }
+@media (max-width: 480px) { .bar-row { grid-template-columns: 96px 1fr 46px; } .bar-name { font-size: 0.72rem; } }
+
+/* ----- v4: 積み上げバー ----- */
+.stack { display: flex; height: 46px; border-radius: var(--radius-sm); overflow: hidden; }
+.stack > span {
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-en); font-size: 0.78rem; font-weight: 700; color: var(--white);
+  min-width: 0;
+}
+.st-red   { background: var(--red); }
+.st-azure { background: var(--azure); }
+.st-pale  { background: var(--azure-pale); color: var(--azure) !important; }
+.st-muted { background: rgba(107,122,153,0.55); }
+.st-line  { background: rgba(107,122,153,0.25); }
+.legend { display: flex; flex-wrap: wrap; gap: 0.5rem 1.1rem; margin-top: 0.9rem; }
+.legend span { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.76rem; color: var(--muted); }
+.sec-navy .legend span { color: rgba(255,255,255,0.65); }
+.legend i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+
+/* ----- v4: スキルタグ ----- */
+.tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+.tag {
+  font-size: 0.75rem; font-weight: 500;
+  padding: 4px 11px; border-radius: 999px;
+  background: var(--azure-pale); color: var(--azure);
+}
+.sec-navy .tag { background: rgba(255,255,255,0.12); color: var(--white); }
+
+
+/* ----- v4: bare（裸の戦いブロック） ----- */
+.bare {
+  position: relative;
+  margin: 2.5rem 0 0;
+  padding: 2rem 2.25rem;
+  background: linear-gradient(180deg, rgba(226,55,68,0.05) 0%, rgba(255,255,255,0) 100%), var(--white);
+  border: 1px solid rgba(226,55,68,0.28);
+  border-radius: var(--radius);
+  box-shadow: 0 2px 10px rgba(226,55,68,0.06);
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+.bare:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(226,55,68,0.12); }
+.bare::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--red) 0%, rgba(226,55,68,0) 100%);
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+.bare-label {
+  font-family: var(--font-en);
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--red); margin-bottom: 0.6rem;
+}
+.bare-title {
+  font-family: var(--font-ja-serif);
+  font-size: clamp(1.1rem, 2.6vw, 1.35rem);
+  font-weight: 500; line-height: 1.6;
+  margin-bottom: 0.9rem;
+}
+.bare-text { font-size: 0.92rem; line-height: 1.95; color: var(--ink); }
+.bare-text + .bare-text { margin-top: 0.9rem; }
+.sec-navy .bare { background: rgba(226,55,68,0.08); border-color: rgba(255,93,106,0.35); box-shadow: none; }
+.sec-navy .bare-text { color: rgba(255,255,255,0.85); }
+@media (max-width: 640px) { .bare { padding: 1.5rem 1.25rem; } }
+
+/* ----- レスポンシブ ----- */
+@media (max-width: 640px) {
+  :root { --sec-pad: 3.5rem 1rem; }
+  .vs { grid-template-columns: 1fr; }
+  .vs-label { display: none; }
+  .hero { padding: 4.5rem 1rem 3.5rem; }
+  .kicker-num { font-size: 2rem; }
+  .figure-num { font-size: 2rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- =============== HERO =============== -->
+<section class="hero">
+  <div class="hero-bg" aria-hidden="true">
+    <div class="hero-glow"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-ghost">WHY</div>
+  </div>
+
+  <div class="inner hero-inner">
+    <div class="hero-kicker" data-anim style="animation-delay:.05s">
+      <span class="hero-rule"></span>
+      <span>Career × AX ／ 2026.07</span>
+    </div>
+
+    <h1 class="hero-title" data-anim style="animation-delay:.18s">
+      AIエージェント時代の<br><span class="hero-title-em">キャリア</span>
+    </h1>
+
+    <p class="hero-lead" data-anim style="animation-delay:.32s">
+      AIが持って行ったのは「What」と「How」だった。
+    </p>
+
+    <p class="hero-copy" data-anim style="animation-delay:.44s">
+      米国と日本の雇用データを並べると、同じ変化が同じ順番で起きている。消えたのは仕事ではなく「入口」だ。
+      ハードスキルという鎧は、もう守ってくれない。ここから先は<span style="color:#ff5d6a;font-weight:700;">裸の戦い</span>——
+      残るのはWhy、つまりコンテキスト（目的設定）と、それを自分で点検できるメタ認知だけになる。
+    </p>
+
+    <div class="hero-foot" data-anim style="animation-delay:.6s">
+      <div class="hero-meta">小澤健祐（おざけん）／ AICX協会 代表理事</div>
+      <div class="hero-scroll"><span>SCROLL</span><i></i></div>
+    </div>
+  </div>
+</section>
+
+<!-- =============== 01 US =============== -->
+<section class="sec-light texture">
+  <div class="inner" data-reveal>
+    <div class="kicker">
+      <span class="kicker-num">01</span>
+      <span class="kicker-en">U.S. Reality Check</span>
+    </div>
+    <span class="eyebrow">Data</span>
+    <h2 class="sec-title">米国の失業率は下がった。なのに、若手だけが不況にいる</h2>
+    <p class="sec-sub">2026年7月2日発表の6月雇用統計と、NY連銀の若年大卒データ。この2つを並べると、変化の「形」が見える。</p>
+
+    <div class="figures">
+      <div class="figure">
+        <div class="figure-num">+5.7<span style="font-size:1.1rem;">万人</span></div>
+        <div class="figure-label">6月の非農業部門雇用者数。市場予想11.5万人を大幅に下回り、4月・5月も下方修正</div>
+        <div class="figure-src">BLS 2026.07.02</div>
+      </div>
+      <div class="figure">
+        <div class="figure-num">4.2%</div>
+        <div class="figure-label">全体の失業率。前月比0.1pt低下。ただし労働参加率も61.5%へ低下しており、退出が効いている</div>
+        <div class="figure-src">BLS</div>
+      </div>
+      <div class="figure">
+        <div class="figure-num warn">5.6%</div>
+        <div class="figure-label">22〜27歳・大卒の失業率（2026年3月）。全体より高い。学位が有利という前提が逆転した</div>
+        <div class="figure-src">NY Fed</div>
+      </div>
+      <div class="figure">
+        <div class="figure-num warn">41.5%</div>
+        <div class="figure-label">同年代の不完全就業率。大卒を必要としない仕事に就いている割合。2020年以来の高水準</div>
+        <div class="figure-src">NY Fed</div>
+      </div>
+    </div>
+
+    <div class="diagram">
+      <div class="diagram-title">図1：全体はゆるやかに減速。だが「大卒であること」の優位が消えた</div>
+      <div class="bars">
+        <div class="bar-row">
+          <div class="bar-name">全体の失業率</div>
+          <div class="bar-track"><div class="bar-fill" style="width:52.5%"></div></div>
+          <div class="bar-val">4.2%</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-name">22〜27歳・大卒</div>
+          <div class="bar-track"><div class="bar-fill warn" style="width:70%"></div></div>
+          <div class="bar-val warn">5.6%</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-name">22〜27歳・大卒なし</div>
+          <div class="bar-track"><div class="bar-fill" style="width:90%"></div></div>
+          <div class="bar-val">7.2%</div>
+        </div>
+      </div>
+      <p class="diagram-cap">
+        かつて大卒は「全体平均より低い失業率」を当たり前に享受していた。いま22〜27歳の大卒は全体より高い。
+        大卒なしとの差（1.6pt）も縮んでいる。学位が守ってくれる前提が、統計上、崩れはじめている。
+        （バー長は最大8%スケール／出典：BLS・NY Fed、2026年）
+      </p>
+    </div>
+
+    <div class="diagram">
+      <div class="diagram-title">図2：「手に職」の逆説 ― 専攻別・新卒失業率（22〜27歳）</div>
+      <div class="bars">
+        <div class="bar-row">
+          <div class="bar-name">人類学</div>
+          <div class="bar-track"><div class="bar-fill" style="width:94%"></div></div>
+          <div class="bar-val">9.4%</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-name">物理</div>
+          <div class="bar-track"><div class="bar-fill" style="width:78%"></div></div>
+          <div class="bar-val">7.8%</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-name">コンピュータ工学</div>
+          <div class="bar-track"><div class="bar-fill warn" style="width:75%"></div></div>
+          <div class="bar-val warn">7.5%</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-name">コンピュータサイエンス</div>
+          <div class="bar-track"><div class="bar-fill warn" style="width:61%"></div></div>
+          <div class="bar-val warn">6.1%</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-name">全新卒平均</div>
+          <div class="bar-track"><div class="bar-fill" style="width:39%;opacity:.55"></div></div>
+          <div class="bar-val">3.9%</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-name">美術史</div>
+          <div class="bar-track"><div class="bar-fill" style="width:30%"></div></div>
+          <div class="bar-val">3.0%</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-name">栄養科学</div>
+          <div class="bar-track"><div class="bar-fill" style="width:4%"></div></div>
+          <div class="bar-val">0.4%</div>
+        </div>
+      </div>
+      <div class="tags">
+        <span class="tag">CS：3年前は2〜3%台 → 2年で倍増</span>
+        <span class="tag">旗艦テック2専攻が上位を占有</span>
+      </div>
+      <p class="diagram-cap">
+        「learn to code（コードを学べば安泰）」の逆説。かつて鉄板だったコンピュータ工学（7.5%）・CS（6.1%）が、
+        美術史（3.0%）や栄養科学（0.4%）を大きく上回る。<strong>記述しやすく、教科書化しやすいスキルほど、真っ先にAIに乗った</strong>——
+        図5の水位論そのものが、専攻別データに出ている。なお長期ではBLSがソフト開発職を2024〜34年で15%増と予測しており、
+        「入口は詰まっているが10年の需要は強い」という二重構造。
+        （バー長は最大10%スケール／出典：NY Fed College Labor Market、2023年ACS基準。信頼区間は広く、水準より順位傾向として読むのが妥当）
+      </p>
+    </div>
+
+    <p class="body-text">
+      6月の増加ペース＋5.7万人は、直近12ヶ月平均（＋3.6万人）から大きく外れてはいない。
+      伸びの中心は専門・ビジネスサービス、ヘルスケア、社会支援。マクロで見れば「緩やかな減速」でしかない。
+      MITテクノロジーレビューが「ホワイトカラー消滅にはまだデータ上の兆候がない」と書くのも、この意味では正しい。
+      だがNY連銀のダッシュボードを開くと風景が変わる。22〜27歳の大卒だけが、
+      1990年代初頭の景気後退やドットコム崩壊のときより悪い数字を出している。
+      <span class="text-azure fw-bold">総量はまだ減っていない。だが分布は確実に変わっている</span>——両方を同時に持つのが、いま最もフェアな読み方だ。
+    </p>
+    <p class="body-text">
+      その空気を象徴したのが2026年7月13日。スタンフォード大学デジタル経済研究所が「We Must Act Now」という88語の共同声明を出した。
+      組織したのはエリック・ブリニョルフソンら。ノーベル経済学賞受賞者16名を含む200名超が署名し、数日で2,000名に迫っている。
+      これまでAIの雇用影響に懐疑的だったダロン・アセモグルまで名を連ねた。「大規模な雇用代替のリスクがある。今から備えろ」——それだけの、短い声明だ。
+    </p>
+
+    <p class="note">
+      ※ 出典：米労働省労働統計局「Employment Situation」（2026年7月2日発表、6月分）、ニューヨーク連邦準備銀行「Labor Market for Recent College Graduates」（2026年3月時点）、Stanford Digital Economy Lab「We Must Act Now」（2026年7月13日）。
+    </p>
+  </div>
+</section>
+
+<!-- =============== 02 Seniorization =============== -->
+<section class="sec-navy texture">
+  <div class="inner" data-reveal>
+    <div class="kicker">
+      <span class="kicker-num">02</span>
+      <span class="kicker-en">Seniorization</span>
+    </div>
+    <span class="eyebrow">Structure</span>
+    <h2 class="sec-title">「AIが仕事を奪った」のではない。新人の席が"シニア化"した</h2>
+    <p class="sec-sub">PwCが27カ国・10億件超の求人を読み込んで出した結論は、想像より地味で、想像よりずっと厳しい。</p>
+
+    <div class="figures">
+      <div class="figure">
+        <div class="figure-num warn">-35%</div>
+        <div class="figure-label">ナレッジワーク領域のエントリー求人（2023年1月→2025年後半）</div>
+        <div class="figure-src">Goldman Sachs</div>
+      </div>
+      <div class="figure">
+        <div class="figure-num warn">-20%</div>
+        <div class="figure-label">22〜25歳ソフトウェア開発者の雇用（2024年ピーク比）</div>
+        <div class="figure-src">Stanford AI Index 2026</div>
+      </div>
+      <div class="figure">
+        <div class="figure-num">+62%</div>
+        <div class="figure-label">AIスキル保有者の賃金プレミアム。2024年25%→2025年57%→2026年62%</div>
+        <div class="figure-src">PwC 2026</div>
+      </div>
+      <div class="figure">
+        <div class="figure-num">7×</div>
+        <div class="figure-label">求人が要求する「シニア級スキル」の伸び。ジュニア求人の要件が上方シフト</div>
+        <div class="figure-src">PwC 2026</div>
+      </div>
+    </div>
+
+    <div class="diagram">
+      <div class="diagram-title">図3：はしごは残っている。最初の一段だけが、抜けた</div>
+      <svg viewBox="0 0 720 300" role="img" aria-label="キャリアのはしごから最下段が抜けた図">
+        <!-- 左：かつて -->
+        <text class="lbe" x="30" y="24">BEFORE 2023</text>
+        <g stroke="#2e5496" stroke-width="2" fill="none">
+          <line x1="60" y1="60" x2="60" y2="270"/>
+          <line x1="230" y1="60" x2="230" y2="270"/>
+          <line x1="60" y1="90"  x2="230" y2="90"/>
+          <line x1="60" y1="150" x2="230" y2="150"/>
+          <line x1="60" y1="210" x2="230" y2="210"/>
+          <line x1="60" y1="262" x2="230" y2="262"/>
+        </g>
+        <text class="lbs" x="145" y="84"  text-anchor="middle">シニア</text>
+        <text class="lbs" x="145" y="144" text-anchor="middle">ミドル</text>
+        <text class="lbs" x="145" y="204" text-anchor="middle">ジュニア</text>
+        <text class="lbs" x="145" y="256" text-anchor="middle">エントリー（下積み）</text>
+        <circle cx="145" cy="272" r="7" fill="#2e5496"/>
+
+        <!-- 矢印 -->
+        <g stroke="#2e5496" stroke-width="2" fill="none">
+          <line x1="270" y1="165" x2="330" y2="165"/>
+          <path d="M330 165 l-9 -6 v12 z" fill="#2e5496" stroke="none"/>
+        </g>
+        <text class="lbs" x="300" y="150" text-anchor="middle">AI導入</text>
+
+        <!-- 右：いま -->
+        <text class="lbe lb-red" x="370" y="24">AFTER</text>
+        <g stroke="#2e5496" stroke-width="2" fill="none">
+          <line x1="400" y1="60" x2="400" y2="270"/>
+          <line x1="570" y1="60" x2="570" y2="270"/>
+          <line x1="400" y1="90"  x2="570" y2="90"/>
+          <line x1="400" y1="150" x2="570" y2="150"/>
+          <line x1="400" y1="210" x2="570" y2="210"/>
+        </g>
+        <!-- 抜けた段 -->
+        <line x1="400" y1="262" x2="570" y2="262" stroke="#e23744" stroke-width="2" stroke-dasharray="6 6" fill="none"/>
+        <text class="lbs" x="485" y="84"  text-anchor="middle">シニア</text>
+        <text class="lbs" x="485" y="144" text-anchor="middle">ミドル</text>
+        <text class="lbs" x="485" y="204" text-anchor="middle">ジュニア（要件がシニア級へ）</text>
+        <text class="lbs lb-red" x="485" y="256" text-anchor="middle">エントリー＝AIが担当</text>
+        <circle cx="485" cy="272" r="7" fill="none" stroke="#e23744" stroke-width="2"/>
+        <text class="lb lb-red" x="600" y="268">立てない</text>
+        <text class="lb" x="600" y="205">要件だけ</text>
+        <text class="lb" x="600" y="222">上に飛ぶ</text>
+      </svg>
+      <p class="diagram-cap">
+        求人票の数はさほど減っていない。減ったのは「最初の一段」だ。エントリーの仕事をAIが担当した結果、
+        ジュニア求人に書かれる新しいスキルの半分以上が、もともと経験者向けだったものに置き換わった。はしごは高いまま、最下段だけがない。
+      </p>
+    </div>
+
+    <div class="stepper">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h3>ルーティンがAIに剥がれる</h3>
+          <p>調査、一次ドラフト、定型コーディング、データ整形、スクリプト対応。かつて新人が最初に任された仕事が、まるごとAIの担当になった。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3>労働市場が2トラックに割れる</h3>
+          <p>AIがルーティンを吸い、人間の判断が濃くなる「専門職化トラック」と、AIによって誰でもできるようになる「民主化トラック」。前者の方が速く伸びている。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h3>育成パイプラインが詰まる</h3>
+          <p>新人が下積みで判断力を育てる場所がない。5年後のシニアがいなくなる。だからIBMはあえてエントリー採用を3倍に戻した。減少は運命ではなく、経営判断の結果だ。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="deep">
+      <h3>いちばん怖いのは「消える」ことではなく「昇る階段がない」こと</h3>
+      <p>
+        失業率という単一指標は、この変化をほとんど捉えない。求人数も大きくは減っていない。変わったのは要求水準だ。
+        つまり脅威は「職の消滅」ではなく「参入と昇進の設計の崩壊」として現れる。キャリア戦略の言葉に翻訳すると、こうなる——
+        <span class="text-azure fw-bold">これからは"下積みで自然に身につく"ものが、ひとつも身につかない</span>。身につけたければ、自分で取りに行くしかない。
+      </p>
+    </div>
+
+    <p class="note">
+      ※ 出典：PwC「2026 Global AI Jobs Barometer」（2026年6月15日／27カ国・10億件超の求人分析）、Stanford HAI「AI Index 2026」、Goldman Sachs推計（2026年4月）。図3は構造を示す概念図。
+    </p>
+  </div>
+</section>
+
+<!-- =============== 03 Japan =============== -->
+<section class="sec-light texture">
+  <div class="inner" data-reveal>
+    <div class="kicker">
+      <span class="kicker-num">03</span>
+      <span class="kicker-en">Japan Mirror</span>
+    </div>
+    <span class="eyebrow">Japan</span>
+    <h2 class="sec-title">日本でも、同じことが同じ順番で起きはじめた</h2>
+    <p class="sec-sub">「人手不足の日本は関係ない」と言われてきた。だが2026年4月、その前提が数字で崩れた。</p>
+
+    <div class="diagram">
+      <div class="diagram-title">図4：2027年度入社の新卒採用計画（主要企業111社）— 5年ぶりの逆転</div>
+      <div class="stack">
+        <span class="st-red"   style="flex:23">23%</span>
+        <span class="st-azure" style="flex:35">35%</span>
+        <span class="st-pale"  style="flex:16">16%</span>
+        <span class="st-muted" style="flex:22">22%</span>
+        <span class="st-line"  style="flex:5"></span>
+      </div>
+      <div class="legend">
+        <span><i style="background:#e23744"></i>減らす 23%（25社）</span>
+        <span><i style="background:#2e5496"></i>前年度並み 35%（39社）</span>
+        <span><i style="background:#d8e4f0"></i>増やす 16%（18社）</span>
+        <span><i style="background:rgba(107,122,153,0.55)"></i>未定 22%（24社）</span>
+        <span><i style="background:rgba(107,122,153,0.25)"></i>無回答 5%</span>
+      </div>
+      <p class="diagram-cap">
+        「減らす」は前回調査から11ポイント増。「増やす」を5年ぶりに上回った。
+        減らす理由の最多は<strong>「デジタル対応を通じた省人化」</strong>。村田製作所は「生成AIの活用をはじめとした業務効率化」、
+        積水ハウスは「即戦力のキャリア採用を強化する」と回答している。
+        （共同通信社／主要企業111社アンケート、2026年3月中旬〜4月上旬回答・4月19日発表。四捨五入のため合計は100%にならない）
+      </p>
+    </div>
+
+    <div class="figures">
+      <div class="figure">
+        <div class="figure-num">77%</div>
+        <div class="figure-label">それでも「売り手市場が続く／一段と売り手市場化している」と答えた企業</div>
+        <div class="figure-src">共同通信</div>
+      </div>
+      <div class="figure">
+        <div class="figure-num">74%</div>
+        <div class="figure-label">2026年度に初任給を引き上げる企業。人を採る気がないわけではない</div>
+        <div class="figure-src">共同通信</div>
+      </div>
+      <div class="figure">
+        <div class="figure-num warn">69.7%</div>
+        <div class="figure-label">2026年卒の採用充足率（内定者数／募集人数）。4年連続減で過去最低</div>
+        <div class="figure-src">マイナビ</div>
+      </div>
+      <div class="figure">
+        <div class="figure-num warn">38%</div>
+        <div class="figure-label">「人手不足を感じている」企業。「感じていない」37%とほぼ同数まで接近</div>
+        <div class="figure-src">共同通信</div>
+      </div>
+    </div>
+
+    <p class="body-text">
+      人手が足りないと言い、初任給を上げ、それでも新卒は減らす。矛盾しているように見えて、していない。
+      <span class="fw-bold">足りないのは「人手」ではなく「即戦力」になった</span>——米国のシニア化とまったく同じ現象が、日本語で語られているだけだ。
+    </p>
+
+    <div class="vs">
+      <div class="vs-card">
+        <span class="vs-badge pos">米国（先行）</span>
+        <h3>入口の要件が上に飛んだ</h3>
+        <p>ジュニア求人にシニア級スキルを要求。22〜27歳大卒の失業率5.6%、不完全就業41.5%。パイプラインが詰まる。</p>
+      </div>
+      <div class="vs-label">≒</div>
+      <div class="vs-card">
+        <span class="vs-badge pos">日本（追随）</span>
+        <h3>新卒一括採用の前提が壊れた</h3>
+        <p>「退職者の補充として新卒を採る」という発想が省人化で消え、キャリア採用に振り替わる。減らす理由の1位が省人化。</p>
+      </div>
+    </div>
+
+    <p class="note">
+      ※ 出典：共同通信社「2027年度入社の新卒採用に関するアンケート」（主要企業111社／2026年4月19日発表）、マイナビ「2026年卒 企業新卒内定状況調査」。個別企業の削減幅は報道により数値が異なるため、一次調査で確認できた範囲のみ記載。
+    </p>
+  </div>
+</section>
+
+<!-- =============== 04 Why vs What =============== -->
+<section class="sec-navy texture">
+  <div class="inner" data-reveal>
+    <div class="kicker">
+      <span class="kicker-num">04</span>
+      <span class="kicker-en">Why vs What</span>
+    </div>
+    <span class="eyebrow">Core Concept</span>
+    <h2 class="sec-title">AIが持って行ったのは「What」と「How」。残ったのは「Why」だけだ</h2>
+    <p class="sec-sub">ここが本資料の骨格。この線の引き方さえ間違えなければ、キャリアの投資判断はほとんど自動的に決まる。</p>
+
+    <div class="diagram">
+      <div class="diagram-title">図5：AIの水位は、下から上がってくる</div>
+      <svg viewBox="0 0 720 350" role="img" aria-label="Why・What・Howの3層とAIの水位">
+        <!-- 層 -->
+        <g>
+          <rect x="40" y="26" width="430" height="78" rx="8" fill="rgba(255,255,255,0.10)" stroke="#d8e4f0" stroke-width="1.5"/>
+          <text class="lbe" x="62" y="58" style="font-size:15px;">WHY</text>
+          <text class="lb" x="128" y="58">なぜやるのか（目的・意味）</text>
+          <text class="lbs" x="62" y="82">誰の何を、なぜ変えたいのか。良し悪しの基準。記述されていない。</text>
+
+          <rect x="40" y="124" width="430" height="78" rx="8" fill="rgba(255,255,255,0.10)" stroke="#d8e4f0" stroke-width="1.5"/>
+          <text class="lbe" x="62" y="156" style="font-size:15px;">WHAT</text>
+          <text class="lb" x="140" y="156">何をやるのか（課題・成果物）</text>
+          <text class="lbs" x="62" y="180">課題の「選択」は人間側。中身の「生成」はAI側。線がこの層を走る。</text>
+
+          <rect x="40" y="222" width="430" height="78" rx="8" fill="rgba(255,255,255,0.10)" stroke="#d8e4f0" stroke-width="1.5"/>
+          <text class="lbe" x="62" y="254" style="font-size:15px;">HOW</text>
+          <text class="lb" x="128" y="254">どうやるのか（手段・技術）</text>
+          <text class="lbs" x="62" y="278">手順・ツール操作・実装・体裁。記述できる＝学習データになる。</text>
+        </g>
+
+        <!-- 水 -->
+        <rect x="0" y="163" width="720" height="187" fill="#2e5496" opacity="0.55"/>
+        <line x1="0" y1="163" x2="720" y2="163" stroke="#ff5d6a" stroke-width="2" stroke-dasharray="8 6"/>
+
+        <!-- 注釈 -->
+        <text class="lb lb-red" x="492" y="156" style="font-weight:700;">AIの水位（2026年）</text>
+        <text class="lb" x="492" y="58">人間の担当区</text>
+        <text class="lbs" x="492" y="80">記述できない＝学習できない</text>
+        <text class="lb" x="492" y="254" fill="#ffffff">AIの担当区</text>
+        <text class="lbs" x="492" y="276" fill="rgba(255,255,255,0.75)">記述できる＝すでに沈んだ</text>
+
+        <!-- 上昇矢印 -->
+        <g stroke="#ff5d6a" stroke-width="2" fill="none">
+          <line x1="690" y1="300" x2="690" y2="196"/>
+          <path d="M690 190 l-7 12 h14 z" fill="#ff5d6a" stroke="none"/>
+        </g>
+        <text class="lbs lb-red" x="676" y="322" text-anchor="middle">上昇中</text>
+      </svg>
+      <p class="diagram-cap">
+        水位が上がる順番は決まっている。<strong>記述できるものから沈む</strong>——マニュアルになる、学習データになる、再現される。
+        Howはすでに水面下。Whatは半分沈んだ。Whyだけが、記述されないがゆえに水面上に残っている。
+      </p>
+    </div>
+
+    <div class="vs">
+      <div class="vs-card">
+        <span class="vs-badge neg">What思考の人</span>
+        <h3>依頼を、正確にこなす</h3>
+        <p>「議事録を作って」に対して、完璧な議事録を出す。速い、正確、丁寧。——それはAIが、より速く、より正確に、24時間やる。同じ土俵に立っている。</p>
+      </div>
+      <div class="vs-label">vs</div>
+      <div class="vs-card">
+        <span class="vs-badge pos">Why思考の人</span>
+        <h3>依頼そのものを、疑う</h3>
+        <p>「この議事録は誰が何を決めるために読むのか」を先に確認し、必要なら「議事録ではなく決裁メモにしましょう」と依頼を書き換える。AIに指示を出す側に立っている。</p>
+      </div>
+    </div>
+
+    <div class="deep">
+      <h3>渡せるのは「労働」と「仕事」まで。「活動」は原理的に渡せない</h3>
+      <p>
+        ハンナ・アーレントは人間の営みを労働・仕事・活動の3つに分けた。生命を維持するための労働、物をつくる仕事、そして自分の意志で何かを始める活動。
+        AIに渡せるのは前の2つ、つまりHowとWhatの側だけだ。活動＝「始めること」は、渡した瞬間に誰のものでもなくなる。
+        私はこの重心移動を「パーパスシフト（目的シフト）」と呼んでいる。キャリアの言葉に直せば——
+        <span class="text-azure fw-bold">目的を持たない人から順に、代替される</span>。逆に言えば、目的さえ持っていればHowは全部AIが埋めてくれる時代でもある。
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- =============== 05 Depreciation =============== -->
+<section class="sec-light texture">
+  <div class="inner" data-reveal>
+    <div class="kicker">
+      <span class="kicker-num">05</span>
+      <span class="kicker-en">Depreciation</span>
+    </div>
+    <span class="eyebrow">Skill Shift</span>
+    <h2 class="sec-title">ハードスキルは「資産」から「減価償却資産」になった</h2>
+    <p class="sec-sub">習得に3年かかるスキルの寿命が18ヶ月なら、その投資は構造的に回収できない。努力の問題ではなく、算数の問題だ。そして鎧が減価しきったとき、戦いは裸になる。</p>
+
+    <div class="diagram">
+      <div class="diagram-title">図6：減価するもの／複利で積み上がるもの</div>
+      <svg viewBox="0 0 720 300" role="img" aria-label="ハードスキルの減価とコンテキストの複利成長">
+        <!-- 軸 -->
+        <line x1="60" y1="30" x2="60" y2="255" stroke="#6b7a99" stroke-width="1.5"/>
+        <line x1="60" y1="255" x2="690" y2="255" stroke="#6b7a99" stroke-width="1.5"/>
+        <text class="lbs" x="52" y="26" text-anchor="end">市場価値</text>
+        <text class="lbs" x="690" y="276" text-anchor="end">経験年数 →</text>
+        <!-- グリッド -->
+        <g stroke="rgba(46,84,150,0.10)" stroke-width="1">
+          <line x1="60" y1="90" x2="690" y2="90"/>
+          <line x1="60" y1="150" x2="690" y2="150"/>
+          <line x1="60" y1="210" x2="690" y2="210"/>
+        </g>
+        <!-- 曲線 -->
+        <polyline points="60,70 160,120 260,160 360,188 460,207 560,222 680,235"
+          fill="none" stroke="#e23744" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+        <polyline points="60,248 160,243 260,234 360,222 460,207 560,160 680,55"
+          fill="none" stroke="#2e5496" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+        <!-- 交点 -->
+        <line x1="460" y1="207" x2="460" y2="255" stroke="#1a1a2e" stroke-width="1" stroke-dasharray="4 4"/>
+        <circle cx="460" cy="207" r="6" fill="#ffffff" stroke="#1a1a2e" stroke-width="2"/>
+        <text class="lb" x="460" y="196" text-anchor="middle" style="font-weight:700;">逆転点</text>
+        <!-- ラベル -->
+        <text class="lb lb-red" x="680" y="226" text-anchor="end">ハードスキル（What／How）</text>
+        <text class="lbs lb-red" x="680" y="244" text-anchor="end">減価する＝在庫</text>
+        <text class="lb" x="680" y="42" text-anchor="end" style="fill:#2e5496;font-weight:700;">コンテキスト（Why）</text>
+        <text class="lbs" x="680" y="76" text-anchor="end" style="fill:#2e5496;">複利で積み上がる＝生産設備</text>
+      </svg>
+      <p class="diagram-cap">
+        概念図。ハードスキルは習得直後がピークで、そこから陳腐化が始まる（6ヶ月前の正解が今日の不正解になる）。
+        コンテキストは立ち上がりが遅く、しばらく報われない。だが減価しないので、ある時点で必ず逆転する。
+        <strong>問題は、多くの人が逆転点の手前で投資先を間違え続けること</strong>だ。
+      </p>
+    </div>
+
+    <div class="vs">
+      <div class="vs-card">
+        <span class="vs-badge neg">What／How 側</span>
+        <h3>ハードスキル＝「できる」</h3>
+        <p>特定ツールの操作、定型的な設計・実装、資格で測れる知識、調べれば出てくる手続き。再現可能で、言語化され、教科書にできる。だから学習データになり、AIに乗る。<strong>在庫であって、生産設備ではない。</strong></p>
+      </div>
+      <div class="vs-label">vs</div>
+      <div class="vs-card">
+        <span class="vs-badge pos">Why 側</span>
+        <h3>コンテキスト＝「決められる」</h3>
+        <p>何のためにやるかを設定する力。誰が困っていて、何が制約で、どこまでが許容範囲かを知っていること。出力を「これは違う」と却下できる基準。現場の側にしかなく、減価しない。<strong>これが生産設備。</strong></p>
+      </div>
+    </div>
+
+    <p class="body-text mt-lg">
+      誤読してほしくないのは、<span class="fw-bold">「ハードスキルが不要になった」ではない</span>ということ。
+      AIスキルの賃金プレミアムが62%まで伸びている事実は、技術が要らないのではなく、技術が
+      <span class="text-azure fw-bold">「差別化要因」から「前提条件」に降格した</span>ことを意味する。
+      前提を満たしていない人はそもそも土俵に上がれず、満たしただけの人はそこで差がつかない。Howを持っていることは、入場券であって、勝ち筋ではなくなった。
+      現場に入って毎回思うのは、AI活用がうまい人は最初の3分を目的の定義に使い、下手な人は最初の3秒で「作って」と打つ、ということだ。差はプロンプトではなく、そこにある。
+    </p>
+
+    <div class="bare">
+      <div class="bare-label">Naked Fight</div>
+      <h3 class="bare-title">ハードスキルは鎧だった。AIが同じ鎧を、全員に無料で配った。</h3>
+      <p class="bare-text">
+        学歴、資格、ツールの習熟、業界知識。私たちはそれを身につけることを「武装」と呼んできた。厚い鎧を着た人が強かったのは、
+        鎧が希少だったからだ。だが2026年、AIは同じ鎧を、誰にでも、無料で、即座に配りはじめた。全員が同じ鎧を着た瞬間、鎧は防具ではなくなる。
+        <span class="fw-bold">ハードスキルで戦えないとは、そういう意味だ。これは、裸の戦いになる。</span>
+      </p>
+      <p class="bare-text">
+        裸の戦いで残るのは、鎧の厚さではなく、素の身体そのもの——何に怒り、何に惚れ、何のために立っているのか。
+        怖い話に聞こえるが、逆でもある。鎧が配られたということは、<span class="text-azure fw-bold">鎧を買う金がなかった人も、同じ土俵に立てるようになった</span>ということだ。
+        裸の戦いは、実は史上いちばんフェアな戦いでもある。問題はただひとつ、裸で立ったときに、自分に何が残っているかを知っているかどうかだ。
+      </p>
+    </div>
+
+    <p class="body-text mt-lg">
+      「厚い鎧＝最強のはず」の代表格が、いま揺れている事実も添えておく。
+      ハーバードMBAは、3ヶ月後も未就職の割合が2022年の10%から2024年には23%へ上昇した（ウォートン20%、スタンフォード22%という報道も）。
+      セーフティネットだったコンサル大量採用が縮み、マッキンゼーはあるトップ校からのMBA採用を71人→33人へ半減させている。2025年卒はやや持ち直したが、ピーク水準には戻っていない。
+      技術系はさらに象徴的で、NY連銀のデータでは<span class="fw-bold">コンピュータ工学7.5%・CS6.1%の新卒失業率が、美術史3.0%を大きく上回る</span>（図2）。
+      MBAという最上位の鎧も、CSという「手に職」の鎧も、単体では守ってくれなくなった。これが裸の戦いの、いちばん分かりやすい証拠だ。
+    </p>
+  </div>
+</section>
+
+<!-- =============== 06 総合職 =============== -->
+<section class="sec-navy texture">
+  <div class="inner" data-reveal>
+    <div class="kicker">
+      <span class="kicker-num">06</span>
+      <span class="kicker-en">The Generalist</span>
+    </div>
+    <span class="eyebrow">Reappraisal</span>
+    <h2 class="sec-title">AI時代に効く職能は、実は「総合職」だった</h2>
+    <p class="sec-sub">「専門性がない」「ジョブ型に負ける」と20年批判され続けた日本の総合職。その職務内容を切り出すと、水面上に残った領域とほぼ完全に重なる。</p>
+
+    <div class="diagram">
+      <div class="diagram-title">図7：総合職＝部門もAIも横断して「なぜ」を接続するハブ</div>
+      <svg viewBox="0 0 720 380" role="img" aria-label="総合職を中心としたハブ＆スポーク図">
+        <!-- スポーク -->
+        <g stroke="#d8e4f0" stroke-width="1.5" opacity="0.7">
+          <line x1="360" y1="190" x2="360" y2="58"/>
+          <line x1="360" y1="190" x2="474" y2="124"/>
+          <line x1="360" y1="190" x2="474" y2="256"/>
+          <line x1="360" y1="190" x2="360" y2="322"/>
+          <line x1="360" y1="190" x2="246" y2="256"/>
+          <line x1="360" y1="190" x2="246" y2="124"/>
+        </g>
+        <!-- サテライト -->
+        <g>
+          <circle cx="360" cy="58"  r="26" fill="#141d35" stroke="#d8e4f0" stroke-width="1.5"/>
+          <circle cx="474" cy="124" r="26" fill="#141d35" stroke="#d8e4f0" stroke-width="1.5"/>
+          <circle cx="474" cy="256" r="26" fill="#d8e4f0"/>
+          <circle cx="360" cy="322" r="26" fill="#141d35" stroke="#d8e4f0" stroke-width="1.5"/>
+          <circle cx="246" cy="256" r="26" fill="#d8e4f0"/>
+          <circle cx="246" cy="124" r="26" fill="#141d35" stroke="#d8e4f0" stroke-width="1.5"/>
+        </g>
+        <text class="lb" x="360" y="24" text-anchor="middle">経営・意思決定</text>
+        <text class="lb" x="510" y="122" text-anchor="start">顧客・現場</text>
+        <text class="lb" x="510" y="254" text-anchor="start">AIエージェント</text>
+        <text class="lbs" x="510" y="272" text-anchor="start">（Howを実行）</text>
+        <text class="lb" x="360" y="366" text-anchor="middle">法務・管理</text>
+        <text class="lb" x="210" y="254" text-anchor="end">AIエージェント</text>
+        <text class="lbs" x="210" y="272" text-anchor="end">（Whatを生成）</text>
+        <text class="lb" x="210" y="122" text-anchor="end">開発・製造</text>
+        <!-- ハブ -->
+        <circle cx="360" cy="190" r="54" fill="#2e5496"/>
+        <text x="360" y="184" text-anchor="middle" fill="#ffffff" style="font-family:var(--font-ja-serif);font-size:16px;">総合職</text>
+        <text x="360" y="206" text-anchor="middle" fill="rgba(255,255,255,0.8)" style="font-family:var(--font-en);font-size:11px;font-weight:700;letter-spacing:0.08em;">WHY HUB</text>
+      </svg>
+      <p class="diagram-cap">
+        AIエージェントが増えるほど、ノードは増える。増えたノードを「何のために」でつなぐ結節点は、誰かが人間としてやるしかない。
+        この結節点の職務記述書を書くと、それはほぼそのまま総合職の説明になる。
+      </p>
+    </div>
+
+    <p class="body-text">
+      総合職という言葉は雑すぎるので、職務内容を6つに切り出す。この6つは、そのままAI時代のポータブルスキルとして名乗れる。
+    </p>
+
+    <div class="cards">
+      <div class="card">
+        <h3>① 状況の解像度</h3>
+        <p>誰が何にどう困っているか。組織の政治、予算の出所、決裁者の関心、現場の面倒くささ。ドキュメントに書かれない一次情報の総量。<br><span class="tag" style="margin-top:.6rem;display:inline-block;">Why の入力</span></p>
+      </div>
+      <div class="card">
+        <h3>② 目的の設定</h3>
+        <p>解ける問題ではなく、解くべき問題を選ぶ。AIは与えられた問いには驚くほど強いが、問いを立てる動機を持たない。<br><span class="tag" style="margin-top:.6rem;display:inline-block;">Why の本体</span></p>
+      </div>
+      <div class="card">
+        <h3>③ 検証の基準</h3>
+        <p>出力を「これは違う」と却下できること。AIを疑うには参照点が要り、参照点は失敗の履歴にしかない。<br><span class="tag" style="margin-top:.6rem;display:inline-block;">Why の出力管理</span></p>
+      </div>
+      <div class="card">
+        <h3>④ 文脈翻訳</h3>
+        <p>営業の言葉を開発の言葉に、現場の言葉を経営の言葉に変える。同じ日本語なのに通じない場所に、意味を通す。AIには前提の共有ができない。<br><span class="tag" style="margin-top:.6rem;display:inline-block;">越境</span></p>
+      </div>
+      <div class="card">
+        <h3>⑤ 合意形成</h3>
+        <p>利害が違う人間を、ひとつの目的に束ねる。ここで必要なのは正しさではなく、誰が何を諦められるかの読み。生成AIが最も苦手な領域。<br><span class="tag" style="margin-top:.6rem;display:inline-block;">越境</span></p>
+      </div>
+      <div class="card">
+        <h3>⑥ 全体設計</h3>
+        <p>部分最適の総和は全体最適にならない。各部門とAIエージェントの出力を、ひとつの成果に統合する。AIエージェント時代のオーケストレーションそのもの。<br><span class="tag" style="margin-top:.6rem;display:inline-block;">統合</span></p>
+      </div>
+    </div>
+
+    <div class="take">
+      <div class="take-avatar">OK</div>
+      <div class="take-body">
+        <div class="take-label">Ozaken's One Point</div>
+        <div class="take-author">小澤健祐（おざけん）</div>
+        <p class="take-text">
+          はっきり逆張りを言う。「ジョブ型こそ正解、総合職は時代遅れ」——この10年の合唱は、AIエージェントの登場で前提が壊れた。
+          ジョブ型とは職務を切り出して定義することだが、<span class="hot">切り出して定義できた職務から順に、AIに渡せる</span>。
+          職務記述書がきれいに書ける仕事ほど、そのままエージェントの仕様書になる。
+          逆に、総合職の「なんでもやる」「間をつなぐ」という曖昧さは、記述できないがゆえに残った。
+          20年バカにされてきた曖昧さが、いちばん代替されにくい資産に化けた。これが2026年の現実だ。
+        </p>
+      </div>
+    </div>
+
+    <div class="deep">
+      <h3>ただし「選抜のしかた」は1ミリも擁護しない</h3>
+      <p>
+        誤解を招かないように線を引く。守るべきは総合職の<strong>職務内容</strong>（越境・翻訳・合意形成・全体設計）であって、
+        新卒一括採用という<strong>入口の設計</strong>ではない。均一な物差しで並べて上から採る方式は、
+        AIが最も得意な"均一な優秀さ"を選抜しているだけで、Whyを選抜していない。
+        <span class="text-azure fw-bold">中身は最強、入口は最弱</span>——この矛盾を放置したまま採用数だけ絞るのが、いまの日本企業だ。
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- =============== 07 Beyond Exams =============== -->
+<section class="sec-light texture">
+  <div class="inner" data-reveal>
+    <div class="kicker">
+      <span class="kicker-num">07</span>
+      <span class="kicker-en">Beyond Exams</span>
+    </div>
+    <span class="eyebrow">Learning Model</span>
+    <h2 class="sec-title">受験みたいな均一の物差しでは、Whyは手に入らない</h2>
+    <p class="sec-sub">当たり前の話をする。均一な基準で測れるものは、記述できるものだ。記述できるものは、すでにAIのものだ。</p>
+
+    <div class="diagram">
+      <div class="diagram-title">図8：均一な基準で測った「優秀さ」は、AIの得意領域とほぼ重なる</div>
+      <svg viewBox="0 0 720 300" role="img" aria-label="受験型の優秀さとAIの得意領域のベン図">
+        <circle cx="290" cy="160" r="105" fill="#2e5496" opacity="0.16" stroke="#2e5496" stroke-width="2"/>
+        <circle cx="410" cy="160" r="105" fill="#e23744" opacity="0.12" stroke="#e23744" stroke-width="2"/>
+        <text class="lb" x="215" y="40" text-anchor="middle" style="font-weight:700;">受験型の「優秀さ」</text>
+        <text class="lbs" x="215" y="58" text-anchor="middle">正解到達の速さ・正確さ・網羅性</text>
+        <text class="lb lb-red" x="490" y="40" text-anchor="middle" style="font-weight:700;">AIの得意領域</text>
+        <text class="lbs" x="490" y="58" text-anchor="middle">記述された正解の再現</text>
+        <text class="lb" x="350" y="158" text-anchor="middle" style="font-weight:700;">ほぼ</text>
+        <text class="lb" x="350" y="180" text-anchor="middle" style="font-weight:700;">一致</text>
+        <!-- Why -->
+        <circle cx="622" cy="160" r="52" fill="#d8e4f0" stroke="#2e5496" stroke-width="2"/>
+        <text class="lbe" x="622" y="158" text-anchor="middle" style="font-size:16px;">WHY</text>
+        <text class="lbs" x="622" y="178" text-anchor="middle">固有の体験</text>
+        <text class="lbs" x="622" y="240" text-anchor="middle">ここだけが重ならない</text>
+        <line x1="516" y1="160" x2="566" y2="160" stroke="#6b7a99" stroke-width="1.5" stroke-dasharray="5 5"/>
+      </svg>
+      <p class="diagram-cap">
+        均一の基準で他人と競うほど、比較対象がAIに近づいていく。皮肉だが、<strong>偏差値的な優秀さほど、AIとの重複率が高い</strong>。
+        重ならないのは、体験からしか生えてこない固有の問い＝Whyだけだ。
+      </p>
+    </div>
+
+    <div class="two-col">
+      <div class="two-col-item">
+        <h3>受験モデル（均一基準／What型）</h3>
+        <p>
+          正解は自分の外にある。物差しは全員共通。評価は減点法。目的は与えられ、疑わないことが前提。
+          効率よく正解に到達する能力を測る。——これはAIが人類最高峰の性能を出す領域そのものだ。
+        </p>
+      </div>
+      <div class="two-col-item">
+        <h3>体験モデル（固有基準／Why型）</h3>
+        <p>
+          問いは自分の内側から出る。物差しは自分でつくる。評価は加点法。
+          何が「嫌だ」で何が「面白い」かを知っている状態そのものが資産になる。代替不能性の正体は、能力の高さではなく、来歴の固有さだ。
+        </p>
+      </div>
+    </div>
+
+    <p class="body-text mt-lg">
+      Whyは学べない。Whyは、当事者になった回数からしか生えてこない。だから「体験」が経済的な価値を持ちはじめている。娯楽としてではなく、資産として。
+      そして体験に必要な条件は、次の3つだけだ。
+    </p>
+
+    <div class="cards mt-lg">
+      <div class="card">
+        <h3>当事者性を持てる場</h3>
+        <p>他人事の課題からは目的は生まれない。自分が痛い、自分が悔しい、自分が惚れた。その一次感情だけが問いの燃料になる。</p>
+      </div>
+      <div class="card">
+        <h3>失敗が返ってくる場</h3>
+        <p>正解を教わる場ではなく、判断して結果を食らう場。検証基準は失敗の履歴からしか育たない。守られた環境に判断力は生まれない。</p>
+      </div>
+      <div class="card">
+        <h3>越境する場</h3>
+        <p>ひとつの物差ししかない環境にいると、物差し自体を疑えない。異業種・異世代・異文化との接触が、目的の選択肢を増やす。</p>
+      </div>
+    </div>
+
+    <h3 class="sub-head">実証：フリーランス市場は、いま「均一な仕事」から順に消えている</h3>
+    <p class="body-text">
+      この「均一なもの＝AIに沈む／固有なもの＝残る」は、フリーランス市場でリアルタイムに観測できる。
+      いちばん記述しやすい＝均一な仕事から蒸発し、専門特化＝固有な仕事に価値が寄る。二極化がそのまま数字に出ている。
+    </p>
+
+    <div class="vs">
+      <div class="vs-card">
+        <span class="vs-badge neg">消えていく（均一）</span>
+        <h3>コモディティ仕事は蒸発</h3>
+        <p>Upworkのライティング案件は2025年に前年比32%減（全カテゴリー最大）。エントリー案件は15%→9%未満へ。翻訳・基礎コーディングも縮小。Fiverrはアクティブ購入者13.6%減で、2025年9月に人員の約30%を削減。</p>
+      </div>
+      <div class="vs-label">→</div>
+      <div class="vs-card">
+        <span class="vs-badge pos">伸びていく（固有）</span>
+        <h3>専門特化に価値が寄る</h3>
+        <p>買い手あたり支出は8.3%増（客は減ったが単価は上昇）。プラットフォーム成長の52%がAI関連の仕事。フィンテックライターは1ワード$0.95、ホワイトペーパー専門は月$6,000超。「量」ではなく「固有の視点」に値がつく。</p>
+      </div>
+    </div>
+
+    <p class="body-text mt-lg">
+      あるアナリストの一節が、この記事の「記述できるものから沈む」を言い当てている——
+      <span class="text-azure fw-bold">小さく、スコープが明確で、デジタルな仕事は、もう防御できない</span>。
+      裏を返せば、スコープを明確に書けない仕事＝あなたの来歴と目的が埋め込まれた仕事だけが残る、ということだ。
+      受験型の「速く正確に納品する力」は、まさにここで真っ先に価格を失っている。
+    </p>
+
+    <p class="note">
+      ※ 出典：Vollna Upwork Market Report、Upwork／Fiverr 2025〜2026年決算、Brookings Institution・Wharton（Raj, 2024）等の分析。数値は各社・各調査の公表時点のもの。
+    </p>
+  </div>
+</section>
+
+<!-- =============== 08 Metacognition =============== -->
+<section class="sec-navy texture">
+  <div class="inner" data-reveal>
+    <div class="kicker">
+      <span class="kicker-num">08</span>
+      <span class="kicker-en">Metacognition</span>
+    </div>
+    <span class="eyebrow">Engine</span>
+    <h2 class="sec-title">体験は、そのままではWhyにならない</h2>
+    <p class="sec-sub">体験をコンテキストに変換する装置がメタ認知だ。ここが抜けたまま歳を重ねると、増えるのは経験年数だけになる。</p>
+
+    <div class="diagram">
+      <div class="diagram-title">図9：体験 → メタ認知 → Why のループ</div>
+      <svg viewBox="0 0 720 380" role="img" aria-label="体験からWhyが育つメタ認知のループ図">
+        <defs>
+          <marker id="ah" viewBox="0 0 10 8" refX="9" refY="4" markerWidth="9" markerHeight="7" orient="auto">
+            <path d="M0,0 L10,4 L0,8 z" fill="#d8e4f0"/>
+          </marker>
+          <marker id="ahr" viewBox="0 0 10 8" refX="9" refY="4" markerWidth="9" markerHeight="7" orient="auto">
+            <path d="M0,0 L10,4 L0,8 z" fill="#ff5d6a"/>
+          </marker>
+        </defs>
+
+        <!-- 循環矢印 -->
+        <g fill="none" stroke="#d8e4f0" stroke-width="1.8" opacity="0.85">
+          <path d="M370,78 A 150,150 0 0 1 500,178" marker-end="url(#ah)"/>
+          <path d="M500,202 A 150,150 0 0 1 372,300" marker-end="url(#ah)"/>
+          <path d="M350,302 A 150,150 0 0 1 222,204" marker-end="url(#ah)"/>
+          <path d="M220,178 A 150,150 0 0 1 348,78" marker-end="url(#ah)"/>
+        </g>
+
+        <!-- 空回りループ -->
+        <path d="M266,30 C196,6 176,64 264,58" fill="none" stroke="#ff5d6a" stroke-width="1.8" stroke-dasharray="5 5" marker-end="url(#ahr)"/>
+        <text class="lbs lb-red" x="176" y="92" text-anchor="middle">メタ認知ゼロだと</text>
+        <text class="lbs lb-red" x="176" y="108" text-anchor="middle">ここで空回りする</text>
+
+        <!-- ノード -->
+        <g>
+          <rect x="270" y="16" width="180" height="58" rx="8" fill="#141d35" stroke="#d8e4f0" stroke-width="1.5"/>
+          <text class="lb" x="360" y="42" text-anchor="middle" style="font-weight:700;">① 体験する</text>
+          <text class="lbs" x="360" y="60" text-anchor="middle">当事者として決めて、結果を食らう</text>
+
+          <rect x="505" y="161" width="190" height="58" rx="8" fill="#141d35" stroke="#d8e4f0" stroke-width="1.5"/>
+          <text class="lb" x="600" y="187" text-anchor="middle" style="font-weight:700;">② 距離をとって見る</text>
+          <text class="lbs" x="600" y="205" text-anchor="middle">他人の判断のように眺める</text>
+
+          <rect x="270" y="306" width="180" height="58" rx="8" fill="#141d35" stroke="#d8e4f0" stroke-width="1.5"/>
+          <text class="lb" x="360" y="332" text-anchor="middle" style="font-weight:700;">③ 前提を言葉にする</text>
+          <text class="lbs" x="360" y="350" text-anchor="middle">なぜ正しいと思ったのか</text>
+
+          <rect x="25" y="161" width="190" height="58" rx="8" fill="#2e5496"/>
+          <text class="lb" x="120" y="187" text-anchor="middle" fill="#ffffff" style="font-weight:700;">④ 基準になる＝Why</text>
+          <text class="lbs" x="120" y="205" text-anchor="middle" fill="rgba(255,255,255,0.8)">却下できる参照点が増える</text>
+        </g>
+
+        <!-- 中心 -->
+        <text class="lbe" x="360" y="182" text-anchor="middle" style="font-size:13px;">METACOGNITION</text>
+        <text class="lbs" x="360" y="202" text-anchor="middle">体験を資産に変える装置</text>
+      </svg>
+      <p class="diagram-cap">
+        同じ10年でも、ループが回った人と回らなかった人ではWhyの蓄積量が桁で変わる。
+        <strong>体験の量ではなく、体験を言語化した回数がコンテキストの残高になる</strong>。図6の「複利で積み上がる線」の正体は、これだ。
+      </p>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <h3>① 距離をとる</h3>
+        <p>自分の判断を、他人の判断のように眺める。渦中にいる自分と、それを見ている自分を分ける。この二重化ができないと、感情がそのまま結論になる。</p>
+      </div>
+      <div class="card">
+        <h3>② 前提を出す</h3>
+        <p>「なぜそれを正しいと思ったのか」を言葉にする。前提が見えれば、前提を疑える。AIに指示するときの精度も、ここで決まる。</p>
+      </div>
+      <div class="card">
+        <h3>③ 更新する</h3>
+        <p>外れたときに、基準そのものを書き換える。負けを「運が悪かった」で処理する人は、何回体験しても基準が育たない。</p>
+      </div>
+    </div>
+
+    <div class="deep">
+      <h3>AIは、自分が間違っていることに気づけない</h3>
+      <p>
+        LLMは自信を持って誤る。自分の出力を外側から点検する装置を、原理的に内蔵していないからだ。
+        つまりAIエージェントを何体並べても、<span class="text-azure fw-bold">ループの最後に「本当にこれでいいのか」と問える主体は、人間側にしかいない</span>。
+        メタ認知は、AI時代の最終防衛線だ。そしてここでも受験モデルは効かない。受験は「解く」訓練であって、
+        「自分の解き方を疑う」訓練ではないからだ。解答用紙には、なぜその解法を選んだかを書く欄がない。
+        図7の総合職スキル（④文脈翻訳・⑤合意形成）も、自分の部門の常識を相対化するメタ認知なしには成立しない。
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- =============== 09 Action =============== -->
+<section class="sec-light texture">
+  <div class="inner" data-reveal>
+    <div class="kicker">
+      <span class="kicker-num">09</span>
+      <span class="kicker-en">Action Design</span>
+    </div>
+    <span class="eyebrow">How</span>
+    <h2 class="sec-title">キャリアの投資先を、5つだけ組み替える</h2>
+    <p class="sec-sub">抽象論で終わらせないために。今日から実行できる粒度に落とす。</p>
+
+    <div class="stepper">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h3>Howは"満たすもの"として最速で満たす</h3>
+          <p>AIスキルは差別化要因ではなく前提条件。深追いも回避もせず、要求水準を淡々とクリアする。ここに人生を賭けない。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3>「一次情報が取れる現場」を1つ確保する</h3>
+          <p>Whyはドキュメントの外にしかない。副業でも社内異動でもいい。生身の顧客の困りごとに触れる導線を持つ。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h3>下積みを"自分で発注"する</h3>
+          <p>かつて上司が与えてくれた「判断して失敗する機会」は、もう自動供給されない。米国のパイプライン断絶がそれを証明している。自分で小さく企画し、自分で決め、自分で刈り取る。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h3>週に15分、ループを回す時間を固定する</h3>
+          <p>図9のメタ認知は、放っておくと回らない。「今週いちばん外した判断」を1つ選び、前提を書き出す。AIの出力を何回・どんな根拠で却下したかも、ここに記録する。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <h3>総合職スキルを、名前をつけて棚卸しする</h3>
+          <p>「なんでもやってきました」は市場で0点。図7の6項目に分解し、「文脈翻訳」「合意形成」「全体設計」と名前をつけて実績を紐づける。切り出せない価値も、言語化はできる。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="take">
+      <div class="take-avatar">OK</div>
+      <div class="take-body">
+        <div class="take-label">Ozaken's One Point</div>
+        <div class="take-author">小澤健祐（おざけん）</div>
+        <p class="take-text">
+          キャリアに効く投資は、資格でもMBAでもなく<span class="hot">「80点で世に出す回数」</span>だ。
+          私は「80点で動かして現場で磨く」を10年やってきた。完璧な100点を目指した企画より、80点で出して怒られた企画のほうが、圧倒的に多くのWhyを残した。
+          ただし条件がある。出したあとに、必ず振り返って言語化すること。80点で出しっぱなしなら、それはただの雑な仕事だ。
+          80点で出す勇気と、出したあとに自分を疑うメタ認知。この2つはセットでしか機能しない。
+        </p>
+      </div>
+    </div>
+
+    <h3 class="sub-head">最後に、自分に投げる4つの問い</h3>
+    <p class="body-text">この4つに具体名詞で答えられるなら、市場がどう荒れてもポジションは残る。</p>
+
+    <div class="cards">
+      <div class="card">
+        <h3>Q1. あなたの仕事のWhyは、誰が決めているか</h3>
+        <p>与えられた目的を高速に処理しているだけなら、それはAIと同じ職務記述書の上に立っているということ。</p>
+      </div>
+      <div class="card">
+        <h3>Q2. AIの出力を、直近1ヶ月で何回却下したか</h3>
+        <p>ゼロなら、検証基準を持っていない。あなたはAIを使っているのではなく、AIに承認印を押している。</p>
+      </div>
+      <div class="card">
+        <h3>Q3. 自分がいちばん外した判断を、言葉にできるか</h3>
+        <p>直近の失敗を「運が悪かった」で処理していないか。前提を書き出せない失敗は、何回繰り返しても基準にならない。</p>
+      </div>
+      <div class="card">
+        <h3>Q4. あなたの「不均一さ」は何か</h3>
+        <p>経歴の変わり者ポイント、偏愛、劣等感。均一な基準で減点されてきたものが、AI時代の唯一の非代替資産になる。</p>
+      </div>
+    </div>
+
+    <p class="note">
+      ※ 本資料は米国・日本の公開データをもとにした筆者の解釈であり、特定の企業・個人のキャリア判断を保証するものではありません。図5・図6・図7・図9は構造を示す概念図です。データの前提や集計方法は各出典元をご確認ください。
+    </p>
+  </div>
+</section>
+
+<!-- =============== SUMMARY =============== -->
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <div class="summary">
+      <span class="eyebrow">Summary</span>
+      <p class="summary-text">
+        HowはAIのものになった。<br>
+        Whatの半分も、もう持って行かれた。<br>
+        切り出せた職務から、順に渡される。<br><br>
+        鎧は、全員に配られた。<br>
+        ここから先は、裸の戦いだ。<br><br>
+        裸で残るのはWhy。<br>
+        それを自分で点検できるメタ認知。<br>
+        部門とAIの間で「なぜ」を接続する人——<br>
+        つまり、総合職の本当の中身だけだ。
+      </p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2026 小澤健祐（おざけん）／ 一般社団法人AICX協会</p>
+  <p style="margin-top:0.5rem;">人間とAIが共存する社会をつくる</p>
+</footer>
+
+<script>
+/* JSが動く環境でだけ演出を有効化（無効なら全要素は既定で可視のまま） */
+document.documentElement.classList.add('js');
+
+const reveals = document.querySelectorAll('[data-reveal]');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+reveals.forEach(el => observer.observe(el));
+
+/* バーの伸長演出 */
+const barGroups = document.querySelectorAll('.bars');
+barGroups.forEach(group => {
+  const fills = group.querySelectorAll('.bar-fill');
+  group._targets = [...fills].map(f => f.style.width);
+  fills.forEach(f => f.style.width = '0%');
+  const io = new IntersectionObserver((es) => {
+    es.forEach(e => {
+      if (e.isIntersecting) {
+        fills.forEach((f, i) => setTimeout(() => f.style.width = group._targets[i], 120 * i));
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.4 });
+  io.observe(group);
+});
+
+/* --- 安全ネット：撮影・印刷・保存で消えないよう全要素を強制表示 --- */
+function revealAll() {
+  reveals.forEach(el => el.classList.add('visible'));
+  barGroups.forEach(group => {
+    group.querySelectorAll('.bar-fill').forEach((f, i) => {
+      if (group._targets && group._targets[i]) f.style.width = group._targets[i];
+    });
+  });
+}
+/* 印刷ダイアログ／PDF保存の直前に確実に全表示 */
+window.addEventListener('beforeprint', revealAll);
+if (window.matchMedia) {
+  const mq = window.matchMedia('print');
+  (mq.addEventListener ? mq.addEventListener('change', e => e.matches && revealAll())
+                       : mq.addListener(e => e.matches && revealAll()));
+}
+/* スクリーンショットツール対策：一定時間後は隠れたままにしない */
+setTimeout(revealAll, 2500);
+</script>
+</body>
+</html>

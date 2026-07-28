@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIエージェントの予算は「固定費」と「変動費」に割った瞬間に読めるようになる | おざけん</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Shippori+Mincho+B1:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   OZAKEN WEB STYLE — DESIGN SYSTEM v3
+   カラートークン・タイポグラフィ・レイアウト・コンポーネント
+   ============================================================ */
+
+/* ----- カラートークン ----- */
+:root {
+  --ink:         #1a1a2e;
+  --navy:        #1f3864;
+  --navy-deep:   #141d35;
+  --azure:       #2e5496;
+  --azure-pale:  #d8e4f0;
+  --paper:       #f8f7f4;
+  --white:       #ffffff;
+  --red:         #e23744;
+  --red-bright:  #ff5d6a;
+  --muted:       #6b7a99;
+
+  --font-ja-sans:  'Zen Kaku Gothic New', sans-serif;
+  --font-ja-serif: 'Shippori Mincho B1', serif;
+  --font-en:       'Hanken Grotesk', sans-serif;
+
+  --max-w: 860px;
+  --sec-pad: 5rem 1.5rem;
+  --radius: 10px;
+  --radius-sm: 6px;
+}
+
+/* ----- リセット・ベース ----- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-ja-sans);
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--ink);
+  background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+
+/* ----- スクロール演出 ----- */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+[data-reveal].visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ----- 共通レイアウト ----- */
+.inner { max-width: var(--max-w); margin: 0 auto; padding: 0 1.5rem; }
+
+.sec-light {
+  background: var(--paper);
+  padding: var(--sec-pad);
+  color: var(--ink);
+}
+.sec-navy {
+  background: var(--navy);
+  padding: var(--sec-pad);
+  color: var(--white);
+}
+
+/* ----- eyebrow（セクションラベル） ----- */
+.eyebrow {
+  display: inline-block;
+  font-family: var(--font-en);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--azure);
+  background: var(--azure-pale);
+  padding: 3px 10px;
+  border-radius: 4px;
+  margin-bottom: 1.1rem;
+}
+.sec-navy .eyebrow {
+  color: var(--white);
+  background: rgba(255,255,255,0.15);
+}
+
+/* ----- 見出し ----- */
+.sec-title {
+  font-family: var(--font-ja-serif);
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: 500;
+  line-height: 1.4;
+  margin-bottom: 0.6rem;
+}
+.sec-sub {
+  font-size: 1rem;
+  color: var(--muted);
+  margin-bottom: 2.5rem;
+  line-height: 1.7;
+}
+.sec-navy .sec-sub { color: rgba(255,255,255,0.7); }
+
+/* ----- ヒーロー ----- */
+.hero {
+  background: var(--navy);
+  padding: 6rem 1.5rem 5rem;
+  text-align: center;
+  color: var(--white);
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 60% 30%, rgba(46,84,150,0.5) 0%, transparent 65%);
+  pointer-events: none;
+}
+.hero .eyebrow {
+  color: var(--white);
+  background: rgba(255,255,255,0.15);
+}
+.hero-title {
+  font-family: var(--font-ja-serif);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 500;
+  line-height: 1.35;
+  margin-bottom: 1.2rem;
+  position: relative;
+}
+.hero-copy {
+  font-size: 1.05rem;
+  color: rgba(255,255,255,0.8);
+  max-width: 560px;
+  margin: 0 auto 2.4rem;
+  line-height: 1.8;
+  position: relative;
+}
+.hero-cta { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; position: relative; }
+
+/* ----- ボタン ----- */
+.btn-primary {
+  display: inline-block;
+  font-family: var(--font-en);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  background: var(--azure);
+  color: var(--white);
+  padding: 0.75rem 2rem;
+  border-radius: var(--radius-sm);
+  transition: opacity 0.2s;
+}
+.btn-primary:hover { opacity: 0.85; }
+.btn-secondary {
+  display: inline-block;
+  font-family: var(--font-en);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--white);
+  padding: 0.75rem 2rem;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid rgba(255,255,255,0.5);
+  transition: border-color 0.2s;
+}
+.btn-secondary:hover { border-color: var(--white); }
+
+/* ----- ステッパー ----- */
+.stepper { display: flex; flex-direction: column; gap: 1.5rem; }
+.step {
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 1.5rem 1.75rem;
+  border-left: 4px solid var(--azure);
+  box-shadow: 0 2px 8px rgba(26,26,46,0.06);
+}
+.sec-navy .step {
+  background: var(--navy-deep);
+  border-left-color: var(--azure);
+  box-shadow: none;
+}
+.step-num {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--azure);
+  color: var(--white);
+  font-family: var(--font-en);
+  font-size: 0.9rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+}
+.step-body h3 {
+  font-family: var(--font-ja-serif);
+  font-size: 1.05rem;
+  font-weight: 500;
+  margin-bottom: 0.35rem;
+}
+.step-body p { font-size: 0.9rem; line-height: 1.75; color: var(--muted); }
+.sec-navy .step-body p { color: rgba(255,255,255,0.65); }
+
+/* ----- カードグリッド（3枚） ----- */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+}
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 1.5rem 1.75rem;
+  box-shadow: 0 2px 8px rgba(26,26,46,0.07);
+  border-top: 3px solid var(--azure);
+}
+.sec-navy .card {
+  background: var(--navy-deep);
+  box-shadow: none;
+}
+.card-icon {
+  width: 36px;
+  height: 36px;
+  margin-bottom: 1rem;
+  color: var(--azure);
+}
+.sec-navy .card-icon { color: var(--azure-pale); }
+.card h3 {
+  font-family: var(--font-ja-serif);
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+.card p { font-size: 0.875rem; line-height: 1.75; color: var(--muted); }
+.sec-navy .card p { color: rgba(255,255,255,0.65); }
+
+/* ----- VS比較（表禁止→必ずこれ） ----- */
+.vs {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 1rem;
+  align-items: center;
+}
+.vs-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(26,26,46,0.07);
+}
+.sec-navy .vs-card { background: var(--navy-deep); box-shadow: none; }
+.vs-badge {
+  font-family: var(--font-en);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+  display: inline-block;
+  margin-bottom: 0.75rem;
+}
+.vs-badge.pos { background: var(--azure-pale); color: var(--azure); }
+.vs-badge.neg { background: #fde8ea; color: var(--red); }
+.sec-navy .vs-badge.neg { background: rgba(226,55,68,0.2); color: var(--red-bright); }
+.vs-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--azure);
+  color: var(--white);
+  font-family: var(--font-en);
+  font-size: 0.8rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin: 0 auto;
+}
+.vs-card h3 {
+  font-family: var(--font-ja-serif);
+  font-size: 1.05rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+.vs-card p { font-size: 0.875rem; line-height: 1.75; color: var(--muted); }
+.sec-navy .vs-card p { color: rgba(255,255,255,0.65); }
+
+/* ----- 深掘りブロック ----- */
+.deep {
+  background: var(--navy-deep);
+  border-radius: var(--radius);
+  padding: 2rem 2.25rem;
+  border-left: 4px solid var(--azure);
+  margin: 1.5rem 0;
+}
+.deep h3 {
+  font-family: var(--font-ja-serif);
+  font-size: 1.15rem;
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+  color: var(--white);
+}
+.deep p { font-size: 0.9rem; line-height: 1.8; color: rgba(255,255,255,0.75); }
+
+/* ----- 2カラム対比 ----- */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+@media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+.two-col-item h3 {
+  font-family: var(--font-ja-serif);
+  font-size: 1.05rem;
+  font-weight: 500;
+  margin-bottom: 0.6rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 2px solid var(--azure);
+}
+.two-col-item p { font-size: 0.9rem; line-height: 1.8; color: var(--muted); }
+.sec-navy .two-col-item p { color: rgba(255,255,255,0.7); }
+
+/* ----- 注記 ----- */
+.note {
+  font-size: 0.825rem;
+  color: var(--muted);
+  line-height: 1.75;
+  padding: 0.75rem 1rem;
+  border-left: 3px solid var(--azure-pale);
+  background: rgba(46,84,150,0.04);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  margin-top: 1rem;
+}
+
+/* ----- まとめ ----- */
+.summary {
+  text-align: center;
+  max-width: 620px;
+  margin: 0 auto;
+}
+.summary-text {
+  font-family: var(--font-ja-serif);
+  font-size: clamp(1.15rem, 3vw, 1.45rem);
+  font-weight: 400;
+  line-height: 1.8;
+  margin-bottom: 2rem;
+}
+
+/* ----- おざけんのワンポイント（.take） ----- */
+.take {
+  background: var(--navy-deep);
+  border-radius: var(--radius);
+  padding: 1.5rem 1.75rem;
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+  margin: 2rem 0;
+  border-left: 4px solid var(--red);
+}
+.sec-light .take {
+  background: #fff8f8;
+  border-left: 4px solid var(--red);
+  box-shadow: 0 2px 8px rgba(226,55,68,0.07);
+}
+.take-avatar {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--azure);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-en);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.take-body {}
+.take-label {
+  font-family: var(--font-en);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--red-bright);
+  margin-bottom: 4px;
+}
+.sec-light .take-label { color: var(--red); }
+.take-author {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 0.5rem;
+}
+.sec-light .take-author { color: var(--muted); }
+.take-text {
+  font-size: 0.9rem;
+  line-height: 1.8;
+  color: rgba(255,255,255,0.88);
+}
+.sec-light .take-text { color: var(--ink); }
+.hot { color: var(--red-bright); font-weight: 700; }
+.sec-light .hot { color: var(--red); }
+
+/* ----- フッター ----- */
+footer {
+  background: var(--navy-deep);
+  padding: 3rem 1.5rem;
+  text-align: center;
+  color: rgba(255,255,255,0.5);
+  font-size: 0.8rem;
+}
+footer a { color: rgba(255,255,255,0.7); }
+
+/* ----- テキストユーティリティ ----- */
+.text-azure { color: var(--azure); }
+.text-red   { color: var(--red); }
+.sec-navy .text-red { color: var(--red-bright); }
+.fw-bold { font-weight: 700; }
+.font-serif { font-family: var(--font-ja-serif); }
+
+/* ----- グラフィック（viz） ----- */
+.viz-duo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin: 1.5rem 0 0.5rem;
+}
+.viz-panel {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 1.4rem 1.4rem 1.25rem;
+  box-shadow: 0 2px 8px rgba(26,26,46,0.07);
+  color: var(--muted);
+}
+.sec-navy .viz-panel { background: var(--navy-deep); box-shadow: none; color: rgba(255,255,255,0.55); }
+.viz-panel svg { width: 100%; height: auto; display: block; }
+.viz-head {
+  display: flex; align-items: center; gap: 0.55rem; margin-bottom: 0.9rem;
+}
+.viz-badge {
+  font-family: var(--font-en);
+  font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 4px;
+}
+.viz-badge.fix { background: var(--azure-pale); color: var(--azure); }
+.viz-badge.var { background: #fde8ea; color: var(--red); }
+.sec-navy .viz-badge.var { background: rgba(226,55,68,0.2); color: var(--red-bright); }
+.viz-head h4 { font-family: var(--font-ja-serif); font-size: 1rem; font-weight: 500; color: var(--ink); }
+.sec-navy .viz-head h4 { color: var(--white); }
+.viz-cap { font-size: 0.8rem; line-height: 1.65; margin-top: 0.85rem; }
+/* SVG内データ色（背景非依存） */
+.svg-fix  { fill: var(--azure); }
+.svg-pale { fill: var(--azure-pale); }
+.sec-navy .svg-pale { fill: rgba(216,228,240,0.35); }
+.svg-risk { fill: var(--red); }
+.sec-navy .svg-risk { fill: var(--red-bright); }
+.svg-line { stroke: currentColor; opacity: 0.4; }
+.svg-riskline { stroke: var(--red); }
+.sec-navy .svg-riskline { stroke: var(--red-bright); }
+.svg-onblock { fill: #fff; font-family: var(--font-ja-sans); font-size: 12px; font-weight: 700; }
+.svg-txt { fill: currentColor; font-family: var(--font-ja-sans); font-size: 11px; font-weight: 700; }
+
+/* ----- 見積もり式（formula） ----- */
+.formula {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.6rem;
+  background: var(--white); border-radius: var(--radius);
+  padding: 1.75rem 1.25rem; box-shadow: 0 2px 8px rgba(26,26,46,0.07);
+  margin: 1.5rem 0 0.5rem;
+}
+.sec-navy .formula { background: var(--navy-deep); box-shadow: none; }
+.f-pill {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  background: var(--azure-pale); color: var(--azure);
+  border-radius: 8px; padding: 0.55rem 0.95rem; min-width: 92px; text-align: center;
+}
+.f-pill.res { background: var(--azure); color: var(--white); }
+.f-pill .lab { font-family: var(--font-ja-sans); font-size: 0.85rem; font-weight: 700; line-height: 1.3; }
+.f-pill .sub { font-family: var(--font-en); font-size: 9px; letter-spacing: 0.05em; opacity: 0.8; }
+.f-op { font-family: var(--font-en); font-size: 1.3rem; font-weight: 700; color: var(--muted); }
+.sec-navy .f-op { color: rgba(255,255,255,0.6); }
+
+/* ----- レスポンシブ ----- */
+@media (max-width: 640px) {
+  :root { --sec-pad: 3.5rem 1rem; }
+  .vs { grid-template-columns: 1fr; }
+  .vs-label { display: none; }
+  .hero { padding: 4rem 1rem 3.5rem; }
+  .viz-duo { grid-template-columns: 1fr; }
+  .f-pill { min-width: 78px; padding: 0.5rem 0.7rem; }
+  .f-pill .lab { font-size: 0.78rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- =============================================
+  HERO（ネイビー）
+  ============================================= -->
+<section class="hero">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">AI Agent × Budget Design</span>
+    <h1 class="hero-title">自律エージェントを「入れる」意思決定が、<br>日本の大企業で止まっている</h1>
+    <p class="hero-copy">Claude Code、Copilot、Cowork——試せば効くのは、もう分かっている。それでも「導入する」という意思決定に踏み切れない大企業が多い、と私はヒアリングで繰り返し感じている。止めているのは技術の成熟度ではない。これらの自律エージェントが本質的に「変動費」であり、いくらかかるか読めないものを予算に載せられない、という一点だ。答えは、コストを固定費と変動費に割る発想の転換にある。</p>
+    <div class="hero-cta">
+      <a href="#estimate" class="btn-primary">見積もり式を見る</a>
+      <a href="#steps" class="btn-secondary">予算組みの5ステップ</a>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+  01 問題（ライト）
+  ============================================= -->
+<section class="sec-light">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 01 / The Real Problem</span>
+    <h2 class="sec-title">効くのは分かっている。それでも「入れる」と決められない</h2>
+    <p class="sec-sub">私がヒアリングする国内大企業の多くが、自律エージェントの導入判断そのもので止まっている。技術的に動くことも、効果が出ることも確認できている。それでもGoが出ない——理由を掘っていくと、行き着くのは「予算の立て方」だ。自律性が高いエージェントほどコストが読めず、読めないものは稟議を通せない。だから決められない。読めなくなる原因を分解すると、3つある。</p>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <circle cx="18" cy="18" r="12" stroke="currentColor" stroke-width="2"/>
+            <path d="M18 10v8l5 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3>推論モデルの「考える量」が増えた</h3>
+        <p>深く推論するモデルほど、答えを出す前に大量のトークンを内部で消費する。賢さと引き換えに、1回あたりの単価が跳ね上がる構造になっている。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <path d="M8 20l4-8h12l4 8v4H8v-4z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <circle cx="13" cy="27" r="3" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="23" cy="27" r="3" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M8 20h20" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <h3>自律エージェントの「手数」が読めない</h3>
+        <p>目的地だけ告げれば経路はAIが選ぶ。同じ依頼でも、あるときは3手、あるときは20手。走行距離が毎回変わるので、事前に総額を当てにいくこと自体が無理筋になる。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <path d="M8 26V14M14 26V18M20 26V10M26 26V16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M6 28h24" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3>使えるほど、使いたくなる</h3>
+        <p>成果が出るとすぐ隣の業務にも展開される。単価が下がっても、利用回数がそれ以上に増えて総額は膨らむ。「便利になったのに請求は増える」現象の正体はこれだ。</p>
+      </div>
+    </div>
+
+    <p class="note">※ モデルごとの具体的な単価は改定が速い。予算を組む時点で最新のAPI料金・クレジット単価を必ず確認すること。本記事は個別の価格ではなく、価格が動いても崩れない「立て方」を扱う。</p>
+  </div>
+</section>
+
+<!-- =============================================
+  02 再定義（ネイビー）VS + take1
+  ============================================= -->
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 02 / Reframe</span>
+    <h2 class="sec-title">予算を「電車＝固定費」と「自動車＝変動費」に割る</h2>
+    <p class="sec-sub">3つの型（チャットボット・ワークフロー・エージェント）を、そのまま経理の言葉に翻訳する。人間がレールを引く電車型は固定費、AIが経路を選ぶ自動車型は変動費。まず「毎月のコストの出方」を見比べてほしい。</p>
+
+    <div class="viz-duo">
+      <div class="viz-panel">
+        <div class="viz-head">
+          <span class="viz-badge fix">電車型 = 固定費</span>
+          <h4>毎月ほぼ一定</h4>
+        </div>
+        <svg viewBox="0 0 300 165" role="img" aria-label="固定費：毎月ほぼ一定のコスト">
+          <line class="svg-line" x1="26" y1="140" x2="284" y2="140" stroke-width="1.5"/>
+          <line x1="34" y1="56" x2="276" y2="56" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.55"/>
+          <rect class="svg-fix" x="40"  y="56" width="26" height="84" rx="3"/>
+          <rect class="svg-fix" x="80"  y="56" width="26" height="84" rx="3"/>
+          <rect class="svg-fix" x="120" y="56" width="26" height="84" rx="3"/>
+          <rect class="svg-fix" x="160" y="56" width="26" height="84" rx="3"/>
+          <rect class="svg-fix" x="200" y="56" width="26" height="84" rx="3"/>
+          <rect class="svg-fix" x="240" y="56" width="26" height="84" rx="3"/>
+        </svg>
+        <p class="viz-cap">工程が決まっているから、コストは「回数 × 単価」で読める。だから予算化も承認もしやすい。</p>
+      </div>
+      <div class="viz-panel">
+        <div class="viz-head">
+          <span class="viz-badge var">自動車型 = 変動費</span>
+          <h4>毎月ブレる・青天井</h4>
+        </div>
+        <svg viewBox="0 0 300 165" role="img" aria-label="変動費：毎月ブレて上限が読めないコスト">
+          <line class="svg-line" x1="26" y1="140" x2="284" y2="140" stroke-width="1.5"/>
+          <rect class="svg-fix"  x="40"  y="96"  width="26" height="44"  rx="3"/>
+          <rect class="svg-fix"  x="80"  y="74"  width="26" height="66"  rx="3"/>
+          <rect class="svg-fix"  x="120" y="108" width="26" height="32"  rx="3"/>
+          <rect class="svg-fix"  x="160" y="60"  width="26" height="80"  rx="3"/>
+          <rect class="svg-fix"  x="200" y="88"  width="26" height="52"  rx="3"/>
+          <rect class="svg-risk" x="240" y="34"  width="26" height="106" rx="3"/>
+          <polyline points="53,96 93,74 133,108 173,60 213,88 253,34" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.45" stroke-linejoin="round"/>
+          <line class="svg-riskline" x1="253" y1="30" x2="253" y2="12" stroke-width="2" stroke-linecap="round"/>
+          <path class="svg-riskline" d="M248 18l5-7 5 7" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <p class="viz-cap">AIが手数を自分で決めるため、1件あたりが毎回ブレる。放置すれば天井知らずになる。</p>
+      </div>
+    </div>
+
+    <div class="vs">
+      <div class="vs-card">
+        <span class="vs-badge pos">電車型 = 固定費</span>
+        <h3>読める・積める・暴走しない</h3>
+        <p>工程が決まっているから、コストは「回数 × 単価」で読める。利用が増えても1件あたりは一定で、予算化と承認がしやすい。定型・高頻度業務の土台になる部分。</p>
+      </div>
+      <div class="vs-label">vs</div>
+      <div class="vs-card">
+        <span class="vs-badge neg">自動車型 = 変動費</span>
+        <h3>効くが、青天井になりうる</h3>
+        <p>AIが手数を自分で決めるため、1件あたりが毎回ブレる。放置すれば天井知らずだが、非定型・高付加価値の業務では、この変動費こそが利益を生む。</p>
+      </div>
+    </div>
+
+    <div class="take">
+      <div class="take-avatar">OK</div>
+      <div class="take-body">
+        <div class="take-label">Ozaken's One Point</div>
+        <div class="take-author">小澤健祐（おざけん）</div>
+        <p class="take-text">
+          「予算が読めない」と相談されるたび、私はこう返す——それは単価を見ているからです、と。単価は毎月上下するし、追いかけても消耗するだけだ。見るべきは、その業務を電車に乗せているか、自動車で走らせているか。固定費で済むものを変動費のまま放置していないか。予算設計の9割は、この<span class="hot">仕分け</span>で決まる。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+  03 見積もり式（ライト）stepper
+  ============================================= -->
+<section class="sec-light" id="estimate">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 03 / The Formula</span>
+    <h2 class="sec-title">見積もりは「単価」ではなく「タスク単価 × 頻度 × 手数」で立てる</h2>
+    <p class="sec-sub">コストは単価ではなく総量で動く。だから見積もりも、1クレジットいくらではなく、タスク単位の掛け算で組む。電車型と自動車型で、式の扱い方を変えるのがポイントだ。</p>
+
+    <div class="formula">
+      <div class="f-pill res"><span class="lab">月額コスト</span><span class="sub">MONTHLY</span></div>
+      <span class="f-op">=</span>
+      <div class="f-pill"><span class="lab">タスク単価</span><span class="sub">UNIT</span></div>
+      <span class="f-op">×</span>
+      <div class="f-pill"><span class="lab">月間頻度</span><span class="sub">FREQ</span></div>
+      <span class="f-op">×</span>
+      <div class="f-pill"><span class="lab">平均手数</span><span class="sub">STEPS</span></div>
+    </div>
+    <p class="note">電車型は「手数」が固定なので一点に定まる。自動車型は「手数」が毎回動くので、平均とブレ幅で幅を持たせる。</p>
+
+    <div class="stepper">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h3>基本式：月額 ＝ Σ（タスク単価 × 月間頻度 × 平均手数）</h3>
+          <p>業務を「タスク」の集合として捉え、それぞれの単価・回数・手数を掛けて足し上げる。個々のモデル単価より、この3要素の桁感を掴むほうが遥かに効く。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3>電車型は「単価 × 頻度」で確定させる</h3>
+          <p>手数が固定なので、掛け算の答えは一点に定まる。ここは予算の「地面」。月初に金額が確定し、承認も稟議も通しやすい安全な領域だ。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h3>自動車型は「平均手数 × ブレ幅」で幅を持たせる</h3>
+          <p>手数が毎回変わるので、一点では当たらない。平均的なケース（中央値）と、重いケース（上位ケース）の2本立てで見積もり、最悪でここまで、という上限を先に握っておく。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h3>予算＝「固定費の合計」＋「変動費の上限」で提示する</h3>
+          <p>経営に出す数字は、確定した固定費と、キャップ付きの変動費の和。「地面＋天井」の形にすると、読めないはずのAI予算が、承認可能な一枚に収まる。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="viz-duo">
+      <div class="viz-panel">
+        <div class="viz-head">
+          <span class="viz-badge var">天井なし = 青天井</span>
+          <h4>これでは決裁できない</h4>
+        </div>
+        <svg viewBox="0 0 220 200" role="img" aria-label="天井のない予算：変動費が青天井">
+          <line class="svg-line" x1="18" y1="178" x2="202" y2="178" stroke-width="1.5"/>
+          <rect class="svg-fix"  x="65" y="138" width="90" height="40" rx="2"/>
+          <rect class="svg-risk" x="65" y="50"  width="90" height="88" rx="2" opacity="0.9"/>
+          <text class="svg-onblock" x="110" y="163" text-anchor="middle">固定費</text>
+          <text class="svg-onblock" x="110" y="98"  text-anchor="middle">変動費</text>
+          <line class="svg-riskline" x1="110" y1="46" x2="110" y2="14" stroke-width="2.5" stroke-linecap="round"/>
+          <path class="svg-riskline" d="M101 25l9-12 9 12" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <p class="viz-cap">上限がないと、いくらになるか読めない。だから稟議で止まる。</p>
+      </div>
+      <div class="viz-panel">
+        <div class="viz-head">
+          <span class="viz-badge fix">地面 ＋ 天井 = 承認可能</span>
+          <h4>これなら決裁できる</h4>
+        </div>
+        <svg viewBox="0 0 220 200" role="img" aria-label="地面と天井のある予算：承認できる形">
+          <line class="svg-line" x1="18" y1="178" x2="202" y2="178" stroke-width="1.5"/>
+          <rect class="svg-fix"  x="65" y="138" width="90" height="40" rx="2"/>
+          <rect class="svg-pale" x="65" y="74"  width="90" height="64" rx="2"/>
+          <text class="svg-onblock" x="110" y="163" text-anchor="middle">固定費（地面）</text>
+          <text class="svg-txt" x="110" y="112" text-anchor="middle">変動費</text>
+          <line x1="52" y1="74" x2="168" y2="74" stroke="currentColor" stroke-width="2.5" stroke-dasharray="5 4"/>
+          <text class="svg-txt" x="110" y="66" text-anchor="middle">天井（上限キャップ）</text>
+        </svg>
+        <p class="viz-cap">地面を固め、変動費に上限を置く。読めない予算が、承認できる一枚になる。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+  04 コストが上がるほど設計で効く（ネイビー）deep
+  ============================================= -->
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 04 / Leverage</span>
+    <h2 class="sec-title">単価が上がる時代ほど、「仕分け」の利きが大きくなる</h2>
+    <p class="sec-sub">コスト高騰は、節約すべき悪材料に見える。だが仕分けの視点で見ると、話は逆になる。単価が2倍になったとき、同じ値上げが一方には打撃、一方には軽傷になる。差を生むのは、最初の仕分けだ。</p>
+
+    <div class="viz-duo">
+      <div class="viz-panel">
+        <div class="viz-head">
+          <span class="viz-badge var">全部を自動車で走らせた会社</span>
+        </div>
+        <svg viewBox="0 0 240 200" role="img" aria-label="定型まで変動費にした会社は、単価2倍でコストも2倍">
+          <line class="svg-line" x1="20" y1="170" x2="222" y2="170" stroke-width="1.5"/>
+          <rect class="svg-risk" x="55"  y="100" width="50" height="70"  rx="2" opacity="0.9"/>
+          <rect class="svg-risk" x="135" y="30"  width="50" height="140" rx="2"/>
+          <text class="svg-txt" x="80"  y="188" text-anchor="middle">現在</text>
+          <text class="svg-txt" x="160" y="188" text-anchor="middle">単価2倍後</text>
+          <text class="svg-onblock" x="160" y="55" text-anchor="middle">×2.0</text>
+        </svg>
+        <p class="viz-cap">全部が変動費だから、値上げがそのまま総額に乗る。<span class="text-red fw-bold">コストも素直に2倍</span>になる。</p>
+      </div>
+      <div class="viz-panel">
+        <div class="viz-head">
+          <span class="viz-badge fix">定型を電車に寄せた会社</span>
+        </div>
+        <svg viewBox="0 0 240 200" role="img" aria-label="定型を固定費に寄せた会社は、単価2倍でも増分は変動費だけ">
+          <line class="svg-line" x1="20" y1="170" x2="222" y2="170" stroke-width="1.5"/>
+          <rect class="svg-fix"  x="55"  y="121" width="50" height="49" rx="2"/>
+          <rect class="svg-risk" x="55"  y="100" width="50" height="21" rx="2" opacity="0.85"/>
+          <rect class="svg-fix"  x="135" y="121" width="50" height="49" rx="2"/>
+          <rect class="svg-risk" x="135" y="79"  width="50" height="42" rx="2" opacity="0.85"/>
+          <text class="svg-txt" x="80"  y="188" text-anchor="middle">現在</text>
+          <text class="svg-txt" x="160" y="188" text-anchor="middle">単価2倍後</text>
+          <text class="svg-onblock" x="160" y="150" text-anchor="middle">固定費</text>
+          <text class="svg-onblock" x="160" y="105" text-anchor="middle">×1.3</text>
+        </svg>
+        <p class="viz-cap">固定費（地面）は動かない。値上げが効くのは変動費だけなので、<span class="text-red fw-bold">総額は約1.3倍</span>に留まる。</p>
+      </div>
+    </div>
+
+    <div class="deep">
+      <h3>なぜ「集中」であって「削減」ではないのか</h3>
+      <p>
+        単価が2倍になったとき、定型業務まで自動車で走らせていた会社はコストも2倍になる。一方、定型を電車に寄せていた会社は、固定費の増分だけで済み、浮いた原資を「ここでしか価値が出ない」自律エージェントに厚く張れる。同じ値上げが、一方には打撃、一方には追い風になる。差を生むのは節約の巧拙ではなく、最初の仕分けだ。「電車で行ける区間に、わざわざ自動車を出さない」——このルールの価値は、単価が上がるほど上がっていく。
+      </p>
+    </div>
+
+    <div class="two-col">
+      <div class="two-col-item">
+        <h3>やりがちな失敗</h3>
+        <p>コスト高騰を見て「使用量を一律で絞れ」と号令をかける。結果、価値を生んでいたエージェントまで止まり、成果ごと失う。削ったのはコストではなく、リターンだった、という事故が起きる。</p>
+      </div>
+      <div class="two-col-item">
+        <h3>効く打ち手</h3>
+        <p>定型業務を徹底的に電車へ寄せて固定費を圧縮し、浮いた予算を一点に集中投下する。総量は減らさず、配分を変える。攻めながらコストを制御する、唯一まともなやり方だ。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+  05 実践5ステップ（ライト）stepper + take2
+  ============================================= -->
+<section class="sec-light" id="steps">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 05 / In Practice</span>
+    <h2 class="sec-title">予算を組む、現実の5ステップ</h2>
+    <p class="sec-sub">机上の理屈で終わらせないための、実務の順番。80点で回し始めて、月次で磨いていくことを前提に組む。</p>
+
+    <div class="stepper">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h3>業務を棚卸しし、電車／自動車に仕分ける</h3>
+          <p>判断軸は3つ。定型度・例外頻度・判断の重さ。工程が毎回同じで例外が少なく、考える必要が薄い業務は電車へ。毎回違い、文脈を読んで意思決定するものは自動車へ。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3>固定費側を積み上げ、金額を確定させる</h3>
+          <p>電車に乗せた業務を「単価 × 頻度」で足し上げる。ここが予算の地面。まず確定できる金額をはっきりさせることで、残りの不確実性が扱えるサイズに縮む。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h3>変動費側に「上限（キャップ）」を先に置く</h3>
+          <p>自動車の業務ごとに、月間の使用上限を金額で設定する。上限に近づいたらアラートを出す運用にしておけば、青天井は構造的に起きなくなる。読めないなら、天井を作ればいい。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h3>浮いた原資を、高付加価値の一点に再配分する</h3>
+          <p>固定化で圧縮できた分を貯金にせず、最もリターンの出るエージェントに厚く張る。予算組みのゴールは総額の最小化ではなく、1円あたりの成果の最大化だ。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <h3>月次で実績を見て、型を組み替える</h3>
+          <p>自動車で走らせていた業務が定型化してきたら、電車へ移して固定費に落とす。逆に電車型が例外だらけなら自動車へ。仕分けは一度きりではなく、毎月更新する運用そのものだ。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="take">
+      <div class="take-avatar">OK</div>
+      <div class="take-body">
+        <div class="take-label">Ozaken's One Point</div>
+        <div class="take-author">小澤健祐（おざけん）</div>
+        <p class="take-text">
+          コストが上がると聞くと、多くの経営者は「使用量を絞れ」と言う。断言するが、それは一番やってはいけない打ち手だ。絞るべきは総量ではなく、走らせる場所。単価が上がる時代こそ、安く固定できる業務は徹底的に固定し、浮いた金を「ここでしか価値が出ない」一点に<span class="hot">集中投下</span>する。ケチるのではなく、張るべきところに張る。予算は守りではなく、攻めの設計図だ。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+  Summary（ネイビー）
+  ============================================= -->
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <div class="summary">
+      <span class="eyebrow">Summary</span>
+      <p class="summary-text">
+        自律エージェントを「入れる」と<br>
+        決められない壁は、技術ではなく<br>
+        予算の考え方にある。<br>
+        固定費と変動費に割り、地面を固め、<br>
+        天井を作れば、変動費でもGoは出せる。
+      </p>
+      <a href="#estimate" class="btn-primary">見積もり式に戻る</a>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+  フッター
+  ============================================= -->
+<footer>
+  <p>&copy; 2026 小澤健祐（おざけん）/ AICX協会</p>
+</footer>
+
+<script>
+/* スクロール演出 — IntersectionObserver */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

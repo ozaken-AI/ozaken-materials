@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI推進の施策大全｜社内会議で使える51の打ち手｜おざけん</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Shippori+Mincho+B1:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1a1a2e;--navy:#1f3864;--navy-deep:#141d35;--azure:#2e5496;
+  --azure-pale:#d8e4f0;--paper:#f8f7f4;--white:#ffffff;
+  --red:#e23744;--red-bright:#ff5d6a;--muted:#6b7a99;
+  --font-ja-sans:'Zen Kaku Gothic New',sans-serif;
+  --font-ja-serif:'Shippori Mincho B1',serif;
+  --font-en:'Hanken Grotesk',sans-serif;
+  --max-w:1040px;--sec-pad:5rem 1.5rem;--radius:10px;--radius-sm:6px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--font-ja-sans);font-size:16px;line-height:1.8;color:var(--ink);background:var(--paper);-webkit-font-smoothing:antialiased;}
+img{max-width:100%;display:block;}
+a{color:inherit;text-decoration:none;}
+[data-reveal]{opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .65s ease;}
+[data-reveal].visible{opacity:1;transform:none;}
+.inner{max-width:var(--max-w);margin:0 auto;padding:0 1.5rem;}
+.sec-light{background:var(--paper);padding:var(--sec-pad);color:var(--ink);}
+.sec-navy{background:var(--navy);padding:var(--sec-pad);color:var(--white);}
+
+.eyebrow{display:inline-block;font-family:var(--font-en);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--azure);background:var(--azure-pale);padding:3px 10px;border-radius:4px;margin-bottom:1.1rem;}
+.sec-navy .eyebrow{color:var(--white);background:rgba(255,255,255,.15);}
+.sec-title{font-family:var(--font-ja-serif);font-size:clamp(1.6rem,4vw,2.2rem);font-weight:500;line-height:1.4;margin-bottom:.6rem;}
+.sec-sub{font-size:1rem;color:var(--muted);margin-bottom:2.5rem;line-height:1.7;}
+.sec-navy .sec-sub{color:rgba(255,255,255,.7);}
+.lead{font-size:1.02rem;line-height:2;margin-bottom:1.4rem;}
+.lead:last-child{margin-bottom:0;}
+.sec-navy .lead{color:rgba(255,255,255,.86);}
+
+.hero{background:var(--navy);padding:6rem 1.5rem 5rem;text-align:center;color:var(--white);position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 60% 30%,rgba(46,84,150,.5) 0%,transparent 65%);pointer-events:none;}
+.hero .eyebrow{color:var(--white);background:rgba(255,255,255,.15);}
+.hero-title{font-family:var(--font-ja-serif);font-size:clamp(2rem,5vw,3rem);font-weight:500;line-height:1.35;margin-bottom:1.2rem;position:relative;}
+.hero-copy{font-size:1.05rem;color:rgba(255,255,255,.8);max-width:640px;margin:0 auto 2.4rem;line-height:1.85;position:relative;}
+.hero-stats{display:flex;gap:2.5rem;justify-content:center;flex-wrap:wrap;position:relative;margin-top:.5rem;}
+.hero-stat{text-align:center;}
+.hero-stat .num{font-family:var(--font-en);font-size:2.4rem;font-weight:700;line-height:1;color:var(--white);}
+.hero-stat .lbl{font-size:.78rem;color:rgba(255,255,255,.65);margin-top:.4rem;letter-spacing:.04em;}
+
+.btn-primary{display:inline-block;font-family:var(--font-en);font-size:.875rem;font-weight:600;letter-spacing:.04em;background:var(--azure);color:var(--white);padding:.75rem 2rem;border-radius:var(--radius-sm);transition:opacity .2s;}
+.btn-primary:hover{opacity:.85;}
+
+/* 比較表 */
+.ctable-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:var(--radius);box-shadow:0 2px 12px rgba(26,26,46,.08);}
+.ctable{display:grid;grid-template-columns:150px 1fr 1fr;min-width:640px;background:var(--white);}
+.ctable>div{padding:.95rem 1.1rem;border-bottom:1px solid #eceae4;font-size:.9rem;line-height:1.62;}
+.ctable .th{font-family:var(--font-ja-serif);font-weight:500;font-size:.98rem;color:#fff;background:var(--navy);}
+.ctable .th.blank{background:var(--navy-deep);}
+.ctable .th.axc{background:var(--azure);}
+.ctable .rl{font-weight:700;color:var(--azure);background:var(--paper);font-size:.85rem;}
+.ctable .dx{color:var(--muted);}
+.ctable .ax{color:var(--ink);font-weight:500;background:rgba(46,84,150,.045);}
+.ctable>div:nth-last-child(-n+3){border-bottom:none;}
+
+/* ステッパー */
+.stepper{display:flex;flex-direction:column;gap:1.25rem;}
+.step{display:flex;gap:1.25rem;align-items:flex-start;background:var(--white);border-radius:var(--radius);padding:1.5rem 1.75rem;border-left:4px solid var(--azure);box-shadow:0 2px 8px rgba(26,26,46,.06);}
+.sec-navy .step{background:var(--navy-deep);border-left-color:var(--azure);box-shadow:none;}
+.step-num{flex-shrink:0;width:40px;height:40px;border-radius:50%;background:var(--azure);color:var(--white);font-family:var(--font-en);font-size:.82rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:2px;}
+.step-body h3{font-family:var(--font-ja-serif);font-size:1.1rem;font-weight:500;margin-bottom:.4rem;}
+.step-body p{font-size:.9rem;line-height:1.78;color:var(--muted);}
+.sec-navy .step-body p{color:rgba(255,255,255,.68);}
+.step-body .tag{display:inline-block;font-family:var(--font-en);font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--azure);background:var(--azure-pale);padding:2px 9px;border-radius:20px;margin-top:.6rem;}
+.sec-navy .step-body .tag{color:var(--white);background:rgba(255,255,255,.16);}
+
+/* カード */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(262px,1fr));gap:1.1rem;}
+.card{background:var(--white);border-radius:var(--radius);padding:1.4rem 1.5rem;box-shadow:0 2px 8px rgba(26,26,46,.07);border-top:3px solid var(--azure);position:relative;}
+.sec-navy .card{background:var(--navy-deep);box-shadow:none;}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.45rem;}
+.card-no{font-family:var(--font-en);font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--azure);}
+.sec-navy .card-no{color:var(--azure-pale);}
+.card h3{font-family:var(--font-ja-serif);font-size:1.04rem;font-weight:500;line-height:1.5;margin-bottom:.65rem;}
+.c-row{font-size:.8rem;line-height:1.66;color:var(--muted);margin-top:.5rem;}
+.sec-navy .c-row{color:rgba(255,255,255,.68);}
+.c-row:first-of-type{margin-top:0;}
+.c-row b{display:inline-block;font-family:var(--font-ja-sans);font-size:10px;font-weight:700;letter-spacing:.02em;color:var(--azure);background:var(--azure-pale);padding:1px 7px;border-radius:3px;margin-right:.5rem;vertical-align:1.5px;}
+.sec-navy .c-row b{color:var(--white);background:rgba(255,255,255,.16);}
+.c-row.issue{margin-top:.7rem;padding-top:.65rem;border-top:1px dashed rgba(46,84,150,.22);}
+.sec-navy .c-row.issue{border-top-color:rgba(255,255,255,.15);}
+.c-row.issue b{color:var(--muted);background:#eef1f4;}
+.sec-navy .c-row.issue b{color:rgba(255,255,255,.72);background:rgba(255,255,255,.1);}
+
+/* 用語インライン注記 */
+.c-note{font-size:.74rem;line-height:1.6;color:var(--muted);margin-top:.75rem;padding:.55rem .7rem;background:rgba(46,84,150,.055);border-radius:6px;}
+.c-note b{color:var(--azure);font-weight:700;}
+.sec-navy .c-note{color:rgba(255,255,255,.66);background:rgba(255,255,255,.07);}
+.sec-navy .c-note b{color:var(--azure-pale);}
+
+.phase{font-family:var(--font-en);font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:2px 9px;border-radius:20px;white-space:nowrap;}
+.phase.base{color:var(--azure);background:var(--azure-pale);}
+.phase.drive{color:var(--azure);background:transparent;border:1px solid var(--azure);}
+.phase.exp{color:var(--white);background:var(--azure);}
+.sec-navy .phase.base{color:var(--white);background:rgba(255,255,255,.16);}
+.sec-navy .phase.drive{color:rgba(255,255,255,.85);border-color:rgba(255,255,255,.4);}
+.sec-navy .phase.exp{color:var(--navy);background:var(--azure-pale);}
+
+/* 全体マップ */
+.map-card{display:block;transition:transform .2s,box-shadow .2s;border-top:3px solid var(--azure);}
+.map-card:hover{transform:translateY(-3px);box-shadow:0 8px 22px rgba(0,0,0,.25);}
+.map-top{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:.35rem;}
+.map-en{font-family:var(--font-en);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
+.sec-navy .map-en{color:rgba(255,255,255,.5);}
+.map-count{font-family:var(--font-en);font-size:1.5rem;font-weight:700;color:var(--azure);line-height:1;}
+.sec-navy .map-count{color:var(--azure-pale);}
+.map-count span{font-size:.7rem;font-weight:600;margin-left:2px;}
+.map-card h3{font-family:var(--font-ja-serif);font-size:1.05rem;font-weight:500;margin-bottom:.35rem;}
+.map-card p{font-size:.82rem;line-height:1.65;color:var(--muted);}
+.sec-navy .map-card p{color:rgba(255,255,255,.6);}
+.map-arrow{font-family:var(--font-en);font-size:.78rem;font-weight:600;color:var(--azure);margin-top:.7rem;display:inline-block;}
+.sec-navy .map-arrow{color:var(--azure-pale);}
+
+.deep{background:var(--navy-deep);border-radius:var(--radius);padding:2rem 2.25rem;border-left:4px solid var(--azure);margin:2rem 0 0;}
+.deep h3{font-family:var(--font-ja-serif);font-size:1.15rem;font-weight:500;margin-bottom:.75rem;color:var(--white);}
+.deep p{font-size:.9rem;line-height:1.8;color:rgba(255,255,255,.75);}
+.deep p b{color:#fff;}
+
+.subgroup{font-family:var(--font-ja-serif);font-size:1.08rem;font-weight:500;margin:2.4rem 0 1.1rem;padding-left:.7rem;border-left:4px solid var(--azure);}
+.subgroup:first-of-type{margin-top:.4rem;}
+.subgroup small{font-family:var(--font-en);font-size:11px;letter-spacing:.08em;color:var(--muted);margin-left:.6rem;font-weight:600;}
+.sec-navy .subgroup small{color:rgba(255,255,255,.55);}
+
+.note{font-size:.825rem;color:var(--muted);line-height:1.75;padding:.75rem 1rem;border-left:3px solid var(--azure-pale);background:rgba(46,84,150,.04);border-radius:0 var(--radius-sm) var(--radius-sm) 0;margin-top:2rem;}
+.sec-navy .note{color:rgba(255,255,255,.72);background:rgba(255,255,255,.05);border-left-color:rgba(255,255,255,.25);}
+.note b{color:var(--ink);} .sec-navy .note b{color:#fff;}
+
+.summary{text-align:center;max-width:680px;margin:0 auto;}
+.summary-text{font-family:var(--font-ja-serif);font-size:clamp(1.15rem,3vw,1.5rem);font-weight:400;line-height:1.8;margin-bottom:2rem;}
+
+.take{background:var(--navy-deep);border-radius:var(--radius);padding:1.5rem 1.75rem;display:flex;gap:1.25rem;align-items:flex-start;margin:2.4rem 0 0;border-left:4px solid var(--red);}
+.sec-light .take{background:#fff8f8;border-left:4px solid var(--red);box-shadow:0 2px 8px rgba(226,55,68,.07);}
+.take-avatar{flex-shrink:0;width:44px;height:44px;border-radius:50%;background:var(--azure);color:var(--white);display:flex;align-items:center;justify-content:center;font-family:var(--font-en);font-size:.75rem;font-weight:700;}
+.take-label{font-family:var(--font-en);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--red-bright);margin-bottom:4px;}
+.sec-light .take-label{color:var(--red);}
+.take-author{font-size:.75rem;color:rgba(255,255,255,.5);margin-bottom:.5rem;}
+.sec-light .take-author{color:var(--muted);}
+.take-text{font-size:.9rem;line-height:1.85;color:rgba(255,255,255,.88);}
+.sec-light .take-text{color:var(--ink);}
+.hot{color:var(--red-bright);font-weight:700;}
+.sec-light .hot{color:var(--red);}
+
+footer{background:var(--navy-deep);padding:3rem 1.5rem;text-align:center;color:rgba(255,255,255,.5);font-size:.8rem;}
+footer a{color:rgba(255,255,255,.7);}
+.text-azure{color:var(--azure);} .fw-bold{font-weight:700;}
+
+/* グラフィック要素 */
+.figure{margin:2.25rem 0 0;}
+.fig-card{background:var(--white);border-radius:var(--radius);padding:1.6rem 1.75rem;box-shadow:0 2px 10px rgba(26,26,46,.08);}
+.sec-navy .fig-card{background:var(--navy-deep);box-shadow:none;}
+.fig-card svg{width:100%;height:auto;display:block;overflow:visible;}
+.fig-title{font-family:var(--font-ja-serif);font-size:1.02rem;font-weight:500;margin-bottom:1.1rem;}
+.fig-cap{font-size:.78rem;color:var(--muted);margin-top:.9rem;text-align:center;line-height:1.6;}
+.sec-navy .fig-cap{color:rgba(255,255,255,.6);}
+.fig-2{display:grid;grid-template-columns:1.5fr 1fr;gap:1.1rem;margin-top:2.25rem;align-items:stretch;}
+.fig-2 .fig-card{display:flex;flex-direction:column;justify-content:center;}
+@media(max-width:720px){.fig-2{grid-template-columns:1fr;}}
+.map-ico{width:28px;height:28px;color:var(--azure);margin-bottom:.7rem;}
+.sec-navy .map-ico{color:var(--azure-pale);}
+.map-ico svg{width:100%;height:100%;display:block;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
+
+@media (max-width:640px){
+  :root{--sec-pad:3.5rem 1rem;}
+  .hero{padding:4rem 1rem 3.5rem;} .hero-stats{gap:1.6rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">AI Transformation ・ Master List</span>
+    <h1 class="hero-title">AI推進の施策大全<br>社内会議で使える51の打ち手</h1>
+    <p class="hero-copy">「AIを入れたのに現場が動かない」——その原因は、たいてい技術ではない。経営・組織・人・コンテキストまで含めた51施策を、概要・目的・進め方・背景の課題まで整理した。専門用語は、初めて出てくるところで都度かんたんに解説する。</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num">51</div><div class="lbl">施策</div></div>
+      <div class="hero-stat"><div class="num">9</div><div class="lbl">カテゴリ</div></div>
+      <div class="hero-stat"><div class="num">3</div><div class="lbl">導入フェーズ</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- S1：DX比較（表） -->
+<section class="sec-light">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Prologue ・ DX vs AI</span>
+    <h2 class="sec-title">これまでのDXは「人が使う」変革、<br>AI推進は「AIに任せる」変革だ</h2>
+    <p class="sec-sub">両者は競合しない。だが、同じやり方で進めると必ず失敗する。決定的な違いを、6つの観点で対比する。</p>
+
+    <div class="ctable-wrap">
+      <div class="ctable">
+        <div class="th blank">観点</div>
+        <div class="th">これまでのDX</div>
+        <div class="th axc">AI推進</div>
+
+        <div class="rl">変革の主語</div>
+        <div class="dx">人。人がツールを使って作業を速くする</div>
+        <div class="ax">AI。人はAIに判断・作業を任せる</div>
+
+        <div class="rl">目的</div>
+        <div class="dx">既存業務のデジタル化・データ化</div>
+        <div class="ax">業務プロセスと判断そのものの再設計</div>
+
+        <div class="rl">導入の単位</div>
+        <div class="dx">システム／ツール</div>
+        <div class="ax">業務・役割（ロール）</div>
+
+        <div class="rl">主な成果</div>
+        <div class="dx">工数削減・ペーパーレス</div>
+        <div class="ax">時間創出＋質・量の非連続な変化</div>
+
+        <div class="rl">進め方</div>
+        <div class="dx">IT部門主導。要件定義→開発→導入</div>
+        <div class="ax">現場主導。小さく試して現場で磨く</div>
+
+        <div class="rl">変わるもの</div>
+        <div class="dx">手段（やり方）</div>
+        <div class="ax">仕事の主語そのもの</div>
+      </div>
+    </div>
+
+    <div class="figure"><div class="fig-card">
+      <div class="fig-title">DXとAI推進は「直交」している</div>
+      <svg viewBox="0 0 680 260" role="img" aria-label="DXとAI推進の直交を示す図">
+        <line x1="90" y1="200" x2="640" y2="200" stroke="#2e5496" stroke-width="2"/>
+        <polygon points="640,200 625,193 625,207" fill="#2e5496"/>
+        <line x1="150" y1="240" x2="150" y2="30" stroke="#e23744" stroke-width="2"/>
+        <polygon points="150,30 143,45 157,45" fill="#e23744"/>
+        <circle cx="150" cy="200" r="5" fill="#1f3864"/>
+        <text x="330" y="228" font-family="'Zen Kaku Gothic New',sans-serif" font-size="15" font-weight="700" fill="#2e5496">DX：データ・システムの整備（手段の効率化）</text>
+        <text x="168" y="48" font-family="'Zen Kaku Gothic New',sans-serif" font-size="15" font-weight="700" fill="#e23744">AI推進：プロセス・判断の再設計（主語の変化）</text>
+        <text x="185" y="135" font-family="'Zen Kaku Gothic New',sans-serif" font-size="13" fill="#6b7a99">DXで整えた資産が、そのまま</text>
+        <text x="185" y="156" font-family="'Zen Kaku Gothic New',sans-serif" font-size="13" fill="#6b7a99">AI推進の“燃料”になる</text>
+      </svg>
+      <div class="fig-cap">軸が違うから、DXの上にAIを重ねられる。「DXが終わってから」ではなく、同時に積む。</div>
+    </div></div>
+
+    <div class="take">
+      <div class="take-avatar">OK</div>
+      <div class="take-body">
+        <div class="take-label">Ozaken's One Point</div>
+        <div class="take-author">小澤健祐（おざけん）</div>
+        <p class="take-text">DXとAI推進は対立軸ではなく、<span class="hot">直交</span>している。DXで整えたデータや業務システムは、そのままAI推進の燃料になる。だから「DXが終わってからAI」ではなく、DX資産の上にAIを重ねるのが最短だ。ただし進め方は真逆。DXの『完璧に設計してから導入』でAIをやると、まず頓挫する。AIは80点で動かして現場で磨く前提でしか回らない。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S2：全体像＋なぜ50＋ロードマップ -->
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Map & Roadmap</span>
+    <h2 class="sec-title">全体像：51施策は、9つのカテゴリに整理できる</h2>
+    <p class="sec-sub">気になる面から読める地図。カードをタップすると各カテゴリへ飛べる。</p>
+
+    <div class="cards">
+      <a class="card map-card" href="#cat-strategy"><div class="map-ico"><svg viewBox="0 0 24 24"><path d="M6 21V4"/><path d="M6 5h11l-2 3 2 3H6"/></svg></div><div class="map-top"><span class="map-en">Strategy</span><span class="map-count">5<span>施策</span></span></div><h3>経営戦略</h3><p>ToBe像・本気度・投資対効果。すべての起点。</p><span class="map-arrow">01–05 →</span></a>
+      <a class="card map-card" href="#cat-org"><div class="map-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.3"/><circle cx="5" cy="18" r="2.3"/><circle cx="19" cy="18" r="2.3"/><path d="M12 7.3v3M11 10.3 6 15.7M13 10.3 18 15.7"/></svg></div><div class="map-top"><span class="map-en">Organization</span><span class="map-count">6<span>施策</span></span></div><h3>組織改革</h3><p>推進を支える器と、情シス×人事の融合。</p><span class="map-arrow">06–11 →</span></a>
+      <a class="card map-card" href="#cat-hr"><div class="map-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.3"/><path d="M5 20c0-4 3.1-6.2 7-6.2s7 2.2 7 6.2"/></svg></div><div class="map-top"><span class="map-en">HR</span><span class="map-count">5<span>施策</span></span></div><h3>人事制度</h3><p>評価・採用・役割再設計で、やる理由を作る。</p><span class="map-arrow">12–16 →</span></a>
+      <a class="card map-card" href="#cat-edu"><div class="map-ico"><svg viewBox="0 0 24 24"><path d="M12 4 22 9 12 14 2 9z"/><path d="M6 11v5c0 1.4 2.7 3 6 3s6-1.6 6-3v-5"/></svg></div><div class="map-top"><span class="map-en">Education</span><span class="map-count">6<span>施策</span></span></div><h3>教育・研修</h3><p>学ぶで終わらせず、つくるまで。</p><span class="map-arrow">17–22 →</span></a>
+      <a class="card map-card" href="#cat-info"><div class="map-ico"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4V5z"/></svg></div><div class="map-top"><span class="map-en">Information</span><span class="map-count">6<span>施策</span></span></div><h3>情報共有</h3><p>成功体験と暗黙知が流れる場をつくる。</p><span class="map-arrow">23–28 →</span></a>
+      <a class="card map-card" href="#cat-context"><div class="map-ico"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="2.6"/><path d="M5 6v12c0 1.5 3.1 2.6 7 2.6s7-1.1 7-2.6V6"/><path d="M5 12c0 1.5 3.1 2.6 7 2.6s7-1.1 7-2.6"/></svg></div><div class="map-top"><span class="map-en">Context</span><span class="map-count">6<span>施策</span></span></div><h3>コンテキスト資産</h3><p>暗黙知を、AIが読める資産に変える本丸。</p><span class="map-arrow">29–34 →</span></a>
+      <a class="card map-card" href="#cat-system"><div class="map-ico"><svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3"/></svg></div><div class="map-top"><span class="map-en">System</span><span class="map-count">8<span>施策</span></span></div><h3>システム実装</h3><p>接続・社内検索・評価。自動化と安全性を両立。</p><span class="map-arrow">35–42 →</span></a>
+      <a class="card map-card" href="#cat-gov"><div class="map-ico"><svg viewBox="0 0 24 24"><path d="M12 3 20 6v6c0 5-3.5 7.7-8 9-4.5-1.3-8-4-8-9V6z"/><path d="m8.5 12 2.3 2.3L15.5 10"/></svg></div><div class="map-top"><span class="map-en">Governance</span><span class="map-count">5<span>施策</span></span></div><h3>改善・ガバナンス</h3><p>効果を測り、暴走を防ぎ、腐らせない。</p><span class="map-arrow">43–47 →</span></a>
+      <a class="card map-card" href="#cat-biz"><div class="map-ico"><svg viewBox="0 0 24 24"><path d="M4 20h16"/><rect x="5" y="12" width="3.4" height="7"/><rect x="10.3" y="8" width="3.4" height="11"/><rect x="15.6" y="4" width="3.4" height="15"/></svg></div><div class="map-top"><span class="map-en">Business</span><span class="map-count">4<span>施策</span></span></div><h3>事業化</h3><p>社内利用で止めず、競争優位・顧客体験へ。</p><span class="map-arrow">48–51 →</span></a>
+    </div>
+
+    <div class="fig-2">
+      <div class="fig-card">
+        <div class="fig-title">カテゴリ別の施策数</div>
+        <svg viewBox="0 0 660 300" role="img" aria-label="カテゴリ別の施策数の棒グラフ">
+          <text x="6" y="26" font-family="'Zen Kaku Gothic New',sans-serif" font-size="12.5" fill="#fff">経営戦略</text><rect x="168" y="12" width="260" height="19" rx="3" fill="#7ea3d4"/><text x="436" y="26" font-family="'Hanken Grotesk',sans-serif" font-size="12" font-weight="700" fill="#d8e4f0">5</text>
+          <text x="6" y="59" font-family="'Zen Kaku Gothic New',sans-serif" font-size="12.5" fill="#fff">組織改革</text><rect x="168" y="45" width="312" height="19" rx="3" fill="#7ea3d4"/><text x="488" y="59" font-family="'Hanken Grotesk',sans-serif" font-size="12" font-weight="700" fill="#d8e4f0">6</text>
+          <text x="6" y="92" font-family="'Zen Kaku Gothic New',sans-serif" font-size="12.5" fill="#fff">人事制度</text><rect x="168" y="78" width="260" height="19" rx="3" fill="#7ea3d4"/><text x="436" y="92" font-family="'Hanken Grotesk',sans-serif" font-size="12" font-weight="700" fill="#d8e4f0">5</text>
+          <text x="6" y="125" font-family="'Zen Kaku Gothic New',sans-serif" font-size="12.5" fill="#fff">教育・研修</text><rect x="168" y="111" width="312" height="19" rx="3" fill="#7ea3d4"/><text x="488" y="125" font-family="'Hanken Grotesk',sans-serif" font-size="12" font-weight="700" fill="#d8e4f0">6</text>
+          <text x="6" y="158" font-family="'Zen Kaku Gothic New',sans-serif" font-size="12.5" fill="#fff">情報共有</text><rect x="168" y="144" width="312" height="19" rx="3" fill="#7ea3d4"/><text x="488" y="158" font-family="'Hanken Grotesk',sans-serif" font-size="12" font-weight="700" fill="#d8e4f0">6</text>
+          <text x="6" y="191" font-family="'Zen Kaku Gothic New',sans-serif" font-size="12.5" fill="#fff">コンテキスト資産</text><rect x="168" y="177" width="312" height="19" rx="3" fill="#7ea3d4"/><text x="488" y="191" font-family="'Hanken Grotesk',sans-serif" font-size="12" font-weight="700" fill="#d8e4f0">6</text>
+          <text x="6" y="224" font-family="'Zen Kaku Gothic New',sans-serif" font-size="12.5" fill="#fff">システム実装</text><rect x="168" y="210" width="416" height="19" rx="3" fill="#d8e4f0"/><text x="592" y="224" font-family="'Hanken Grotesk',sans-serif" font-size="12" font-weight="700" fill="#d8e4f0">8</text>
+          <text x="6" y="257" font-family="'Zen Kaku Gothic New',sans-serif" font-size="12.5" fill="#fff">改善・ガバナンス</text><rect x="168" y="243" width="260" height="19" rx="3" fill="#7ea3d4"/><text x="436" y="257" font-family="'Hanken Grotesk',sans-serif" font-size="12" font-weight="700" fill="#d8e4f0">5</text>
+          <text x="6" y="290" font-family="'Zen Kaku Gothic New',sans-serif" font-size="12.5" fill="#fff">事業化</text><rect x="168" y="276" width="208" height="19" rx="3" fill="#7ea3d4"/><text x="384" y="290" font-family="'Hanken Grotesk',sans-serif" font-size="12" font-weight="700" fill="#d8e4f0">4</text>
+        </svg>
+      </div>
+      <div class="fig-card">
+        <div class="fig-title">技術・実装の割合</div>
+        <svg viewBox="0 0 200 200" role="img" aria-label="技術・実装が占める割合のドーナツ図">
+          <circle cx="100" cy="100" r="70" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="22"/>
+          <circle cx="100" cy="100" r="70" fill="none" stroke="#d8e4f0" stroke-width="22" stroke-dasharray="69 370.8" stroke-linecap="round" transform="rotate(-90 100 100)"/>
+          <text x="100" y="97" text-anchor="middle" font-family="'Hanken Grotesk',sans-serif" font-size="38" font-weight="700" fill="#d8e4f0">16%</text>
+          <text x="100" y="122" text-anchor="middle" font-family="'Zen Kaku Gothic New',sans-serif" font-size="12" fill="#fff">技術・実装 8/51</text>
+        </svg>
+        <div class="fig-cap">残り84%は、経営・組織・人・運用の話。</div>
+      </div>
+    </div>
+
+    <div class="deep">
+      <h3>51施策のうち、システム実装は8つだけ</h3>
+      <p>純粋な技術・実装は8施策にとどまる。残る43、つまり全体の8割超は、経営・組織・人事・教育・情報共有・コンテキスト・ガバナンス・事業化の話だ。AI推進は情シスの仕事ではなく、経営と現場を巻き込む全社プロジェクトだと、この配分が物語っている。</p>
+    </div>
+
+    <p class="sec-sub" style="margin:2.5rem 0 1.4rem;">全部を一気にやる必要はない。各施策には着手の順番として【基盤／推進／発展】を添えた。自社がどこで詰まっているかを点検し、上流から埋める。</p>
+    <div class="figure" style="margin-top:0;margin-bottom:2rem;"><div class="fig-card">
+      <svg viewBox="0 0 680 78" role="img" aria-label="基盤・推進・発展のフェーズ別施策数">
+        <rect x="20" y="14" width="188" height="36" rx="4" fill="#d8e4f0"/>
+        <rect x="208" y="14" width="301" height="36" rx="4" fill="#7ea3d4"/>
+        <rect x="509" y="14" width="151" height="36" rx="4" fill="#3f66a8"/>
+        <text x="114" y="37" text-anchor="middle" font-family="'Zen Kaku Gothic New',sans-serif" font-size="13" font-weight="700" fill="#1f3864">基盤 15</text>
+        <text x="358" y="37" text-anchor="middle" font-family="'Zen Kaku Gothic New',sans-serif" font-size="13" font-weight="700" fill="#fff">推進 24</text>
+        <text x="585" y="37" text-anchor="middle" font-family="'Zen Kaku Gothic New',sans-serif" font-size="13" font-weight="700" fill="#fff">発展 12</text>
+        <text x="20" y="70" font-family="'Zen Kaku Gothic New',sans-serif" font-size="11.5" fill="rgba(255,255,255,.6)">全51施策のフェーズ配分。まず「基盤」から着手する。</text>
+      </svg>
+    </div></div>
+    <div class="stepper">
+      <div class="step"><div class="step-num">01</div><div class="step-body"><h3>基盤フェーズ：やらないと全部が空回りする土台</h3><p>戦略の言語化、活用レベル診断、推進組織、セキュアな環境、ガイドライン、暗黙知の棚卸し。ここが弱いと、研修も自動化も定着しない。</p><span class="tag">該当：15施策</span></div></div>
+      <div class="step"><div class="step-num">02</div><div class="step-body"><h3>推進フェーズ：活用を全社に広げ、回し続ける</h3><p>評価への組み込み、研修、コンテキストDB、業務連携・社内検索、効果の可視化。基盤の上で、活用を日常に変えていく。</p><span class="tag">該当：24施策</span></div></div>
+      <div class="step"><div class="step-num">03</div><div class="step-body"><h3>発展フェーズ：現場自走と、事業そのものへ</h3><p>マルチエージェント、現場の内製化、顧客向けの体験改善、エージェント前提の新規事業まで。社内効率化を競争優位へ転化する段階。</p><span class="tag">該当：12施策</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- S3：経営戦略＋組織改革 -->
+<section class="sec-light" id="cat-strategy">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Category 01–02 ・ Strategy & Organization</span>
+    <h2 class="sec-title">経営と組織：トップが触らない会社は、現場も冷める</h2>
+    <p class="sec-sub">起点は経営の本気度と投資対効果。そして推進を「誰か一人の頑張り」にしない器づくり。情シスと人事を、ひとつにする。</p>
+
+    <div class="subgroup">経営戦略 <small>Strategy ・ 5 measures</small></div>
+    <div class="cards">
+      <div class="card"><div class="card-head"><span class="card-no">01</span><span class="phase base">基盤</span></div><h3>活用戦略の策定</h3>
+        <p class="c-row"><b>概要</b>ToBe像と3年ロードマップを経営戦略として明文化する。</p>
+        <p class="c-row"><b>目的</b>AIを目的化させず、事業ゴールへの手段として全社の羅針盤にする。</p>
+        <p class="c-row"><b>進め方</b>ToBe像を1枚に言語化／年度別マイルストーンを描く／経営会議で四半期レビュー。</p>
+        <p class="c-row issue"><b>解く課題</b>経営層のコミットメント不在</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">02</span><span class="phase base">基盤</span></div><h3>経営層自身のエージェント活用</h3>
+        <p class="c-row"><b>概要</b>経営層が自らエージェントを日常的に使い、意思決定に組み込む。</p>
+        <p class="c-row"><b>目的</b>トップが体感で語れる状態をつくり、全社の本気度を引き上げる。</p>
+        <p class="c-row"><b>進め方</b>役員の壁打ち・資料要約に常用／経営会議の議事録・論点整理に活用。</p>
+        <p class="c-row issue"><b>解く課題</b>トップが触らないことによる現場の冷め</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">03</span><span class="phase base">基盤</span></div><h3>活用レベルの自己診断</h3>
+        <p class="c-row"><b>概要</b>経営層・推進・従業員・システムの4軸で、活用レベルを段階評価する。</p>
+        <p class="c-row"><b>目的</b>感覚でなく段階で現状を捉え、次の一手の優先順位を定める。</p>
+        <p class="c-row"><b>進め方</b>4軸を5段階で採点／年1回の定点観測／部門別ヒートマップで弱点を特定。</p>
+        <p class="c-row issue"><b>解く課題</b>現在地が分からず打ち手が場当たり的</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">04</span><span class="phase drive">推進</span></div><h3>AI投資のROI・予算設計</h3>
+        <p class="c-row"><b>概要</b>工数削減・売上貢献・リスク低減の3軸でROIを試算する。</p>
+        <p class="c-row"><b>目的</b>効果を経営言語に翻訳し、継続的な予算を確保する。</p>
+        <p class="c-row"><b>進め方</b>削減時間×人件費で金額換算／PoCで実測→本予算化する稟議テンプレを用意。</p>
+        <p class="c-row issue"><b>解く課題</b>効果が経営に刺さらず予算が続かない</p>
+        <p class="c-note"><b>ROI</b>＝投資対効果。かけた費用に対し、削減時間・売上・リスク低減などでどれだけ返るかの指標。<br><b>PoC</b>＝概念実証。本格導入の前に小さく試して効果や実現性を検証すること。</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">05</span><span class="phase drive">推進</span></div><h3>全社KPI／OKRへの組み込み</h3>
+        <p class="c-row"><b>概要</b>AI活用目標を部門KPI・全社OKRに接続する。</p>
+        <p class="c-row"><b>目的</b>片手間の取り組みを、評価される正式な業務目標へ引き上げる。</p>
+        <p class="c-row"><b>進め方</b>部門OKRに「AI活用による創出時間」を設定／全社ダッシュボードで進捗を可視化。</p>
+        <p class="c-row issue"><b>解く課題</b>本業と別枠で優先されない</p>
+        <p class="c-note"><b>KPI</b>＝目標達成度を測る数値指標。<b>OKR</b>＝「目標」と「主要な成果」をセットで定め、全社で方向を揃える目標管理の手法。</p></div>
+    </div>
+
+    <div class="subgroup" id="cat-org">組織改革 <small>Organization ・ 6 measures</small></div>
+    <div class="cards">
+      <div class="card"><div class="card-head"><span class="card-no">06</span><span class="phase base">基盤</span></div><h3>全社アセスメント</h3>
+        <p class="c-row"><b>概要</b>活用状況とコンテキスト資産を健康診断的に可視化する。</p>
+        <p class="c-row"><b>目的</b>全社の穴と強みを把握し、投資の優先順位を根拠づける。</p>
+        <p class="c-row"><b>進め方</b>利用率・ユースケース棚卸し・コンテキスト整備度をスコア化／特化型診断も併用。</p>
+        <p class="c-row issue"><b>解く課題</b>現状把握の欠如・優先順位不明</p>
+        <p class="c-note"><b>コンテキスト資産</b>＝エージェントに渡す前提情報（業務知識・手順書・判断基準・企業理念など）の総体。出力の精度を左右する“文脈”のこと。</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">07</span><span class="phase base">基盤</span></div><h3>CoEの組成</h3>
+        <p class="c-row"><b>概要</b>全社横断のAI推進専門組織（CoE）を設置する。</p>
+        <p class="c-row"><b>目的</b>知見を中央に集約し、部門をまたいで横展開するハブにする。</p>
+        <p class="c-row"><b>進め方</b>情シス・人事・事業から3〜5名を選抜／標準テンプレ配布と各部門の伴走支援。</p>
+        <p class="c-row issue"><b>解く課題</b>部署間の分断・属人化</p>
+        <p class="c-note"><b>CoE</b>＝Center of Excellence。知見・人材を集約し全社を牽引する横断専門組織。AI推進の“司令塔”。</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">08</span><span class="phase drive">推進</span></div><h3>AIエージェント運営委員会</h3>
+        <p class="c-row"><b>概要</b>運用とガバナンスを統括する常設の意思決定機関を置く。</p>
+        <p class="c-row"><b>目的</b>誰がどのエージェントを動かすかを管理し、安全に拡大する。</p>
+        <p class="c-row"><b>進め方</b>月次でツール承認・権限付与・インシデントを審議／利用ポリシーの最終決定を担う。</p>
+        <p class="c-row issue"><b>解く課題</b>エージェントの野良化・管理不能</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">09</span><span class="phase drive">推進</span></div><h3>アンバサダー制度</h3>
+        <p class="c-row"><b>概要</b>各部門に置いた推進役が、方針を現場語に翻訳する。</p>
+        <p class="c-row"><b>目的</b>推進組織と現場の距離を縮め、活用を各部門に浸透させる。</p>
+        <p class="c-row"><b>進め方</b>部門1名を任命／月次の推進会議で現場課題を吸い上げ、成功事例を持ち帰る。</p>
+        <p class="c-row issue"><b>解く課題</b>推進組織と現場の距離</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">10</span><span class="phase drive">推進</span></div><h3>情シス×人事の融合体制</h3>
+        <p class="c-row"><b>概要</b>システム（情シス）と人・制度（人事）を一体運営する。</p>
+        <p class="c-row"><b>目的</b>技術と組織の両輪を噛み合わせ、部門活用から全社化への壁を越える。</p>
+        <p class="c-row"><b>進め方</b>合同タスクフォースを組成／「環境整備」と「評価・育成」を同じ会議体で回す。</p>
+        <p class="c-row issue"><b>解く課題</b>技術と組織が分断して施策が噛み合わない</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">11</span><span class="phase base">基盤</span></div><h3>パイロット部門の選定・PoC設計</h3>
+        <p class="c-row"><b>概要</b>本番化前提でパイロット部門とKPIを設計する。</p>
+        <p class="c-row"><b>目的</b>横展開できる再現性のある成功事例を先につくる。</p>
+        <p class="c-row"><b>進め方</b>効果が測りやすい1部門を選定／成功基準と本番化条件を先に合意／4〜8週で検証。</p>
+        <p class="c-row issue"><b>解く課題</b>PoC止まりで本番化しない</p></div>
+    </div>
+
+    <div class="deep">
+      <h3>混同しやすい「CoE・運営委員会・アンバサダー」の違い</h3>
+      <p>3つは役割が違う。<b>CoE＝頭脳（司令塔）</b>：全社横断で知見と戦略を集約し「どう進めるか」を設計する中枢。<b>運営委員会＝統治（ガバナンス）</b>：ツール承認・権限・ルールを決める常設の意思決定機関で「動かして良いか」を統制する。<b>アンバサダー＝現場の翻訳者</b>：各部門に置かれた推進役で、中枢の方針を現場語に翻訳し活用を広げる伝令。頭脳が方針を描き、委員会が可否を決め、アンバサダーが現場に届ける——この分業で推進が回る。</p>
+    </div>
+  </div>
+</section>
+
+<!-- S4：人事＋教育 -->
+<section class="sec-navy" id="cat-hr">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Category 03–04 ・ HR & Education</span>
+    <h2 class="sec-title">人と育成：研修だけでは、人は動かない</h2>
+    <p class="sec-sub">「やる理由（評価・役割）」と「やれる力（育成）」の両輪で、初めて活用が回り出す。</p>
+
+    <div class="subgroup">人事制度 <small>HR ・ 5 measures</small></div>
+    <div class="cards">
+      <div class="card"><div class="card-head"><span class="card-no">12</span><span class="phase drive">推進</span></div><h3>評価制度への組み込み</h3>
+        <p class="c-row"><b>概要</b>活用度・効率化成果を人事評価と表彰に反映する。</p>
+        <p class="c-row"><b>目的</b>工数でなく成果（アウトカム）で報い、行動を動機づける。</p>
+        <p class="c-row"><b>進め方</b>目標設定に「AI活用」を明記／効率化事例を表彰／半期評価にアウトカム項目を追加。</p>
+        <p class="c-row issue"><b>解く課題</b>動機づけ不足・形骸化</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">13</span><span class="phase base">基盤</span></div><h3>AI人材の採用・配置</h3>
+        <p class="c-row"><b>概要</b>ストラテジスト・アーキテクト等の専門職を採用・配置する。</p>
+        <p class="c-row"><b>目的</b>戦略設計と実装の担い手を社内に確保し、外部依存を減らす。</p>
+        <p class="c-row"><b>進め方</b>戦略職と実装職を分けて採用要件化／既存人材のリスキリング配置も併用。</p>
+        <p class="c-row issue"><b>解く課題</b>推進人材の不足</p>
+        <p class="c-note"><b>ストラテジスト</b>＝「なぜ・何を自動化するか」を設計する戦略人材。<b>アーキテクト</b>＝「どう実装するか」を担う技術人材。ともにAICX協会が定めた認定資格。</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">14</span><span class="phase exp">発展</span></div><h3>現場開発者への育成パス</h3>
+        <p class="c-row"><b>概要</b>アンバサダーから、現場主導のエージェント開発者へ育てる道筋。</p>
+        <p class="c-row"><b>目的</b>現場が自らツールを作れる状態にし、自走化を実現する。</p>
+        <p class="c-row"><b>進め方</b>研修トラックを用意／Dify等での制作課題／メンターが伴走レビュー。</p>
+        <p class="c-row issue"><b>解く課題</b>現場の自走化が進まない</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">15</span><span class="phase exp">発展</span></div><h3>職務定義書（JD）の再設計</h3>
+        <p class="c-row"><b>概要</b>エージェント前提で、各ロールの役割・責任をJDとして定義し直す。</p>
+        <p class="c-row"><b>目的</b>人が担う仕事の輪郭を描き直し、再配置と協働を可能にする。</p>
+        <p class="c-row"><b>進め方</b>主要ロールのJDに「AIと協働する範囲」を明記／人の判断・責任を再定義。</p>
+        <p class="c-row issue"><b>解く課題</b>役割定義が旧来のままで再配置できない</p>
+        <p class="c-note"><b>JD</b>＝職務定義書（Job Description）。その職務で担う役割・責任を明文化した文書。</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">16</span><span class="phase exp">発展</span></div><h3>AI時代のキャリアパス設計</h3>
+        <p class="c-row"><b>概要</b>エージェント協働を前提に、昇進・専門職の道筋を設計する。</p>
+        <p class="c-row"><b>目的</b>将来像を示して不安を解き、人材の定着とリスキリングを促す。</p>
+        <p class="c-row"><b>進め方</b>AI専門職の等級・報酬を新設／リスキリング前提の異動・登用を設計。</p>
+        <p class="c-row issue"><b>解く課題</b>将来像が描けず人材が流出</p></div>
+    </div>
+
+    <div class="subgroup" id="cat-edu">教育・研修 <small>Education ・ 6 measures</small></div>
+    <div class="cards">
+      <div class="card"><div class="card-head"><span class="card-no">17</span><span class="phase base">基盤</span></div><h3>階層別教育プログラム</h3>
+        <p class="c-row"><b>概要</b>経営層／管理職／一般／専門人材ごとに段階的に育成する。</p>
+        <p class="c-row"><b>目的</b>立場に応じた理解度を底上げし、リテラシー格差を埋める。</p>
+        <p class="c-row"><b>進め方</b>経営層＝投資判断、管理職＝業務再設計、一般＝実務活用、専門＝実装、と内容を分ける。</p>
+        <p class="c-row issue"><b>解く課題</b>リテラシー格差・経営層の理解不足</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">18</span><span class="phase drive">推進</span></div><h3>ドメイン別研修</h3>
+        <p class="c-row"><b>概要</b>部門特性に合わせた業務適用型の研修を行う。</p>
+        <p class="c-row"><b>目的</b>自分の仕事に直結する題材で、研修を実務の成果につなげる。</p>
+        <p class="c-row"><b>進め方</b>営業・経理・人事など部門別に、実際の業務を題材にしたカリキュラムを設計。</p>
+        <p class="c-row issue"><b>解く課題</b>業務との接続不足・実用に至らない</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">19</span><span class="phase drive">推進</span></div><h3>ハンズオンWS</h3>
+        <p class="c-row"><b>概要</b>自部門の業務をその場でエージェント化する実践会。</p>
+        <p class="c-row"><b>目的</b>「学ぶ」を「つくる」に変え、持ち帰れる成果物を生む。</p>
+        <p class="c-row"><b>進め方</b>自部門の1業務を選び、その場でエージェント化／必ず成果物を1つ完成させる。</p>
+        <p class="c-row issue"><b>解く課題</b>研修だけでは活用に至らない</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">20</span><span class="phase drive">推進</span></div><h3>外部認定資格の取得支援</h3>
+        <p class="c-row"><b>概要</b>ストラテジスト・アーキテクト等の取得を支援する。</p>
+        <p class="c-row"><b>目的</b>スキルを客観基準で可視化し、育成と評価の指標にする。</p>
+        <p class="c-row"><b>進め方</b>受験料補助・学習時間の確保／対象資格を社内で指定。</p>
+        <p class="c-row issue"><b>解く課題</b>スキルの可視化不足</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">21</span><span class="phase base">基盤</span></div><h3>経営層向けエグゼクティブ研修</h3>
+        <p class="c-row"><b>概要</b>経営層に特化し、意思決定への組み込みと投資判断を学ぶ。</p>
+        <p class="c-row"><b>目的</b>トップの理解を引き上げ、推進の天井を外す。</p>
+        <p class="c-row"><b>進め方</b>役員合宿で自社ユースケースを検討／投資判断と組織設計に絞った少人数プログラム。</p>
+        <p class="c-row issue"><b>解く課題</b>経営層の理解不足が推進の天井になる</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">22</span><span class="phase base">基盤</span></div><h3>リテラシー資格の全社取得</h3>
+        <p class="c-row"><b>概要</b>生成AIパスポート等で基礎リテラシーの全社ベースラインを引き上げる。</p>
+        <p class="c-row"><b>目的</b>リスク対策を含む共通の土台を作り、安全な全社活用を可能にする。</p>
+        <p class="c-row"><b>進め方</b>全社員の必須研修に組み込み／情報漏洩・著作権リスクの基礎理解を統一。</p>
+        <p class="c-row issue"><b>解く課題</b>リテラシー格差・初歩的な情報漏洩リスク</p>
+        <p class="c-note"><b>生成AIパスポート</b>＝生成AI活用普及協会（GUGA）が提供する、基礎知識とリスク対策を証明する入門者向けの資格試験。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- S5：情報共有＋コンテキスト -->
+<section class="sec-light" id="cat-info">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Category 05–06 ・ Information & Context</span>
+    <h2 class="sec-title">情報とコンテキスト：精度は「言語化した暗黙知」で決まる</h2>
+    <p class="sec-sub">成功体験が伝播する場をつくり、社内の暗黙知をエージェントが読める資産に変える。この設計・最適化を「コンテキストエンジニアリング（＝エージェントに渡す前提情報を設計・最適化する取り組み）」と呼び、AI活用の本丸になる。</p>
+
+    <div class="subgroup">情報共有 <small>Information ・ 6 measures</small></div>
+    <div class="cards">
+      <div class="card"><div class="card-head"><span class="card-no">23</span><span class="phase drive">推進</span></div><h3>成功事例の社内共有</h3>
+        <p class="c-row"><b>概要</b>月次LT会・事例集で活用事例を定期共有する。</p>
+        <p class="c-row"><b>目的</b>「あの部署でうまくいった」を全社の再現可能な資産に変える。</p>
+        <p class="c-row"><b>進め方</b>月次LT会（5分×数本）／事例集をイントラ公開／再現手順つきで横展開。</p>
+        <p class="c-row issue"><b>解く課題</b>成功体験の伝播不足</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">24</span><span class="phase base">基盤</span></div><h3>社内コミュニケーション基盤</h3>
+        <p class="c-row"><b>概要</b>Slack／Teamsで活用相談・ノウハウ交換が日常化する場を作る。</p>
+        <p class="c-row"><b>目的</b>部門を越えて知見を流し、情報のサイロ化を溶かす。</p>
+        <p class="c-row"><b>進め方</b>#ai-相談 チャンネル／プロンプト共有スレ／週次の雑談会で心理的ハードルを下げる。</p>
+        <p class="c-row issue"><b>解く課題</b>情報のサイロ化</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">25</span><span class="phase drive">推進</span></div><h3>経営層による発信</h3>
+        <p class="c-row"><b>概要</b>経営層が自らの活用例を継続的に発信する。</p>
+        <p class="c-row"><b>目的</b>本気度と心理的安全性を伝え、現場が動きやすい空気を作る。</p>
+        <p class="c-row"><b>進め方</b>社長が活用例を社内報・全社会議で継続発信／「失敗も共有」で挑戦を後押し。</p>
+        <p class="c-row issue"><b>解く課題</b>心理的安全性・本気度の伝達不足</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">26</span><span class="phase drive">推進</span></div><h3>社内AIコミュニティ（CoP）運営</h3>
+        <p class="c-row"><b>概要</b>実践者が集うコミュニティ（CoP）を運営する。</p>
+        <p class="c-row"><b>目的</b>ナレッジと熱量を横に流し、推進を一部の熱量依存から脱する。</p>
+        <p class="c-row"><b>進め方</b>有志コミュニティを発足／月次もくもく会・ナレッジ投稿を運営し実践知を蓄積。</p>
+        <p class="c-row issue"><b>解く課題</b>推進が一部の熱量に依存</p>
+        <p class="c-note"><b>CoP</b>＝実践コミュニティ（Community of Practice）。同じ関心を持つ実践者が自発的に集い、知見を共有・蓄積する場。</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">27</span><span class="phase drive">推進</span></div><h3>プロンプト／エージェント／ワークフローの共有ライブラリ</h3>
+        <p class="c-row"><b>概要</b>よく使うプロンプトに加え、部門で作ったエージェント・ワークフローも標準化して共有する。</p>
+        <p class="c-row"><b>目的</b>個人・部門の作りものを組織資産に変え、車輪の再発明を防ぐ。</p>
+        <p class="c-row"><b>進め方</b>プロンプト集＋エージェント／ワークフローを共有DB化／評価の高いものをテンプレ化して再利用可能に。</p>
+        <p class="c-row issue"><b>解く課題</b>個人・部門の工夫が組織資産にならない</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">28</span><span class="phase drive">推進</span></div><h3>社内AI活用コンテストの開催</h3>
+        <p class="c-row"><b>概要</b>部門横断でAI活用のアイデアと成果を競う社内コンテスト（ハッカソン）を開く。</p>
+        <p class="c-row"><b>目的</b>現場の挑戦を可視化・表彰し、活用の熱量とユースケースを一気に引き出す。</p>
+        <p class="c-row"><b>進め方</b>四半期／半期でテーマを設定／経営層が優秀事例を表彰／成果は共有ライブラリに登録。</p>
+        <p class="c-row issue"><b>解く課題</b>挑戦のインセンティブ不足・ユースケースが埋もれる</p></div>
+    </div>
+
+    <div class="subgroup" id="cat-context">コンテキスト資産 <small>Context ・ 6 measures</small></div>
+    <div class="cards">
+      <div class="card"><div class="card-head"><span class="card-no">29</span><span class="phase base">基盤</span></div><h3>コンテキスト資産の棚卸し</h3>
+        <p class="c-row"><b>概要</b>業務知識・SOP・判断基準・MVVを洗い出して可視化する。</p>
+        <p class="c-row"><b>目的</b>頭の中の暗黙知を外に出し、エージェント化の材料をそろえる。</p>
+        <p class="c-row"><b>進め方</b>各業務の知識・手順・判断基準をリスト化／「暗黙知になっている判断」を特定。</p>
+        <p class="c-row issue"><b>解く課題</b>暗黙知のままでエージェント化不能</p>
+        <p class="c-note"><b>SOP</b>＝標準業務手順書。誰がやっても同じ品質になるための手順書。<b>MVV</b>＝Mission・Vision・Value（企業の使命・目指す姿・価値観）。</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">30</span><span class="phase drive">推進</span></div><h3>コンテキスト資産DBの構築</h3>
+        <p class="c-row"><b>概要</b>部署別・業務別のナレッジを体系化してDB化する。</p>
+        <p class="c-row"><b>目的</b>散在する知識を、エージェントが参照できる形に束ねる。</p>
+        <p class="c-row"><b>進め方</b>部署別・業務別にナレッジベース化／RAGで参照できる構造に整備。</p>
+        <p class="c-row issue"><b>解く課題</b>エージェントの精度が頭打ち</p>
+        <p class="c-note"><b>RAG</b>＝検索拡張生成。社内文書を検索し、その内容を引用して回答させる技術。一般論でなく“自社の答え”を返せる。</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">31</span><span class="phase drive">推進</span></div><h3>業務SOPのエージェント対応化</h3>
+        <p class="c-row"><b>概要</b>既存マニュアルを、エージェントが解釈可能な形に整える。</p>
+        <p class="c-row"><b>目的</b>人間用の文書をAI用に翻訳し、判断のばらつきをなくす。</p>
+        <p class="c-row"><b>進め方</b>口語・図中心の手順を構造化テキストに／曖昧な条件分岐を明文化。</p>
+        <p class="c-row issue"><b>解く課題</b>レガシー文書の解釈ばらつき</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">32</span><span class="phase drive">推進</span></div><h3>MVV・ブランドのコンテキスト化</h3>
+        <p class="c-row"><b>概要</b>MVV・ブランドガイドラインをエージェントの参照基盤に組み込む。</p>
+        <p class="c-row"><b>目的</b>出力に“自社らしさ”とトーンを宿し、ブランドを守る。</p>
+        <p class="c-row"><b>進め方</b>トーン&マナー・NG表現・ブランド用語を参照ファイルに登録し常時参照させる。</p>
+        <p class="c-row issue"><b>解く課題</b>出力が自社のトーン・らしさから外れる</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">33</span><span class="phase drive">推進</span></div><h3>判断基準の形式知化</h3>
+        <p class="c-row"><b>概要</b>ベテランの判断ロジック（暗黙知）を言語化する。</p>
+        <p class="c-row"><b>目的</b>属人的な判断を、エージェントが再現できる形式知に変える。</p>
+        <p class="c-row"><b>進め方</b>「なぜそう判断したか」をインタビュー／判断フロー・チェックリストに落とす。</p>
+        <p class="c-row issue"><b>解く課題</b>属人的な判断がエージェント化できない</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">34</span><span class="phase exp">発展</span></div><h3>コンテキストの鮮度管理・更新運用</h3>
+        <p class="c-row"><b>概要</b>更新オーナーと運用ルールを定め、資産の鮮度を保つ。</p>
+        <p class="c-row"><b>目的</b>情報の陳腐化を防ぎ、エージェントの精度を長期に維持する。</p>
+        <p class="c-row"><b>進め方</b>資産ごとに更新担当と頻度を設定／四半期レビューで古い情報を除去。</p>
+        <p class="c-row issue"><b>解く課題</b>情報が古びて精度が劣化</p></div>
+    </div>
+
+    <div class="take">
+      <div class="take-avatar">OK</div>
+      <div class="take-body">
+        <div class="take-label">Ozaken's One Point</div>
+        <div class="take-author">小澤健祐（おざけん）</div>
+        <p class="take-text">この6施策が、AI活用の本丸だ。エージェントの賢さは最新モデルへの乗り換えで上がると思われがちだが、現場で効くのは <span class="hot">暗黙知</span> をどれだけ言語化してコンテキストとして渡せたか。モデルは買えるが、御社の判断基準は買えない。コンテキスト資産こそ、唯一マネされない競争優位になる。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S6：システム実装 -->
+<section class="sec-navy" id="cat-system">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Category 07 ・ System</span>
+    <h2 class="sec-title">システム実装：自動化と安全性は、セットで設計する</h2>
+    <p class="sec-sub">51施策のうち、純粋な技術・実装はこの8つ。「人間の関与」と「評価の仕組み」をどう残すかが要になる。</p>
+
+    <div class="cards">
+      <div class="card"><div class="card-head"><span class="card-no">35</span><span class="phase base">基盤</span></div><h3>セキュアなAI環境の構築</h3>
+        <p class="c-row"><b>概要</b>法人向けエージェント基盤（M365 Copilot等）を整備する。</p>
+        <p class="c-row"><b>目的</b>シャドーITと情報漏洩を、統制された公式環境で受け止める。</p>
+        <p class="c-row"><b>進め方</b>M365 Copilot／Google Workspace＋Gemini等を法人契約／DLP・ログ・アクセス制御を設定。</p>
+        <p class="c-row issue"><b>解く課題</b>シャドーIT・情報漏洩リスク</p>
+        <p class="c-note"><b>シャドーIT</b>＝会社が把握・管理していない、社員が勝手に使うツールやサービス。情報漏洩の温床になりやすい。</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">36</span><span class="phase drive">推進</span></div><h3>業務システムとの連携（MCP/API）</h3>
+        <p class="c-row"><b>概要</b>社内ツール・DBをMCP・APIで接続しエージェント化する。</p>
+        <p class="c-row"><b>目的</b>業務データとつなぎ、実務で効果が立つエージェントにする。</p>
+        <p class="c-row"><b>進め方</b>CRM・基幹DB・チャットをMCP/APIで接続／エージェントが実データを読み書き。</p>
+        <p class="c-row issue"><b>解く課題</b>業務との分離・効果の限界</p>
+        <p class="c-note"><b>MCP</b>＝AIと社内ツール・データを安全につなぐ標準的な接続規格。<b>API</b>＝ソフト同士がデータ・機能をやり取りする接続口。</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">37</span><span class="phase drive">推進</span></div><h3>RAG・社内ナレッジ検索基盤</h3>
+        <p class="c-row"><b>概要</b>社内文書を検索・引用できるRAG基盤を整備する。</p>
+        <p class="c-row"><b>目的</b>一般論でなく“自社の答え”を、根拠つきで返せるようにする。</p>
+        <p class="c-row"><b>進め方</b>社内文書をベクトルDB化／出典リンク付きで回答／権限に応じ検索範囲を制御。</p>
+        <p class="c-row issue"><b>解く課題</b>社内知識にアクセスできず一般論しか返せない</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">38</span><span class="phase base">基盤</span></div><h3>ツール権限・ガバナンス設計</h3>
+        <p class="c-row"><b>概要</b>使えるツール・データ範囲の制限と承認フローを設計する。</p>
+        <p class="c-row"><b>目的</b>権限の暴走を防ぎ、いつでも監査できる状態を保つ。</p>
+        <p class="c-row"><b>進め方</b>ロール別に使えるツール・データを制限／高リスク操作に承認フローを設定。</p>
+        <p class="c-row issue"><b>解く課題</b>権限の暴走・監査不能</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">39</span><span class="phase drive">推進</span></div><h3>ヒューマンインザループ設計</h3>
+        <p class="c-row"><b>概要</b>人の判断・承認が要る点を業務に明示的に組み込む。</p>
+        <p class="c-row"><b>目的</b>自動化と安全性を両立し、任せきりの事故を構造で防ぐ。</p>
+        <p class="c-row"><b>進め方</b>送信・決裁・外部公開の前に人の承認を必須化／自動化の範囲を業務ごとに線引き。</p>
+        <p class="c-row issue"><b>解く課題</b>過度な自動化による事故</p>
+        <p class="c-note"><b>ヒューマンインザループ（HITL）</b>＝自動処理の途中に人の判断・承認を挟む設計。暴走や誤りを防ぐ安全弁。</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">40</span><span class="phase exp">発展</span></div><h3>マルチエージェント設計</h3>
+        <p class="c-row"><b>概要</b>複数エージェントの役割分担とオーケストレーションを設計する。</p>
+        <p class="c-row"><b>目的</b>複雑な業務を分解し、適材適所で任せて処理しきる。</p>
+        <p class="c-row"><b>進め方</b>調査・作成・チェックを別エージェントに分業／オーケストレーターが統括。</p>
+        <p class="c-row issue"><b>解く課題</b>単体では複雑業務に届かない</p>
+        <p class="c-note"><b>オーケストレーション</b>＝複数のエージェントやツールを、指揮者のように統括・連携させて一連の処理を成立させること。</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">41</span><span class="phase exp">発展</span></div><h3>エージェントの評価・テスト</h3>
+        <p class="c-row"><b>概要</b>精度・安全性を検証し、更新時の劣化（レグレッション）を防ぐ仕組み。</p>
+        <p class="c-row"><b>目的</b>品質を担保し、安心して本番運用・更新できる状態を作る。</p>
+        <p class="c-row"><b>進め方</b>代表的な入力セットで定期評価／更新前後で精度を比較し劣化を検知。</p>
+        <p class="c-row issue"><b>解く課題</b>品質が担保できず本番投入が怖い</p>
+        <p class="c-note"><b>レグレッション（デグレ）</b>＝修正・更新によって、正常に動いていた部分が悪化・後退してしまう現象。</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">42</span><span class="phase exp">発展</span></div><h3>バイブコーディング内製化</h3>
+        <p class="c-row"><b>概要</b>現場が自らツール・エージェントを内製できる体制を作る。</p>
+        <p class="c-row"><b>目的</b>IT部門待ちをやめ、小回りの効く改善サイクルを取り戻す。</p>
+        <p class="c-row"><b>進め方</b>現場がDify/Claude等で小ツールを内製／レビュー体制と公開ルールを整備。</p>
+        <p class="c-row issue"><b>解く課題</b>開発リソース不足・小回り効かず</p>
+        <p class="c-note"><b>バイブコーディング</b>＝AIに自然言語で指示しながら、対話的にツールやコードを作る開発スタイル。非エンジニアでも内製に踏み込める。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- S7：改善ガバナンス＋事業化 -->
+<section class="sec-light" id="cat-gov">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Category 08–09 ・ Governance & Business</span>
+    <h2 class="sec-title">運用と事業化：社内利用で止めず、競争優位まで持っていく</h2>
+    <p class="sec-sub">効果を経営の言葉で測り、暴走を防ぎ、ルールを腐らせず、最終的にはAIを「事業そのもの」にする。</p>
+
+    <div class="subgroup">改善・ガバナンス <small>Governance ・ 5 measures</small></div>
+    <div class="cards">
+      <div class="card"><div class="card-head"><span class="card-no">43</span><span class="phase base">基盤</span></div><h3>AI利用ガイドライン／ポリシー策定</h3>
+        <p class="c-row"><b>概要</b>使える範囲・データの扱い・禁止事項を最初に明文化する。</p>
+        <p class="c-row"><b>目的</b>推進のアクセルとブレーキを同時に持ち、安全に踏み込む。</p>
+        <p class="c-row"><b>進め方</b>可否・データ区分・禁止事項を1枚に／機密情報の入力ルールを明記。</p>
+        <p class="c-row issue"><b>解く課題</b>ルール不在で利用が萎縮 or 暴走</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">44</span><span class="phase drive">推進</span></div><h3>アウトカム指標ダッシュボード</h3>
+        <p class="c-row"><b>概要</b>創出時間・解決課題数・満足度を経営層に可視化する。</p>
+        <p class="c-row"><b>目的</b>利用回数でなく成果で評価し、投資判断の材料にする。</p>
+        <p class="c-row"><b>進め方</b>創出時間・解決課題数・満足度を可視化／DAU/MAUと分けて経営報告。</p>
+        <p class="c-row issue"><b>解く課題</b>DAU/MAU依存による形骸化</p>
+        <p class="c-note"><b>DAU／MAU</b>＝1日／1か月あたりの利用者数。“使われた量”は測れるが“成果”は測れないため、これだけに頼ると形骸化しやすい。</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">45</span><span class="phase drive">推進</span></div><h3>ログ・モニタリング基盤</h3>
+        <p class="c-row"><b>概要</b>エージェントの挙動・利用状況を可観測にする。</p>
+        <p class="c-row"><b>目的</b>問題を早期検知し、ブラックボックス化を防いで改善に回す。</p>
+        <p class="c-row"><b>進め方</b>利用ログ・エラー・コストを収集／異常検知アラート／定期レビュー。</p>
+        <p class="c-row issue"><b>解く課題</b>ブラックボックス化して監査・改善できない</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">46</span><span class="phase drive">推進</span></div><h3>野良化対策のガバナンス</h3>
+        <p class="c-row"><b>概要</b>管理外のAI利用を検知し、公式環境への統合を促す。</p>
+        <p class="c-row"><b>目的</b>禁止でなく「合流」で、リスクと属人化の両方を抑える。</p>
+        <p class="c-row"><b>進め方</b>無許可利用を検知→公式環境へ誘導／「安全に使える場所」を用意して吸収。</p>
+        <p class="c-row issue"><b>解く課題</b>エージェントの野良化・属人化</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">47</span><span class="phase exp">発展</span></div><h3>ガイドラインの定期更新</h3>
+        <p class="c-row"><b>概要</b>リスク・法規制・ベストプラクティスを継続反映する。</p>
+        <p class="c-row"><b>目的</b>ルールの陳腐化を防ぎ、現実に即した統制を保ち続ける。</p>
+        <p class="c-row"><b>進め方</b>法改正・新機能・インシデントを反映し四半期改訂／改訂履歴を全社周知。</p>
+        <p class="c-row issue"><b>解く課題</b>ルールの陳腐化</p></div>
+    </div>
+
+    <div class="subgroup" id="cat-biz">事業化 <small>Business ・ 4 measures</small></div>
+    <div class="cards">
+      <div class="card"><div class="card-head"><span class="card-no">48</span><span class="phase exp">発展</span></div><h3>既存事業へのエージェント組み込み</h3>
+        <p class="c-row"><b>概要</b>自社サービスにエージェント機能を実装する。</p>
+        <p class="c-row"><b>目的</b>社内効率化で止めず、顧客に届く価値と競争優位に転化する。</p>
+        <p class="c-row"><b>進め方</b>自社プロダクトにエージェント機能を実装／サポート・提案の自動化で差別化。</p>
+        <p class="c-row issue"><b>解く課題</b>社内利用止まりで競争優位に繋がらず</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">49</span><span class="phase exp">発展</span></div><h3>顧客向けエージェント（CX）の提供</h3>
+        <p class="c-row"><b>概要</b>顧客接点にエージェントを実装する。</p>
+        <p class="c-row"><b>目的</b>CX（顧客体験）そのものを変え、効率化を顧客価値へ広げる。</p>
+        <p class="c-row"><b>進め方</b>問い合わせ・オンボーディングにエージェント／24時間対応と一貫した体験を提供。</p>
+        <p class="c-row issue"><b>解く課題</b>社内利用止まりで顧客価値に届かない</p>
+        <p class="c-note"><b>CX</b>＝顧客体験（Customer Experience）。商品・サービスを通じて顧客が得る一連の体験の質。</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">50</span><span class="phase exp">発展</span></div><h3>エージェント前提の新規事業</h3>
+        <p class="c-row"><b>概要</b>エージェントを前提とした新しいビジネスモデルを描く。</p>
+        <p class="c-row"><b>目的</b>既存事業の延長でない、非連続な事業機会をつかむ。</p>
+        <p class="c-row"><b>進め方</b>「エージェントが主語」の新サービスを企画／PoCから小さく事業化。</p>
+        <p class="c-row issue"><b>解く課題</b>既存事業の延長線で発想が固まる</p></div>
+      <div class="card"><div class="card-head"><span class="card-no">51</span><span class="phase exp">発展</span></div><h3>業界連携・エコシステム構築</h3>
+        <p class="c-row"><b>概要</b>業界横断で標準・事例・データを共有する。</p>
+        <p class="c-row"><b>目的</b>単独では届かない社会実装を、連携で射程に入れる。</p>
+        <p class="c-row"><b>進め方</b>業界団体・標準づくりに参画／事例・データを共有し社会実装を加速。</p>
+        <p class="c-row issue"><b>解く課題</b>自社単独では変革の射程が限られる</p></div>
+    </div>
+
+    <p class="note">※ 本記事は『AIエージェント白書』の施策マスターリスト（Chapter 09）を土台に、コンテキストエンジニアリング・情シス×人事の融合などの視点を加えて51施策に再構成したものです。フェーズ区分（基盤／推進／発展）は着手の目安として筆者が付与しています。</p>
+  </div>
+</section>
+
+<!-- APPENDIX：活用レベル自己診断 -->
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Appendix ・ Self Check</span>
+    <h2 class="sec-title">付録：活用レベルの自己診断</h2>
+    <p class="sec-sub">自社がいまLv1〜Lv5のどこにいるかを確かめ、次の一手を決めるための早見表。「経営層／推進体制／従業員／システム・データ」の4軸それぞれで当てはまるレベルを選び、いちばん低い軸が全体のボトルネックになる。まずはそこから着手する。</p>
+    <div class="figure" style="margin-top:0;margin-bottom:2rem;"><div class="fig-card">
+      <svg viewBox="0 0 680 250" role="img" aria-label="活用レベルの階段図">
+        <rect x="24" y="170" width="118" height="50" rx="3" fill="#334f80"/>
+        <rect x="154" y="135" width="118" height="85" rx="3" fill="#455f96"/>
+        <rect x="284" y="100" width="118" height="120" rx="3" fill="#6f93c8"/>
+        <rect x="414" y="65" width="118" height="155" rx="3" fill="#9dbbe0"/>
+        <rect x="544" y="30" width="118" height="190" rx="3" fill="#d8e4f0"/>
+        <text x="83" y="242" text-anchor="middle" font-family="'Hanken Grotesk',sans-serif" font-size="13" font-weight="700" fill="#d8e4f0">Lv1</text>
+        <text x="213" y="242" text-anchor="middle" font-family="'Hanken Grotesk',sans-serif" font-size="13" font-weight="700" fill="#d8e4f0">Lv2</text>
+        <text x="343" y="242" text-anchor="middle" font-family="'Hanken Grotesk',sans-serif" font-size="13" font-weight="700" fill="#d8e4f0">Lv3</text>
+        <text x="473" y="242" text-anchor="middle" font-family="'Hanken Grotesk',sans-serif" font-size="13" font-weight="700" fill="#d8e4f0">Lv4</text>
+        <text x="603" y="242" text-anchor="middle" font-family="'Hanken Grotesk',sans-serif" font-size="13" font-weight="700" fill="#d8e4f0">Lv5</text>
+        <text x="83" y="196" text-anchor="middle" font-family="'Zen Kaku Gothic New',sans-serif" font-size="11" fill="#fff">未着手</text>
+        <text x="213" y="161" text-anchor="middle" font-family="'Zen Kaku Gothic New',sans-serif" font-size="11" fill="#fff">部分活用</text>
+        <text x="343" y="126" text-anchor="middle" font-family="'Zen Kaku Gothic New',sans-serif" font-size="11" fill="#fff">全社展開</text>
+        <text x="473" y="91" text-anchor="middle" font-family="'Zen Kaku Gothic New',sans-serif" font-size="11" fill="#1f3864">組織化</text>
+        <text x="603" y="56" text-anchor="middle" font-family="'Zen Kaku Gothic New',sans-serif" font-size="11" fill="#1f3864">自走・事業化</text>
+      </svg>
+      <div class="fig-cap">4軸のうち最も低い軸から、1段ずつ上げていく。</div>
+    </div></div>
+    <div class="stepper">
+      <div class="step"><div class="step-num" style="font-size:.72rem">Lv1</div><div class="step-body"><h3>未着手</h3><p>全社的な取り組みはなく、一部の人が個人的に試す程度。ルールも推進役もいない。</p><span class="tag">次の一手：01 戦略 ／ 02 経営層活用 ／ 35 セキュア環境 ／ 43 ガイドライン</span></div></div>
+      <div class="step"><div class="step-num" style="font-size:.72rem">Lv2</div><div class="step-body"><h3>部分活用</h3><p>一部の部門・個人が業務で使い始めたが、属人的で横に広がらない。</p><span class="tag">次の一手：07 CoE ／ 11 PoC設計 ／ 17 階層別教育 ／ 24 コミュニケーション基盤</span></div></div>
+      <div class="step"><div class="step-num" style="font-size:.72rem">Lv3</div><div class="step-body"><h3>全社展開</h3><p>推進体制とルールが整い、全社で活用が広がり始めた。ただし成果はまだ測れていない。</p><span class="tag">次の一手：12 評価組み込み ／ 29 コンテキスト棚卸し ／ 36 業務連携 ／ 44 ダッシュボード</span></div></div>
+      <div class="step"><div class="step-num" style="font-size:.72rem">Lv4</div><div class="step-body"><h3>組織化</h3><p>コンテキスト基盤・ガバナンス・評価が回り、成果が数字で可視化されている。</p><span class="tag">次の一手：30 DB構築 ／ 37 RAG ／ 40 マルチエージェント ／ 45 モニタリング</span></div></div>
+      <div class="step"><div class="step-num" style="font-size:.72rem">Lv5</div><div class="step-body"><h3>自走・事業化</h3><p>エージェント前提で組織が自走し、効果が事業・顧客体験（CX）にまで波及している。</p><span class="tag">次の一手：48 事業組み込み ／ 49 CX ／ 50 新規事業 ／ 51 業界連携</span></div></div>
+    </div>
+    <p class="note">Lv1〜2はおおむね<b>基盤</b>、Lv3〜4は<b>推進</b>、Lv4〜5は<b>発展</b>フェーズに対応します。4軸のうち最も低い軸を1つ上げることだけを当面の目標にすると、着手がぶれません。</p>
+  </div>
+</section>
+
+<!-- SUMMARY -->
+<section class="sec-light">
+  <div class="inner" data-reveal>
+    <div class="summary">
+      <span class="eyebrow">Summary</span>
+      <p class="summary-text">AI推進でやるべきことの大半は、<br>「AIの話」ではない。<br>戦略・組織・人・コンテキストを<br>整えた会社から、AIが効きはじめる。</p>
+      <a href="#cat-strategy" class="btn-primary">施策一覧に戻る</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2026 小澤健祐（おざけん）/ 一般社団法人AICX協会 ・ <a href="#">AI Agent Now</a></p>
+</footer>
+
+<script>
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); observer.unobserve(e.target);} });
+},{threshold:0.1});
+document.querySelectorAll('[data-reveal]').forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>

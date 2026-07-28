@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Human in the Loop と Human on the Loop｜おざけん</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Shippori+Mincho+B1:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   OZAKEN WEB STYLE — DESIGN SYSTEM
+   ============================================================ */
+:root {
+  --ink:         #1a1a2e;
+  --navy:        #1f3864;
+  --navy-deep:   #141d35;
+  --azure:       #2e5496;
+  --azure-pale:  #d8e4f0;
+  --paper:       #f8f7f4;
+  --white:       #ffffff;
+  --red:         #e23744;
+  --red-bright:  #ff5d6a;
+  --muted:       #6b7a99;
+
+  --font-ja-sans:  'Zen Kaku Gothic New', sans-serif;
+  --font-ja-serif: 'Shippori Mincho B1', serif;
+  --font-en:       'Hanken Grotesk', sans-serif;
+
+  --max-w: 880px;
+  --sec-pad: 5rem 1.5rem;
+  --radius: 10px;
+  --radius-sm: 6px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-ja-sans);
+  font-size: 16px; line-height: 1.8;
+  color: var(--ink); background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+
+[data-reveal] { opacity: 0; transform: translateY(24px); transition: opacity 0.65s ease, transform 0.65s ease; }
+[data-reveal].visible { opacity: 1; transform: none; }
+
+.inner { max-width: var(--max-w); margin: 0 auto; padding: 0 1.5rem; }
+.sec-light { background: var(--paper); padding: var(--sec-pad); color: var(--ink); }
+.sec-navy  { background: var(--navy);  padding: var(--sec-pad); color: var(--white); }
+
+/* ----- eyebrow ----- */
+.eyebrow {
+  display: inline-block; font-family: var(--font-en);
+  font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--azure); background: var(--azure-pale);
+  padding: 3px 10px; border-radius: 4px; margin-bottom: 1.1rem;
+}
+.sec-navy .eyebrow { color: var(--white); background: rgba(255,255,255,0.15); }
+
+/* ----- 見出し ----- */
+.sec-title {
+  font-family: var(--font-ja-serif);
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: 500; line-height: 1.4; margin-bottom: 0.6rem;
+}
+.sec-sub { font-size: 1rem; color: var(--muted); margin-bottom: 2.5rem; line-height: 1.7; }
+.sec-navy .sec-sub { color: rgba(255,255,255,0.7); }
+
+/* ----- kicker ----- */
+.kicker {
+  font-family: var(--font-ja-serif);
+  font-size: 1.08rem; line-height: 1.9; margin-bottom: 2rem;
+  padding-left: 1.1rem; border-left: 3px solid var(--azure);
+}
+.sec-navy .kicker { border-left-color: var(--azure-pale); color: rgba(255,255,255,0.9); }
+
+/* ----- bare ----- */
+.bare { margin: 1.5rem 0; }
+.bare p { font-size: 0.95rem; line-height: 1.95; }
+.sec-navy .bare p { color: rgba(255,255,255,0.8); }
+.bare p + p { margin-top: 1rem; }
+
+/* ----- ヒーロー ----- */
+.hero {
+  background: var(--navy); padding: 5.5rem 1.5rem 4.5rem;
+  text-align: center; color: var(--white);
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 60% 25%, rgba(46,84,150,0.55) 0%, transparent 65%);
+  pointer-events: none;
+}
+.hero-bg { position: absolute; inset: 0; opacity: 0.16; pointer-events: none; }
+.hero-bg svg { width: 100%; height: 100%; }
+.hero .eyebrow { color: var(--white); background: rgba(255,255,255,0.15); }
+.hero-title {
+  font-family: var(--font-ja-serif);
+  font-size: clamp(1.85rem, 5vw, 2.9rem);
+  font-weight: 500; line-height: 1.4; margin-bottom: 1.2rem; position: relative;
+}
+.hero-copy {
+  font-size: 1.02rem; color: rgba(255,255,255,0.82);
+  max-width: 620px; margin: 0 auto 2.6rem; line-height: 1.9; position: relative;
+}
+.hero-glyph { position: relative; max-width: 640px; margin: 0 auto; }
+.hero-glyph svg { width: 100%; height: auto; display: block; }
+
+/* ----- figure / diagram ----- */
+.figure {
+  background: var(--white); border-radius: var(--radius);
+  padding: 1.75rem 1.5rem 1.25rem;
+  box-shadow: 0 2px 12px rgba(26,26,46,0.08);
+  margin: 2rem 0 0;
+}
+.sec-navy .figure { background: var(--navy-deep); box-shadow: none; }
+.figure-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.figure svg { width: 100%; height: auto; display: block; }
+.figure text { font-family: var(--font-ja-sans); }
+.figure-cap {
+  font-family: var(--font-en); font-size: 11px; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--muted); margin-top: 1rem; text-align: center;
+}
+.sec-navy .figure-cap { color: rgba(255,255,255,0.5); }
+.fig-title {
+  font-family: var(--font-ja-serif); font-size: 1rem; font-weight: 500;
+  margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--azure-pale);
+}
+.sec-navy .fig-title { color: var(--white); border-bottom-color: rgba(255,255,255,0.15); }
+.legend { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; margin-top: 0.75rem; }
+.legend-item { display: flex; align-items: center; gap: 0.45rem; font-size: 0.78rem; color: var(--muted); }
+.sec-navy .legend-item { color: rgba(255,255,255,0.6); }
+.legend-swatch { width: 22px; height: 3px; border-radius: 2px; }
+
+/* ----- 数値ストリップ ----- */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 2rem; }
+.stat {
+  background: var(--white); border-radius: var(--radius);
+  padding: 1.3rem 1rem; text-align: center;
+  box-shadow: 0 2px 8px rgba(26,26,46,0.07); border-top: 3px solid var(--azure);
+}
+.sec-navy .stat { background: var(--navy-deep); box-shadow: none; }
+.stat-num {
+  font-family: var(--font-en); font-size: 2rem; font-weight: 700;
+  line-height: 1.1; color: var(--azure);
+}
+.sec-navy .stat-num { color: var(--azure-pale); }
+.stat-num small { font-size: 0.9rem; font-weight: 600; }
+.stat-label { font-size: 0.78rem; color: var(--muted); margin-top: 0.4rem; line-height: 1.6; }
+.sec-navy .stat-label { color: rgba(255,255,255,0.65); }
+
+/* ----- ステッパー ----- */
+.stepper { display: flex; flex-direction: column; gap: 1.25rem; }
+.step {
+  display: flex; gap: 1.25rem; align-items: flex-start;
+  background: var(--white); border-radius: var(--radius);
+  padding: 1.4rem 1.7rem; border-left: 4px solid var(--azure);
+  box-shadow: 0 2px 8px rgba(26,26,46,0.06);
+}
+.sec-navy .step { background: var(--navy-deep); box-shadow: none; }
+.step-num {
+  flex-shrink: 0; width: 36px; height: 36px; border-radius: 50%;
+  background: var(--azure); color: var(--white);
+  font-family: var(--font-en); font-size: 0.9rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; margin-top: 2px;
+}
+.step-body h3 { font-family: var(--font-ja-serif); font-size: 1.03rem; font-weight: 500; margin-bottom: 0.3rem; }
+.step-body p { font-size: 0.88rem; line-height: 1.8; color: var(--muted); }
+.sec-navy .step-body p { color: rgba(255,255,255,0.68); }
+
+/* ----- カード ----- */
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1.25rem; }
+.card {
+  background: var(--white); border-radius: var(--radius);
+  padding: 1.4rem 1.6rem; box-shadow: 0 2px 8px rgba(26,26,46,0.07);
+  border-top: 3px solid var(--azure);
+}
+.sec-navy .card { background: var(--navy-deep); box-shadow: none; }
+.card-icon { width: 36px; height: 36px; margin-bottom: 0.85rem; color: var(--azure); }
+.sec-navy .card-icon { color: var(--azure-pale); }
+.card h3 { font-family: var(--font-ja-serif); font-size: 1rem; font-weight: 500; margin-bottom: 0.45rem; }
+.card p { font-size: 0.85rem; line-height: 1.8; color: var(--muted); }
+.sec-navy .card p { color: rgba(255,255,255,0.68); }
+.card-tag {
+  display: inline-block; font-family: var(--font-en);
+  font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+  color: var(--azure); background: var(--azure-pale);
+  padding: 2px 8px; border-radius: 4px; margin-bottom: 0.6rem;
+}
+.sec-navy .card-tag { color: var(--white); background: rgba(255,255,255,0.15); }
+
+/* ----- VS比較 ----- */
+.vs { display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: stretch; }
+.vs-card { background: var(--white); border-radius: var(--radius); padding: 1.5rem; box-shadow: 0 2px 8px rgba(26,26,46,0.07); }
+.sec-navy .vs-card { background: var(--navy-deep); box-shadow: none; }
+.vs-badge {
+  font-family: var(--font-en); font-size: 11px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 4px; display: inline-block; margin-bottom: 0.7rem;
+}
+.vs-badge.pos { background: var(--azure-pale); color: var(--azure); }
+.vs-badge.neg { background: #fde8ea; color: var(--red); }
+.sec-navy .vs-badge.neg { background: rgba(226,55,68,0.2); color: var(--red-bright); }
+.vs-label {
+  display: flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--azure); color: var(--white);
+  font-family: var(--font-en); font-size: 0.8rem; font-weight: 700;
+  flex-shrink: 0; margin: auto;
+}
+.vs-card h3 { font-family: var(--font-ja-serif); font-size: 1.03rem; font-weight: 500; margin-bottom: 0.45rem; }
+.vs-card p { font-size: 0.86rem; line-height: 1.8; color: var(--muted); }
+.sec-navy .vs-card p { color: rgba(255,255,255,0.68); }
+.vs-meta {
+  margin-top: 0.9rem; padding-top: 0.8rem;
+  border-top: 1px dashed rgba(46,84,150,0.3);
+  font-size: 0.78rem; line-height: 1.75; color: var(--muted);
+}
+.sec-navy .vs-meta { border-top-color: rgba(255,255,255,0.18); color: rgba(255,255,255,0.6); }
+.vs-meta b { font-family: var(--font-en); color: var(--azure); font-weight: 700; }
+.sec-navy .vs-meta b { color: var(--azure-pale); }
+
+/* ----- 深掘り ----- */
+.deep {
+  background: var(--navy-deep); border-radius: var(--radius);
+  padding: 1.9rem 2.1rem; border-left: 4px solid var(--azure); margin: 1.75rem 0;
+}
+.deep h3 { font-family: var(--font-ja-serif); font-size: 1.12rem; font-weight: 500; margin-bottom: 0.7rem; color: var(--white); }
+.deep p { font-size: 0.89rem; line-height: 1.85; color: rgba(255,255,255,0.75); }
+.deep p + p { margin-top: 0.85rem; }
+
+/* ----- 計算ブロック ----- */
+.calc {
+  background: rgba(255,255,255,0.06);
+  border: 1px dashed rgba(255,255,255,0.25);
+  border-radius: var(--radius-sm);
+  padding: 1.1rem 1.3rem; margin: 1.5rem 0;
+  font-family: var(--font-en); font-size: 0.95rem; line-height: 1.8;
+  color: var(--white); text-align: center; letter-spacing: 0.02em;
+}
+.calc b { color: var(--red-bright); font-size: 1.15rem; }
+.calc span { font-size: 0.76rem; color: rgba(255,255,255,0.6); display: block; font-family: var(--font-ja-sans); letter-spacing: 0; }
+
+/* ----- 2カラム ----- */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+@media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+.two-col-item h3 {
+  font-family: var(--font-ja-serif); font-size: 1.02rem; font-weight: 500;
+  margin-bottom: 0.55rem; padding-bottom: 0.4rem; border-bottom: 2px solid var(--azure);
+}
+.two-col-item p { font-size: 0.88rem; line-height: 1.85; color: var(--muted); }
+.sec-navy .two-col-item p { color: rgba(255,255,255,0.72); }
+
+/* ----- 注記 ----- */
+.note {
+  font-size: 0.82rem; color: var(--muted); line-height: 1.8;
+  padding: 0.85rem 1.1rem; border-left: 3px solid var(--azure-pale);
+  background: rgba(46,84,150,0.04);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin-top: 1.75rem;
+}
+.sec-navy .note { color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.05); border-left-color: rgba(255,255,255,0.25); }
+
+/* ----- まとめ ----- */
+.summary { text-align: center; max-width: 660px; margin: 0 auto; }
+.summary-text {
+  font-family: var(--font-ja-serif);
+  font-size: clamp(1.12rem, 3vw, 1.45rem);
+  font-weight: 400; line-height: 1.95;
+}
+
+/* ----- take ----- */
+.take {
+  background: var(--navy-deep); border-radius: var(--radius);
+  padding: 1.55rem 1.75rem; display: flex; gap: 1.25rem; align-items: flex-start;
+  margin: 2rem 0 0; border-left: 4px solid var(--red);
+}
+.sec-light .take { background: #fff8f8; border-left: 4px solid var(--red); box-shadow: 0 2px 8px rgba(226,55,68,0.07); }
+.take-avatar {
+  flex-shrink: 0; width: 44px; height: 44px; border-radius: 50%;
+  background: var(--azure); color: var(--white);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-en); font-size: 0.75rem; font-weight: 700;
+}
+.take-label {
+  font-family: var(--font-en); font-size: 10px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--red-bright); margin-bottom: 4px;
+}
+.sec-light .take-label { color: var(--red); }
+.take-author { font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.45rem; }
+.sec-light .take-author { color: var(--muted); }
+.take-text { font-size: 0.89rem; line-height: 1.85; color: rgba(255,255,255,0.88); }
+.sec-light .take-text { color: var(--ink); }
+.hot { color: var(--red-bright); font-weight: 700; }
+.sec-light .hot { color: var(--red); }
+
+.text-azure { color: var(--azure); }
+.fw-bold { font-weight: 700; }
+
+footer {
+  background: var(--navy-deep); padding: 3rem 1.5rem; text-align: center;
+  color: rgba(255,255,255,0.5); font-size: 0.8rem;
+}
+
+@media (max-width: 720px) {
+  .figure-scroll svg { min-width: 560px; }
+  .figure-scroll::after { content: ''; display: block; }
+}
+@media (max-width: 640px) {
+  :root { --sec-pad: 3.5rem 1rem; }
+  .vs { grid-template-columns: 1fr; }
+  .vs-label { display: none; }
+  .hero { padding: 4rem 1rem 3.5rem; }
+  .deep { padding: 1.5rem 1.4rem; }
+  .figure { padding: 1.4rem 1rem 1rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================ HERO ============================ -->
+<section class="hero">
+  <div class="hero-bg" aria-hidden="true">
+    <svg viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+          <path d="M48 0H0V48" fill="none" stroke="#ffffff" stroke-width="0.7"/>
+        </pattern>
+      </defs>
+      <rect width="1200" height="600" fill="url(#grid)"/>
+      <circle cx="180" cy="140" r="4" fill="#ffffff"/>
+      <circle cx="420" cy="300" r="4" fill="#ffffff"/>
+      <circle cx="760" cy="180" r="4" fill="#ffffff"/>
+      <circle cx="980" cy="420" r="4" fill="#ffffff"/>
+      <circle cx="600" cy="500" r="4" fill="#ffffff"/>
+      <path d="M180 140L420 300L760 180L980 420M420 300L600 500" stroke="#ffffff" stroke-width="1" fill="none"/>
+    </svg>
+  </div>
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Human Oversight Design</span>
+    <h1 class="hero-title">Human in the Loop と<br>Human on the Loop</h1>
+    <p class="hero-copy">
+      違いは関与の強さではない。人間が<span class="fw-bold">処理の中に立つか、処理の上に立つか</span>。
+      この前置詞ひとつが、AI活用のスケール上限と、組織に必要な能力を丸ごと入れ替える。
+    </p>
+
+    <div class="hero-glyph">
+      <svg viewBox="0 0 660 190" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="in / on / out の3段階">
+        <!-- IN -->
+        <circle cx="110" cy="82" r="46" fill="none" stroke="#ffffff" stroke-width="1.6" opacity="0.55"/>
+        <circle cx="110" cy="82" r="13" fill="#ff5d6a"/>
+        <text x="110" y="152" font-size="15" fill="#ffffff" text-anchor="middle" font-weight="700">IN</text>
+        <text x="110" y="174" font-size="12" fill="#d8e4f0" text-anchor="middle">ループの内側</text>
+
+        <!-- 矢印 -->
+        <path d="M180 82H240" stroke="#d8e4f0" stroke-width="1.4" opacity="0.6" marker-end="url(#hah)"/>
+
+        <!-- ON -->
+        <circle cx="330" cy="92" r="46" fill="none" stroke="#ffffff" stroke-width="1.6" opacity="0.55"/>
+        <circle cx="330" cy="30" r="13" fill="#d8e4f0"/>
+        <path d="M330 45v18" stroke="#d8e4f0" stroke-width="1.4" stroke-dasharray="3 4"/>
+        <text x="330" y="152" font-size="15" fill="#ffffff" text-anchor="middle" font-weight="700">ON</text>
+        <text x="330" y="174" font-size="12" fill="#d8e4f0" text-anchor="middle">ループの上</text>
+
+        <path d="M400 82H460" stroke="#d8e4f0" stroke-width="1.4" opacity="0.6" marker-end="url(#hah)"/>
+
+        <!-- OUT -->
+        <circle cx="550" cy="82" r="46" fill="none" stroke="#ffffff" stroke-width="1.6" opacity="0.55"/>
+        <circle cx="632" cy="82" r="10" fill="#6b7a99"/>
+        <text x="550" y="152" font-size="15" fill="#ffffff" text-anchor="middle" font-weight="700">OUT</text>
+        <text x="550" y="174" font-size="12" fill="#d8e4f0" text-anchor="middle">ループの外</text>
+
+        <defs>
+          <marker id="hah" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <path d="M0 0 L8 4 L0 8 z" fill="#d8e4f0"/>
+          </marker>
+        </defs>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 01 ============================ -->
+<section class="sec-light">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 01</span>
+    <h2 class="sec-title">違いは「関与の強さ」ではなく、<br>人間が立つ座標だ</h2>
+    <p class="sec-sub">in は人間を通らないと処理が完了しない。on は人間が黙っていても処理が進む。</p>
+
+    <div class="vs">
+      <div class="vs-card">
+        <span class="vs-badge pos">Human in the Loop</span>
+        <h3>人間が処理の中にいる</h3>
+        <p>AIの出力が人間の承認を経てはじめて次に進む。人間が通過点として直列に組み込まれる。</p>
+        <div class="vs-meta">
+          <b>関与:</b> 全件・事前<br>
+          <b>止め方:</b> 承認しなければ止まる<br>
+          <b>上限:</b> 人間の可処分時間
+        </div>
+      </div>
+      <div class="vs-label">vs</div>
+      <div class="vs-card">
+        <span class="vs-badge neg">Human on the Loop</span>
+        <h3>人間が処理の上にいる</h3>
+        <p>AIが自律実行し、人間は指標とログで監視する。異常時だけ介入し、平常時は処理に触れない。</p>
+        <div class="vs-meta">
+          <b>関与:</b> 例外・抜き取り・事後<br>
+          <b>止め方:</b> 介入して初めて止まる<br>
+          <b>上限:</b> 人間の監督力
+        </div>
+      </div>
+    </div>
+
+    <!-- Fig.1 -->
+    <div class="figure">
+      <p class="fig-title">Fig.1 ── 構造の違い：直列のゲート／並列＋上からの監視</p>
+      <div class="figure-scroll">
+      <svg viewBox="0 0 700 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="HITLとHOTLの構造比較図">
+        <defs>
+          <marker id="a1" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#2e5496"/></marker>
+          <marker id="a2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#e23744"/></marker>
+        </defs>
+
+        <!-- ============ 上段：HITL ============ -->
+        <rect x="0" y="0" width="700" height="252" rx="10" fill="#f1f4f9"/>
+        <text x="24" y="34" font-size="14" font-weight="700" fill="#2e5496" letter-spacing="1.4">HUMAN IN THE LOOP</text>
+        <text x="676" y="34" font-size="13" font-weight="700" fill="#e23744" text-anchor="end">直列 ─ 全件がゲートを通る</text>
+        <line x1="24" y1="46" x2="676" y2="46" stroke="#d8e4f0" stroke-width="2"/>
+
+        <rect x="30" y="72"  width="94" height="42" rx="6" fill="#ffffff" stroke="#2e5496" stroke-width="1.6"/>
+        <rect x="30" y="130" width="94" height="42" rx="6" fill="#ffffff" stroke="#2e5496" stroke-width="1.6"/>
+        <rect x="30" y="188" width="94" height="42" rx="6" fill="#ffffff" stroke="#2e5496" stroke-width="1.6"/>
+        <text x="77" y="99"  font-size="14" fill="#1a1a2e" text-anchor="middle">AI ①</text>
+        <text x="77" y="157" font-size="14" fill="#1a1a2e" text-anchor="middle">AI ②</text>
+        <text x="77" y="215" font-size="14" fill="#1a1a2e" text-anchor="middle">AI ③</text>
+
+        <path d="M130 93 H196"  stroke="#2e5496" stroke-width="1.8" marker-end="url(#a1)"/>
+        <path d="M130 151 H196" stroke="#2e5496" stroke-width="1.8" marker-end="url(#a1)"/>
+        <path d="M130 209 H196" stroke="#2e5496" stroke-width="1.8" marker-end="url(#a1)"/>
+
+        <!-- 承認ゲート -->
+        <rect x="204" y="64" width="76" height="176" rx="8" fill="#1f3864"/>
+        <circle cx="242" cy="122" r="12" fill="#ffffff"/>
+        <path d="M225 160c0-9.5 7.6-17 17-17s17 7.5 17 17" fill="#ffffff"/>
+        <text x="242" y="192" font-size="13" fill="#ffffff" text-anchor="middle">承認</text>
+        <text x="242" y="212" font-size="13" fill="#ffffff" text-anchor="middle">ゲート</text>
+
+        <!-- 待ち行列 -->
+        <rect x="290" y="86" width="12" height="132" rx="3" fill="#e23744" opacity="0.18"/>
+        <text x="312" y="130" font-size="12" fill="#e23744" font-weight="700">滞留</text>
+        <text x="312" y="150" font-size="12" fill="#e23744" font-weight="700">キュー</text>
+
+        <path d="M376 151 H436" stroke="#2e5496" stroke-width="1.8" marker-end="url(#a1)"/>
+        <rect x="442" y="129" width="80" height="44" rx="6" fill="#ffffff" stroke="#2e5496" stroke-width="1.6"/>
+        <text x="482" y="157" font-size="14" fill="#1a1a2e" text-anchor="middle">実行</text>
+
+        <rect x="546" y="96" width="130" height="112" rx="8" fill="#ffffff" stroke="#e23744" stroke-width="1.5"/>
+        <text x="611" y="126" font-size="12.5" fill="#6b7a99" text-anchor="middle">1日の上限</text>
+        <text x="611" y="164" font-size="30" fill="#e23744" text-anchor="middle" font-weight="700" font-family="'Hanken Grotesk',sans-serif">90</text>
+        <text x="611" y="188" font-size="12.5" fill="#6b7a99" text-anchor="middle">件 ／ 人</text>
+
+        <!-- ============ 下段：HOTL ============ -->
+        <rect x="0" y="272" width="700" height="288" rx="10" fill="#eef3fa"/>
+        <text x="24" y="306" font-size="14" font-weight="700" fill="#2e5496" letter-spacing="1.4">HUMAN ON THE LOOP</text>
+        <text x="676" y="306" font-size="13" font-weight="700" fill="#2e5496" text-anchor="end">並列 ─ 例外だけが上がる</text>
+        <line x1="24" y1="318" x2="676" y2="318" stroke="#d8e4f0" stroke-width="2"/>
+
+        <!-- 監督者 -->
+        <rect x="230" y="336" width="240" height="58" rx="8" fill="#1f3864"/>
+        <circle cx="268" cy="358" r="10" fill="#ffffff"/>
+        <path d="M254 382c0-8 6.5-14.5 14-14.5s14 6.5 14 14.5" fill="#ffffff"/>
+        <text x="352" y="360" font-size="13.5" fill="#ffffff" text-anchor="middle">監督者ダッシュボード</text>
+        <text x="352" y="381" font-size="12" fill="#d8e4f0" text-anchor="middle">指標・ログ・例外通知</text>
+
+        <!-- 監視の点線 -->
+        <path d="M260 398 V422 H130 V444" stroke="#6b7a99" stroke-width="1.3" stroke-dasharray="4 5" fill="none"/>
+        <path d="M350 398 V444" stroke="#6b7a99" stroke-width="1.3" stroke-dasharray="4 5" fill="none"/>
+        <path d="M440 398 V422 H570 V444" stroke="#6b7a99" stroke-width="1.3" stroke-dasharray="4 5" fill="none"/>
+        <text x="470" y="416" font-size="11.5" fill="#6b7a99">監視</text>
+
+        <!-- AI 3レーン -->
+        <rect x="83"  y="446" width="94" height="42" rx="6" fill="#ffffff" stroke="#2e5496" stroke-width="1.6"/>
+        <rect x="303" y="446" width="94" height="42" rx="6" fill="#ffffff" stroke="#2e5496" stroke-width="1.6"/>
+        <rect x="523" y="446" width="94" height="42" rx="6" fill="#ffffff" stroke="#2e5496" stroke-width="1.6"/>
+        <text x="130" y="473" font-size="14" fill="#1a1a2e" text-anchor="middle">AI ①</text>
+        <text x="350" y="473" font-size="14" fill="#1a1a2e" text-anchor="middle">AI ②</text>
+        <text x="570" y="473" font-size="14" fill="#1a1a2e" text-anchor="middle">AI ③</text>
+
+        <path d="M130 490 V512" stroke="#2e5496" stroke-width="1.8" marker-end="url(#a1)"/>
+        <path d="M350 490 V512" stroke="#2e5496" stroke-width="1.8" marker-end="url(#a1)"/>
+        <path d="M570 490 V512" stroke="#2e5496" stroke-width="1.8" marker-end="url(#a1)"/>
+        <rect x="83"  y="518" width="94" height="34" rx="6" fill="#ffffff" stroke="#2e5496" stroke-width="1.6"/>
+        <rect x="303" y="518" width="94" height="34" rx="6" fill="#ffffff" stroke="#2e5496" stroke-width="1.6"/>
+        <rect x="523" y="518" width="94" height="34" rx="6" fill="#ffffff" stroke="#2e5496" stroke-width="1.6"/>
+        <text x="130" y="540" font-size="13" fill="#1a1a2e" text-anchor="middle">実行</text>
+        <text x="350" y="540" font-size="13" fill="#1a1a2e" text-anchor="middle">実行</text>
+        <text x="570" y="540" font-size="13" fill="#1a1a2e" text-anchor="middle">実行</text>
+
+        <!-- 例外介入 -->
+        <path d="M470 365 H640 V440" stroke="#e23744" stroke-width="2" fill="none" marker-end="url(#a2)"/>
+        <text x="654" y="400" font-size="12" fill="#e23744" font-weight="700" text-anchor="middle">介入</text>
+      </svg>
+      </div>
+      <p class="figure-cap">人間の座標が変わると、ボトルネックの正体が変わる</p>
+    </div>
+
+    <p class="note">
+      ※ もともとは自律型システムの制御権限を表す用語系列。人間が一切関与しない状態は Human out of the Loop と呼ぶ。
+      実務では「in / on / out」の3段で語ると設計判断がぶれにくい。
+    </p>
+  </div>
+</section>
+
+<!-- ============================ 02 ============================ -->
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 02</span>
+    <h2 class="sec-title">in の弱点は精度ではなく<br>「量的制限」だ</h2>
+    <p class="sec-sub">品質の問題として語られがちだが、実際にプロジェクトを殺すのは処理量の天井のほうだ。</p>
+
+    <div class="calc">
+      1件あたりの確認 2分 × 1日の確認可能時間 3時間 ＝ <b>90件／日</b>
+      <span>AIエージェントを10体並べても、この90件は1件も増えない</span>
+    </div>
+
+    <!-- Fig.2 -->
+    <div class="figure">
+      <p class="fig-title">Fig.2 ── AIを増やしたときの処理件数の伸び方</p>
+      <div class="figure-scroll">
+      <svg viewBox="0 0 700 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="エージェント数と1日処理件数の関係グラフ">
+        <!-- グリッド -->
+        <line x1="80" y1="50"  x2="660" y2="50"  stroke="#ffffff" stroke-width="0.8" opacity="0.18"/>
+        <line x1="80" y1="110" x2="660" y2="110" stroke="#ffffff" stroke-width="0.8" opacity="0.18"/>
+        <line x1="80" y1="170" x2="660" y2="170" stroke="#ffffff" stroke-width="0.8" opacity="0.18"/>
+        <line x1="80" y1="230" x2="660" y2="230" stroke="#ffffff" stroke-width="0.8" opacity="0.18"/>
+        <line x1="80" y1="290" x2="660" y2="290" stroke="#ffffff" stroke-width="1.4" opacity="0.5"/>
+        <line x1="80" y1="50"  x2="80"  y2="290" stroke="#ffffff" stroke-width="1.4" opacity="0.5"/>
+
+        <!-- Y軸ラベル -->
+        <text x="68" y="55"  font-size="12" fill="#d8e4f0" text-anchor="end">1000</text>
+        <text x="68" y="115" font-size="12" fill="#d8e4f0" text-anchor="end">750</text>
+        <text x="68" y="175" font-size="12" fill="#d8e4f0" text-anchor="end">500</text>
+        <text x="68" y="235" font-size="12" fill="#d8e4f0" text-anchor="end">250</text>
+        <text x="68" y="295" font-size="12" fill="#d8e4f0" text-anchor="end">0</text>
+        <text x="22" y="170" font-size="12" fill="#ffffff" opacity="0.75" transform="rotate(-90 22 170)" text-anchor="middle">1日の処理件数</text>
+
+        <!-- X軸ラベル -->
+        <text x="80"  y="314" font-size="12.5" fill="#d8e4f0" text-anchor="middle">1体</text>
+        <text x="222" y="314" font-size="12.5" fill="#d8e4f0" text-anchor="middle">2体</text>
+        <text x="365" y="314" font-size="12.5" fill="#d8e4f0" text-anchor="middle">4体</text>
+        <text x="507" y="314" font-size="12.5" fill="#d8e4f0" text-anchor="middle">8体</text>
+        <text x="650" y="314" font-size="12.5" fill="#d8e4f0" text-anchor="middle">16体</text>
+        <text x="365" y="340" font-size="12.5" fill="#ffffff" opacity="0.75" text-anchor="middle">投入するAIエージェント数 →</text>
+
+        <!-- 天井の帯 -->
+        <rect x="80" y="262" width="580" height="12" fill="#ff5d6a" opacity="0.14"/>
+
+        <!-- HOTL 曲線 -->
+        <polyline points="80,268 222,247 365,206 507,136 650,50" fill="none" stroke="#d8e4f0" stroke-width="3"/>
+        <circle cx="80" cy="268" r="5" fill="#d8e4f0"/>
+        <circle cx="222" cy="247" r="5" fill="#d8e4f0"/>
+        <circle cx="365" cy="206" r="5" fill="#d8e4f0"/>
+        <circle cx="507" cy="136" r="5" fill="#d8e4f0"/>
+        <circle cx="650" cy="50" r="6" fill="#d8e4f0"/>
+        <text x="632" y="38" font-size="12.5" fill="#ffffff" text-anchor="end" font-weight="700">on ─ 監督力が続く限り伸びる</text>
+
+        <!-- HITL 直線 -->
+        <polyline points="80,268 222,268 365,268 507,268 650,268" fill="none" stroke="#ff5d6a" stroke-width="3"/>
+        <circle cx="80" cy="268" r="5" fill="#ff5d6a"/>
+        <circle cx="222" cy="268" r="5" fill="#ff5d6a"/>
+        <circle cx="365" cy="268" r="5" fill="#ff5d6a"/>
+        <circle cx="507" cy="268" r="5" fill="#ff5d6a"/>
+        <circle cx="650" cy="268" r="6" fill="#ff5d6a"/>
+        <text x="392" y="290" font-size="12.5" fill="#ff5d6a" font-weight="700">in ─ 90件で頭打ち（人間の承認キャパ）</text>
+      </svg>
+      </div>
+      <div class="legend">
+        <div class="legend-item"><span class="legend-swatch" style="background:#ff5d6a"></span>Human in the Loop</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:#d8e4f0"></span>Human on the Loop</div>
+      </div>
+      <p class="figure-cap">AI側を増強しても、承認ゲートの幅は1ミリも広がらない</p>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-num">×10</div>
+        <div class="stat-label">AI側の生成量は<br>容易に増やせる</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">×1</div>
+        <div class="stat-label">承認できる件数は<br>変わらない</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">↑<small> 増</small></div>
+        <div class="stat-label">結果、担当者の<br>確認負荷だけが増える</div>
+      </div>
+    </div>
+
+    <div class="deep">
+      <h3>「AIを入れたのに、現場が前より忙しい」の正体</h3>
+      <p>
+        これは能力の問題ではなく構造の問題だ。AIは生成量を数十倍にできるが、in の設計はその全量を人間の確認キューに流し込む。
+        人間の仕事が「作る」から「延々と確認する」に置き換わっただけになる。
+      </p>
+      <p>
+        しかも確認作業は件数が増えるほど1件あたりの注意が薄くなる。全件確認しているのに見落としが増えるという逆転が起きる——
+        安全のための設計が、安全を削り始める地点だ。
+      </p>
+    </div>
+
+    <div class="take">
+      <div class="take-avatar">OK</div>
+      <div class="take-body">
+        <div class="take-label">Ozaken's One Point</div>
+        <div class="take-author">小澤健祐（おざけん）</div>
+        <p class="take-text">
+          Human in the Loop は安全策の名前だと思われているが、実態は<span class="hot">コスト構造の選択</span>だ。
+          全件承認を選んだ瞬間、処理単価に人件費が乗り続ける設計が確定する。
+          私が見てきた現場でも、PoCが本番に乗らない理由の多くは精度不足ではなく、
+          全件確認を前提にした運用が月末の業務量に耐えられなかった、という単純な話だった。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 03 ============================ -->
+<section class="sec-light">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 03</span>
+    <h2 class="sec-title">on に移ると、ボトルネックは<br>「時間」から「監督力」に移る</h2>
+    <p class="sec-sub">全件見ないと決めた瞬間に必要になるのは、根性ではなく、気づける仕組みの設計だ。</p>
+
+    <!-- Fig.3 -->
+    <div class="figure">
+      <p class="fig-title">Fig.3 ── 監督力を構成する4要素（これ自体がひとつのループ）</p>
+      <div class="figure-scroll">
+      <svg viewBox="0 0 640 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="監督力の4要素の循環図">
+        <defs>
+          <marker id="a3" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="#2e5496"/></marker>
+        </defs>
+
+        <!-- 循環アーク -->
+        <path d="M371.7 103.9 A118 118 0 0 1 426.1 158.3" fill="none" stroke="#2e5496" stroke-width="2" marker-end="url(#a3)"/>
+        <path d="M426.1 261.7 A118 118 0 0 1 371.7 316.1" fill="none" stroke="#2e5496" stroke-width="2" marker-end="url(#a3)"/>
+        <path d="M268.3 316.1 A118 118 0 0 1 213.9 261.7" fill="none" stroke="#2e5496" stroke-width="2" marker-end="url(#a3)"/>
+        <path d="M213.9 158.3 A118 118 0 0 1 268.3 103.9" fill="none" stroke="#2e5496" stroke-width="2" marker-end="url(#a3)"/>
+
+        <!-- 中心 -->
+        <circle cx="320" cy="210" r="56" fill="#1f3864"/>
+        <text x="320" y="204" font-size="18" fill="#ffffff" text-anchor="middle" font-family="'Shippori Mincho B1',serif">監督力</text>
+        <text x="320" y="228" font-size="10" fill="#d8e4f0" text-anchor="middle" font-family="'Hanken Grotesk',sans-serif" letter-spacing="1">OVERSIGHT</text>
+
+        <!-- 4ノード -->
+        <circle cx="320" cy="92"  r="45" fill="#ffffff" stroke="#2e5496" stroke-width="2"/>
+        <text x="320" y="86"  font-size="14" fill="#1a1a2e" text-anchor="middle">可観測性</text>
+        <text x="320" y="106" font-size="10" fill="#6b7a99" text-anchor="middle" font-family="'Hanken Grotesk',sans-serif">01</text>
+
+        <circle cx="438" cy="210" r="45" fill="#ffffff" stroke="#2e5496" stroke-width="2"/>
+        <text x="438" y="204" font-size="14" fill="#1a1a2e" text-anchor="middle">例外設計</text>
+        <text x="438" y="224" font-size="10" fill="#6b7a99" text-anchor="middle" font-family="'Hanken Grotesk',sans-serif">02</text>
+
+        <circle cx="320" cy="328" r="45" fill="#ffffff" stroke="#2e5496" stroke-width="2"/>
+        <text x="320" y="322" font-size="14" fill="#1a1a2e" text-anchor="middle">介入権限</text>
+        <text x="320" y="342" font-size="10" fill="#6b7a99" text-anchor="middle" font-family="'Hanken Grotesk',sans-serif">03</text>
+
+        <circle cx="202" cy="210" r="45" fill="#ffffff" stroke="#2e5496" stroke-width="2"/>
+        <text x="202" y="204" font-size="14" fill="#1a1a2e" text-anchor="middle">抜き取り</text>
+        <text x="202" y="222" font-size="14" fill="#1a1a2e" text-anchor="middle">監査</text>
+
+        <!-- 外周キャプション -->
+        <text x="320" y="26" font-size="12" fill="#6b7a99" text-anchor="middle">見えるか</text>
+        <text x="560" y="214" font-size="12" fill="#6b7a99" text-anchor="middle">上がってくるか</text>
+        <text x="320" y="400" font-size="12" fill="#6b7a99" text-anchor="middle">止められるか</text>
+        <text x="80" y="214" font-size="12" fill="#6b7a99" text-anchor="middle">確かめたか</text>
+      </svg>
+      </div>
+      <p class="figure-cap">1つでも欠けると、監督ではなくただの放置になる</p>
+    </div>
+
+    <div class="cards" style="margin-top:2rem">
+      <div class="card">
+        <div class="card-icon">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <circle cx="18" cy="18" r="6" fill="currentColor"/>
+            <circle cx="18" cy="18" r="12" stroke="currentColor" stroke-width="1.5" opacity="0.3"/>
+          </svg>
+        </div>
+        <span class="card-tag">01 Observability</span>
+        <h3>可観測性</h3>
+        <p>何をどんな根拠で実行したかが後から追える状態。ログとトレースが前提になる。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <path d="M20 6l-8 14h8l-4 10 12-16h-8z" fill="currentColor" opacity="0.9"/>
+          </svg>
+        </div>
+        <span class="card-tag">02 Escalation</span>
+        <h3>例外設計</h3>
+        <p>どの条件で人間に上げるか。金額・信頼度・不可逆性を数値の閾値で決める。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <rect x="8" y="8" width="20" height="20" rx="3" stroke="currentColor" stroke-width="2"/>
+            <rect x="12" y="12" width="12" height="12" rx="2" fill="currentColor" opacity="0.25"/>
+          </svg>
+        </div>
+        <span class="card-tag">03 Intervention</span>
+        <h3>介入権限</h3>
+        <p>止める・差し戻す・巻き戻すの3つを、誰がどの画面で行使できるか。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <path d="M8 26V14M14 26V18M20 26V10M26 26V16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M6 28h24" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span class="card-tag">04 Audit</span>
+        <h3>抜き取り監査</h3>
+        <p>全件を見ない代わりに一定比率をサンプリングし、品質を統計的に担保する。</p>
+      </div>
+    </div>
+
+    <!-- Fig.4 -->
+    <div class="figure">
+      <p class="fig-title">Fig.4 ── 監督力は、放置すると必ず劣化する</p>
+      <div class="figure-scroll">
+      <svg viewBox="0 0 700 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="警戒心の減衰と点検による回復">
+        <defs>
+          <marker id="axm4" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#6b7a99"/></marker>
+        </defs>
+
+        <!-- 軸 -->
+        <line x1="70" y1="270" x2="660" y2="270" stroke="#6b7a99" stroke-width="1.4"/>
+        <line x1="70" y1="50"  x2="70"  y2="270" stroke="#6b7a99" stroke-width="1.4"/>
+        <text x="58" y="58"  font-size="12" fill="#6b7a99" text-anchor="end">高</text>
+        <text x="58" y="274" font-size="12" fill="#6b7a99" text-anchor="end">低</text>
+        <text x="26" y="160" font-size="12" fill="#6b7a99" transform="rotate(-90 26 160)" text-anchor="middle">異常への気づきやすさ</text>
+        <path d="M100 294 H640" stroke="#6b7a99" stroke-width="1.4" marker-end="url(#axm4)"/>
+        <text x="365" y="318" font-size="12" fill="#6b7a99" text-anchor="middle">運用期間</text>
+
+        <!-- 放置カーブ（赤） -->
+        <path d="M70 78 C170 140, 300 200, 650 248" fill="none" stroke="#e23744" stroke-width="3"/>
+        <circle cx="650" cy="248" r="5" fill="#e23744"/>
+
+        <!-- 点検ありカーブ（青・ノコギリ） -->
+        <path d="M70 78 C120 96,165 105,205 110" fill="none" stroke="#2e5496" stroke-width="3"/>
+        <path d="M205 110 L205 80" stroke="#2e5496" stroke-width="1.6" stroke-dasharray="4 4"/>
+        <path d="M205 80 C255 98,300 107,340 112" fill="none" stroke="#2e5496" stroke-width="3"/>
+        <path d="M340 112 L340 80" stroke="#2e5496" stroke-width="1.6" stroke-dasharray="4 4"/>
+        <path d="M340 80 C390 98,435 107,475 112" fill="none" stroke="#2e5496" stroke-width="3"/>
+        <path d="M475 112 L475 80" stroke="#2e5496" stroke-width="1.6" stroke-dasharray="4 4"/>
+        <path d="M475 80 C525 98,570 107,610 112" fill="none" stroke="#2e5496" stroke-width="3"/>
+        <circle cx="205" cy="80" r="4.5" fill="#2e5496"/>
+        <circle cx="340" cy="80" r="4.5" fill="#2e5496"/>
+        <circle cx="475" cy="80" r="4.5" fill="#2e5496"/>
+
+        <!-- 回復ポイントへの引き出し -->
+        <path d="M205 76 V64" stroke="#2e5496" stroke-width="1.2" stroke-dasharray="3 3"/>
+        <path d="M340 76 V64" stroke="#2e5496" stroke-width="1.2" stroke-dasharray="3 3"/>
+        <path d="M475 76 V64" stroke="#2e5496" stroke-width="1.2" stroke-dasharray="3 3"/>
+
+        <!-- 青ラベル（曲線の上・チップ付き） -->
+        <rect x="196" y="34" width="330" height="28" rx="6" fill="#ffffff" stroke="#d8e4f0" stroke-width="1"/>
+        <text x="361" y="53" font-size="13" fill="#2e5496" text-anchor="middle" font-weight="700">監査・異常テストのたびに回復する</text>
+
+        <!-- 赤ラベル（曲線の下・チップ付き） -->
+        <path d="M392 236 L430 213" stroke="#e23744" stroke-width="1.2" stroke-dasharray="3 3"/>
+        <circle cx="432" cy="212" r="4.5" fill="#e23744"/>
+        <rect x="96" y="226" width="292" height="28" rx="6" fill="#ffffff" stroke="#f7d3d6" stroke-width="1"/>
+        <text x="110" y="245" font-size="13" fill="#e23744" font-weight="700">放置すると、じわじわ低下する</text>
+      </svg>
+      </div>
+      <div class="legend">
+        <div class="legend-item"><span class="legend-swatch" style="background:#e23744"></span>点検なし</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:#2e5496"></span>定期的な監査・異常テストあり</div>
+      </div>
+      <p class="figure-cap">うまく回っているシステムほど、人間の警戒心は下がる</p>
+    </div>
+
+    <p class="note">
+      うまくいっているAIの出力を無検証で受け入れてしまう傾向を自動化バイアスと呼ぶ。
+      抜き取り比率を定期的に見直す、意図的に異常ケースを流して検知できるか試す——といった「監督の点検」まで設計に含めておきたい。
+    </p>
+  </div>
+</section>
+
+<!-- ============================ 04 ============================ -->
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 04</span>
+    <h2 class="sec-title">in から on への移行は、<br>5つの手順で設計する</h2>
+    <p class="sec-sub">「全件確認をやめる」は決断ではなく工程だ。順番を守れば、リスクを上げずに天井を外せる。</p>
+
+    <!-- Fig.5 -->
+    <div class="figure">
+      <p class="fig-title">Fig.5 ── 人間の確認比率を、段階的にだけ下げる</p>
+      <div class="figure-scroll">
+      <svg viewBox="0 0 700 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="確認比率を段階的に下げる階段グラフ">
+        <line x1="60" y1="270" x2="670" y2="270" stroke="#ffffff" stroke-width="1.4" opacity="0.5"/>
+        <line x1="60" y1="55"  x2="60"  y2="270" stroke="#ffffff" stroke-width="1.4" opacity="0.5"/>
+        <text x="48" y="64"  font-size="12" fill="#d8e4f0" text-anchor="end">100%</text>
+        <text x="48" y="169" font-size="12" fill="#d8e4f0" text-anchor="end">50%</text>
+        <text x="48" y="274" font-size="12" fill="#d8e4f0" text-anchor="end">0%</text>
+        <line x1="60" y1="165" x2="670" y2="165" stroke="#ffffff" stroke-width="0.8" opacity="0.15"/>
+
+        <!-- バー -->
+        <rect x="86"  y="60"  width="86" height="210" rx="4" fill="#d8e4f0" opacity="0.55"/>
+        <rect x="206" y="60"  width="86" height="210" rx="4" fill="#d8e4f0" opacity="0.72"/>
+        <rect x="326" y="144" width="86" height="126" rx="4" fill="#d8e4f0" opacity="0.85"/>
+        <rect x="446" y="207" width="86" height="63"  rx="4" fill="#ffffff" opacity="0.9"/>
+        <rect x="566" y="249" width="86" height="21"  rx="4" fill="#ffffff"/>
+
+        <text x="129" y="50"  font-size="14" fill="#ffffff" text-anchor="middle" font-weight="700" font-family="'Hanken Grotesk',sans-serif">100%</text>
+        <text x="249" y="50"  font-size="14" fill="#ffffff" text-anchor="middle" font-weight="700" font-family="'Hanken Grotesk',sans-serif">100%</text>
+        <text x="369" y="134" font-size="14" fill="#ffffff" text-anchor="middle" font-weight="700" font-family="'Hanken Grotesk',sans-serif">60%</text>
+        <text x="489" y="197" font-size="14" fill="#ffffff" text-anchor="middle" font-weight="700" font-family="'Hanken Grotesk',sans-serif">30%</text>
+        <text x="609" y="239" font-size="14" fill="#ffffff" text-anchor="middle" font-weight="700" font-family="'Hanken Grotesk',sans-serif">10%</text>
+
+        <text x="129" y="292" font-size="11.5" fill="#d8e4f0" text-anchor="middle">STEP 1</text>
+        <text x="249" y="292" font-size="11.5" fill="#d8e4f0" text-anchor="middle">STEP 2</text>
+        <text x="369" y="292" font-size="11.5" fill="#d8e4f0" text-anchor="middle">STEP 3</text>
+        <text x="489" y="292" font-size="11.5" fill="#d8e4f0" text-anchor="middle">STEP 4</text>
+        <text x="609" y="292" font-size="11.5" fill="#d8e4f0" text-anchor="middle">STEP 5</text>
+        <text x="129" y="310" font-size="11" fill="#8fa8cc" text-anchor="middle">仕分け</text>
+        <text x="249" y="310" font-size="11" fill="#8fa8cc" text-anchor="middle">ログ蓄積</text>
+        <text x="369" y="310" font-size="11" fill="#8fa8cc" text-anchor="middle">閾値定義</text>
+        <text x="489" y="310" font-size="11" fill="#8fa8cc" text-anchor="middle">監視構築</text>
+        <text x="609" y="310" font-size="11" fill="#8fa8cc" text-anchor="middle">比率低減</text>
+
+        <!-- エラー率ライン -->
+        <polyline points="129,258 249,257 369,258 489,256 609,257" fill="none" stroke="#ff5d6a" stroke-width="2.5" stroke-dasharray="6 4"/>
+        <text x="660" y="252" font-size="11.5" fill="#ff5d6a" text-anchor="end" font-weight="700">エラー率は上げない（悪化したら比率を戻す）</text>
+
+        <text x="365" y="332" font-size="12" fill="#ffffff" opacity="0.75" text-anchor="middle">人間が全件を見る割合 ─ 監視の仕組みができてから初めて下げる</text>
+      </svg>
+      </div>
+      <p class="figure-cap">確認を外すのは最後。順番を逆にすると事故が起きるまで気づけない</p>
+    </div>
+
+    <div class="stepper" style="margin-top:2rem">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h3>不可逆性で業務を仕分ける</h3>
+          <p>取り消せる処理か、外部に届いたら戻せない処理か。まず可逆な業務だけを on の候補にする。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3>全件確認のまま、判断ログを貯める</h3>
+          <p>人間がどこで差し戻したかを記録する。この差し戻しパターンが、そのまま例外条件の設計材料になる。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h3>例外条件と閾値を明文化する</h3>
+          <p>「金額◯円超」「信頼度◯％未満」「社外送信を含む」など数値で定義する。曖昧な条件は運用されない。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h3>ダッシュボードと介入導線を先に作る</h3>
+          <p>監視画面と停止ボタンが用意できてから、確認を外す。逆順にすると、見えないまま自律稼働する期間が生まれる。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <h3>抜き取り比率を段階的に下げる</h3>
+          <p>品質指標を見ながら60%→30%→10%と下げる。悪化したら戻す、という往復を運用ルールに含める。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="deep">
+      <h3>on は in の上位互換ではない</h3>
+      <p>
+        成熟度モデルのように「in から on へ進化させる」と語られることがあるが、これは誤りだ。
+        投薬判断や与信の最終決裁のように、1件の誤りが取り返しのつかない領域では in が正解であり続ける。
+        規制や説明責任の観点から、事前の人間承認を外せない業務も多い。
+      </p>
+      <p>
+        設計者が問うべきは「どちらが進んでいるか」ではなく、
+        <span class="fw-bold">この業務は、失敗を事後に取り消せるか</span>——それだけだ。
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 05 ============================ -->
+<section class="sec-light">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 05</span>
+    <h2 class="sec-title">選び方は、2つの軸で決まる</h2>
+    <p class="sec-sub">組織全体で一律に決めようとすると、必ずどちらかが破綻する。業務ごとにこのマトリクスに置く。</p>
+
+    <!-- Fig.6 -->
+    <div class="figure">
+      <p class="fig-title">Fig.6 ── 不可逆性 × 処理量で置き場所が決まる</p>
+      <div class="figure-scroll">
+      <svg viewBox="0 0 640 540" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="不可逆性と処理量による選択マトリクス">
+        <!-- 象限背景 -->
+        <rect x="90" y="50"  width="260" height="210" fill="#fde8ea"/>
+        <rect x="350" y="50"  width="260" height="210" fill="#fbe3d8"/>
+        <rect x="90" y="260" width="260" height="210" fill="#eef1f5"/>
+        <rect x="350" y="260" width="260" height="210" fill="#dfeaf7"/>
+
+        <!-- 枠と軸 -->
+        <rect x="90" y="50" width="520" height="420" fill="none" stroke="#2e5496" stroke-width="1.5"/>
+        <line x1="350" y1="50" x2="350" y2="470" stroke="#2e5496" stroke-width="1.2" stroke-dasharray="5 5"/>
+        <line x1="90" y1="260" x2="610" y2="260" stroke="#2e5496" stroke-width="1.2" stroke-dasharray="5 5"/>
+
+        <!-- 軸ラベル -->
+        <text x="30" y="260" font-size="13" fill="#1a1a2e" transform="rotate(-90 30 260)" text-anchor="middle" font-weight="700">不可逆性</text>
+        <path d="M60 450 V72" stroke="#6b7a99" stroke-width="1.6" marker-end="url(#axm)"/>
+        <text x="84" y="70"  font-size="11" fill="#6b7a99" text-anchor="end">高</text>
+        <text x="84" y="466" font-size="11" fill="#6b7a99" text-anchor="end">低</text>
+
+        <text x="350" y="532" font-size="13" fill="#1a1a2e" text-anchor="middle" font-weight="700">処理量</text>
+        <path d="M100 506 H600" stroke="#6b7a99" stroke-width="1.6" marker-end="url(#axm)"/>
+        <text x="96" y="492" font-size="11" fill="#6b7a99">少</text>
+        <text x="604" y="492" font-size="11" fill="#6b7a99" text-anchor="end">多</text>
+
+        <!-- 左上 -->
+        <text x="220" y="96"  font-size="15" fill="#e23744" text-anchor="middle" font-weight="700">Human in the Loop</text>
+        <text x="220" y="122" font-size="12.5" fill="#1a1a2e" text-anchor="middle">全件承認を維持する</text>
+        <text x="220" y="160" font-size="11.5" fill="#6b7a99" text-anchor="middle">与信の最終決裁／契約の締結</text>
+        <text x="220" y="180" font-size="11.5" fill="#6b7a99" text-anchor="middle">投薬・診断の判断／解雇の決定</text>
+        <text x="220" y="216" font-size="11.5" fill="#6b7a99" text-anchor="middle">件数が少ないので</text>
+        <text x="220" y="234" font-size="11.5" fill="#6b7a99" text-anchor="middle">量的制限が問題にならない</text>
+
+        <!-- 右上 -->
+        <text x="480" y="96"  font-size="15" fill="#c2410c" text-anchor="middle" font-weight="700">最難関ゾーン</text>
+        <text x="480" y="122" font-size="12.5" fill="#1a1a2e" text-anchor="middle">工程を分割して設計し直す</text>
+        <text x="480" y="160" font-size="11.5" fill="#6b7a99" text-anchor="middle">大量の請求処理／出荷指示</text>
+        <text x="480" y="180" font-size="11.5" fill="#6b7a99" text-anchor="middle">顧客への一斉通知</text>
+        <text x="480" y="216" font-size="11.5" fill="#6b7a99" text-anchor="middle">可逆な前工程は on、</text>
+        <text x="480" y="234" font-size="11.5" fill="#6b7a99" text-anchor="middle">不可逆な最終確定だけ in に残す</text>
+
+        <!-- 左下 -->
+        <text x="220" y="306" font-size="15" fill="#6b7a99" text-anchor="middle" font-weight="700">コストで決める</text>
+        <text x="220" y="332" font-size="12.5" fill="#1a1a2e" text-anchor="middle">どちらでも成立する</text>
+        <text x="220" y="370" font-size="11.5" fill="#6b7a99" text-anchor="middle">社内資料の下書き</text>
+        <text x="220" y="390" font-size="11.5" fill="#6b7a99" text-anchor="middle">議事録の整形</text>
+        <text x="220" y="426" font-size="11.5" fill="#6b7a99" text-anchor="middle">件数が少ないうちは</text>
+        <text x="220" y="444" font-size="11.5" fill="#6b7a99" text-anchor="middle">in のままでも詰まらない</text>
+
+        <!-- 右下 -->
+        <text x="480" y="306" font-size="15" fill="#2e5496" text-anchor="middle" font-weight="700">Human on the Loop</text>
+        <text x="480" y="332" font-size="12.5" fill="#1a1a2e" text-anchor="middle">監督の仕組みを作って移行</text>
+        <text x="480" y="370" font-size="11.5" fill="#6b7a99" text-anchor="middle">問い合わせの一次分類</text>
+        <text x="480" y="390" font-size="11.5" fill="#6b7a99" text-anchor="middle">データ照合／レポート自動生成</text>
+        <text x="480" y="426" font-size="11.5" fill="#6b7a99" text-anchor="middle">全件確認するとコストが</text>
+        <text x="480" y="444" font-size="11.5" fill="#6b7a99" text-anchor="middle">成果を上回る領域</text>
+
+        <!-- 移行矢印 -->
+        <path d="M300 400 C360 400, 400 380, 430 350" fill="none" stroke="#2e5496" stroke-width="2" marker-end="url(#a6)"/>
+        <text x="330" y="418" font-size="11" fill="#2e5496" font-weight="700">件数増加</text>
+        <defs>
+          <marker id="a6" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="#2e5496"/></marker>
+          <marker id="axm" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#6b7a99"/></marker>
+        </defs>
+      </svg>
+      </div>
+      <p class="figure-cap">組織単位ではなく、業務単位で置き場所を決める</p>
+    </div>
+
+    <div class="two-col" style="margin-top:2rem">
+      <div class="two-col-item">
+        <h3>検知容易性も見る</h3>
+        <p>異常が指標に現れるか。数字に出ない失敗は、on にしても気づけない。マトリクスの右下でも、検知手段がなければ移行は保留する。</p>
+      </div>
+      <div class="two-col-item">
+        <h3>右上は工程分割で解く</h3>
+        <p>不可逆かつ大量の領域は、そのままではどちらも成立しない。下書き・照合までを on、最終確定だけを in に残す形に分解する。</p>
+      </div>
+    </div>
+
+    <div class="take">
+      <div class="take-avatar">OK</div>
+      <div class="take-body">
+        <div class="take-label">Ozaken's One Point</div>
+        <div class="take-author">小澤健祐（おざけん）</div>
+        <p class="take-text">
+          on への移行でつまずく組織には共通点がある。人の確認を外してから、監視の仕組みを作ろうとすることだ。
+          順番が逆で、<span class="hot">ダッシュボードが先</span>。見える状態を作ってから確認を外すなら移行はほぼ失敗しないが、
+          先に外すと、事故が起きるまで誰も異常に気づけない期間が必ず生まれる。監督力は、外した後には作れない。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ SUMMARY ============================ -->
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <div class="summary">
+      <span class="eyebrow">Summary</span>
+      <svg viewBox="0 0 520 120" xmlns="http://www.w3.org/2000/svg" style="max-width:420px;margin:0.5rem auto 1.5rem;width:100%;height:auto" role="img" aria-label="2つの上限">
+        <rect x="10" y="20" width="230" height="80" rx="8" fill="none" stroke="#ff5d6a" stroke-width="1.5"/>
+        <text x="125" y="52" font-size="13" fill="#ff5d6a" text-anchor="middle" font-family="'Hanken Grotesk',sans-serif" font-weight="700" letter-spacing="1">IN THE LOOP</text>
+        <text x="125" y="78" font-size="15" fill="#ffffff" text-anchor="middle" font-family="'Zen Kaku Gothic New',sans-serif">上限＝人間の時間</text>
+
+        <rect x="280" y="20" width="230" height="80" rx="8" fill="none" stroke="#d8e4f0" stroke-width="1.5"/>
+        <text x="395" y="52" font-size="13" fill="#d8e4f0" text-anchor="middle" font-family="'Hanken Grotesk',sans-serif" font-weight="700" letter-spacing="1">ON THE LOOP</text>
+        <text x="395" y="78" font-size="15" fill="#ffffff" text-anchor="middle" font-family="'Zen Kaku Gothic New',sans-serif">上限＝人間の監督力</text>
+      </svg>
+      <p class="summary-text">
+        AI活用の設計とは、<br>
+        どちらの上限を引き受けるかを<br>
+        業務ごとに選ぶことだ。
+      </p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2026 小澤健祐（おざけん）/ 一般社団法人AICX協会</p>
+</footer>
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

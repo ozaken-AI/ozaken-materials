@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChatGPT Workとは何か — 実務での使いどころと、他エージェントとの決定的な違い | おざけん</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Shippori+Mincho+B1:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   OZAKEN WEB STYLE — DESIGN SYSTEM v3
+   カラートークン・タイポグラフィ・レイアウト・コンポーネント
+   ============================================================ */
+
+/* ----- カラートークン ----- */
+:root {
+  --ink:         #1a1a2e;
+  --navy:        #1f3864;
+  --navy-deep:   #141d35;
+  --azure:       #2e5496;
+  --azure-pale:  #d8e4f0;
+  --paper:       #f8f7f4;
+  --white:       #ffffff;
+  --red:         #e23744;
+  --red-bright:  #ff5d6a;
+  --muted:       #6b7a99;
+
+  --font-ja-sans:  'Zen Kaku Gothic New', sans-serif;
+  --font-ja-serif: 'Shippori Mincho B1', serif;
+  --font-en:       'Hanken Grotesk', sans-serif;
+
+  --max-w: 860px;
+  --sec-pad: 5rem 1.5rem;
+  --radius: 10px;
+  --radius-sm: 6px;
+}
+
+/* ----- リセット・ベース ----- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-ja-sans);
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--ink);
+  background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+
+/* ----- スクロール演出 ----- */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+[data-reveal].visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ----- 共通レイアウト ----- */
+.inner { max-width: var(--max-w); margin: 0 auto; padding: 0 1.5rem; }
+
+.sec-light {
+  background: var(--paper);
+  padding: var(--sec-pad);
+  color: var(--ink);
+}
+.sec-navy {
+  background: var(--navy);
+  padding: var(--sec-pad);
+  color: var(--white);
+}
+
+/* ----- eyebrow（セクションラベル） ----- */
+.eyebrow {
+  display: inline-block;
+  font-family: var(--font-en);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--azure);
+  background: var(--azure-pale);
+  padding: 3px 10px;
+  border-radius: 4px;
+  margin-bottom: 1.1rem;
+}
+.sec-navy .eyebrow {
+  color: var(--white);
+  background: rgba(255,255,255,0.15);
+}
+
+/* ----- 見出し ----- */
+.sec-title {
+  font-family: var(--font-ja-serif);
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: 500;
+  line-height: 1.4;
+  margin-bottom: 0.6rem;
+}
+.sec-sub {
+  font-size: 1rem;
+  color: var(--muted);
+  margin-bottom: 2.5rem;
+  line-height: 1.7;
+}
+.sec-navy .sec-sub { color: rgba(255,255,255,0.7); }
+
+/* ----- ヒーロー ----- */
+.hero {
+  background: var(--navy);
+  padding: 6rem 1.5rem 5rem;
+  text-align: center;
+  color: var(--white);
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 60% 30%, rgba(46,84,150,0.5) 0%, transparent 65%);
+  pointer-events: none;
+}
+.hero .eyebrow {
+  color: var(--white);
+  background: rgba(255,255,255,0.15);
+}
+.hero-title {
+  font-family: var(--font-ja-serif);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 500;
+  line-height: 1.35;
+  margin-bottom: 1.2rem;
+  position: relative;
+}
+.hero-copy {
+  font-size: 1.05rem;
+  color: rgba(255,255,255,0.8);
+  max-width: 560px;
+  margin: 0 auto 2.4rem;
+  line-height: 1.8;
+  position: relative;
+}
+.hero-cta { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; position: relative; }
+
+/* ----- ボタン ----- */
+.btn-primary {
+  display: inline-block;
+  font-family: var(--font-en);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  background: var(--azure);
+  color: var(--white);
+  padding: 0.75rem 2rem;
+  border-radius: var(--radius-sm);
+  transition: opacity 0.2s;
+}
+.btn-primary:hover { opacity: 0.85; }
+.btn-secondary {
+  display: inline-block;
+  font-family: var(--font-en);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--white);
+  padding: 0.75rem 2rem;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid rgba(255,255,255,0.5);
+  transition: border-color 0.2s;
+}
+.btn-secondary:hover { border-color: var(--white); }
+
+/* ----- ステッパー ----- */
+.stepper { display: flex; flex-direction: column; gap: 1.5rem; }
+.step {
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 1.5rem 1.75rem;
+  border-left: 4px solid var(--azure);
+  box-shadow: 0 2px 8px rgba(26,26,46,0.06);
+}
+.sec-navy .step {
+  background: var(--navy-deep);
+  border-left-color: var(--azure);
+  box-shadow: none;
+}
+.step-num {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--azure);
+  color: var(--white);
+  font-family: var(--font-en);
+  font-size: 0.9rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+}
+.step-body h3 {
+  font-family: var(--font-ja-serif);
+  font-size: 1.05rem;
+  font-weight: 500;
+  margin-bottom: 0.35rem;
+}
+.step-body p { font-size: 0.9rem; line-height: 1.75; color: var(--muted); }
+.sec-navy .step-body p { color: rgba(255,255,255,0.65); }
+
+/* ----- カードグリッド（3枚） ----- */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+}
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 1.5rem 1.75rem;
+  box-shadow: 0 2px 8px rgba(26,26,46,0.07);
+  border-top: 3px solid var(--azure);
+}
+.sec-navy .card {
+  background: var(--navy-deep);
+  box-shadow: none;
+}
+.card-icon {
+  width: 36px;
+  height: 36px;
+  margin-bottom: 1rem;
+  color: var(--azure);
+}
+.sec-navy .card-icon { color: var(--azure-pale); }
+.card h3 {
+  font-family: var(--font-ja-serif);
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+.card p { font-size: 0.875rem; line-height: 1.75; color: var(--muted); }
+.sec-navy .card p { color: rgba(255,255,255,0.65); }
+
+/* ----- VS比較（表禁止→必ずこれ） ----- */
+.vs {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 1rem;
+  align-items: center;
+}
+.vs-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(26,26,46,0.07);
+}
+.sec-navy .vs-card { background: var(--navy-deep); box-shadow: none; }
+.vs-badge {
+  font-family: var(--font-en);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+  display: inline-block;
+  margin-bottom: 0.75rem;
+}
+.vs-badge.pos { background: var(--azure-pale); color: var(--azure); }
+.vs-badge.neg { background: #fde8ea; color: var(--red); }
+.sec-navy .vs-badge.neg { background: rgba(226,55,68,0.2); color: var(--red-bright); }
+.vs-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--azure);
+  color: var(--white);
+  font-family: var(--font-en);
+  font-size: 0.8rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin: 0 auto;
+}
+.vs-card h3 {
+  font-family: var(--font-ja-serif);
+  font-size: 1.05rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+.vs-card p { font-size: 0.875rem; line-height: 1.75; color: var(--muted); }
+.sec-navy .vs-card p { color: rgba(255,255,255,0.65); }
+
+/* ----- 深掘りブロック ----- */
+.deep {
+  background: var(--navy-deep);
+  border-radius: var(--radius);
+  padding: 2rem 2.25rem;
+  border-left: 4px solid var(--azure);
+  margin: 1.5rem 0;
+}
+.deep h3 {
+  font-family: var(--font-ja-serif);
+  font-size: 1.15rem;
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+  color: var(--white);
+}
+.deep p { font-size: 0.9rem; line-height: 1.8; color: rgba(255,255,255,0.75); }
+
+/* ----- 2カラム対比 ----- */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+@media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+.two-col-item h3 {
+  font-family: var(--font-ja-serif);
+  font-size: 1.05rem;
+  font-weight: 500;
+  margin-bottom: 0.6rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 2px solid var(--azure);
+}
+.two-col-item p { font-size: 0.9rem; line-height: 1.8; color: var(--muted); }
+.sec-navy .two-col-item p { color: rgba(255,255,255,0.7); }
+
+/* ----- 注記 ----- */
+.note {
+  font-size: 0.825rem;
+  color: var(--muted);
+  line-height: 1.75;
+  padding: 0.75rem 1rem;
+  border-left: 3px solid var(--azure-pale);
+  background: rgba(46,84,150,0.04);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  margin-top: 1rem;
+}
+
+/* ----- まとめ ----- */
+.summary {
+  text-align: center;
+  max-width: 620px;
+  margin: 0 auto;
+}
+.summary-text {
+  font-family: var(--font-ja-serif);
+  font-size: clamp(1.15rem, 3vw, 1.45rem);
+  font-weight: 400;
+  line-height: 1.8;
+  margin-bottom: 2rem;
+}
+
+/* ----- おざけんのワンポイント（.take） ----- */
+.take {
+  background: var(--navy-deep);
+  border-radius: var(--radius);
+  padding: 1.5rem 1.75rem;
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+  margin: 2rem 0;
+  border-left: 4px solid var(--red);
+}
+.sec-light .take {
+  background: #fff8f8;
+  border-left: 4px solid var(--red);
+  box-shadow: 0 2px 8px rgba(226,55,68,0.07);
+}
+.take-avatar {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--azure);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-en);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.take-body {}
+.take-label {
+  font-family: var(--font-en);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--red-bright);
+  margin-bottom: 4px;
+}
+.sec-light .take-label { color: var(--red); }
+.take-author {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 0.5rem;
+}
+.sec-light .take-author { color: var(--muted); }
+.take-text {
+  font-size: 0.9rem;
+  line-height: 1.8;
+  color: rgba(255,255,255,0.88);
+}
+.sec-light .take-text { color: var(--ink); }
+.hot { color: var(--red-bright); font-weight: 700; }
+.sec-light .hot { color: var(--red); }
+
+/* ----- フッター ----- */
+footer {
+  background: var(--navy-deep);
+  padding: 3rem 1.5rem;
+  text-align: center;
+  color: rgba(255,255,255,0.5);
+  font-size: 0.8rem;
+}
+footer a { color: rgba(255,255,255,0.7); }
+
+/* ----- テキストユーティリティ ----- */
+.text-azure { color: var(--azure); }
+.text-red   { color: var(--red); }
+.sec-navy .text-red { color: var(--red-bright); }
+.fw-bold { font-weight: 700; }
+.font-serif { font-family: var(--font-ja-serif); }
+
+/* ----- スペックリスト（カード内の属性表示） ----- */
+.spec { margin-top: 1.1rem; border-top: 1px solid rgba(46,84,150,0.18); }
+.sec-navy .spec { border-top-color: rgba(255,255,255,0.14); }
+.spec-row {
+  display: flex;
+  gap: 0.85rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid rgba(46,84,150,0.09);
+}
+.sec-navy .spec-row { border-bottom-color: rgba(255,255,255,0.08); }
+.spec-row:last-child { border-bottom: none; }
+.spec-key {
+  flex-shrink: 0;
+  width: 5.4em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.6;
+  color: var(--azure);
+  padding-top: 2px;
+}
+.sec-navy .spec-key { color: var(--azure-pale); }
+.spec-val { font-size: 0.8rem; line-height: 1.7; color: var(--ink); }
+.sec-navy .spec-val { color: rgba(255,255,255,0.8); }
+
+/* ----- レスポンシブ ----- */
+@media (max-width: 640px) {
+  :root { --sec-pad: 3.5rem 1rem; }
+  .vs { grid-template-columns: 1fr; }
+  .vs-label { display: none; }
+  .hero { padding: 4rem 1rem 3.5rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- =============================================
+  HERO（ネイビー）
+  ============================================= -->
+<section class="hero">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">ChatGPT Work / 2026.07.09</span>
+    <h1 class="hero-title">ChatGPT Workは、<br>ChatGPTの主語を<br>「答える」から「仕上げる」に変えた</h1>
+    <p class="hero-copy">
+      OpenAIが2026年7月9日（米国時間）に発表した新機能「ChatGPT Work」。
+      実務で何に効くのか、そして Claude Cowork・Copilot・Gemini といった
+      他のエージェント系ツールと何が決定的に違うのかを整理する。
+    </p>
+  </div>
+</section>
+
+<!-- =============================================
+  01（ライト）— 3タブの分類
+  ============================================= -->
+<section class="sec-light">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 01 — Chat / Work / Codex</span>
+    <h2 class="sec-title">最初に覚えるのは機能名ではなく、<br>3つのタブの「役割分担」だ</h2>
+    <p class="sec-sub">
+      ChatGPT Workは、GPT-5.6を搭載し、接続したアプリ・ファイル・ブラウザを横断して情報を集め、
+      計画を立て、アクションを実行し、シート／スライド／ドキュメント／Webアプリまで作り切るエージェント機能。
+      複雑なプロジェクトを小さなステップに分解し、必要に応じて数時間にわたって作業を続ける。
+      その結果、ChatGPTは <span class="text-azure fw-bold">Chat・Work・Codex</span> の3タブ構成になった。
+      混乱の大半は、この3つを「同じChatGPTの違うモード」だと思うところから始まる。別の生き物として覚えたほうが早い。
+    </p>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <rect x="6" y="8" width="24" height="16" rx="4" stroke="currentColor" stroke-width="2"/>
+            <path d="M12 28l4-4h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M11 16h14M11 20h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3>Chat — 話す相手</h3>
+        <p>従来のChatGPT。考えを整理したいとき、壁打ちしたいときはここで十分。</p>
+        <div class="spec">
+          <div class="spec-row">
+            <div class="spec-key">任せるもの</div>
+            <div class="spec-val">質問・相談・アイデア出し</div>
+          </div>
+          <div class="spec-row">
+            <div class="spec-key">受け取るもの</div>
+            <div class="spec-val">言葉（答え）</div>
+          </div>
+          <div class="spec-row">
+            <div class="spec-key">消費</div>
+            <div class="spec-val">軽い</div>
+          </div>
+          <div class="spec-row">
+            <div class="spec-key">使える場所</div>
+            <div class="spec-val">Web・スマホ・デスクトップ</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <rect x="8" y="8" width="20" height="20" rx="3" stroke="currentColor" stroke-width="2"/>
+            <rect x="12" y="12" width="12" height="12" rx="2" fill="currentColor" opacity="0.25"/>
+          </svg>
+        </div>
+        <h3>Work — 仕上げる相手</h3>
+        <p>今回の主役。ゴールを渡すと、情報を集めて成果物の形まで持っていく。</p>
+        <div class="spec">
+          <div class="spec-row">
+            <div class="spec-key">任せるもの</div>
+            <div class="spec-val">調査・分析・資料づくり</div>
+          </div>
+          <div class="spec-row">
+            <div class="spec-key">受け取るもの</div>
+            <div class="spec-val">スライド、シート、ドキュメントなどの成果物</div>
+          </div>
+          <div class="spec-row">
+            <div class="spec-key">消費</div>
+            <div class="spec-val">重い（Codexなどとプール共有）</div>
+          </div>
+          <div class="spec-row">
+            <div class="spec-key">使える場所</div>
+            <div class="spec-val">Web・スマホ（有料プランのみ）／デスクトップ（無料プラン含む全プラン）</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <path d="M8 20l4-8h12l4 8v4H8v-4z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <circle cx="13" cy="27" r="3" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="23" cy="27" r="3" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M8 20h20" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <h3>Codex — 動かす相手</h3>
+        <p>元は開発者向け。返ってくるのは文章ではなく、変わったPCそのもの。</p>
+        <div class="spec">
+          <div class="spec-row">
+            <div class="spec-key">任せるもの</div>
+            <div class="spec-val">自分のPC内のファイル操作・作業代行</div>
+          </div>
+          <div class="spec-row">
+            <div class="spec-key">受け取るもの</div>
+            <div class="spec-val">変化したPCの状態（片付いたフォルダ、動くツール）</div>
+          </div>
+          <div class="spec-row">
+            <div class="spec-key">消費</div>
+            <div class="spec-val">重い（Workなどとプール共有）</div>
+          </div>
+          <div class="spec-row">
+            <div class="spec-key">使える場所</div>
+            <div class="spec-val">デスクトップのみ（Web・スマホでは選べない）</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="two-col" style="margin-top: 2.5rem;">
+      <div class="two-col-item">
+        <h3>3タブを分ける軸は「何が返ってくるか」</h3>
+        <p>Chatは言葉が返る。Workは成果物（ファイル）が返る。Codexは自分のPCの状態そのものが変わって返る。
+        任せる前に「今日ほしいのはこの3つのどれか」を決めるだけで、タブ選びはほぼ間違えなくなる。</p>
+      </div>
+      <div class="two-col-item">
+        <h3>正体は「Codexの一般業務化」</h3>
+        <p>開発者向けコーディングエージェントCodexの設計思想を、そのままナレッジワークへ展開したものがWork。
+        週500万人超のCodex利用者のうち、100万人以上がすでに開発以外の業務で使っていた事実が土台にある。</p>
+      </div>
+    </div>
+
+    <p class="note">
+      提供状況（2026年7月9日発表時点）：Web／モバイルのWorkはPro・Enterprise・Eduから順次、PlusとBusinessへは数日で拡大。
+      デスクトップアプリ（Mac／Windows）ではChat・Work・CodexがFreeを含む全プランで利用可能。
+      なお、CodexアプリがそのままChatGPTデスクトップアプリになり、従来のデスクトップアプリは「ChatGPT Classic」へ改称され、今後の更新は提供されない。
+    </p>
+  </div>
+</section>
+
+<!-- =============================================
+  02（ネイビー）— 機能の中身
+  ============================================= -->
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 02 — Anatomy</span>
+    <h2 class="sec-title">ChatGPT Workを構成する5つの部品</h2>
+    <p class="sec-sub">
+      「エージェントがすごい」で終わらせず、何が動いているのかを分解する。
+      実務設計はこの5点の組み合わせでしか考えられない。
+    </p>
+
+    <div class="stepper">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h3>プラグイン — コンテキストの入口</h3>
+          <p>Slack、Microsoft Teams、Google Drive、SharePoint、メール、カレンダー、CRM、プロジェクトトラッカー等に接続。プロンプト内容から参照先を自動判断するほか、「@アプリ名」で明示指定もできる。統合プラグインディレクトリに集約され、会話中に関連プラグインが提案される。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3>Scheduled Tasks — 時間とイベントのトリガー</h3>
+          <p>1回だけの実行、定期実行、イベント発生時の実行、変化の監視に対応。「毎週のSlack更新を確認して定例会議のアジェンダを更新」「毎朝ダッシュボードを確認して差分をレポート送信」「新しい顧客フィードバックが届いたらプレゼンを更新」といった“追い続けないと終わらない仕事”を渡せる。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h3>Sites（パブリックベータ）— 成果物の出口</h3>
+          <p>作業内容をインタラクティブなサイト／Webアプリに変換し、URLでチーム内や一般に共有できる。ライブダッシュボード、プロジェクトトラッカー、ローンチカレンダー、プロトタイプ、社内ポータル、インタラクティブレポートが想定用途。元データが変われば更新もできる。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h3>内蔵ブラウザ＋Computer Use — 手足</h3>
+          <p>デスクトップ版に内蔵ブラウザが追加され、市場調査・情報源比較・Google WorkspaceやMicrosoft 365ファイルの編集をアプリ内で完結。Computer Useではクリック・入力・ファイル移動をバックグラウンドで代行する。Chrome拡張も更新され、単体ブラウザAtlasは段階的に提供終了へ。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <h3>GPT-5.6 — 動力源</h3>
+          <p>同日一般提供が始まった最新フロンティアモデル。複数ステップのタスクの推論と、テンプレートや参照ファイルに沿った資料作成で最先端の性能を出すとされる。ChatGPT Workの「数時間走り続ける」設計はこのモデルが前提にある。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="take">
+      <div class="take-avatar">OK</div>
+      <div class="take-body">
+        <div class="take-label">Ozaken's One Point</div>
+        <div class="take-author">小澤健祐（おざけん）</div>
+        <p class="take-text">
+          正直に言うと、5つの部品のうち4つは既にどこかにあったものだ。定期実行もPC操作もプラグインも初出ではない。
+          それでもこれを重く見るべきなのは、OpenAIが旧アプリを「Classic」と呼び、Codexを本体に据え直したからだ。
+          つまり今回の発表の中身は機能ではなく<span class="hot">宣言</span>である。年間300回以上の企業研修で見てきた限り、
+          製品側が名前で示した方向転換は、半年遅れで必ず現場の要求水準になる。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+  03（ライト）— 実務での使いどころ
+  ============================================= -->
+<section class="sec-light">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 03 — Use Cases</span>
+    <h2 class="sec-title">効くのは「作業」ではなく、部門をまたいで散らかっている仕事だ</h2>
+    <p class="sec-sub">
+      単発の資料作成なら従来のChatGPTで足りる。ChatGPT Workが効くのは、
+      複数ツールに情報が分散していて、誰も全体を見られていない領域。公式に紹介された事例から実務の型を抽出する。
+    </p>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <path d="M8 26V14M14 26V18M20 26V10M26 26V16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M6 28h24" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3>営業：リードの取りこぼし検出</h3>
+        <p>Zapierの事例では、CRM・メール等を横断して顧客接点をたどり、フォローアップが途切れた箇所を特定。週次の経営層向けダッシュボードを自動生成し、7桁規模（数百万ドル）の潜在売上を可視化した。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <circle cx="18" cy="18" r="12" stroke="currentColor" stroke-width="2"/>
+            <path d="M18 10v8l5 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3>PMO：ローンチ確認の型化</h3>
+        <p>RingCentralの事例では、リリース計画・Jiraタスク・GTMスケジュールを突き合わせ、抜けている手順・阻害要因・不明確な担当範囲を検出。担当者と次アクションを明記したソース付きレポートを生成し、PM1人分の支援が約50人分に拡大した。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <rect x="6" y="8" width="24" height="16" rx="4" stroke="currentColor" stroke-width="2"/>
+            <path d="M12 28l4-4h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M11 16h14M11 20h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3>戦略：競合ベンチマーク</h3>
+        <p>Virgin Atlanticの事例では、評価対象のカスタマージャーニーと競合航空会社のリストを渡し、各社の提供内容を調査・評価してチームが検証できるデータセット化。数週間かかっていた分析が数時間になった。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <path d="M20 6l-8 14h8l-4 10 12-16h-8z" fill="currentColor" opacity="0.9"/>
+          </svg>
+        </div>
+        <h3>イベント：準備と事後分析</h3>
+        <p>NVIDIAの事例では、カンファレンス準備のExcelワークフロー（事前工数の約40%）を置換。登録済みアカウント・予定ミーティング・現場の準備状況を追跡し、終了後は数百件のセッション文字起こしと商談メモを統合して達成度を評価した。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <rect x="8" y="8" width="20" height="16" rx="3" stroke="currentColor" stroke-width="2"/>
+            <circle cx="13" cy="28" r="2.5" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="23" cy="28" r="2.5" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M6 28h24" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M18 8v16" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <h3>財務：月次決算と予測</h3>
+        <p>OpenAI社内では、元データの特定 → Excel／Sheetsへの取り込み → 照合 → スライド作成 → 結果検証までを支援し、月末締めと予測が数日から数時間に。空いた時間は経営層への助言に振り向けられている。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <path d="M8 20l4-8h12l4 8v4H8v-4z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <circle cx="13" cy="27" r="3" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="23" cy="27" r="3" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M8 20h20" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <h3>営業技術：PoCの高速化</h3>
+        <p>OpenAI社内の営業では、通常数週間かかるディスカバリー面談から、課題に合わせた概念実証を24時間以内に作成。メモを構造化し、依頼をソリューションアーキテクトにつなぎ、技術チームと連携させた。</p>
+      </div>
+    </div>
+
+    <p class="note">
+      共通しているのは「複数ツールに散った情報を突き合わせて、定期的に、成果物の形で吐き出す」という構造。
+      逆に言えば、情報が1つのファイルに閉じている業務にChatGPT Workを使う旨みは薄い。
+    </p>
+  </div>
+</section>
+
+<!-- =============================================
+  04（ネイビー）— 他ツールとの違い
+  ============================================= -->
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 04 — Comparison</span>
+    <h2 class="sec-title">違いはモデル性能ではない。「仕事がどこから始まるか」だ</h2>
+    <p class="sec-sub">
+      2026年前半、主要ベンダーのエージェント製品は機能面で急速に同質化した。
+      定期実行もPC操作もコネクタもほぼ全社が持っている。差が残るのは起点・権限モデル・課金の3点である。
+    </p>
+
+    <div class="vs">
+      <div class="vs-card">
+        <span class="vs-badge pos">ChatGPT Work</span>
+        <h3>起点は「接続したクラウド」</h3>
+        <p>プラグインで社内SaaSに接続し、そこから文脈を集めるのが基本形。デスクトップではローカルファイル・内蔵ブラウザ・Computer Useも使える。Sitesという“共有可能なWebアプリ”を出口に持つのは現時点でここだけの特徴。</p>
+      </div>
+      <div class="vs-label">vs</div>
+      <div class="vs-card">
+        <span class="vs-badge neg">Claude Cowork</span>
+        <h3>起点は「許可したローカルフォルダ」</h3>
+        <p>2026年1月にリサーチプレビュー、4月9日にGA。ユーザーが明示的に許可したフォルダの中でファイルを読み書きする設計が中核で、許可外のフォルダはClaudeから見えない。手元のファイル群を整理・統合・成果物化する仕事に強い。</p>
+      </div>
+    </div>
+
+    <div class="deep">
+      <h3>この非対称が意味すること</h3>
+      <p>
+        ChatGPT Workは「社内システムに接続してから仕事が始まる」ため、価値が出るまでに管理者の承認とコネクタ整備が要る。
+        一方Claude Coworkは「フォルダを1つ許可すれば今日から動く」ため、個人が先に始めて情シスが後から追いかける構図になりやすい。
+        導入の速さと統制のしやすさが、そのままトレードオフになっている。どちらが優れているかではなく、
+        組織が「先に配るのか、先に整えるのか」という方針の違いが選定を決める。
+      </p>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <h3>Microsoft 365 Copilot / Copilot Cowork</h3>
+        <p>起点はM365テナント。Word・Excel・Outlook・Teamsの中で強く、Purviewや管理者統制などガバナンス基盤が最も厚い。2026年3月に発表されたCopilot CoworkはAnthropicのエージェントエンジンを採用しつつMicrosoftの基盤で包んだ別製品で、6月にGA。名前は似ているがClaude Coworkとは適用領域が異なる。</p>
+      </div>
+      <div class="card">
+        <h3>Gemini for Workspace</h3>
+        <p>起点はGoogle Workspace。Gmail・Docs・Sheets・Driveの中に溶け込む「スイート内アシスタント」の性格が強く、多くのプランに標準同梱で追加ライセンス費がかからない。長文読解・マルチモーダルに強いが、自律的にPCやSaaSを横断して仕事を完遂する方向性は他社より控えめ。</p>
+      </div>
+      <div class="card">
+        <h3>Claude Code / Codex</h3>
+        <p>いずれも開発者向けのCLI／コーディングエージェント。今回のChatGPT WorkもClaude Coworkも、この2つの技術を非エンジニアに開いたものという点で出自は同じ。エージェント製品の系譜は「開発現場で先に実証され、知的業務に降りてくる」という一本の流れで理解できる。</p>
+      </div>
+    </div>
+
+    <div class="take">
+      <div class="take-avatar">OK</div>
+      <div class="take-body">
+        <div class="take-label">Ozaken's One Point</div>
+        <div class="take-author">小澤健祐（おざけん）</div>
+        <p class="take-text">
+          「どのエージェントが一番賢いか」を比べる会議は、ほぼ確実に時間の無駄になる。決めるべき問いは一つだけで、
+          自社の情報が今どこに溜まっているかだ。M365ならCopilot、WorkspaceならGemini、
+          手元のファイルが主戦場ならCowork、SaaSが散らかっているならChatGPT Work——選定はここでほぼ決まる。
+          比較表を作る前に、社内のデータの<span class="hot">住所</span>を先に書き出したほうが早い。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+  05（ライト）— 導入前の論点
+  ============================================= -->
+<section class="sec-light">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 05 — Before You Deploy</span>
+    <h2 class="sec-title">導入前に潰しておくべき、3つの現実的な論点</h2>
+    <p class="sec-sub">
+      エージェントは「配れば使われる」ものではない。特に課金構造とガバナンスは、
+      チャット時代の感覚のままだと必ず事故る。
+    </p>
+
+    <div class="two-col">
+      <div class="two-col-item">
+        <h3>① 「月額いくらで使い放題」ではない</h3>
+        <p>Chatの感覚のままWorkを使うと枠が溶ける。ChatGPT Workは通常のチャットリクエストより長く複雑な作業向けに設計されているため使用量の扱いが異なり、Codexと同じ仕組みに従う。しかもWorkとCodexは同じプール（プランに含まれる使用量の枠）を分け合うので、片方を回せばもう片方の枠も減る。重い調査を1本流しただけで一日分を使い切ることもある、という前提で運用を組む。</p>
+      </div>
+      <div class="two-col-item">
+        <h3>② 誰に、どこまで、いくらまで</h3>
+        <p>何にアクセスさせるか、いつ確認を求めさせるか、アクション前に承認を要求するかはユーザー側が決める設計。Enterprise／Eduの管理者はプラグイン接続、ブラウザ利用とネットワークアクセス、接続システム内の機密性の高いアクションを一元管理でき、Compliance APIで会話とアクションを可視化できる。使用量についても、Admin Consoleでワークスペース既定値・グループ上限・個別例外を設定し、全体の上限を上げずに必要な人だけ枠を広げられる。</p>
+      </div>
+      <div class="two-col-item">
+        <h3>③ 参照先データの整備度が精度を決める</h3>
+        <p>これはCopilotでもGeminiでも共通する現場の鉄則だが、エージェントの出力品質は「参照できる社内データの整理度」に直結する。フォルダ名・ファイル名に統一ルールがない組織では、AIが誤ったファイルを引用し、「AIは信用できない」という結論だけが残る。導入前の棚卸しが最大の投資対効果を生む。</p>
+      </div>
+      <div class="two-col-item">
+        <h3>④ 成果物をそのまま最終版にしない</h3>
+        <p>自動レビュー機構は用意されており、敵対的レッドチーミングでは保護対象データの抽出試行を100%ブロックしたと報告されている。それでも実務上は、エージェントの判断（例：「要返信」の選別）が人間の判断とずれる事例が各社で報告されている。人が最終確認する工程を残す前提で業務設計すること。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+  06（ネイビー）— まとめ
+  ============================================= -->
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <div class="summary">
+      <span class="eyebrow">Summary</span>
+      <p class="summary-text">
+        ChatGPT Workで問われるのは<br>
+        「AIを使いこなせるか」ではない。<br>
+        自社の仕事が、渡せる形に<br>
+        分解されているかどうかだ。
+      </p>
+    </div>
+    <p class="note" style="border-left-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); max-width: 620px; margin: 2rem auto 0;">
+      出典：OpenAI公式発表「ChatGPT は、あなたの最も意欲的な取り組みのパートナーに」（2026年7月9日）、
+      OpenAIリリースノート、および各社報道・解説記事。数値・提供条件は発表時点のもので、
+      仕様やプラン展開は変更される可能性があります。導入判断の際は必ず公式情報を確認してください。
+    </p>
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2026 小澤健祐（おざけん）/ 一般社団法人AICX協会</p>
+</footer>
+
+<script>
+/* スクロール演出 — IntersectionObserver */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
