@@ -266,6 +266,60 @@ footer {
   :root { --sec-pad: 3.5rem 1rem; }
   .hero { padding: 4rem 1rem 3.5rem; }
 }
+
+/* プロフィール：ポートレート */
+.profile-lead {
+  display: grid; grid-template-columns: 260px 1fr; gap: 2.2rem; align-items: start;
+  margin: 1.6rem 0 0.4rem;
+}
+.portrait-wrap { position: relative; }
+.portrait-wrap::before {
+  content: ""; position: absolute; left: -14px; top: 14px; width: 100%; height: 100%;
+  border: 2px solid var(--azure); border-radius: var(--radius); z-index: 0;
+}
+.portrait {
+  position: relative; z-index: 1; width: 100%; display: block;
+  border-radius: var(--radius); box-shadow: 0 18px 44px -18px rgba(20,29,53,0.5);
+  filter: saturate(0.96) contrast(1.02);
+}
+.portrait-cap {
+  margin-top: 0.9rem; font-family: var(--font-en); font-size: 0.78rem;
+  letter-spacing: 0.06em; color: var(--muted); position: relative; z-index: 1;
+}
+.portrait-cap b { display: block; font-family: var(--font-ja-serif); font-size: 1rem; color: var(--ink); letter-spacing: 0; margin-bottom: 0.15rem; }
+.profile-lead .kicker { margin-top: 0; }
+@media (max-width: 720px) {
+  .profile-lead { grid-template-columns: 1fr; gap: 1.4rem; }
+  .portrait-wrap { max-width: 260px; }
+  .portrait-wrap::before { left: -10px; top: 10px; }
+}
+
+/* AICX / ストラテジスト訴求 */
+.aicx-hero {
+  background: linear-gradient(135deg, rgba(255,255,255,0.09), rgba(255,255,255,0.03));
+  border: 1px solid rgba(216,228,240,0.18); border-radius: var(--radius);
+  padding: 1.9rem 2rem; margin-top: 0.4rem;
+}
+.aicx-hero .role-pill {
+  display: inline-block; font-family: var(--font-en); font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--navy-deep);
+  background: var(--azure-pale); padding: 0.3rem 0.7rem; border-radius: 100px;
+}
+.aicx-hero h3 { font-family: var(--font-ja-serif); font-size: 1.5rem; margin: 0.8rem 0 0.5rem; color: #fff; }
+.aicx-hero p { font-size: 0.9rem; line-height: 1.95; color: rgba(255,255,255,0.82); }
+.cert {
+  margin-top: 1.6rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+}
+.cert-card {
+  background: var(--navy-deep); border: 1px solid rgba(216,228,240,0.16);
+  border-left: 3px solid var(--red-bright); border-radius: var(--radius-sm);
+  padding: 1.15rem 1.25rem;
+}
+.cert-card .cert-eyebrow { font-family: var(--font-en); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--red-bright); font-weight: 700; }
+.cert-card h4 { font-size: 1.02rem; color: #fff; margin: 0.4rem 0 0.35rem; font-weight: 700; }
+.cert-card p { font-size: 0.82rem; line-height: 1.8; color: rgba(255,255,255,0.72); }
+.cert-card a { color: var(--azure-pale); font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
+@media (max-width: 640px) { .cert { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -322,10 +376,16 @@ footer {
     <h2 class="sec-title">発信し続けることが、活動の軸になっている</h2>
     <p class="sec-sub">書籍・記事・登壇という3つの形で、AIの可能性と実践知を届けてきた。</p>
 
-    <p class="kicker">
-      『生成AI導入の教科書』『AIエージェントの教科書』の刊行、<span class="fw-bold text-azure">1500本以上</span>のAI関連記事執筆、
-      年間<span class="fw-bold text-azure">300回以上</span>の登壇。発信量そのものが、現場で何が起きているかを掴む手段になっている。
-    </p>
+    <div class="profile-lead">
+      <div class="portrait-wrap">
+        <img class="portrait" src="99_assets/ozaken-portrait.jpg" alt="小澤健祐（おざけん）のポートレート" width="1100" height="1649" loading="lazy">
+        <p class="portrait-cap"><b>小澤健祐（おざけん）</b>Kensuke Ozawa ／ AICX協会 代表理事</p>
+      </div>
+      <p class="kicker">
+        『生成AI導入の教科書』『AIエージェントの教科書』の刊行、<span class="fw-bold text-azure">1500本以上</span>のAI関連記事執筆、
+        年間<span class="fw-bold text-azure">300回以上</span>の登壇。発信量そのものが、現場で何が起きているかを掴む手段になっている。
+      </p>
+    </div>
 
     <div class="stats">
       <div class="stat"><div class="stat-num">2<small>冊</small></div><div class="stat-label">書籍刊行<br>『生成AI導入の教科書』『AIエージェントの教科書』</div></div>
@@ -335,9 +395,8 @@ footer {
 
     <div class="bare">
       <p>
-        一般社団法人AICX協会 代表理事、一般社団法人生成AI活用普及協会 常任協議員を務める一方、
-        Cynthialy取締役CCO、Visionary Engine取締役、AI HYVE取締役など複数のAI企業の経営に参画。
-        日本HP、NTTデータグループ、Lightblue、THAなど複数社のアドバイザーも務めている。
+        <span class="fw-bold text-azure">一般社団法人AICX協会 代表理事</span>として、企業のAIエージェント実装を業界横断で牽引。
+        あわせて複数のAI企業の経営・アドバイザーに参画し、日本HP、NTTデータグループなど大手の実装現場にも伴走している。
       </p>
       <p>
         NewsPicksのAI番組「AI DIVE」メインMC、千葉県船橋市 生成AIアドバイザーとして行政のDX推進にも携わる。
@@ -354,40 +413,74 @@ footer {
 <!-- 02 関連企業・団体（ネイビー） -->
 <section class="sec-navy">
   <div class="inner" data-reveal>
-    <span class="eyebrow">Section 02</span>
-    <h2 class="sec-title">経営に関わる企業・団体は、どれも「実装」を主語にしている</h2>
-    <p class="sec-sub">評論ではなく実装で価値を出す、という一貫した立場から組織に関わっている。</p>
+    <span class="eyebrow">Section 02 ─ AICX</span>
+    <h2 class="sec-title">AIを「使う組織」から「設計する組織」へ。AICX協会が、その転換を担う。</h2>
+    <p class="sec-sub">軸足を置く業界団体はAICX協会ひとつ。評論ではなく実装で、日本のAIエージェント活用を前に進める。</p>
 
-    <div class="cards">
-      <div class="card">
-        <span class="card-tag">代表理事</span>
-        <h3>一般社団法人AICX協会</h3>
-        <p>「分断を超え、体験を変える」。企業のAIエージェント実装を支援する、国内初のAIエージェント特化型業界団体。</p>
+    <div class="aicx-hero">
+      <span class="role-pill">代表理事 / Founder</span>
+      <h3>一般社団法人AICX協会</h3>
+      <p>
+        「分断を超え、体験を変える」を掲げる、<span class="fw-bold" style="color:#fff">国内初のAIエージェント特化型の業界団体</span>。
+        AI Agent Day（5,600名超）やAICX Forumの開催、委員会運営、メディア「AI Agent Now」の発信、
+        そして人材の"格"を定義する認定資格制度まで——企業がAIエージェントを実装しきるための土台をつくっている。
+      </p>
+    </div>
+
+    <div class="figure">
+      <p class="fig-title">Fig.1 ── AIエージェント・ストラテジストは、組織を AX1 から AX4 へ引き上げる設計者だ</p>
+      <div class="figure-scroll">
+        <svg viewBox="0 0 700 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="AX1個の効率化からAX4組織モデルの変容へと上がる4段の階段。ストラテジストが各段の設計を担い、組織を引き上げる図。">
+          <defs>
+            <marker id="axup" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+              <path d="M0 0 L9 4.5 L0 9 z" fill="#ff5d6a"/>
+            </marker>
+            <marker id="axaxis" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto">
+              <path d="M0 0 L8 4 L0 8 z" fill="rgba(216,228,240,0.6)"/>
+            </marker>
+          </defs>
+
+          <!-- 縦軸 -->
+          <path d="M44 306 V64" stroke="rgba(216,228,240,0.5)" stroke-width="1.4" marker-end="url(#axaxis)"/>
+          <text x="27" y="196" transform="rotate(-90 27 196)" text-anchor="middle" font-size="12" fill="rgba(216,228,240,0.7)">組織変容の深さ</text>
+
+          <!-- 4段の階段 -->
+          <rect x="66"  y="250" width="128" height="56"  rx="6" fill="rgba(255,255,255,0.05)" stroke="rgba(216,228,240,0.35)"/>
+          <rect x="224" y="196" width="128" height="110" rx="6" fill="rgba(255,255,255,0.07)" stroke="rgba(216,228,240,0.35)"/>
+          <rect x="382" y="138" width="128" height="168" rx="6" fill="rgba(255,255,255,0.09)" stroke="rgba(216,228,240,0.35)"/>
+          <rect x="540" y="74"  width="128" height="232" rx="6" fill="rgba(255,255,255,0.12)" stroke="rgba(216,228,240,0.35)"/>
+
+          <text x="130" y="280" text-anchor="middle" font-size="19" font-family="'Hanken Grotesk',sans-serif" font-weight="700" fill="#d8e4f0">AX1</text>
+          <text x="130" y="298" text-anchor="middle" font-size="11.5" fill="rgba(216,228,240,0.85)">個の効率化</text>
+          <text x="288" y="226" text-anchor="middle" font-size="19" font-family="'Hanken Grotesk',sans-serif" font-weight="700" fill="#d8e4f0">AX2</text>
+          <text x="288" y="244" text-anchor="middle" font-size="11.5" fill="rgba(216,228,240,0.85)">業務の再設計</text>
+          <text x="446" y="168" text-anchor="middle" font-size="19" font-family="'Hanken Grotesk',sans-serif" font-weight="700" fill="#d8e4f0">AX3</text>
+          <text x="446" y="186" text-anchor="middle" font-size="11.5" fill="rgba(216,228,240,0.85)">エージェントへの委譲</text>
+          <text x="604" y="104" text-anchor="middle" font-size="19" font-family="'Hanken Grotesk',sans-serif" font-weight="700" fill="#ffffff">AX4</text>
+          <text x="604" y="122" text-anchor="middle" font-size="11.5" fill="#ffffff">組織モデルの変容</text>
+
+          <!-- 上昇線（ストラテジストの牽引） -->
+          <polyline points="130,250 288,196 446,138 604,74" fill="none" stroke="#ff5d6a" stroke-width="2.4" stroke-dasharray="6 5" marker-end="url(#axup)"/>
+          <text x="150" y="52" font-size="13" font-weight="700" fill="#ff5d6a">ストラテジストが AX1 → AX4 を設計・牽引</text>
+
+          <!-- 下部の状態ラベル -->
+          <text x="130" y="332" text-anchor="middle" font-size="11" fill="rgba(216,228,240,0.55)">多くの組織はここで停滞</text>
+          <text x="604" y="332" text-anchor="middle" font-size="11" fill="rgba(216,228,240,0.55)">AICXが導く到達点</text>
+        </svg>
       </div>
-      <div class="card">
-        <span class="card-tag">取締役CCO</span>
-        <h3>Cynthialy株式会社</h3>
-        <p>「AI Work Transformation Company」。生成AI活用の診断からリスキリング研修、定着化までを一気通貫で提供。</p>
+      <p class="figure-cap">「使う人（doer）」が増えても、組織は AX1 で止まりやすい。段を上げるのは、目的とガードレールを設計する director ＝ ストラテジストだ。</p>
+    </div>
+
+    <div class="cert">
+      <div class="cert-card">
+        <span class="cert-eyebrow">Certification 01</span>
+        <h4>AIエージェント・ストラテジスト</h4>
+        <p>「何を・なぜ・どこまでAIに任せるか」を設計し、組織を AX1→AX4 へ導く戦略人材の認定。<a href="05_組織・人材・経営/AIエージェント・ストラテジスト.html">必要な理由を読む →</a></p>
       </div>
-      <div class="card">
-        <span class="card-tag">取締役</span>
-        <h3>株式会社Visionary Engine</h3>
-        <p>「未来を描くビジョナリーのために。」テクノロジーとサービスデザインで事業創出を加速させるファーム。</p>
-      </div>
-      <div class="card">
-        <span class="card-tag">取締役</span>
-        <h3>株式会社AI HYVE</h3>
-        <p>「人材×コンサルティング×マーケティング」を掛け合わせ、AIX/DXに挑む企業の成長を実行支援する。</p>
-      </div>
-      <div class="card">
-        <span class="card-tag">創業者COO</span>
-        <h3>株式会社Cinematorico</h3>
-        <p>「“ストーリー”で世界をトリコに」。映像制作・HP制作・SNSマーケティングまで手掛けるコンテンツカンパニー。</p>
-      </div>
-      <div class="card">
-        <span class="card-tag">常任協議員</span>
-        <h3>一般社団法人生成AI活用普及協会</h3>
-        <p>「生成AIパスポート」など、生成AIの安全な活用知識を広める日本最大級の資格試験を運営。</p>
+      <div class="cert-card">
+        <span class="cert-eyebrow">Certification 02</span>
+        <h4>AIエージェント・アーキテクト</h4>
+        <p>コンテキスト・ハーネス・ループを実装する技術人材の認定。ストラテジストが描いた設計図を、実際に動くエージェントへと落とし込む役割。</p>
       </div>
     </div>
 
@@ -397,8 +490,8 @@ footer {
         <div class="take-label">Ozaken's One Point</div>
         <div class="take-author">小澤健祐（おざけん）</div>
         <p class="take-text">
-          複数の組織に関わっているのは器用貧乏だからではなく、<span class="hot">実装の現場を複数持つ</span>ことでしか
-          見えない知見があるからだ。1社の中だけにいては、AIエージェント導入のパターンは意外と見えてこない。
+          世の中の議論は「AIを使いこなせる人になろう」に偏りすぎている。だが年間300回以上現場に立って断言できるのは、
+          自律型エージェントの時代に効くのは<span class="hot">設計する力</span>だということ。AICXでストラテジスト認定をつくったのは、その職能に名前と基準を与えるためだ。
         </p>
       </div>
     </div>
