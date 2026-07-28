@@ -1,32 +1,27 @@
-# 資料整理済みフォルダ
+# ozaken-materials
 
-「資料」フォルダの中身をテーマ別に整理したものです。GitHubリポジトリ `ozaken-materials` としてアップロードする想定の構成です。
+小澤健祐（おざけん）のAI関連解説資料アーカイブ。トップページは [`index.html`](./index.html)（GitHub Pages 公開中: https://ozaken-ai.github.io/ozaken-materials/ ）。
+
+資料は「AIを組織で使えるようにするまでの問いの連鎖」を軸に、**知る → 選ぶ → 動かす** の流れでMECEに分類しています。
 
 ## フォルダ構成
 
-- `01_AIエージェント_5段階レベル/` — AIエージェント実装の5レベルに関する記事・資料（Copilot/Gemini比較、PDF資料など）
-- `02_AIエージェント_資格制度/` — AIエージェント・ストラテジスト等、資格制度関連
-- `03_AIエージェント_予算/` — AIエージェント導入の予算・コストに関する記事
-- `04_AIエージェント_キャリア/` — AIエージェント時代のキャリアに関する記事（HTML/PDF）
-- `05_AI活用施策まとめ/` — AI活用施策50/51選などのまとめ記事
-- `06_AX解説/` — AXとは何か、を解説するPDF資料
-- `07_業界動向_解説記事/` — ChatGPT Work、Google I/O、OpenAI FDE、Human-in/on-the-loop、パーパス論、AI音声、モデル使い分けなど業界動向・解説記事
-- `08_Cowork関連/` — Cowork解説資料
-- `09_Mythos/` — Mythosプロジェクト関連資料
-- `10_人事_法務/` — 人事関連資料、個人情報保護法解説
-- `11_登壇資料_スライド/` — 登壇用スライド（pptx）
-- `12_画像素材/` — 画像素材
-- `13_その他/` — 分類外の資料
+| フォルダ | 答える問い | 内容 |
+|---------|-----------|------|
+| `01_概念・思想/` | AIをどう捉えるか（Why/What） | AXとは、AIエージェント実装の5レベル、Human in/on the loop、パーパス論、Mythos |
+| `02_技術・モデル動向/` | いまAIは何ができるか | モデル使い分け、AI音声、Google I/O、OpenAI FDE |
+| `03_ツール・製品/` | 何を使うか | ChatGPT Work、Cowork |
+| `04_活用・実装/` | どう使いこなすか（How） | AI活用施策50/51、資料作成 |
+| `05_組織・人材・経営/` | どう組織に根付かせるか | キャリア、人事、予算、資格制度（ストラテジスト） |
+| `06_リスク・法務/` | どう守るか | 個人情報保護法 |
+| `99_assets/` | （コンテンツでない素材） | 登壇スライド、画像素材 |
 
-## GitHubへのアップロード手順（ご自身のPCで実行）
+## 更新方法
+
+ファイルを追加・修正して以下を実行すると、数分後に GitHub Pages に反映されます。
 
 ```bash
-cd ~/Documents/資料_整理済み
-git init
 git add .
-git commit -m "資料を整理してアップロード"
-gh repo create ozaken-materials --public --source=. --remote=origin
-git push -u origin main
+git commit -m "資料を更新"
+git push origin main
 ```
-
-`gh` コマンドが未インストールの場合は `brew install gh` の後 `gh auth login` でログインしてから上記を実行してください。
