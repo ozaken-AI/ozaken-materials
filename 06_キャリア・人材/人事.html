@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>当たり前が、変わる ─ 労働力としてのAIエージェントと、人事の役割 | おざけん</title>
-<meta name="description" content="AIエージェントが「労働力」になった時代、組織の再設計を担うのは人事だ。評価・報酬・役割の3つの転換と、DXと人事が融合すべき理由を整理した解説。">
+<meta name="description" content="AIエージェントが「労働力」になった時代、組織の再設計を担うのは人事だ。仕事の3層、DX・人事それぞれの14施策、評価・報酬・役割の3転換、4フェーズの実装ロードマップまでを網羅した解説。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Shippori+Mincho+B1:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -427,9 +427,14 @@ footer {
     </svg>
   </div>
   <div class="inner" data-reveal>
-    <span class="eyebrow">Career &amp; Talent ─ HR</span>
+    <span class="eyebrow">AI Agent × Organization Design</span>
     <h1 class="hero-title">当たり前が、変わる。<br>労働力としてのAIエージェントと、<br>人事の役割</h1>
     <p class="hero-copy">週休4日制が、1日4時間労働が、当たり前になるかもしれない。AIで生み出す価値が2倍になったのなら、給料も2倍にならなければおかしい。これは理想論ではない。そしてこの変化を設計する主役は、技術部門ではなく——人事だ。</p>
+    <div class="stats">
+      <div class="stat"><div class="stat-num">4<small>日休</small></div><div class="stat-label">週休4日制が、当たり前になるかもしれない</div></div>
+      <div class="stat"><div class="stat-num">4<small>時間</small></div><div class="stat-label">1日4時間労働が、当たり前になるかもしれない</div></div>
+      <div class="stat"><div class="stat-num">×2<small>倍</small></div><div class="stat-label">価値が2倍なら、給料も2倍にならなければ</div></div>
+    </div>
   </div>
 </section>
 
@@ -437,76 +442,125 @@ footer {
   <div class="inner" data-reveal>
     <span class="eyebrow">Chapter 1 ─ New Workforce</span>
     <h2 class="sec-title">AIエージェントは、「労働力」になった</h2>
-    <p class="kicker">これまでのAIは、人間を補助する道具だった。だが、いまのAIエージェントは違う。複数ステップのタスクを自ら計画し、ツールを使い分け、状況を判断しながら業務を最後までやり切る。<span class="fw-bold">目的を渡せば、そこに至る道筋を自分で組み立てて動く。</span></p>
+    <p class="kicker">これまでのAIは、人間を補助する道具だった。人間が指示を出し、AIが答える。主体は人間の側にあった。だが、いまのAIエージェントは違う。複数ステップのタスクを自ら計画し、ツールを使い分け、外部システムと連携し、状況を判断しながら業務を最後までやり切る。<span class="fw-bold text-azure">目的を渡せば、そこに至る道筋を自分で組み立てて動く。</span></p>
     <div class="cards">
-      <div class="card"><span class="card-tag">01</span><h3>使うもの</h3><p>人間が一手ずつ操作し、指示を出して初めて動く道具。主体は人間の側にある。</p></div>
-      <div class="card"><span class="card-tag">02</span><h3>任せるもの</h3><p>一定の業務を丸ごと委任でき、自律的にやり切る実行主体。これはソフトの話ではなく、新しい労働力が組織に加わるという話だ。</p></div>
+      <div class="card"><span class="card-tag">01</span><h3>〜これまで：使うもの（ツール）</h3><p>人間が一手ずつ操作し、指示を出して初めて動く道具。主体はあくまで人間の側にある。</p></div>
+      <div class="card"><span class="card-tag">02</span><h3>いま：任せるもの（労働力）</h3><p>一定の業務を丸ごと委任でき、自律的にやり切る実行主体。これはソフトの話ではなく、新しい労働力が組織に加わるという話だ。</p></div>
     </div>
   </div>
 </section>
 
 <section class="sec-navy">
   <div class="inner" data-reveal>
-    <span class="eyebrow">Chapter 2 ─ Reorganization</span>
+    <span class="eyebrow">Chapter 2 ─ Three Layers</span>
+    <h2 class="sec-title">人間に残るのは、「仕事」になる</h2>
+    <p class="sec-sub">仕事は3つの層に分けられる。AIが下の層を担うほど、人間の重心は上の層へと移っていく。</p>
+    <div class="cards">
+      <div class="card"><span class="card-tag">01</span><h3>作業</h3><p>定型的・反復的な個別のアクション。<br><span class="fw-bold" style="color:#fff">AIが代替</span>する層。</p></div>
+      <div class="card"><span class="card-tag">02</span><h3>業務</h3><p>複数の作業からなる一連のプロセス。<br><span class="fw-bold" style="color:#fff">エージェントが代替し始めた</span>層。</p></div>
+      <div class="card"><span class="card-tag">03</span><h3>仕事</h3><p>問いを立て、意味を見出し、判断する領域。<br><span class="hot">人間に残る</span>層。</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec-light">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Chapter 3 ─ Reorganization</span>
     <h2 class="sec-title">組織のかたちそのものが、書き換わる</h2>
-    <p class="kicker">組織とは、突き詰めれば「誰が、何を担うか」の編成だ。AIエージェントという労働力が加わり、組織を構成するメンバーに初めて人間以外が含まれる。要員計画の問いは「来期、何人採用するか」から、<span class="fw-bold">「どの業務に人を置き、どの業務にAIを置くか」</span>へ。</p>
-    <p class="note">チームは人間とAIが混在するハイブリッドな形が標準になる。AIエージェントの推進は、ツール導入ではない——組織の再設計だ。</p>
+    <p class="kicker">組織とは、突き詰めれば「誰が、何を担うか」の編成だ。これまでその「誰」は人間だけだった。AIエージェントという労働力が加わり、組織を構成するメンバーに初めて人間以外が含まれる。要員計画の問いは「来期、何人採用するか」から、<span class="fw-bold text-azure">「どの業務に人を置き、どの業務にAIを置くか」</span>へ。</p>
+    <p class="note">チームは人間とAIが混在するハイブリッドな形が標準になり、中間管理職の役割も、階層構造も、設計し直す局面が来る。AIエージェントの推進は、ツール導入ではない——組織の再設計だ。</p>
   </div>
 </section>
 
-<section class="sec-light">
+<section class="sec-navy">
   <div class="inner" data-reveal>
-    <span class="eyebrow">Chapter 3 ─ Two Jobs</span>
+    <span class="eyebrow">Chapter 4 ─ Two Jobs</span>
     <h2 class="sec-title">現場にAIを実装する、2つの仕事</h2>
-    <p class="sec-sub">労働力としてのAIを現場に根づかせるには、2つの専門性が要る。技術的に動かす力と、組織に組み込む力。</p>
+    <p class="sec-sub">労働力としてのAIを現場に根づかせるには、2つの専門性が要る。技術的に動かす力（DX）と、組織に組み込む力（人事）。それぞれが取り組むべき施策を整理する。</p>
     <div class="cards">
-      <div class="card"><span class="card-tag">01</span><h3>労働力を、動かす（DX）</h3><p>セキュアな環境、システム連携、権限設計、評価・テスト。AIエージェントを技術的に「動く」状態にする仕事。</p></div>
-      <div class="card"><span class="card-tag">02</span><h3>労働力を、組み込む（人事）</h3><p>評価・報酬・役割・キャリアを設計し直し、AIという労働力を組織に「根づかせる」仕事。難しいのは、こちらだ。</p></div>
+      <div class="card">
+        <span class="card-tag">DX</span>
+        <h3>労働力を、動かす</h3>
+        <p>技術・実装・運用 ── AIを業務のなかで実際に稼働させる。</p>
+        <ol style="margin:0.7rem 0 0 1.15rem; font-size:0.82rem; line-height:1.7; color:rgba(255,255,255,0.72);">
+          <li style="margin-bottom:0.5rem;"><b style="color:#fff;">業務の可視化と棚卸し</b> ── どの業務がAIで代替・支援できるかを洗い出し、プロセスを分解・標準化する。すべての起点。</li>
+          <li style="margin-bottom:0.5rem;"><b style="color:#fff;">ツールと実行基盤の選定</b> ── 業務に適したエージェント・モデルを選び、セキュアに動かせる実行環境を整える。</li>
+          <li style="margin-bottom:0.5rem;"><b style="color:#fff;">データとナレッジの整備</b> ── AIが参照する社内情報を構造化する。出力の精度は、与えるコンテキストの質で決まる。</li>
+          <li style="margin-bottom:0.5rem;"><b style="color:#fff;">エージェントの実装と連携</b> ── 業務システムやAPIと接続し、実際に動くワークフローを構築・運用する。</li>
+          <li style="margin-bottom:0.5rem;"><b style="color:#fff;">セキュリティとガバナンス</b> ── 情報漏洩・アクセス権限・AIの挙動を統制し、安全な運用ルールと監視体制を敷く。</li>
+          <li style="margin-bottom:0.5rem;"><b style="color:#fff;">効果測定と改善</b> ── 精度や稼働状況をモニタリングし、継続的に改善するサイクルを回す。</li>
+          <li style="margin-bottom:0.5rem;"><b style="color:#fff;">内製化と技術人材</b> ── エージェントを自走で改善できる人材を育て、ベンダー依存から脱する。</li>
+        </ol>
+      </div>
+      <div class="card">
+        <span class="card-tag">HR</span>
+        <h3>労働力を、組み込む</h3>
+        <p>人材・制度・組織 ── AIを前提に組織と人を設計し直す。</p>
+        <ol style="margin:0.7rem 0 0 1.15rem; font-size:0.82rem; line-height:1.7; color:rgba(255,255,255,0.72);">
+          <li style="margin-bottom:0.5rem;"><b style="color:#fff;">採用</b> ── AIを使いこなし、問いを立て判断できる人材へ。技術力以上に、業務の本質を理解し暗黙知を言語化する力が問われる。</li>
+          <li style="margin-bottom:0.5rem;"><b style="color:#fff;">配置・要員設計</b> ── 人とAIを組み合わせた「労働力ポートフォリオ」を設計する。問いは「何人採るか」から「どの業務を人に、どの業務をAIに」へ。</li>
+          <li style="margin-bottom:0.5rem;"><b style="color:#fff;">育成</b> ── AIに委ねる領域と人が深める領域を切り分けたうえで、リスキリングを設計する。線引きが曖昧なままだと不毛が生まれる。</li>
+          <li style="margin-bottom:0.5rem;"><b style="color:#fff;">評価</b> ── 投下した労働時間ではなく、生み出した成果で測るアウトカム評価へ。「AIとの協働度」も指標に組み込む。</li>
+          <li style="margin-bottom:0.5rem;"><b style="color:#fff;">処遇・報酬</b> ── AIで生み出した付加価値を、正当に処遇へ還元する。価値が増えたら報酬も増える——これが現場がAIを使う動機を生む。</li>
+          <li style="margin-bottom:0.5rem;"><b style="color:#fff;">組織設計・変革</b> ── JDを書き直し、人間に残る「考え抜く役割」を制度として位置づける。中間管理職の機能や階層構造も見直す。</li>
+          <li style="margin-bottom:0.5rem;"><b style="color:#fff;">カルチャー・エンゲージメント</b> ── AIを脅威ではなく共に働く存在として受け入れる文化を育てる。制度を整えても、現場の納得がなければ組織は動かない。</li>
+        </ol>
+      </div>
     </div>
-  </div>
-</section>
-
-<section class="sec-navy">
-  <div class="inner" data-reveal>
-    <span class="eyebrow">Chapter 4 ─ Three Shifts</span>
-    <h2 class="sec-title">人事が握る、3つの転換</h2>
-    <p class="sec-sub">技術は、導入すれば動く。だが、人の役割・評価・報酬をつくり直す作業に、決まった正解はない。</p>
-    <div class="cards">
-      <div class="card"><span class="card-tag">01</span><h3>評価 ── 時間から、成果へ</h3><p>これまでの評価は労働時間を暗黙の前提にしてきた。AIが作業を肩代わりすれば、その前提は崩れる。生み出した価値で測るアウトカム評価への転換が要る。</p></div>
-      <div class="card"><span class="card-tag">02</span><h3>報酬 ── 価値2倍なら、報酬2倍</h3><p>最も難しく、最も重要。生産性向上の果実を、すべて会社が回収すれば従業員はAIを使う動機を失う。「価値が増えたら、報酬も増える」接続をつくれるか。</p></div>
-      <div class="card"><span class="card-tag">03</span><h3>役割 ── 作業者から、考える人へ</h3><p>AIに作業を委ねた先で、人間に残るのは「考え抜く役割」。問いを立て判断することを正式な職務として位置づけ、報われるキャリアパスを設計する。</p></div>
-    </div>
-    <p class="note">どれも、技術では解けない。人と組織を見つめてきた人事にしか設計できない転換だ。だからこそ、<b>DXと人事は融合する</b>。別々の言語で別々の指標を追う限り、AIという労働力は宙に浮いたままだ。</p>
   </div>
 </section>
 
 <section class="sec-light">
   <div class="inner" data-reveal>
-    <span class="eyebrow">Chapter 5 ─ Rollout</span>
-    <h2 class="sec-title">現場への実装は、4つのフェーズで進む</h2>
-    <p class="kicker">人事とDXが手を組み、段階的に進める。各フェーズで両部門が並走することが要になる。<span class="fw-bold">技術の導入と制度の変革を、同じ歩幅で進める</span>——これが、現場にAIを根づかせる唯一の道だ。</p>
+    <span class="eyebrow">Chapter 5 ─ Three Shifts</span>
+    <h2 class="sec-title">人事が握る、3つの転換</h2>
+    <p class="sec-sub">2つの仕事を並べたとき、AI時代に本当に難しいのは人事の側だ。技術は導入すれば動く。だが、人の役割・評価・報酬をつくり直す作業に、決まった正解はない。</p>
     <div class="cards">
-      <div class="card"><span class="card-tag">01</span><h3>Phase 1 ─ 試す</h3><p>限定業務でPoC。動かす（DX）と、評価の試行（人事）を同時に始める。</p></div>
-      <div class="card"><span class="card-tag">02</span><h3>Phase 2 ─ 広げる</h3><p>成功パターンを型にして横展開。要員計画に「人／AIの配置」を組み込む。</p></div>
-      <div class="card"><span class="card-tag">03</span><h3>Phase 3 ─ 組み込む</h3><p>評価・報酬・JDを正式に更新。ハイブリッドなチーム編成を標準にする。</p></div>
-      <div class="card"><span class="card-tag">04</span><h3>Phase 4 ─ 定着</h3><p>考える人が報われるキャリアパスを運用。制度として回り続ける状態へ。</p></div>
+      <div class="card"><span class="card-tag">01</span><h3>評価 ── 時間から、成果へ</h3><p>これまでの評価は労働時間を暗黙の前提にしてきた。AIが作業を肩代わりすれば前提は崩れる。生み出した価値で測るアウトカム評価へ。さらに「AIとの協働度」そのものを評価軸に加える発想も要る。</p></div>
+      <div class="card"><span class="card-tag">02</span><h3>報酬 ── 価値2倍なら、報酬2倍</h3><p>最も難しく、最も重要。生産性向上の果実をすべて会社が回収すれば、従業員はAIを使う動機を失う。「価値が増えたら、報酬も増える」この接続をつくれるか。週休4日も1日4時間労働も、この報酬設計とセットで初めて現実になる。</p></div>
+      <div class="card"><span class="card-tag">03</span><h3>役割 ── 作業者から、考える人へ</h3><p>AIに作業を委ねた先で、人間に残るのは「考え抜く役割」。だが多くの組織にはそれを評価し処遇しキャリアとして用意する仕組みがない。JDを書き直し、問いを立て判断することを正式な職務として位置づける。</p></div>
+    </div>
+    <p class="note">どれも、技術では解けない。人と組織を見つめてきた人事にしか設計できない転換だ。</p>
+  </div>
+</section>
+
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Chapter 6 ─ Fusion</span>
+    <h2 class="sec-title">だから、DXと人事は融合する</h2>
+    <p class="kicker">この2つは切り離せない。にもかかわらず、現実には分断されている。DXは「効率化ツール」として導入率を追い、人事は旧来の評価制度と組織図を守る。別々の言語で別々の指標を追いかける限り、<span class="fw-bold">AIという労働力は宙に浮いたまま</span>だ。</p>
+    <p class="note">DX主導だけでは「便利なツール」止まり。人事だけでは絵に描いた餅。両者が同じテーブルにつき、技術の実装可能性と、労働力としての制度設計を、セットで議論するしかない。</p>
+  </div>
+</section>
+
+<section class="sec-light">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Chapter 7 ─ Rollout</span>
+    <h2 class="sec-title">現場への実装は、4つのフェーズで進む</h2>
+    <p class="sec-sub">人事とDXが手を組み、段階的に進める。各フェーズで両部門が並走する。技術の導入と制度の変革を、同じ歩幅で進める——これが、現場にAIを根づかせる唯一の道だ。</p>
+    <div class="cards">
+      <div class="card"><span class="card-tag">01</span><h3>Phase 1 ─ 可視化と対象選定</h3><p><b>DX：</b>業務を棚卸しし、AI化できる領域を特定する。<br><b>人事：</b>その業務を担う人の役割が、どう変わるかを見立てる。</p></div>
+      <div class="card"><span class="card-tag">02</span><h3>Phase 2 ─ 試験導入（スモールスタート）</h3><p><b>DX：</b>対象業務にエージェントを実装し、まず動かしてみる。<br><b>人事：</b>役割・評価への影響を観察し、現場の声を拾う。</p></div>
+      <div class="card"><span class="card-tag">03</span><h3>Phase 3 ─ 制度の再設計</h3><p><b>DX：</b>運用を安定させ、他部署へ横展開する基盤を整える。<br><b>人事：</b>評価・処遇・JDを、AIを前提とした形に更新する。</p></div>
+      <div class="card"><span class="card-tag">04</span><h3>Phase 4 ─ 組織への定着</h3><p><b>DX：</b>内製化し、継続的な改善サイクルを回し続ける。<br><b>人事：</b>ハイブリッドな組織構成とカルチャーとして根づかせる。</p></div>
     </div>
   </div>
 </section>
 
 <section class="sec-navy">
   <div class="inner" data-reveal>
-    <span class="eyebrow">Summary</span>
+    <span class="eyebrow">Summary ─ AICX Certification</span>
     <h2 class="sec-title">人間とAIが共に働く組織を、設計する人へ</h2>
-    <p class="kicker">この役割を、AICX協会は<span class="fw-bold">「AIエージェント・ストラテジスト」</span>という認定資格として体系化した。業務設計 × 組織設計 × AIエージェント——この3つを掛け合わせ、本稿の施策を現場で動かすための知見を体系立てて学べる。</p>
+    <p class="kicker">この役割を、AICX協会は<span class="fw-bold">「AIエージェント・ストラテジスト」</span>という認定資格として体系化した。<span class="fw-bold" style="color:#fff">AIエージェント × 業務設計 × 組織設計</span>——この3つを掛け合わせ、本稿で述べた施策を現場で実際に動かすための知見を、体系立てて学べる設計になっている。</p>
     <div class="take">
       <div class="take-avatar">OK</div>
       <div class="take-body">
         <div class="take-label">Ozaken's One Point</div>
         <div class="take-author">小澤健祐（おざけん）</div>
-        <p class="take-text">AIエージェントを「ツール導入」の話にしている限り、変革は起きない。これは<span class="hot">組織の再設計</span>であり、その主役は人事だ。価値が2倍なら報酬も2倍——この難問に正面から向き合える組織だけが、AIという新しい労働力を本当に手に入れる。 &nbsp; <a href="../index.html">← AI資料アーカイブに戻る</a></p>
+        <p class="take-text">AIエージェントを「ツール導入」の話にしている限り、変革は起きない。これは<span class="hot">組織の再設計</span>であり、その主役は人事だ。価値が2倍なら報酬も2倍——この難問に正面から向き合える組織だけが、AIという新しい労働力を本当に手に入れる。</p>
       </div>
     </div>
+    <p class="note">詳細・受験申込は、AICX協会 公式サイト（<a href="https://aicx.jp" target="_blank" rel="noopener">aicx.jp</a>）にて。 &nbsp; <a href="../index.html">← AI資料アーカイブに戻る</a></p>
   </div>
 </section>
 
