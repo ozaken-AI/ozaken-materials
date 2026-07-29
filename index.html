@@ -356,6 +356,38 @@ footer {
 .offer-list { list-style: none; margin-top: 0.85rem; display: flex; flex-direction: column; gap: 0.42rem; }
 .offer-list li { position: relative; padding-left: 1rem; font-size: 0.83rem; line-height: 1.7; color: rgba(255,255,255,0.74); }
 .offer-list li::before { content: "―"; position: absolute; left: 0; color: var(--azure-pale); }
+
+/* リード獲得ゲート（モーダル） */
+.gate-overlay {
+  position: fixed; inset: 0; background: rgba(20,29,53,0.72);
+  -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+  display: none; align-items: center; justify-content: center; z-index: 1000; padding: 1.5rem;
+}
+.gate-overlay.open { display: flex; }
+.gate-modal {
+  background: var(--paper); border-radius: var(--radius); max-width: 440px; width: 100%;
+  padding: 2rem 1.9rem; box-shadow: 0 30px 70px -20px rgba(20,29,53,0.6); position: relative;
+}
+.gate-modal .gate-eyebrow { font-family: var(--font-en); font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--azure); font-weight: 700; }
+.gate-modal h3 { font-family: var(--font-ja-serif); font-size: 1.32rem; color: var(--ink); margin: 0.5rem 0; }
+.gate-lead { font-size: 0.84rem; color: var(--muted); line-height: 1.85; margin-bottom: 1.3rem; }
+.gate-field { margin-bottom: 0.85rem; }
+.gate-field label { display: block; font-size: 0.76rem; font-weight: 700; color: var(--navy); margin-bottom: 0.3rem; }
+.gate-field input {
+  width: 100%; padding: 0.7rem 0.8rem; border: 1px solid var(--azure-pale);
+  border-radius: var(--radius-sm); font-size: 0.9rem; font-family: inherit; color: var(--ink); background: #fff;
+}
+.gate-field input:focus { outline: none; border-color: var(--azure); box-shadow: 0 0 0 3px rgba(46,84,150,0.12); }
+.gate-err { color: var(--red); font-size: 0.76rem; margin: 0.2rem 0 0.2rem; min-height: 1em; }
+.gate-submit {
+  width: 100%; margin-top: 0.5rem; background: var(--red); color: #fff; font-weight: 700;
+  font-size: 0.95rem; padding: 0.9rem; border: none; border-radius: var(--radius-sm);
+  cursor: pointer; transition: background 0.2s ease;
+}
+.gate-submit:hover { background: var(--red-bright); }
+.gate-submit:disabled { opacity: 0.6; cursor: default; }
+.gate-note { font-size: 0.72rem; color: var(--muted); margin-top: 0.9rem; line-height: 1.65; }
+.gate-close { position: absolute; top: 0.7rem; right: 1rem; background: none; border: none; font-size: 1.5rem; color: var(--muted); cursor: pointer; line-height: 1; }
 </style>
 </head>
 <body>
@@ -397,7 +429,7 @@ footer {
         実装の成熟度を5段階で整理した決定版スライドを、PDFでそのまま配布しています。
         登壇の予習・社内共有・研修資料として、どうぞご自由にお使いください。
       </p>
-      <a class="dl-btn" href="01_概念・思想/使うAIから任せるAIへ_AIエージェント実装の5レベル.pdf" download>
+      <a class="dl-btn" href="01_概念・思想/使うAIから任せるAIへ_AIエージェント実装の5レベル.pdf" download data-gate>
         <span class="dl-btn-icon">⬇</span> PDFをダウンロード
         <span class="dl-btn-meta">PDF · 約3.5MB · 36ページ</span>
       </a>
@@ -585,7 +617,7 @@ footer {
         <h3>活用・実践</h3>
         <p>現場でどう使いこなすか。個人が手を動かすAI活用。</p>
         <ul class="doc-list">
-          <li><a href="04_活用・実践/prompt-engineering.html">プロンプトエンジニアリング ─ AIから答えを引き出す「絞り込み」の技術</a></li>
+          <li><a href="04_活用・実践/prompt-engineering.html" data-gate>プロンプトエンジニアリング ─ AIから答えを引き出す「絞り込み」の技術</a></li>
           <li><a href="04_活用・実践/資料作成.html">AIで資料作成</a></li>
         </ul>
       </div>
@@ -595,7 +627,7 @@ footer {
         <p>組織にどう広げ、根付かせるか。施策・人材・キャリア・予算・資格。</p>
         <ul class="doc-list">
           <li><a href="05_推進/ai-51-master.html">AI推進 51施策 マスターリスト（9カテゴリ一覧）</a></li>
-          <li><a href="05_推進/ai-measures-50.html">AI推進 施策大全 ― 社内会議で使える51の打ち手</a></li>
+          <li><a href="05_推進/ai-measures-50.html" data-gate>AI推進 施策大全 ― 社内会議で使える51の打ち手</a></li>
           <li><a href="05_推進/AIエージェント・ストラテジスト.html">AIエージェント・ストラテジスト（資格制度）</a></li>
           <li><a href="05_推進/openai-fde.html">OpenAI FDEとは（AI人材の新職種）</a></li>
           <li><a href="05_推進/AIエージェント時代のキャリア.html">AIエージェント時代のキャリア ― 裸の戦いで、何が残るか</a></li>
@@ -682,6 +714,82 @@ const observer = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.1 });
 document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
+</script>
+
+<!-- リード獲得ゲート -->
+<div class="gate-overlay" id="leadGate" aria-hidden="true">
+  <div class="gate-modal" role="dialog" aria-modal="true" aria-labelledby="gateTitle">
+    <button class="gate-close" id="gateClose" type="button" aria-label="閉じる">×</button>
+    <span class="gate-eyebrow">Download</span>
+    <h3 id="gateTitle">資料をご覧いただくには</h3>
+    <p class="gate-lead">かんたんなご登録で、資料をダウンロード・閲覧いただけます。いただいた情報は、講演・顧問のご案内や資料のお届けに利用させていただく場合があります。</p>
+    <form id="gateForm" novalidate>
+      <div class="gate-field"><label for="gName">お名前</label><input id="gName" name="name" type="text" autocomplete="name" required></div>
+      <div class="gate-field"><label for="gCompany">会社名・所属</label><input id="gCompany" name="company" type="text" autocomplete="organization" required></div>
+      <div class="gate-field"><label for="gEmail">メールアドレス</label><input id="gEmail" name="email" type="email" autocomplete="email" required></div>
+      <div class="gate-err" id="gateErr" aria-live="polite"></div>
+      <button class="gate-submit" type="submit" id="gateSubmit">送信して資料を見る →</button>
+      <p class="gate-note">送信をもってAICX協会からの資料・イベント案内の受け取りに同意いただいたものとします。配信はいつでも停止できます。</p>
+    </form>
+  </div>
+</div>
+
+<script>
+(function(){
+  // ▼ GASのウェブアプリURL（.../exec）を入れると、ゲートが有効になります。空のままなら通常動作。
+  var ENDPOINT = "";
+  var KEY = "ozaken_lead_unlocked";
+  var gate = document.getElementById('leadGate');
+  if (!gate) return;
+  var form = document.getElementById('gateForm');
+  var errEl = document.getElementById('gateErr');
+  var submitBtn = document.getElementById('gateSubmit');
+  var pending = null;
+
+  function unlocked(){ try { return localStorage.getItem(KEY) === "1"; } catch(e){ return false; } }
+  function openGate(){ gate.classList.add('open'); gate.setAttribute('aria-hidden','false'); setTimeout(function(){ document.getElementById('gName').focus(); }, 50); }
+  function closeGate(){ gate.classList.remove('open'); gate.setAttribute('aria-hidden','true'); pending = null; }
+  function proceed(a){
+    if (!a) return;
+    var href = a.getAttribute('href');
+    if (a.hasAttribute('download')) {
+      var t = document.createElement('a'); t.href = href; t.setAttribute('download',''); document.body.appendChild(t); t.click(); t.remove();
+    } else {
+      window.open(href, a.getAttribute('target') || '_self');
+    }
+  }
+
+  document.querySelectorAll('a[data-gate]').forEach(function(a){
+    a.addEventListener('click', function(ev){
+      if (!ENDPOINT || unlocked()) return;      // URL未設定 or 登録済みは通常動作
+      ev.preventDefault(); pending = a; errEl.textContent = ''; openGate();
+    });
+  });
+
+  document.getElementById('gateClose').addEventListener('click', closeGate);
+  gate.addEventListener('click', function(e){ if (e.target === gate) closeGate(); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && gate.classList.contains('open')) closeGate(); });
+
+  form.addEventListener('submit', function(ev){
+    ev.preventDefault();
+    var name = document.getElementById('gName').value.trim();
+    var company = document.getElementById('gCompany').value.trim();
+    var email = document.getElementById('gEmail').value.trim();
+    if (!name || !company || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+      errEl.textContent = 'お名前・会社名・正しいメールアドレスをご入力ください。'; return;
+    }
+    submitBtn.disabled = true; submitBtn.textContent = '送信中…';
+    var asset = pending ? (pending.getAttribute('href') || '') : '';
+    var payload = { name: name, company: company, email: email, asset: asset, ua: navigator.userAgent };
+    fetch(ENDPOINT, { method:'POST', mode:'no-cors', headers:{ 'Content-Type':'text/plain;charset=utf-8' }, body: JSON.stringify(payload) })
+      .catch(function(){})
+      .finally(function(){
+        try { localStorage.setItem(KEY, "1"); localStorage.setItem("ozaken_lead_info", JSON.stringify({name:name,company:company,email:email})); } catch(e){}
+        submitBtn.disabled = false; submitBtn.textContent = '送信して資料を見る →';
+        var a = pending; closeGate(); proceed(a);
+      });
+  });
+})();
 </script>
 </body>
 </html>
