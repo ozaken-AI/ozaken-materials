@@ -353,6 +353,9 @@ footer {
 .lead-btn:hover { background: var(--red-bright); transform: translateY(-2px); }
 .lead-sub { margin-top: 1rem; font-size: 0.8rem; color: rgba(255,255,255,0.55); }
 .lead-sub a { color: var(--azure-pale); text-decoration: underline; text-underline-offset: 2px; }
+.offer-list { list-style: none; margin-top: 0.85rem; display: flex; flex-direction: column; gap: 0.42rem; }
+.offer-list li { position: relative; padding-left: 1rem; font-size: 0.83rem; line-height: 1.7; color: rgba(255,255,255,0.74); }
+.offer-list li::before { content: "―"; position: absolute; left: 0; color: var(--azure-pale); }
 </style>
 </head>
 <body>
@@ -621,32 +624,48 @@ footer {
 <!-- ご依頼・ご相談 -->
 <section class="sec-navy">
   <div class="inner" data-reveal>
-    <span class="eyebrow">Work with Ozaken ─ ご依頼</span>
-    <h2 class="sec-title">講演・研修、顧問・アドバイザーのご相談を承っています</h2>
-    <p class="sec-sub">「使うAIから、任せるAIへ」。現場で得た実装知を、講演・伴走という形でお届けします。</p>
+    <span class="eyebrow">Advisory &amp; Speaking ─ ご相談</span>
+    <h2 class="sec-title">企業顧問・社内講演・研修のご相談を承っています</h2>
+    <p class="sec-sub">「どのツールを入れるか」ではなく、「どの業務を、どの順番で任せるか」から一緒に設計します。経営層向けの戦略講演から、現場のハンズオンまで、フェーズに合わせて構成します。</p>
 
     <div class="cards">
       <div class="card">
         <span class="card-tag">01</span>
-        <h3>講演・研修</h3>
-        <p>年間300回以上の登壇実績。経営層向けの危機感醸成から、現場向けのハンズオンまで、AIエージェント・生成AI活用を「自分ごと」に変える設計でお話しします。</p>
+        <h3>企業顧問・アドバイザリー</h3>
+        <ul class="offer-list">
+          <li>AX（AIトランスフォーメーション）戦略の設計・伴走</li>
+          <li>AIエージェント導入のロードマップ策定とROI設計</li>
+          <li>コンテキスト整備・社内ナレッジ基盤の設計支援</li>
+          <li>AI型化モデルに基づく人材ポートフォリオ設計</li>
+        </ul>
       </div>
       <div class="card">
         <span class="card-tag">02</span>
-        <h3>顧問・アドバイザー</h3>
-        <p>AI実装・組織推進の伴走。3本柱（AIエージェント・業務変革・組織変革）を軸に、戦略設計から現場定着まで継続的に支援します。</p>
+        <h3>社内講演・研修</h3>
+        <ul class="offer-list">
+          <li>経営層・役員向け：AIエージェントで何が変わるのか</li>
+          <li>全社員向け：生成AIリテラシーと「任せる」設計の基礎</li>
+          <li>実務者向け：Copilot Studio／Workspace Studio ハンズオン</li>
+          <li>カンファレンス・社内イベントのモデレーション</li>
+        </ul>
       </div>
       <div class="card">
         <span class="card-tag">03</span>
-        <h3>AICX・認定の導入</h3>
-        <p>業界団体AICX協会としての連携、AIエージェント・ストラテジスト認定の社内導入など、組織ぐるみの人材育成もご相談ください。</p>
+        <h3>AICX認定の導入</h3>
+        <p>AIエージェント・ストラテジスト／アーキテクト認定の社内導入。「AIを使える人」ではなく、<span class="fw-bold" style="color:#fff">「AIに任せる設計ができる人」</span>を組織に増やします。</p>
       </div>
     </div>
 
+    <div class="stats stats-navy">
+      <div class="stat"><div class="stat-num">300<small>回+</small></div><div class="stat-label">年間の講演・企業研修</div></div>
+      <div class="stat"><div class="stat-num">1500<small>本+</small></div><div class="stat-label">執筆したAI関連記事</div></div>
+      <div class="stat"><div class="stat-num">2<small>冊</small></div><div class="stat-label">著書『生成AI導入の教科書』『AIエージェントの教科書』</div></div>
+    </div>
+
     <div class="lead-cta">
-      <p class="lead-cta-text">講演のご依頼、顧問・アドバイザーのご相談は、プロフィールサイトから承っています。</p>
-      <a class="lead-btn" href="https://ozaken-ai.studio.site" target="_blank" rel="noopener">ご依頼・ご相談はこちら →</a>
-      <p class="lead-sub">AICX協会・認定資格に関するお問い合わせは <a href="https://aicx.jp" target="_blank" rel="noopener">aicx.jp</a> から。</p>
+      <p class="lead-cta-text">お問い合わせは、AICX協会 公式サイトのお問い合わせ窓口、または各SNSのDMより承っています。</p>
+      <a class="lead-btn" href="https://aicx.jp" target="_blank" rel="noopener">AICX協会 公式サイトから相談する →</a>
+      <p class="lead-sub">小澤健祐（おざけん）／ AICX協会 代表理事・Cynthialy 取締役CCO・Cinematorico 創業者COO。経済産業省「AX時代におけるスキルのあり方検討WG」委員。</p>
     </div>
   </div>
 </section>
