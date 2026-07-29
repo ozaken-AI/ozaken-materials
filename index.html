@@ -224,10 +224,16 @@ a { color: inherit; text-decoration: none; }
 .dl-btn:hover { background: var(--red-bright); transform: translateY(-2px); }
 .dl-btn-icon { font-size: 1.05rem; }
 .dl-btn-meta { font-family: var(--font-en); font-weight: 500; font-size: 0.75rem; opacity: 0.9; }
+.dl-items { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.5rem; }
+.dl-item { background: rgba(255,255,255,0.06); border: 1px solid rgba(216,228,240,0.16); border-radius: var(--radius-sm); padding: 1.15rem 1.2rem; display: flex; flex-direction: column; }
+.dl-item h3 { font-family: var(--font-ja-serif); font-size: 1.02rem; color: #fff; margin-bottom: 0.35rem; font-weight: 600; }
+.dl-item p { font-size: 0.8rem; color: rgba(255,255,255,0.72); line-height: 1.7; margin-bottom: 1rem; flex-grow: 1; }
+.dl-item .dl-btn { width: 100%; justify-content: center; }
 @media (max-width: 640px) {
   .dl-feature { padding: 2.1rem 1.5rem; }
   .dl-title { font-size: 1.4rem; }
   .dl-btn { flex-wrap: wrap; row-gap: 0.3rem; }
+  .dl-items { grid-template-columns: 1fr; }
 }
 
 .note {
@@ -443,15 +449,26 @@ footer {
   <div class="inner" data-reveal>
     <div class="dl-feature">
       <span class="dl-badge">無料配布資料 / Download</span>
-      <h2 class="dl-title">使うAIから、任せるAIへ。<br><span>AIエージェント実装の5レベル 完全版</span></h2>
+      <h2 class="dl-title">実務でそのまま使える資料を、<br><span>無料でプレゼントしています。</span></h2>
       <p class="dl-copy">
-        実装の成熟度を5段階で整理した決定版スライドを、PDFでそのまま配布しています。
         登壇の予習・社内共有・研修資料として、どうぞご自由にお使いください。
       </p>
-      <a class="dl-btn" href="01_概念・思想/使うAIから任せるAIへ_AIエージェント実装の5レベル.pdf" download data-gate>
-        <span class="dl-btn-icon">⬇</span> PDFをダウンロード
-        <span class="dl-btn-meta">PDF · 約3.5MB · 36ページ</span>
-      </a>
+      <div class="dl-items">
+        <div class="dl-item">
+          <h3>AIエージェント実装の5レベル 完全版</h3>
+          <p>「使うAI」から「任せるAI」へ。実装の成熟度を5段階で整理した、決定版スライド。</p>
+          <a class="dl-btn" href="01_概念・思想/使うAIから任せるAIへ_AIエージェント実装の5レベル.pdf" download data-gate>
+            <span class="dl-btn-icon">⬇</span> ダウンロード <span class="dl-btn-meta">PDF · 約3.5MB</span>
+          </a>
+        </div>
+        <div class="dl-item">
+          <h3>AI推進 51施策マスター</h3>
+          <p>経営戦略から事業化まで、社内会議でそのまま使える打ち手を9カテゴリ×51施策で一覧化。</p>
+          <a class="dl-btn" href="05_推進/AI推進51施策マスター.pdf" download data-gate>
+            <span class="dl-btn-icon">⬇</span> ダウンロード <span class="dl-btn-meta">PDF · A4 1枚</span>
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 </section>
