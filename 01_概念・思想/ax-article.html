@@ -9,18 +9,18 @@
 <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Shippori+Mincho+B1:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:#0a1230;
-    --navy:#11204e;
-    --navy-2:#1b2e74;
-    --azure:#3d97f0;
-    --azure-soft:#7cb8f6;
+    --ink:#1a1a2e;
+    --navy:#1f3864;
+    --navy-2:#1f3864;
+    --azure:#2e5496;
+    --azure-soft:#7d9fce;
     --red:#e23744;
     --red-bright:#ff5d6a;
-    --paper:#f5f7fc;
-    --tint:#eaeef8;
+    --paper:#f8f7f4;
+    --tint:#eef3fa;
     --white:#ffffff;
-    --body:#39425f;
-    --muted:#737c9c;
+    --body:#2a3350;
+    --muted:#6b7a99;
     --line:#e2e7f2;
     --line-soft:#edf0f7;
     --maxw:1140px;
@@ -341,14 +341,14 @@
       <div class="figcard">
         <svg viewBox="0 0 720 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="横軸にデータの活用（DX）、縦軸にプロセスの変革（AX）をとった二次元の図">
           <defs>
-            <marker id="arrDX" markerWidth="11" markerHeight="11" refX="7" refY="5" orient="auto"><path d="M0,0 L9,5 L0,10 Z" fill="#1b2e74"/></marker>
-            <marker id="arrAX" markerWidth="11" markerHeight="11" refX="7" refY="5" orient="auto"><path d="M0,0 L9,5 L0,10 Z" fill="#3d97f0"/></marker>
+            <marker id="arrDX" markerWidth="11" markerHeight="11" refX="7" refY="5" orient="auto"><path d="M0,0 L9,5 L0,10 Z" fill="#1f3864"/></marker>
+            <marker id="arrAX" markerWidth="11" markerHeight="11" refX="7" refY="5" orient="auto"><path d="M0,0 L9,5 L0,10 Z" fill="#2e5496"/></marker>
             <radialGradient id="goalGlow" cx="50%" cy="50%" r="50%">
               <stop offset="0%" stop-color="#e23744" stop-opacity="0.28"/>
               <stop offset="100%" stop-color="#e23744" stop-opacity="0"/>
             </radialGradient>
             <linearGradient id="pathGrad" x1="0" y1="1" x2="1" y2="0">
-              <stop offset="0%" stop-color="#1b2e74"/><stop offset="100%" stop-color="#3d97f0"/>
+              <stop offset="0%" stop-color="#1f3864"/><stop offset="100%" stop-color="#2e5496"/>
             </linearGradient>
           </defs>
           <g stroke="#e2e7f2" stroke-width="1">
@@ -356,25 +356,25 @@
             <line x1="300" y1="80" x2="300" y2="470"/><line x1="480" y1="80" x2="480" y2="470"/><line x1="660" y1="80" x2="660" y2="470"/>
           </g>
           <circle cx="640" cy="110" r="96" fill="url(#goalGlow)"/>
-          <path d="M120,470 L520,470" fill="none" stroke="#1b2e74" stroke-width="2.5" stroke-dasharray="2 8" stroke-linecap="round" opacity="0.45"/>
+          <path d="M120,470 L520,470" fill="none" stroke="#1f3864" stroke-width="2.5" stroke-dasharray="2 8" stroke-linecap="round" opacity="0.45"/>
           <path d="M120,470 C 360,470 600,420 640,120" fill="none" stroke="url(#pathGrad)" stroke-width="2" stroke-dasharray="6 7" stroke-linecap="round" opacity="0.9"/>
-          <line x1="108" y1="470" x2="668" y2="470" stroke="#1b2e74" stroke-width="2.5" marker-end="url(#arrDX)"/>
-          <text x="392" y="512" text-anchor="middle" fill="#1b2e74" font-family="'Zen Kaku Gothic New',sans-serif" font-size="18" font-weight="700" letter-spacing="2">データの活用　→</text>
-          <text x="392" y="536" text-anchor="middle" fill="#737c9c" font-family="'Hanken Grotesk',sans-serif" font-size="12" letter-spacing="1.5" font-style="italic">DX — DIGITAL TRANSFORMATION</text>
-          <line x1="120" y1="482" x2="120" y2="72" stroke="#3d97f0" stroke-width="2.5" marker-end="url(#arrAX)"/>
-          <text x="54" y="270" text-anchor="middle" fill="#3d97f0" font-family="'Zen Kaku Gothic New',sans-serif" font-size="18" font-weight="700" letter-spacing="2" transform="rotate(-90 54 270)">プロセスの変革　→</text>
-          <text x="78" y="270" text-anchor="middle" fill="#737c9c" font-family="'Hanken Grotesk',sans-serif" font-size="12" letter-spacing="1.5" font-style="italic" transform="rotate(-90 78 270)">AX — AI TRANSFORMATION</text>
-          <circle cx="120" cy="470" r="6" fill="#ffffff" stroke="#737c9c" stroke-width="1.5"/>
-          <text x="138" y="455" fill="#737c9c" font-family="'Zen Kaku Gothic New',sans-serif" font-size="14">手作業・属人化</text>
-          <circle cx="520" cy="470" r="7" fill="#1b2e74"/>
-          <text x="520" y="448" text-anchor="middle" fill="#1b2e74" font-family="'Zen Kaku Gothic New',sans-serif" font-size="14" font-weight="700">データドリブン</text>
-          <text x="520" y="430" text-anchor="middle" fill="#737c9c" font-family="'Hanken Grotesk',sans-serif" font-size="11" font-style="italic">DXの到達点</text>
-          <circle cx="120" cy="180" r="7" fill="#3d97f0"/>
-          <text x="138" y="176" fill="#3d97f0" font-family="'Zen Kaku Gothic New',sans-serif" font-size="14" font-weight="700">プロセスの自律</text>
-          <text x="138" y="158" fill="#737c9c" font-family="'Hanken Grotesk',sans-serif" font-size="11" font-style="italic">AXが拓く軸</text>
+          <line x1="108" y1="470" x2="668" y2="470" stroke="#1f3864" stroke-width="2.5" marker-end="url(#arrDX)"/>
+          <text x="392" y="512" text-anchor="middle" fill="#1f3864" font-family="'Zen Kaku Gothic New',sans-serif" font-size="18" font-weight="700" letter-spacing="2">データの活用　→</text>
+          <text x="392" y="536" text-anchor="middle" fill="#6b7a99" font-family="'Hanken Grotesk',sans-serif" font-size="12" letter-spacing="1.5" font-style="italic">DX — DIGITAL TRANSFORMATION</text>
+          <line x1="120" y1="482" x2="120" y2="72" stroke="#2e5496" stroke-width="2.5" marker-end="url(#arrAX)"/>
+          <text x="54" y="270" text-anchor="middle" fill="#2e5496" font-family="'Zen Kaku Gothic New',sans-serif" font-size="18" font-weight="700" letter-spacing="2" transform="rotate(-90 54 270)">プロセスの変革　→</text>
+          <text x="78" y="270" text-anchor="middle" fill="#6b7a99" font-family="'Hanken Grotesk',sans-serif" font-size="12" letter-spacing="1.5" font-style="italic" transform="rotate(-90 78 270)">AX — AI TRANSFORMATION</text>
+          <circle cx="120" cy="470" r="6" fill="#ffffff" stroke="#6b7a99" stroke-width="1.5"/>
+          <text x="138" y="455" fill="#6b7a99" font-family="'Zen Kaku Gothic New',sans-serif" font-size="14">手作業・属人化</text>
+          <circle cx="520" cy="470" r="7" fill="#1f3864"/>
+          <text x="520" y="448" text-anchor="middle" fill="#1f3864" font-family="'Zen Kaku Gothic New',sans-serif" font-size="14" font-weight="700">データドリブン</text>
+          <text x="520" y="430" text-anchor="middle" fill="#6b7a99" font-family="'Hanken Grotesk',sans-serif" font-size="11" font-style="italic">DXの到達点</text>
+          <circle cx="120" cy="180" r="7" fill="#2e5496"/>
+          <text x="138" y="176" fill="#2e5496" font-family="'Zen Kaku Gothic New',sans-serif" font-size="14" font-weight="700">プロセスの自律</text>
+          <text x="138" y="158" fill="#6b7a99" font-family="'Hanken Grotesk',sans-serif" font-size="11" font-style="italic">AXが拓く軸</text>
           <circle cx="640" cy="110" r="9" fill="#e23744" stroke="#ffffff" stroke-width="2"/>
-          <text x="624" y="98" text-anchor="end" fill="#0a1230" font-family="'Shippori Mincho B1',serif" font-size="17" font-weight="800">AIネイティブな組織</text>
-          <text x="624" y="78" text-anchor="end" fill="#737c9c" font-family="'Hanken Grotesk',sans-serif" font-size="11" font-style="italic">data × process</text>
+          <text x="624" y="98" text-anchor="end" fill="#1a1a2e" font-family="'Shippori Mincho B1',serif" font-size="17" font-weight="800">AIネイティブな組織</text>
+          <text x="624" y="78" text-anchor="end" fill="#6b7a99" font-family="'Hanken Grotesk',sans-serif" font-size="11" font-style="italic">data × process</text>
         </svg>
         <div class="legend">
           <div class="li"><div class="lt">横軸 ｜ データの活用</div><p>DXが押し進めてきた軸。情報をデータに変え、つなぎ、可視化する。右へ進むほど、判断の材料が整う。</p></div>
