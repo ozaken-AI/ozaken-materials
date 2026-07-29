@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>プロンプトエンジニアリング ─ AIから欲しい答えを引き出す「絞り込み」の技術 | おざけん</title>
+<meta name="description" content="プロンプトエンジニアリングは「絞り込み」の技術。ぼんやりした答えの理由から、明日使える4つの要素（指示・目的・条件・参照データ）までを、専門知識なしで解説します。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Shippori+Mincho+B1:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:         #1a1a2e;
+  --navy:        #1f3864;
+  --navy-deep:   #141d35;
+  --azure:       #2e5496;
+  --azure-pale:  #d8e4f0;
+  --paper:       #f8f7f4;
+  --white:       #ffffff;
+  --red:         #e23744;
+  --red-bright:  #ff5d6a;
+  --muted:       #6b7a99;
+
+  --font-ja-sans:  'Zen Kaku Gothic New', sans-serif;
+  --font-ja-serif: 'Shippori Mincho B1', serif;
+  --font-en:       'Hanken Grotesk', sans-serif;
+
+  --max-w: 880px;
+  --sec-pad: 5rem 1.5rem;
+  --radius: 10px;
+  --radius-sm: 6px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-ja-sans);
+  font-size: 16px; line-height: 1.8;
+  color: var(--ink); background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+
+[data-reveal] { opacity: 0; transform: translateY(24px); transition: opacity 0.65s ease, transform 0.65s ease; }
+[data-reveal].visible { opacity: 1; transform: none; }
+
+.inner { max-width: var(--max-w); margin: 0 auto; padding: 0 1.5rem; }
+.sec-light { background: var(--paper); padding: var(--sec-pad); color: var(--ink); }
+.sec-navy  { background: var(--navy);  padding: var(--sec-pad); color: var(--white); }
+
+.eyebrow {
+  display: inline-block; font-family: var(--font-en);
+  font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--azure); background: var(--azure-pale);
+  padding: 3px 10px; border-radius: 4px; margin-bottom: 1.1rem;
+}
+.sec-navy .eyebrow { color: var(--white); background: rgba(255,255,255,0.15); }
+
+.sec-title {
+  font-family: var(--font-ja-serif);
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: 500; line-height: 1.4; margin-bottom: 0.6rem;
+}
+.sec-sub { font-size: 1rem; color: var(--muted); margin-bottom: 2.5rem; line-height: 1.7; }
+.sec-navy .sec-sub { color: rgba(255,255,255,0.7); }
+
+.kicker {
+  font-family: var(--font-ja-serif);
+  font-size: 1.08rem; line-height: 1.9; margin-bottom: 2rem;
+  padding-left: 1.1rem; border-left: 3px solid var(--azure);
+}
+.sec-navy .kicker { border-left-color: var(--azure-pale); color: rgba(255,255,255,0.9); }
+
+.bare { margin: 1.5rem 0; }
+.bare p { font-size: 0.95rem; line-height: 1.95; }
+.sec-navy .bare p { color: rgba(255,255,255,0.8); }
+.bare p + p { margin-top: 1rem; }
+
+.hero {
+  background: var(--navy); padding: 5.5rem 1.5rem 4.5rem;
+  text-align: center; color: var(--white);
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 60% 25%, rgba(46,84,150,0.55) 0%, transparent 65%);
+  pointer-events: none;
+}
+.texture { position: absolute; inset: 0; opacity: 0.16; pointer-events: none; }
+.texture svg { width: 100%; height: 100%; }
+.hero .eyebrow { color: var(--white); background: rgba(255,255,255,0.15); }
+.hero-title {
+  font-family: var(--font-ja-serif);
+  font-size: clamp(1.85rem, 5vw, 2.9rem);
+  font-weight: 500; line-height: 1.4; margin-bottom: 1.2rem; position: relative;
+}
+.hero-copy {
+  font-size: 1.02rem; color: rgba(255,255,255,0.82);
+  max-width: 620px; margin: 0 auto 2.6rem; line-height: 1.9; position: relative;
+}
+.hero-glyph { position: relative; max-width: 640px; margin: 0 auto; }
+.hero-glyph svg { width: 100%; height: auto; display: block; }
+
+.figure {
+  background: var(--white); border-radius: var(--radius);
+  padding: 1.75rem 1.5rem 1.25rem;
+  box-shadow: 0 2px 12px rgba(26,26,46,0.08);
+  margin: 2rem 0 0;
+}
+.sec-navy .figure { background: var(--navy-deep); box-shadow: none; }
+.figure-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.figure svg { width: 100%; height: auto; display: block; }
+.figure text { font-family: var(--font-ja-sans); }
+.figure-cap {
+  font-family: var(--font-en); font-size: 11px; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--muted); margin-top: 1rem; text-align: center;
+}
+.sec-navy .figure-cap { color: rgba(255,255,255,0.5); }
+.fig-title {
+  font-family: var(--font-ja-serif); font-size: 1rem; font-weight: 500;
+  margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--azure-pale);
+}
+.sec-navy .fig-title { color: var(--white); border-bottom-color: rgba(255,255,255,0.15); }
+
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 2rem; }
+.stat {
+  background: var(--white); border-radius: var(--radius);
+  padding: 1.3rem 1rem; text-align: center;
+  box-shadow: 0 2px 8px rgba(26,26,46,0.07); border-top: 3px solid var(--azure);
+}
+.sec-navy .stat { background: var(--navy-deep); box-shadow: none; }
+.stat-num {
+  font-family: var(--font-en); font-size: 2rem; font-weight: 700;
+  line-height: 1.1; color: var(--azure);
+}
+.sec-navy .stat-num { color: var(--azure-pale); }
+.stat-num small { font-size: 0.9rem; font-weight: 600; }
+.stat-label { font-size: 0.78rem; color: var(--muted); margin-top: 0.4rem; line-height: 1.6; }
+.sec-navy .stat-label { color: rgba(255,255,255,0.65); }
+
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+.card {
+  position: relative; overflow: hidden;
+  background: linear-gradient(180deg, #ffffff, #fbfcfe);
+  border: 1px solid var(--azure-pale); border-radius: var(--radius);
+  padding: 1.6rem 1.7rem 1.5rem; box-shadow: 0 2px 10px rgba(26,26,46,0.05);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+.card::before {
+  content: ""; position: absolute; left: 0; top: 0; width: 100%; height: 3px;
+  background: linear-gradient(90deg, var(--azure), var(--azure-pale));
+}
+.card:hover { transform: translateY(-4px); box-shadow: 0 18px 38px -16px rgba(31,56,100,0.28); border-color: var(--azure); }
+.sec-navy .card { background: var(--navy-deep); border-color: rgba(255,255,255,0.12); box-shadow: none; }
+.card h3 { font-family: var(--font-ja-serif); font-size: 1.12rem; font-weight: 600; margin-bottom: 0.45rem; padding-right: 2.8rem; color: var(--ink); }
+.sec-navy .card h3 { color: #fff; }
+.card p { font-size: 0.85rem; line-height: 1.8; color: var(--muted); }
+.sec-navy .card p { color: rgba(255,255,255,0.68); }
+.card-tag {
+  position: absolute; top: 0.55rem; right: 1.1rem; margin: 0; padding: 0;
+  font-family: var(--font-en); font-size: 2.6rem; font-weight: 700; line-height: 1;
+  letter-spacing: 0; color: transparent; background: none;
+  -webkit-text-stroke: 1.4px var(--azure-pale); pointer-events: none;
+}
+.sec-navy .card-tag { color: transparent; background: none; -webkit-text-stroke-color: rgba(255,255,255,0.22); }
+
+.doc-list { list-style: none; margin-top: 1rem; display: flex; flex-direction: column; gap: 0.45rem; }
+.doc-list a {
+  display: flex; align-items: center; justify-content: space-between; gap: 0.6rem;
+  font-size: 0.85rem; padding: 0.62rem 0.8rem; color: var(--ink);
+  border-radius: var(--radius-sm); background: rgba(46,84,150,0.05);
+  border-left: 3px solid var(--azure); transition: background 0.2s ease, border-color 0.2s ease;
+}
+.doc-list a::after {
+  content: "→"; font-family: var(--font-en); color: var(--azure); flex-shrink: 0;
+  opacity: 0; transform: translateX(-5px); transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.doc-list a:hover { background: rgba(46,84,150,0.12); }
+.doc-list a:hover::after { opacity: 1; transform: translateX(0); }
+.sec-navy .doc-list a { background: rgba(255,255,255,0.06); border-left-color: var(--azure-pale); color: rgba(255,255,255,0.9); }
+.sec-navy .doc-list a::after { color: var(--azure-pale); }
+.sec-navy .doc-list a:hover { background: rgba(255,255,255,0.12); }
+.doc-list a.doc-pdf { border-left-color: var(--red); font-weight: 600; }
+.doc-list a.doc-pdf:hover { background: rgba(226,55,68,0.10); }
+.sec-navy .doc-list a.doc-pdf { border-left-color: var(--red-bright); }
+
+/* 配布資料ダウンロード（フィーチャー） */
+.sec-download { background: var(--paper); padding: 3.5rem 1.5rem; }
+.dl-feature {
+  max-width: var(--max-w); margin: 0 auto;
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-deep) 100%);
+  border-radius: var(--radius); padding: 2.9rem 2.6rem; color: var(--white);
+  position: relative; overflow: hidden;
+  box-shadow: 0 24px 60px -24px rgba(20,29,53,0.65);
+}
+.dl-feature::before {
+  content: ""; position: absolute; top: 0; right: 0; width: 45%; height: 100%;
+  background: radial-gradient(circle at 90% 10%, rgba(226,55,68,0.28), transparent 65%);
+  pointer-events: none;
+}
+.dl-feature > * { position: relative; }
+.dl-badge {
+  display: inline-block; font-family: var(--font-en); font-size: 0.7rem;
+  letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700;
+  background: var(--red); color: #fff; padding: 0.35rem 0.75rem; border-radius: 100px;
+}
+.dl-title {
+  font-family: var(--font-ja-serif); font-size: 1.75rem; line-height: 1.42;
+  margin: 1.05rem 0 0.65rem; font-weight: 600;
+}
+.dl-title span { color: var(--azure-pale); }
+.dl-copy {
+  font-size: 0.9rem; line-height: 1.9; color: rgba(255,255,255,0.82);
+  max-width: 560px; margin-bottom: 1.85rem;
+}
+.dl-btn {
+  display: inline-flex; align-items: center; gap: 0.65rem;
+  background: var(--red); color: #fff; font-weight: 700; font-size: 0.98rem;
+  padding: 0.95rem 1.6rem; border-radius: var(--radius-sm); text-decoration: none;
+  transition: transform 0.15s ease, background 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 10px 24px -10px rgba(226,55,68,0.7);
+}
+.dl-btn:hover { background: var(--red-bright); transform: translateY(-2px); }
+.dl-btn-icon { font-size: 1.05rem; }
+.dl-btn-meta { font-family: var(--font-en); font-weight: 500; font-size: 0.75rem; opacity: 0.9; }
+@media (max-width: 640px) {
+  .dl-feature { padding: 2.1rem 1.5rem; }
+  .dl-title { font-size: 1.4rem; }
+  .dl-btn { flex-wrap: wrap; row-gap: 0.3rem; }
+}
+
+.note {
+  font-size: 0.82rem; color: var(--muted); line-height: 1.8;
+  padding: 0.85rem 1.1rem; border-left: 3px solid var(--azure-pale);
+  background: rgba(46,84,150,0.04);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin-top: 1.75rem;
+}
+.sec-navy .note { color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.05); border-left-color: rgba(255,255,255,0.25); }
+
+.summary { text-align: center; max-width: 660px; margin: 0 auto; }
+.summary-text {
+  font-family: var(--font-ja-serif);
+  font-size: clamp(1.12rem, 3vw, 1.45rem);
+  font-weight: 400; line-height: 1.95;
+}
+
+.take {
+  background: var(--navy-deep); border-radius: var(--radius);
+  padding: 1.55rem 1.75rem; display: flex; gap: 1.25rem; align-items: flex-start;
+  margin: 2rem 0 0; border-left: 4px solid var(--red);
+}
+.sec-light .take { background: #fff8f8; border-left: 4px solid var(--red); box-shadow: 0 2px 8px rgba(226,55,68,0.07); }
+.take-avatar {
+  flex-shrink: 0; width: 44px; height: 44px; border-radius: 50%;
+  background: var(--azure); color: var(--white);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-en); font-size: 0.75rem; font-weight: 700;
+}
+.take-label {
+  font-family: var(--font-en); font-size: 10px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--red-bright); margin-bottom: 4px;
+}
+.sec-light .take-label { color: var(--red); }
+.take-author { font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.45rem; }
+.sec-light .take-author { color: var(--muted); }
+.take-text { font-size: 0.89rem; line-height: 1.85; color: rgba(255,255,255,0.88); }
+.sec-light .take-text { color: var(--ink); }
+.hot { color: var(--red-bright); font-weight: 700; }
+.sec-light .hot { color: var(--red); }
+
+.text-azure { color: var(--azure); }
+.fw-bold { font-weight: 700; }
+
+footer {
+  background: var(--navy-deep); padding: 3rem 1.5rem; text-align: center;
+  color: rgba(255,255,255,0.5); font-size: 0.8rem;
+}
+
+@media (max-width: 640px) {
+  :root { --sec-pad: 3.5rem 1rem; }
+  .hero { padding: 4rem 1rem 3.5rem; }
+}
+
+/* プロフィール：ポートレート */
+.profile-lead {
+  display: grid; grid-template-columns: 220px 1fr; gap: 2.4rem; align-items: center;
+  margin: 1.6rem 0 0.4rem;
+}
+.portrait-wrap { position: relative; width: 220px; }
+.portrait-wrap::before {
+  content: ""; position: absolute; left: -12px; top: 12px; width: 220px; height: 220px;
+  border: 2px solid var(--azure); border-radius: 50%; z-index: 0;
+}
+.portrait {
+  position: relative; z-index: 1; width: 220px; height: 220px;
+  display: block; object-fit: cover; object-position: center 12%;
+  border-radius: 50%; box-shadow: 0 18px 44px -18px rgba(20,29,53,0.5);
+  filter: saturate(0.96) contrast(1.02);
+}
+.portrait-cap {
+  margin-top: 1.05rem; text-align: center; font-family: var(--font-en); font-size: 0.78rem;
+  letter-spacing: 0.06em; color: var(--muted); position: relative; z-index: 1;
+}
+.portrait-cap b { display: block; font-family: var(--font-ja-serif); font-size: 1rem; color: var(--ink); letter-spacing: 0; margin-bottom: 0.15rem; }
+.profile-lead .kicker { margin-top: 0; }
+@media (max-width: 720px) {
+  .profile-lead { grid-template-columns: 1fr; gap: 1.4rem; justify-items: center; }
+  .profile-lead .kicker { text-align: left; }
+}
+
+/* AICX / ストラテジスト訴求 */
+.aicx-hero {
+  background: linear-gradient(135deg, rgba(255,255,255,0.09), rgba(255,255,255,0.03));
+  border: 1px solid rgba(216,228,240,0.18); border-radius: var(--radius);
+  padding: 1.9rem 2rem; margin-top: 0.4rem;
+}
+.aicx-hero .role-pill {
+  display: inline-block; font-family: var(--font-en); font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--navy-deep);
+  background: var(--azure-pale); padding: 0.3rem 0.7rem; border-radius: 100px;
+}
+.aicx-hero h3 { font-family: var(--font-ja-serif); font-size: 1.5rem; margin: 0.8rem 0 0.5rem; color: #fff; }
+.aicx-hero p { font-size: 0.9rem; line-height: 1.95; color: rgba(255,255,255,0.82); }
+.cert {
+  margin-top: 1.6rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+}
+.cert-card {
+  background: var(--navy-deep); border: 1px solid rgba(216,228,240,0.16);
+  border-left: 3px solid var(--red-bright); border-radius: var(--radius-sm);
+  padding: 1.15rem 1.25rem;
+}
+.cert-card .cert-eyebrow { font-family: var(--font-en); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--red-bright); font-weight: 700; }
+.cert-card h4 { font-size: 1.02rem; color: #fff; margin: 0.4rem 0 0.35rem; font-weight: 700; }
+.cert-card p { font-size: 0.82rem; line-height: 1.8; color: rgba(255,255,255,0.72); }
+.cert-card a { color: var(--azure-pale); font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
+@media (max-width: 640px) { .cert { grid-template-columns: 1fr; } }
+
+/* ご依頼・ご相談 CTA */
+.lead-cta {
+  margin-top: 2.2rem; text-align: center;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(216,228,240,0.16);
+  border-radius: var(--radius); padding: 2rem 1.6rem;
+}
+.lead-cta-text { font-size: 0.92rem; line-height: 1.9; color: rgba(255,255,255,0.82); margin-bottom: 1.25rem; }
+.lead-btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: var(--red); color: #fff; font-weight: 700; font-size: 0.98rem;
+  padding: 0.95rem 1.9rem; border-radius: var(--radius-sm); text-decoration: none;
+  transition: transform 0.15s ease, background 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 12px 28px -12px rgba(226,55,68,0.7);
+}
+.lead-btn:hover { background: var(--red-bright); transform: translateY(-2px); }
+.lead-sub { margin-top: 1rem; font-size: 0.8rem; color: rgba(255,255,255,0.55); }
+.lead-sub a { color: var(--azure-pale); text-decoration: underline; text-underline-offset: 2px; }
+.offer-list { list-style: none; margin-top: 0.85rem; display: flex; flex-direction: column; gap: 0.42rem; }
+.offer-list li { position: relative; padding-left: 1rem; font-size: 0.83rem; line-height: 1.7; color: rgba(255,255,255,0.74); }
+.offer-list li::before { content: "―"; position: absolute; left: 0; color: var(--azure-pale); }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="texture" aria-hidden="true">
+    <svg viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs><pattern id="pgrid" width="48" height="48" patternUnits="userSpaceOnUse"><path d="M48 0H0V48" fill="none" stroke="#ffffff" stroke-width="0.7"/></pattern></defs>
+      <rect width="1200" height="600" fill="url(#pgrid)"/>
+      <circle cx="200" cy="150" r="4" fill="#ffffff"/><circle cx="520" cy="320" r="4" fill="#ffffff"/><circle cx="860" cy="200" r="4" fill="#ffffff"/><circle cx="1020" cy="430" r="4" fill="#ffffff"/>
+      <path d="M200 150L520 320L860 200L1020 430" stroke="#ffffff" stroke-width="1" fill="none"/>
+    </svg>
+  </div>
+  <div class="inner" data-reveal>
+    <span class="eyebrow">All-Employee E-Learning ─ 01</span>
+    <h1 class="hero-title">プロンプト<br>エンジニアリング</h1>
+    <p class="hero-copy">AIから欲しい答えを引き出すための、「絞り込み」の技術。この講座に、AIの専門知識は要りません。ぼんやりした答えの理由から、明日そのまま使える4つの要素までを、20分で。</p>
+  </div>
+</section>
+
+<!-- 01 -->
+<section class="sec-light">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Chapter 1</span>
+    <h2 class="sec-title">答えがぼんやりするのは、AIの性能ではなく「聞き方」の問題だ</h2>
+    <p class="sec-sub">「一般論しか返ってこない」「そのまま使えない」「調べれば分かることしか言わない」——その原因は、ほとんどが聞き方にある。</p>
+    <p class="kicker">ぼんやり聞くから、ぼんやり返ってくる。誰向けか・何のためか・どのくらいの長さか。決まっていないことは、AIが勝手に「一番あたりさわりのない形」で埋める。<span class="fw-bold text-azure">AIは、聞かれなかったことを勝手に確認してはくれない。</span></p>
+    <div class="cards">
+      <div class="card"><span class="card-tag">IN</span><h3>あなたの入力</h3><p>「研修についてまとめて」<br>── 誰向けか、何のためか、どのくらいの長さか。何も決まっていない。</p></div>
+      <div class="card"><span class="card-tag">OUT</span><h3>AIの答え</h3><p>「研修とは、社員の能力開発を目的とした……」<br>── 決まっていないことは、AIが勝手に無難な形で埋める。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 02 -->
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Chapter 2</span>
+    <h2 class="sec-title">プロンプトを書くとは、AIの答えを「絞り込む」ことだ</h2>
+    <p class="sec-sub">食べログで「東京」とだけ入れて、一番上の店に行きますか？ やらない。私たちは無意識に、条件を足して絞り込んでいる。</p>
+    <div class="figure">
+      <p class="fig-title">Fig.1 ── 条件を1つ足すたびに、答えは「自分ごと」に絞り込まれる</p>
+      <div class="figure-scroll">
+        <svg viewBox="0 0 700 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="条件を足すごとに候補件数が120,000件から3,200件、480件、6件へと絞り込まれる漏斗図。">
+          <text x="30" y="83" font-size="12.5" fill="#d8e4f0">「東京」だけ（条件なし）</text>
+          <text x="30" y="99" font-size="10.5" fill="rgba(216,228,240,0.55)">食べログで検索</text>
+          <rect x="300" y="54" width="360" height="48" rx="6" fill="rgba(255,255,255,0.06)" stroke="rgba(216,228,240,0.30)"/>
+          <text x="480" y="85" text-anchor="middle" font-size="20" font-family="'Hanken Grotesk',sans-serif" font-weight="700" fill="#ffffff">120,000件</text>
+          <text x="30" y="163" font-size="12.5" fill="#d8e4f0">＋ エリア</text>
+          <text x="30" y="179" font-size="10.5" fill="rgba(216,228,240,0.55)">渋谷駅から徒歩10分</text>
+          <rect x="345" y="134" width="270" height="48" rx="6" fill="rgba(255,255,255,0.08)" stroke="rgba(216,228,240,0.30)"/>
+          <text x="480" y="165" text-anchor="middle" font-size="20" font-family="'Hanken Grotesk',sans-serif" font-weight="700" fill="#ffffff">3,200件</text>
+          <text x="30" y="243" font-size="12.5" fill="#d8e4f0">＋ 予算・ジャンル</text>
+          <text x="30" y="259" font-size="10.5" fill="rgba(216,228,240,0.55)">1人5,000円 / 和食</text>
+          <rect x="400" y="214" width="160" height="48" rx="6" fill="rgba(255,255,255,0.11)" stroke="rgba(216,228,240,0.30)"/>
+          <text x="480" y="245" text-anchor="middle" font-size="19" font-family="'Hanken Grotesk',sans-serif" font-weight="700" fill="#ffffff">480件</text>
+          <text x="30" y="323" font-size="12.5" fill="#d8e4f0">＋ 細かな条件</text>
+          <text x="30" y="339" font-size="10.5" fill="rgba(216,228,240,0.55)">個室あり・19時・4名</text>
+          <rect x="442" y="294" width="76" height="48" rx="6" fill="rgba(255,93,106,0.18)" stroke="#ff5d6a"/>
+          <text x="480" y="324" text-anchor="middle" font-size="18" font-family="'Hanken Grotesk',sans-serif" font-weight="700" fill="#ff5d6a">6件</text>
+        </svg>
+      </div>
+      <p class="figure-cap">SUUMOでも同じ。沿線・家賃・広さ・駅徒歩……条件を足すほど、欲しい物件に近づく。プロンプトも、まったく同じ構造だ。</p>
+    </div>
+    <p class="note">DEFINITION ─ プロンプトエンジニアリングとは、AIが持っている膨大な答えの中から、自分が欲しい一つに絞り込むこと。「呪文」を覚える必要はない。検索サイトで条件を選ぶのと、やっていることは同じだ。</p>
+  </div>
+</section>
+
+<!-- 03 -->
+<section class="sec-light">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Chapter 3</span>
+    <h2 class="sec-title">絞り込みに必要なのは、4つの要素だけ</h2>
+    <p class="sec-sub">この4つが揃うほど、答えは絞り込まれていく。順番どおりに書けばいい。</p>
+    <div class="cards">
+      <div class="card"><span class="card-tag">01</span><h3>① 指示</h3><p>何をしてほしいのか。「〜について」で止めず、<span class="fw-bold text-azure">動詞で言い切る</span>。出す・まとめる・比べる・直す・分類する。</p></div>
+      <div class="card"><span class="card-tag">02</span><h3>② 目的</h3><p>何のために使うのか・誰が読むのか。目的が分かると、AIは中身の優先順位を変えてくれる。</p></div>
+      <div class="card"><span class="card-tag">03</span><h3>③ 細かな条件</h3><p>分量・形式・トーン、そして「やってほしくないこと」。指定しなければ、AIが標準値で勝手に決める。</p></div>
+      <div class="card"><span class="card-tag">04</span><h3>④ 参照データ</h3><p>判断の材料になる実物の情報。社内の実物を渡すだけで、答えは一般論から自社の話に変わる。</p></div>
+    </div>
+    <div class="cards" style="margin-top:1.25rem;">
+      <div class="card"><h3>BEFORE</h3><p>「アンケート結果をまとめて」<br>→ 一般論の要約。結局、自分で書き直すことになる。</p></div>
+      <div class="card"><h3>AFTER ─ 4つを全部入れる</h3><p>【指示】自由記述200件を分類して／【目的】改善提案の材料に（部長へ報告）／【条件】5分類以内・件数の多い順・代表の声を1つ／【参照】添付ファイル<br>→ そのまま提案書に貼れる状態で返ってくる。</p></div>
+    </div>
+    <div class="take">
+      <div class="take-avatar">OK</div>
+      <div class="take-body">
+        <div class="take-label">Ozaken's One Point</div>
+        <div class="take-author">小澤健祐（おざけん）</div>
+        <p class="take-text">いちばん差がつくのは<span class="hot">参照データ</span>だ。「調べれば分かることしか返ってこない」のは、渡した情報が「調べれば分かること」だけだから。書く量は増えるが、書き直す時間はゼロになる。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 -->
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Chapter 4</span>
+    <h2 class="sec-title">プロンプトだけでは、続かない</h2>
+    <p class="sec-sub">1日に何十回もAIを使う中で、毎回この4つを打ち込み続けられる人はいない。プロンプトには、3つの限界がある。</p>
+    <div class="cards">
+      <div class="card"><span class="card-tag">01</span><h3>毎回、書き直している</h3><p>同じ前提を、毎日、何度も打ち込んでいる。単純に時間の無駄。</p></div>
+      <div class="card"><span class="card-tag">02</span><h3>その人の中に残る</h3><p>うまく書けた人の工夫は、チャット履歴の中に消えていく。</p></div>
+      <div class="card"><span class="card-tag">03</span><h3>貼れる量に限りがある</h3><p>マニュアル全部・過去ログ全件を、毎回貼ることはできない。</p></div>
+    </div>
+    <p class="kicker" style="margin-top:1.75rem;">4つの要素のうち、毎回変わるのは<span class="fw-bold">「指示」だけ</span>。目的・条件・参照データは「いつも同じ」だ。ならば、いつも同じものは毎回書くのではなく、あらかじめ置いておけばいい。</p>
+    <div class="cards">
+      <div class="card"><span class="card-tag">P</span><h3>プロンプトエンジニアリング</h3><p>その場で、絞り込む。今回だけの指示・今日の相手・この1件の事情。これは毎回、自分の手で書くしかない。</p></div>
+      <div class="card"><span class="card-tag">C</span><h3>コンテキストエンジニアリング</h3><p>あらかじめ、置いておく。所属・役割・トーン・社内ルール・参照資料。一度置けば、チーム全員に効き続ける。</p></div>
+    </div>
+    <div class="take">
+      <div class="take-avatar">OK</div>
+      <div class="take-body">
+        <div class="take-label">Ozaken's One Point</div>
+        <div class="take-author">小澤健祐（おざけん）</div>
+        <p class="take-text">プロンプトとコンテキストは、どちらか一方ではない。両方あって、はじめて<span class="hot">仕事で使える</span>。うまい聞き方を個人の技で終わらせず、型として残して組織に効かせる——ここからが本番だ。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 -->
+<section class="sec-light">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Chapter 5</span>
+    <h2 class="sec-title">明日からできること</h2>
+    <p class="sec-sub">4つ全部でなくてもいい。1つ足すたびに、答えは必ず良くなる。送信する前の、4つの確認。</p>
+    <div class="cards">
+      <div class="card"><span class="card-tag">01</span><h3>動詞は入っているか</h3><p>「〜について」で終わっていないか。出して・まとめて・比べて、まで書く。</p></div>
+      <div class="card"><span class="card-tag">02</span><h3>使い道は書いたか</h3><p>誰が読むのか、何に使うのかを一言。</p></div>
+      <div class="card"><span class="card-tag">03</span><h3>分量と形式は決めたか</h3><p>何個・何字・どんな形。決めないと勝手に決まる。</p></div>
+      <div class="card"><span class="card-tag">04</span><h3>渡せる実物はないか</h3><p>手元のファイル、過去の資料。貼れるものは貼る。</p></div>
+    </div>
+    <p class="note">ありがちな3つの勘違い ── ①「長く書けばいい」→ 長さではなく、決めるべきことが決まっているか。②「特別な言い回しが要る」→ 呪文はない。普通の日本語で条件を伝えるだけ。③「一発で当てないと」→ 会話で足していくほうが速い。1回目は下書きでいい。</p>
+  </div>
+</section>
+
+<!-- SUMMARY -->
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Summary</span>
+    <h2 class="sec-title">覚えて帰るのは、この4つだけ</h2>
+    <div class="stats">
+      <div class="stat"><div class="stat-num">①</div><div class="stat-label">指示 ─ 何をしてほしいか（動詞で言い切る）</div></div>
+      <div class="stat"><div class="stat-num">②</div><div class="stat-label">目的 ─ 何のために・誰が読むか</div></div>
+      <div class="stat"><div class="stat-num">③</div><div class="stat-label">条件 ─ 分量・形式・トーン・やらないこと</div></div>
+      <div class="stat"><div class="stat-num">④</div><div class="stat-label">参照データ ─ 判断の材料になる実物</div></div>
+    </div>
+    <p class="kicker" style="margin-top:1.75rem;">ぼんやり聞けば、ぼんやり返る。絞り込めば、欲しい答えが返る。そして忘れずに——<span class="fw-bold" style="color:#fff">毎回同じことは、書くのではなく置いておく。</span></p>
+    <p class="note">明日、1つだけ。いつものプロンプトに「これは〇〇に使います」の一文を足すだけで、返ってくる答えははっきり変わります。&nbsp; <a href="../index.html">← AI資料アーカイブに戻る</a></p>
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2026 小澤健祐（おざけん）/ 一般社団法人AICX協会</p>
+</footer>
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
