@@ -114,8 +114,14 @@ a { color: inherit; text-decoration: none; }
 .hero-copy {
   font-size: 1.03rem; color: rgba(255,255,255,0.80);
   max-width: 600px; margin: 0 auto; line-height: 1.95; position: relative;
-  animation: heroRise 1s 0.45s both;
+  min-height: 4em; animation: heroRise 1s 0.45s both;
 }
+.tw-cursor {
+  display: inline-block; width: 2px; height: 1.05em; margin-left: 1px;
+  background: var(--red-bright); vertical-align: -0.16em;
+  animation: twblink 1s step-end infinite;
+}
+@keyframes twblink { 0%,50% { opacity: 1; } 50.01%,100% { opacity: 0; } }
 .hero-scroll {
   position: absolute; bottom: 1.9rem; left: 50%; transform: translateX(-50%); z-index: 3;
   display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
@@ -476,9 +482,7 @@ footer {
   <div class="inner">
     <span class="eyebrow">Kensuke Ozawa ─ Profile &amp; Archive</span>
     <h1 class="hero-title">人間とAIが<br><span class="hl">共存</span>する社会をつくる</h1>
-    <p class="hero-copy">
-      小澤健祐（おざけん）。AIエージェント時代の実装・活用知見を、記事・登壇・資料として発信し続ける。
-    </p>
+    <p class="hero-copy" id="heroCopy">小澤健祐（おざけん）。AIエージェント時代の実装・活用知見を、<br>記事・登壇・資料として発信し続ける。</p>
   </div>
   <div class="hero-scroll" aria-hidden="true"><span>SCROLL</span><span class="chev">⌄</span></div>
 </section>
@@ -599,6 +603,7 @@ footer {
         <ul class="doc-list">
           <li><a href="02_技術・モデル動向/モデル使い分け.html">モデル使い分け</a></li>
           <li><a href="02_技術・モデル動向/model-routing-16patterns.html">モデル分業16の型 ─ 賢い／軽いの使い分け</a></li>
+          <li><a href="02_技術・モデル動向/physical-ai.html">フィジカルAIとは何か ─ ロボット基盤モデルの仕組みと可能性</a></li>
           <li><a href="02_技術・モデル動向/AI音声.html">AI音声</a></li>
           <li><a href="02_技術・モデル動向/google-io-2026-v2.html">Google I/O 2026 解説</a></li>
           <li><a href="02_技術・モデル動向/Mythos1.html">Mythos 1</a></li>
@@ -644,6 +649,7 @@ footer {
           <li><a href="06_キャリア・人材/AIエージェント時代のキャリア.html">AIエージェント時代のキャリア ― 裸の戦いで、何が残るか</a></li>
           <li><a href="06_キャリア・人材/openai-fde.html">OpenAI FDEとは（AI人材の新職種）</a></li>
           <li><a href="06_キャリア・人材/人事.html">人事</a></li>
+          <li><a href="06_キャリア・人材/任せるAI時代の人事変革.html">「任せるAI」の時代、人事は何を捨て、何を創るのか</a></li>
         </ul>
       </div>
       <div class="card">
@@ -820,6 +826,26 @@ const observer = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.1 });
 document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
+
+/* HEROコピーのタイプライター演出 */
+(function(){
+  var copy=document.getElementById('heroCopy');
+  if(!copy) return;
+  var P=String.fromCharCode(1);
+  var full=copy.innerHTML.replace(/<br\s*\/?>/gi,P).replace(/<[^>]*>/g,'').replace(/\s+/g,'').split(P).join('\n');
+  var reduced=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduced){ copy.innerHTML=full.replace(/\n/g,'<br>'); return; }
+  copy.innerHTML='<span class="tw-cursor"></span>';
+  var i=0;
+  function type(){
+    if(i>=full.length){ return; }
+    var ch=full[i++], cur=copy.querySelector('.tw-cursor');
+    if(ch==='\n'){ cur.insertAdjacentHTML('beforebegin','<br>'); }
+    else { cur.insertAdjacentText('beforebegin', ch); }
+    setTimeout(type, ch==='\n' ? 260 : (52 + Math.random()*46));
+  }
+  setTimeout(type, 1000);
+})();
 </script>
 
 <!-- リード獲得ゲート -->
