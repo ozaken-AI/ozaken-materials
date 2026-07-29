@@ -335,6 +335,24 @@ footer {
 .cert-card p { font-size: 0.82rem; line-height: 1.8; color: rgba(255,255,255,0.72); }
 .cert-card a { color: var(--azure-pale); font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
 @media (max-width: 640px) { .cert { grid-template-columns: 1fr; } }
+
+/* ご依頼・ご相談 CTA */
+.lead-cta {
+  margin-top: 2.2rem; text-align: center;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(216,228,240,0.16);
+  border-radius: var(--radius); padding: 2rem 1.6rem;
+}
+.lead-cta-text { font-size: 0.92rem; line-height: 1.9; color: rgba(255,255,255,0.82); margin-bottom: 1.25rem; }
+.lead-btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: var(--red); color: #fff; font-weight: 700; font-size: 0.98rem;
+  padding: 0.95rem 1.9rem; border-radius: var(--radius-sm); text-decoration: none;
+  transition: transform 0.15s ease, background 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 12px 28px -12px rgba(226,55,68,0.7);
+}
+.lead-btn:hover { background: var(--red-bright); transform: translateY(-2px); }
+.lead-sub { margin-top: 1rem; font-size: 0.8rem; color: rgba(255,255,255,0.55); }
+.lead-sub a { color: var(--azure-pale); text-decoration: underline; text-underline-offset: 2px; }
 </style>
 </head>
 <body>
@@ -600,15 +618,35 @@ footer {
   </div>
 </section>
 
-<!-- SUMMARY -->
+<!-- ご依頼・ご相談 -->
 <section class="sec-navy">
   <div class="inner" data-reveal>
-    <div class="summary">
-      <span class="eyebrow">Summary</span>
-      <p class="summary-text">
-        使うAIから、任せるAIへ。<br>
-        現場で得た知見を、これからも発信し続けます。
-      </p>
+    <span class="eyebrow">Work with Ozaken ─ ご依頼</span>
+    <h2 class="sec-title">講演・研修、顧問・アドバイザーのご相談を承っています</h2>
+    <p class="sec-sub">「使うAIから、任せるAIへ」。現場で得た実装知を、講演・伴走という形でお届けします。</p>
+
+    <div class="cards">
+      <div class="card">
+        <span class="card-tag">01</span>
+        <h3>講演・研修</h3>
+        <p>年間300回以上の登壇実績。経営層向けの危機感醸成から、現場向けのハンズオンまで、AIエージェント・生成AI活用を「自分ごと」に変える設計でお話しします。</p>
+      </div>
+      <div class="card">
+        <span class="card-tag">02</span>
+        <h3>顧問・アドバイザー</h3>
+        <p>AI実装・組織推進の伴走。3本柱（AIエージェント・業務変革・組織変革）を軸に、戦略設計から現場定着まで継続的に支援します。</p>
+      </div>
+      <div class="card">
+        <span class="card-tag">03</span>
+        <h3>AICX・認定の導入</h3>
+        <p>業界団体AICX協会としての連携、AIエージェント・ストラテジスト認定の社内導入など、組織ぐるみの人材育成もご相談ください。</p>
+      </div>
+    </div>
+
+    <div class="lead-cta">
+      <p class="lead-cta-text">講演のご依頼、顧問・アドバイザーのご相談は、プロフィールサイトから承っています。</p>
+      <a class="lead-btn" href="https://ozaken-ai.studio.site" target="_blank" rel="noopener">ご依頼・ご相談はこちら →</a>
+      <p class="lead-sub">AICX協会・認定資格に関するお問い合わせは <a href="https://aicx.jp" target="_blank" rel="noopener">aicx.jp</a> から。</p>
     </div>
   </div>
 </section>
