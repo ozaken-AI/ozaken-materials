@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>暗黙知の分類と、その前にあるデータの箱 | おざけん</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Shippori+Mincho+B1:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   OZAKEN WEB STYLE — DESIGN SYSTEM v5
+   図版主導（figure-first）版。CSSはこのまま維持し、body内だけ差し替える。
+   ============================================================ */
+
+/* ============================================================
+   OZAKEN WEB STYLE — DESIGN SYSTEM
+   ============================================================ */
+:root {
+  --ink:         #1a1a2e;
+  --navy:        #1f3864;
+  --navy-deep:   #141d35;
+  --azure:       #2e5496;
+  --azure-pale:  #d8e4f0;
+  --paper:       #f8f7f4;
+  --white:       #ffffff;
+  --red:         #e23744;
+  --red-bright:  #ff5d6a;
+  --muted:       #6b7a99;
+
+  --font-ja-sans:  'Zen Kaku Gothic New', sans-serif;
+  --font-ja-serif: 'Shippori Mincho B1', serif;
+  --font-en:       'Hanken Grotesk', sans-serif;
+
+  --max-w: 880px;
+  --sec-pad: 5rem 1.5rem;
+  --radius: 10px;
+  --radius-sm: 6px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-ja-sans);
+  font-size: 16px; line-height: 1.8;
+  color: var(--ink); background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+
+[data-reveal] { opacity: 0; transform: translateY(24px); transition: opacity 0.65s ease, transform 0.65s ease; }
+[data-reveal].visible { opacity: 1; transform: none; }
+
+.inner { max-width: var(--max-w); margin: 0 auto; padding: 0 1.5rem; }
+.sec-light { background: var(--paper); padding: var(--sec-pad); color: var(--ink); }
+.sec-navy  { background: var(--navy);  padding: var(--sec-pad); color: var(--white); }
+
+/* ----- eyebrow ----- */
+.eyebrow {
+  display: inline-block; font-family: var(--font-en);
+  font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--azure); background: var(--azure-pale);
+  padding: 3px 10px; border-radius: 4px; margin-bottom: 1.1rem;
+}
+.sec-navy .eyebrow { color: var(--white); background: rgba(255,255,255,0.15); }
+
+/* ----- 見出し ----- */
+.sec-title {
+  font-family: var(--font-ja-serif);
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: 500; line-height: 1.4; margin-bottom: 0.6rem;
+}
+.sec-sub { font-size: 1rem; color: var(--muted); margin-bottom: 2.5rem; line-height: 1.7; }
+.sec-navy .sec-sub { color: rgba(255,255,255,0.7); }
+
+/* ----- kicker ----- */
+.kicker {
+  font-family: var(--font-ja-serif);
+  font-size: 1.08rem; line-height: 1.9; margin-bottom: 2rem;
+  padding-left: 1.1rem; border-left: 3px solid var(--azure);
+}
+.sec-navy .kicker { border-left-color: var(--azure-pale); color: rgba(255,255,255,0.9); }
+
+/* ----- bare ----- */
+.bare { margin: 1.5rem 0; }
+.bare p { font-size: 0.95rem; line-height: 1.95; }
+.sec-navy .bare p { color: rgba(255,255,255,0.8); }
+.bare p + p { margin-top: 1rem; }
+
+/* ----- ヒーロー ----- */
+.hero {
+  background: var(--navy); padding: 5.5rem 1.5rem 4.5rem;
+  text-align: center; color: var(--white);
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 60% 25%, rgba(46,84,150,0.55) 0%, transparent 65%);
+  pointer-events: none;
+}
+.texture { position: absolute; inset: 0; opacity: 0.16; pointer-events: none; }
+.texture svg { width: 100%; height: 100%; }
+.hero .eyebrow { color: var(--white); background: rgba(255,255,255,0.15); }
+.hero-title {
+  font-family: var(--font-ja-serif);
+  font-size: clamp(1.85rem, 5vw, 2.9rem);
+  font-weight: 500; line-height: 1.4; margin-bottom: 1.2rem; position: relative;
+}
+.hero-copy {
+  font-size: 1.02rem; color: rgba(255,255,255,0.82);
+  max-width: 620px; margin: 0 auto 2.6rem; line-height: 1.9; position: relative;
+}
+.hero-glyph { position: relative; max-width: 640px; margin: 0 auto; }
+.hero-glyph svg { width: 100%; height: auto; display: block; }
+
+/* ----- figure / diagram ----- */
+.figure {
+  background: var(--white); border-radius: var(--radius);
+  padding: 1.75rem 1.5rem 1.25rem;
+  box-shadow: 0 2px 12px rgba(26,26,46,0.08);
+  margin: 2rem 0 0;
+}
+.sec-navy .figure { background: var(--navy-deep); box-shadow: none; }
+.figure-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.figure svg { width: 100%; height: auto; display: block; }
+.figure text { font-family: var(--font-ja-sans); }
+.figure-cap {
+  font-family: var(--font-en); font-size: 11px; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--muted); margin-top: 1rem; text-align: center;
+}
+.sec-navy .figure-cap { color: rgba(255,255,255,0.5); }
+.fig-title {
+  font-family: var(--font-ja-serif); font-size: 1rem; font-weight: 500;
+  margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--azure-pale);
+}
+.sec-navy .fig-title { color: var(--white); border-bottom-color: rgba(255,255,255,0.15); }
+.legend { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; margin-top: 0.75rem; }
+.legend-item { display: flex; align-items: center; gap: 0.45rem; font-size: 0.78rem; color: var(--muted); }
+.sec-navy .legend-item { color: rgba(255,255,255,0.6); }
+.legend-swatch { width: 22px; height: 3px; border-radius: 2px; }
+
+/* ----- 数値ストリップ ----- */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 2rem; }
+.stat {
+  background: var(--white); border-radius: var(--radius);
+  padding: 1.3rem 1rem; text-align: center;
+  box-shadow: 0 2px 8px rgba(26,26,46,0.07); border-top: 3px solid var(--azure);
+}
+.sec-navy .stat { background: var(--navy-deep); box-shadow: none; }
+.stat-num {
+  font-family: var(--font-en); font-size: 2rem; font-weight: 700;
+  line-height: 1.1; color: var(--azure);
+}
+.sec-navy .stat-num { color: var(--azure-pale); }
+.stat-num small { font-size: 0.9rem; font-weight: 600; }
+.stat-label { font-size: 0.78rem; color: var(--muted); margin-top: 0.4rem; line-height: 1.6; }
+.sec-navy .stat-label { color: rgba(255,255,255,0.65); }
+
+/* ----- ステッパー ----- */
+.stepper { display: flex; flex-direction: column; gap: 1.25rem; }
+.step {
+  display: flex; gap: 1.25rem; align-items: flex-start;
+  background: var(--white); border-radius: var(--radius);
+  padding: 1.4rem 1.7rem; border-left: 4px solid var(--azure);
+  box-shadow: 0 2px 8px rgba(26,26,46,0.06);
+}
+.sec-navy .step { background: var(--navy-deep); box-shadow: none; }
+.step-num {
+  flex-shrink: 0; width: 36px; height: 36px; border-radius: 50%;
+  background: var(--azure); color: var(--white);
+  font-family: var(--font-en); font-size: 0.9rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; margin-top: 2px;
+}
+.step-body h3 { font-family: var(--font-ja-serif); font-size: 1.03rem; font-weight: 500; margin-bottom: 0.3rem; }
+.step-body p { font-size: 0.88rem; line-height: 1.8; color: var(--muted); }
+.sec-navy .step-body p { color: rgba(255,255,255,0.68); }
+
+/* ----- カード ----- */
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1.25rem; }
+.card {
+  background: var(--white); border-radius: var(--radius);
+  padding: 1.4rem 1.6rem; box-shadow: 0 2px 8px rgba(26,26,46,0.07);
+  border-top: 3px solid var(--azure);
+}
+.sec-navy .card { background: var(--navy-deep); box-shadow: none; }
+.card-icon { width: 36px; height: 36px; margin-bottom: 0.85rem; color: var(--azure); }
+.sec-navy .card-icon { color: var(--azure-pale); }
+.card h3 { font-family: var(--font-ja-serif); font-size: 1rem; font-weight: 500; margin-bottom: 0.45rem; }
+.card p { font-size: 0.85rem; line-height: 1.8; color: var(--muted); }
+.sec-navy .card p { color: rgba(255,255,255,0.68); }
+.card-tag {
+  display: inline-block; font-family: var(--font-en);
+  font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+  color: var(--azure); background: var(--azure-pale);
+  padding: 2px 8px; border-radius: 4px; margin-bottom: 0.6rem;
+}
+.sec-navy .card-tag { color: var(--white); background: rgba(255,255,255,0.15); }
+
+/* ----- VS比較 ----- */
+.vs { display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: stretch; }
+.vs-card { background: var(--white); border-radius: var(--radius); padding: 1.5rem; box-shadow: 0 2px 8px rgba(26,26,46,0.07); }
+.sec-navy .vs-card { background: var(--navy-deep); box-shadow: none; }
+.vs-badge {
+  font-family: var(--font-en); font-size: 11px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 4px; display: inline-block; margin-bottom: 0.7rem;
+}
+.vs-badge.pos { background: var(--azure-pale); color: var(--azure); }
+.vs-badge.neg { background: #fde8ea; color: var(--red); }
+.sec-navy .vs-badge.neg { background: rgba(226,55,68,0.2); color: var(--red-bright); }
+.vs-label {
+  display: flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--azure); color: var(--white);
+  font-family: var(--font-en); font-size: 0.8rem; font-weight: 700;
+  flex-shrink: 0; margin: auto;
+}
+.vs-card h3 { font-family: var(--font-ja-serif); font-size: 1.03rem; font-weight: 500; margin-bottom: 0.45rem; }
+.vs-card p { font-size: 0.86rem; line-height: 1.8; color: var(--muted); }
+.sec-navy .vs-card p { color: rgba(255,255,255,0.68); }
+.vs-meta {
+  margin-top: 0.9rem; padding-top: 0.8rem;
+  border-top: 1px dashed rgba(46,84,150,0.3);
+  font-size: 0.78rem; line-height: 1.75; color: var(--muted);
+}
+.sec-navy .vs-meta { border-top-color: rgba(255,255,255,0.18); color: rgba(255,255,255,0.6); }
+.vs-meta b { font-family: var(--font-en); color: var(--azure); font-weight: 700; }
+.sec-navy .vs-meta b { color: var(--azure-pale); }
+
+/* ----- 深掘り ----- */
+.deep {
+  background: var(--navy-deep); border-radius: var(--radius);
+  padding: 1.9rem 2.1rem; border-left: 4px solid var(--azure); margin: 1.75rem 0;
+}
+.deep h3 { font-family: var(--font-ja-serif); font-size: 1.12rem; font-weight: 500; margin-bottom: 0.7rem; color: var(--white); }
+.deep p { font-size: 0.89rem; line-height: 1.85; color: rgba(255,255,255,0.75); }
+.deep p + p { margin-top: 0.85rem; }
+
+/* ----- 計算ブロック ----- */
+.calc {
+  background: rgba(255,255,255,0.06);
+  border: 1px dashed rgba(255,255,255,0.25);
+  border-radius: var(--radius-sm);
+  padding: 1.1rem 1.3rem; margin: 1.5rem 0;
+  font-family: var(--font-en); font-size: 0.95rem; line-height: 1.8;
+  color: var(--white); text-align: center; letter-spacing: 0.02em;
+}
+.calc b { color: var(--red-bright); font-size: 1.15rem; }
+.calc span { font-size: 0.76rem; color: rgba(255,255,255,0.6); display: block; font-family: var(--font-ja-sans); letter-spacing: 0; }
+
+/* ----- 2カラム ----- */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+@media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+.two-col-item h3 {
+  font-family: var(--font-ja-serif); font-size: 1.02rem; font-weight: 500;
+  margin-bottom: 0.55rem; padding-bottom: 0.4rem; border-bottom: 2px solid var(--azure);
+}
+.two-col-item p { font-size: 0.88rem; line-height: 1.85; color: var(--muted); }
+.sec-navy .two-col-item p { color: rgba(255,255,255,0.72); }
+
+/* ----- 注記 ----- */
+.note {
+  font-size: 0.82rem; color: var(--muted); line-height: 1.8;
+  padding: 0.85rem 1.1rem; border-left: 3px solid var(--azure-pale);
+  background: rgba(46,84,150,0.04);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin-top: 1.75rem;
+}
+.sec-navy .note { color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.05); border-left-color: rgba(255,255,255,0.25); }
+
+/* ----- まとめ ----- */
+.summary { text-align: center; max-width: 660px; margin: 0 auto; }
+.summary-text {
+  font-family: var(--font-ja-serif);
+  font-size: clamp(1.12rem, 3vw, 1.45rem);
+  font-weight: 400; line-height: 1.95;
+}
+
+/* ----- take ----- */
+.take {
+  background: var(--navy-deep); border-radius: var(--radius);
+  padding: 1.55rem 1.75rem; display: flex; gap: 1.25rem; align-items: flex-start;
+  margin: 2rem 0 0; border-left: 4px solid var(--red);
+}
+.sec-light .take { background: #fff8f8; border-left: 4px solid var(--red); box-shadow: 0 2px 8px rgba(226,55,68,0.07); }
+.take-avatar {
+  flex-shrink: 0; width: 44px; height: 44px; border-radius: 50%;
+  background: var(--azure); color: var(--white);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-en); font-size: 0.75rem; font-weight: 700;
+}
+.take-label {
+  font-family: var(--font-en); font-size: 10px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--red-bright); margin-bottom: 4px;
+}
+.sec-light .take-label { color: var(--red); }
+.take-author { font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.45rem; }
+.sec-light .take-author { color: var(--muted); }
+.take-text { font-size: 0.89rem; line-height: 1.85; color: rgba(255,255,255,0.88); }
+.sec-light .take-text { color: var(--ink); }
+.hot { color: var(--red-bright); font-weight: 700; }
+.sec-light .hot { color: var(--red); }
+
+.text-azure { color: var(--azure); }
+.fw-bold { font-weight: 700; }
+
+footer {
+  background: var(--navy-deep); padding: 3rem 1.5rem; text-align: center;
+  color: rgba(255,255,255,0.5); font-size: 0.8rem;
+}
+
+@media (max-width: 720px) {
+  .figure-scroll svg { min-width: 560px; }
+  .figure-scroll::after { content: ''; display: block; }
+}
+@media (max-width: 640px) {
+  :root { --sec-pad: 3.5rem 1rem; }
+  .vs { grid-template-columns: 1fr; }
+  .vs-label { display: none; }
+  .hero { padding: 4rem 1rem 3.5rem; }
+  .deep { padding: 1.5rem 1.4rem; }
+  .figure { padding: 1.4rem 1rem 1rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- =============================================
+  HERO
+  ============================================= -->
+<section class="hero">
+  <div class="texture" aria-hidden="true">
+    <svg viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+          <path d="M48 0H0V48" fill="none" stroke="#ffffff" stroke-width="0.7"/>
+        </pattern>
+      </defs>
+      <rect width="1200" height="600" fill="url(#grid)"/>
+      <circle cx="180" cy="140" r="4" fill="#ffffff"/>
+      <circle cx="420" cy="300" r="4" fill="#ffffff"/>
+      <circle cx="760" cy="180" r="4" fill="#ffffff"/>
+      <circle cx="980" cy="420" r="4" fill="#ffffff"/>
+      <path d="M180 140L420 300L760 180L980 420" stroke="#ffffff" stroke-width="1" fill="none"/>
+    </svg>
+  </div>
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Knowledge Layers</span>
+    <h1 class="hero-title">暗黙知を語る前に、<br>データの箱を用意する</h1>
+    <p class="hero-copy">「うちの課題は暗黙知なんです」——AI導入の相談で、最も多く聞く言葉だ。だがその大半は暗黙知の問題ではなく、記録と構造の問題である。まず言葉を分類し、次に順番を引き直す。</p>
+
+    <div class="hero-glyph">
+      <svg viewBox="0 0 660 190" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="データの箱から暗黙知までの5階層">
+        <defs>
+          <marker id="ahero" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <path d="M0 0 L8 4 L0 8 z" fill="#ffffff" opacity="0.55"/>
+          </marker>
+        </defs>
+
+        <rect x="10" y="48" width="108" height="68" rx="8" fill="rgba(255,255,255,0.07)" stroke="#ffffff" stroke-opacity="0.5" stroke-width="1.2"/>
+        <text x="64" y="80" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">データの箱</text>
+        <text x="64" y="100" font-size="11" fill="rgba(255,255,255,0.55)" text-anchor="middle" font-family="'Hanken Grotesk',sans-serif">DATA BOX</text>
+
+        <rect x="143" y="48" width="108" height="68" rx="8" fill="rgba(255,255,255,0.07)" stroke="#ffffff" stroke-opacity="0.5" stroke-width="1.2"/>
+        <text x="197" y="80" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">構造</text>
+        <text x="197" y="100" font-size="11" fill="rgba(255,255,255,0.55)" text-anchor="middle" font-family="'Hanken Grotesk',sans-serif">STRUCTURE</text>
+
+        <rect x="276" y="48" width="108" height="68" rx="8" fill="rgba(255,255,255,0.07)" stroke="#ffffff" stroke-opacity="0.5" stroke-width="1.2"/>
+        <text x="330" y="80" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">意味・定義</text>
+        <text x="330" y="100" font-size="11" fill="rgba(255,255,255,0.55)" text-anchor="middle" font-family="'Hanken Grotesk',sans-serif">SEMANTICS</text>
+
+        <rect x="409" y="48" width="108" height="68" rx="8" fill="rgba(255,255,255,0.07)" stroke="#ffffff" stroke-opacity="0.5" stroke-width="1.2"/>
+        <text x="463" y="80" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">形式知</text>
+        <text x="463" y="100" font-size="11" fill="rgba(255,255,255,0.55)" text-anchor="middle" font-family="'Hanken Grotesk',sans-serif">EXPLICIT</text>
+
+        <rect x="542" y="48" width="108" height="68" rx="8" fill="rgba(255,93,106,0.10)" stroke="#ff5d6a" stroke-width="1.4" stroke-dasharray="5 4"/>
+        <text x="596" y="80" font-size="13" font-weight="700" fill="#ff5d6a" text-anchor="middle">暗黙知</text>
+        <text x="596" y="100" font-size="11" fill="rgba(255,255,255,0.55)" text-anchor="middle" font-family="'Hanken Grotesk',sans-serif">TACIT</text>
+
+        <path d="M122 82 H139" stroke="#ffffff" stroke-opacity="0.55" stroke-width="1.6" marker-end="url(#ahero)"/>
+        <path d="M255 82 H272" stroke="#ffffff" stroke-opacity="0.55" stroke-width="1.6" marker-end="url(#ahero)"/>
+        <path d="M388 82 H405" stroke="#ffffff" stroke-opacity="0.55" stroke-width="1.6" marker-end="url(#ahero)"/>
+        <path d="M521 82 H538" stroke="#ffffff" stroke-opacity="0.55" stroke-width="1.6" marker-end="url(#ahero)"/>
+
+        <text x="330" y="150" font-size="12.5" fill="rgba(255,255,255,0.75)" text-anchor="middle">AIに渡せる知識は、左から順にしか積み上がらない</text>
+        <text x="330" y="172" font-size="11.5" fill="#ff5d6a" text-anchor="middle">それなのに、議論はいつも右端の一語から始まる</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+  本文01（ライト）
+  ============================================= -->
+<section class="sec-light">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 01 — Definition</span>
+    <h2 class="sec-title">「暗黙知が課題です」の大半は、暗黙知の問題ではない</h2>
+    <p class="sec-sub">まず、会議で一枚岩に扱われている「暗黙知」という言葉を解体するところから始める。</p>
+
+    <p class="kicker">
+      暗黙知とは本来、<span class="fw-bold text-azure">言語化できない知</span>を指す。
+      だが現場で暗黙知と呼ばれているものの多くは、言語化できないのではなく、
+      <span class="fw-bold text-azure">まだ言語化していないだけ</span>だ。
+      この二つを混ぜたまま始めると、プロジェクトは必ずヒアリング地獄に落ちる。
+    </p>
+
+    <div class="vs">
+      <div class="vs-card">
+        <span class="vs-badge pos">Undocumented</span>
+        <h3>書いていないだけの知</h3>
+        <p>本人に聞けば説明できる。手順・条件・例外が、頭の中とチャット履歴と個人フォルダに散っている状態。</p>
+        <div class="vs-meta">
+          <b>正体:</b> 記録の不在<br>
+          <b>回収手段:</b> ログ・録画・履歴の集約<br>
+          <b>AI適性:</b> 高い
+        </div>
+      </div>
+      <div class="vs-label">vs</div>
+      <div class="vs-card">
+        <span class="vs-badge neg">Tacit</span>
+        <h3>書いても伝わらない知</h3>
+        <p>感覚・所作・間合い。言語化した瞬間に本質が抜け落ち、第三者が読んでも再現できない。</p>
+        <div class="vs-meta">
+          <b>正体:</b> 身体と経験<br>
+          <b>回収手段:</b> 同席・徒弟・反復<br>
+          <b>AI適性:</b> 低い
+        </div>
+      </div>
+    </div>
+
+    <div class="figure">
+      <p class="fig-title">Fig.1 ── 「暗黙知をAIに」は、4つの前提を飛ばしている</p>
+      <div class="figure-scroll">
+        <svg viewBox="0 0 700 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="よくある前提と実際に必要な順序の対比図">
+          <defs>
+            <marker id="a1" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+              <path d="M0 0 L8 4 L0 8 z" fill="#2e5496"/>
+            </marker>
+            <marker id="a1d" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+              <path d="M0 0 L8 4 L0 8 z" fill="#2e5496"/>
+            </marker>
+          </defs>
+
+          <rect x="20" y="20" width="660" height="232" rx="12" fill="#f1f4f9"/>
+          <text x="44" y="54" font-size="13" font-weight="700" fill="#2e5496" letter-spacing="1.4">よくある前提</text>
+          <text x="656" y="54" font-size="12.5" font-weight="700" fill="#e23744" text-anchor="end">一足飛び</text>
+
+          <rect x="52" y="84" width="132" height="112" rx="8" fill="#ffffff" stroke="#d8e4f0"/>
+          <circle cx="118" cy="118" r="13" fill="#2e5496"/>
+          <path d="M101 154c0-9.5 7.6-17 17-17s17 7.5 17 17" fill="#2e5496"/>
+          <text x="118" y="180" font-size="12.5" fill="#1a1a2e" text-anchor="middle">ベテランの頭の中</text>
+
+          <path d="M192 140 H228" stroke="#2e5496" stroke-width="1.8" marker-end="url(#a1)"/>
+
+          <rect x="236" y="84" width="132" height="112" rx="8" fill="#ffffff" stroke="#d8e4f0"/>
+          <text x="302" y="134" font-size="26" font-weight="700" fill="#2e5496" text-anchor="middle" font-family="'Hanken Grotesk',sans-serif">AI</text>
+          <text x="302" y="164" font-size="12" fill="#6b7a99" text-anchor="middle">に学習させる</text>
+
+          <path d="M376 140 H412" stroke="#2e5496" stroke-width="1.8" marker-end="url(#a1)"/>
+
+          <rect x="420" y="84" width="196" height="112" rx="8" fill="#ffffff" stroke="#f2c4c9"/>
+          <text x="518" y="134" font-size="14" font-weight="700" fill="#e23744" text-anchor="middle">属人性が解消される</text>
+          <text x="518" y="160" font-size="11.5" fill="#6b7a99" text-anchor="middle">……はずだった</text>
+
+          <text x="350" y="228" font-size="13" fill="#e23744" text-anchor="middle">この矢印1本の中に、4つの前提が隠れている</text>
+
+          <rect x="20" y="272" width="660" height="268" rx="12" fill="#eef3fa"/>
+          <text x="44" y="306" font-size="13" font-weight="700" fill="#2e5496" letter-spacing="1.4">実際に必要な順序</text>
+          <text x="656" y="306" font-size="12.5" font-weight="700" fill="#2e5496" text-anchor="end">積み上げ</text>
+
+          <rect x="40" y="330" width="140" height="104" rx="8" fill="#ffffff" stroke="#d8e4f0"/>
+          <text x="54" y="354" font-size="11" font-weight="700" fill="#2e5496" letter-spacing="0.8" font-family="'Hanken Grotesk',sans-serif">01 DATA</text>
+          <text x="110" y="388" font-size="13.5" fill="#1a1a2e" text-anchor="middle">記録がある</text>
+          <text x="110" y="412" font-size="11.5" fill="#6b7a99" text-anchor="middle">そもそも残っているか</text>
+
+          <rect x="200" y="330" width="140" height="104" rx="8" fill="#ffffff" stroke="#d8e4f0"/>
+          <text x="214" y="354" font-size="11" font-weight="700" fill="#2e5496" letter-spacing="0.8" font-family="'Hanken Grotesk',sans-serif">02 STRUCTURE</text>
+          <text x="270" y="388" font-size="13.5" fill="#1a1a2e" text-anchor="middle">構造化されている</text>
+          <text x="270" y="412" font-size="11.5" fill="#6b7a99" text-anchor="middle">表・ID・項目名</text>
+
+          <rect x="360" y="330" width="140" height="104" rx="8" fill="#ffffff" stroke="#d8e4f0"/>
+          <text x="374" y="354" font-size="11" font-weight="700" fill="#2e5496" letter-spacing="0.8" font-family="'Hanken Grotesk',sans-serif">03 SEMANTICS</text>
+          <text x="430" y="388" font-size="13.5" fill="#1a1a2e" text-anchor="middle">意味が揃っている</text>
+          <text x="430" y="412" font-size="11.5" fill="#6b7a99" text-anchor="middle">用語・粒度・単位</text>
+
+          <rect x="520" y="330" width="140" height="104" rx="8" fill="#ffffff" stroke="#d8e4f0"/>
+          <text x="534" y="354" font-size="11" font-weight="700" fill="#2e5496" letter-spacing="0.8" font-family="'Hanken Grotesk',sans-serif">04 EXPLICIT</text>
+          <text x="590" y="388" font-size="13.5" fill="#1a1a2e" text-anchor="middle">手順が書かれている</text>
+          <text x="590" y="412" font-size="11.5" fill="#6b7a99" text-anchor="middle">SOP・チェックリスト</text>
+
+          <path d="M182 382 H196" stroke="#2e5496" stroke-width="1.6" marker-end="url(#a1)"/>
+          <path d="M342 382 H356" stroke="#2e5496" stroke-width="1.6" marker-end="url(#a1)"/>
+          <path d="M502 382 H516" stroke="#2e5496" stroke-width="1.6" marker-end="url(#a1)"/>
+
+          <path d="M110 436 V460" stroke="#2e5496" stroke-width="1.6" marker-end="url(#a1d)"/>
+          <path d="M270 436 V460" stroke="#2e5496" stroke-width="1.6" marker-end="url(#a1d)"/>
+          <path d="M430 436 V460" stroke="#2e5496" stroke-width="1.6" marker-end="url(#a1d)"/>
+          <path d="M590 436 V460" stroke="#2e5496" stroke-width="1.6" marker-end="url(#a1d)"/>
+
+          <rect x="40" y="468" width="620" height="46" rx="8" fill="#2e5496"/>
+          <text x="350" y="497" font-size="14.5" font-weight="700" fill="#ffffff" text-anchor="middle">ここまで揃って、はじめて暗黙知の話ができる</text>
+        </svg>
+      </div>
+      <p class="figure-cap">暗黙知の議論は、記録が揃っている組織だけが始められる</p>
+    </div>
+
+    <p class="note">
+      ※ 野中郁次郎のSECIモデルにおける暗黙知は、この両方を含む広い概念。ただしAI実装の現場では「書けば書ける／書いても伝わらない」で切り分けたほうが、翌日から手が動く。
+    </p>
+  </div>
+</section>
+
+<!-- =============================================
+  本文02（ネイビー）
+  ============================================= -->
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 02 — Taxonomy</span>
+    <h2 class="sec-title">暗黙知は4つに分けると、渡し方が決まる</h2>
+    <p class="sec-sub">分類の目的は学問的な正しさではない。「明日、誰が何を集めるか」を決めることにある。</p>
+
+    <p class="kicker">
+      手順知・文脈知・判断知は、書けば形式知になる。
+      書いても再現できないのは身体知だけだ。
+      この4つを混ぜて「暗黙知プロジェクト」を立ち上げるから、成果が出ない。
+    </p>
+
+    <div class="figure">
+      <p class="fig-title">Fig.2 ── 暗黙知と呼ばれているものを、渡し方が変わる単位まで割る</p>
+      <div class="figure-scroll">
+        <svg viewBox="0 0 700 490" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="暗黙知を4つに分類するツリー図">
+          <rect x="255" y="22" width="190" height="46" rx="8" fill="rgba(255,255,255,0.10)" stroke="#d8e4f0" stroke-width="1.2"/>
+          <text x="350" y="51" font-size="14" fill="#ffffff" text-anchor="middle">現場でいう「暗黙知」</text>
+
+          <path d="M350 68 V94" stroke="#d8e4f0" stroke-opacity="0.6" stroke-width="1.4" fill="none"/>
+          <path d="M177 94 H524" stroke="#d8e4f0" stroke-opacity="0.6" stroke-width="1.4" fill="none"/>
+          <path d="M177 94 V120" stroke="#d8e4f0" stroke-opacity="0.6" stroke-width="1.4" fill="none"/>
+          <path d="M524 94 V120" stroke="#d8e4f0" stroke-opacity="0.6" stroke-width="1.4" fill="none"/>
+
+          <rect x="82" y="120" width="190" height="46" rx="8" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.28)"/>
+          <text x="177" y="142" font-size="13" fill="#d8e4f0" text-anchor="middle">書けば書ける</text>
+          <text x="177" y="160" font-size="11" fill="#9fb3d1" text-anchor="middle">＝ まだ書いていないだけ</text>
+
+          <rect x="429" y="120" width="190" height="46" rx="8" fill="rgba(255,93,106,0.10)" stroke="#ff5d6a" stroke-opacity="0.6"/>
+          <text x="524" y="142" font-size="13" fill="#ffd7da" text-anchor="middle">書いても伝わらない</text>
+          <text x="524" y="160" font-size="11" fill="#9fb3d1" text-anchor="middle">＝ 本来の暗黙知</text>
+
+          <path d="M177 166 V186" stroke="#d8e4f0" stroke-opacity="0.6" stroke-width="1.4" fill="none"/>
+          <path d="M90 186 H263" stroke="#d8e4f0" stroke-opacity="0.6" stroke-width="1.4" fill="none"/>
+          <path d="M90 186 V210" stroke="#d8e4f0" stroke-opacity="0.6" stroke-width="1.4" fill="none"/>
+          <path d="M263 186 V210" stroke="#d8e4f0" stroke-opacity="0.6" stroke-width="1.4" fill="none"/>
+          <path d="M524 166 V186" stroke="#d8e4f0" stroke-opacity="0.6" stroke-width="1.4" fill="none"/>
+          <path d="M437 186 H610" stroke="#d8e4f0" stroke-opacity="0.6" stroke-width="1.4" fill="none"/>
+          <path d="M437 186 V210" stroke="#d8e4f0" stroke-opacity="0.6" stroke-width="1.4" fill="none"/>
+          <path d="M610 186 V210" stroke="#d8e4f0" stroke-opacity="0.6" stroke-width="1.4" fill="none"/>
+
+          <rect x="10" y="210" width="160" height="210" rx="8" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.22)"/>
+          <text x="24" y="238" font-size="11" font-weight="700" fill="#d8e4f0" letter-spacing="1" font-family="'Hanken Grotesk',sans-serif">01 PROCEDURAL</text>
+          <text x="24" y="268" font-size="17" fill="#ffffff" font-family="'Shippori Mincho B1',serif">手順知</text>
+          <text x="24" y="296" font-size="11.5" fill="#9fb3d1">やり方は言えるが</text>
+          <text x="24" y="314" font-size="11.5" fill="#9fb3d1">書いていないだけ</text>
+          <path d="M24 332 H156" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+          <text x="24" y="354" font-size="11" fill="#d8e4f0" letter-spacing="0.6">AIへの渡し方</text>
+          <text x="24" y="378" font-size="11.5" fill="#cdd9ea">録画・議事録を</text>
+          <text x="24" y="396" font-size="11.5" fill="#cdd9ea">そのまま集める</text>
+
+          <rect x="183" y="210" width="160" height="210" rx="8" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.22)"/>
+          <text x="197" y="238" font-size="11" font-weight="700" fill="#d8e4f0" letter-spacing="1" font-family="'Hanken Grotesk',sans-serif">02 CONTEXTUAL</text>
+          <text x="197" y="268" font-size="17" fill="#ffffff" font-family="'Shippori Mincho B1',serif">文脈知</text>
+          <text x="197" y="296" font-size="11.5" fill="#9fb3d1">なぜそうしたかの</text>
+          <text x="197" y="314" font-size="11.5" fill="#9fb3d1">背景と経緯</text>
+          <path d="M197 332 H329" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+          <text x="197" y="354" font-size="11" fill="#d8e4f0" letter-spacing="0.6">AIへの渡し方</text>
+          <text x="197" y="378" font-size="11.5" fill="#cdd9ea">判断ログとして</text>
+          <text x="197" y="396" font-size="11.5" fill="#cdd9ea">1行でも残す</text>
+
+          <rect x="357" y="210" width="160" height="210" rx="8" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.22)"/>
+          <text x="371" y="238" font-size="11" font-weight="700" fill="#d8e4f0" letter-spacing="1" font-family="'Hanken Grotesk',sans-serif">03 JUDGMENTAL</text>
+          <text x="371" y="268" font-size="17" fill="#ffffff" font-family="'Shippori Mincho B1',serif">判断知</text>
+          <text x="371" y="296" font-size="11.5" fill="#9fb3d1">基準はあるが</text>
+          <text x="371" y="314" font-size="11.5" fill="#9fb3d1">数値化していない</text>
+          <path d="M371 332 H503" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+          <text x="371" y="354" font-size="11" fill="#d8e4f0" letter-spacing="0.6">AIへの渡し方</text>
+          <text x="371" y="378" font-size="11.5" fill="#cdd9ea">事例にラベルを</text>
+          <text x="371" y="396" font-size="11.5" fill="#cdd9ea">付けて蓄積する</text>
+
+          <rect x="530" y="210" width="160" height="210" rx="8" fill="rgba(255,93,106,0.08)" stroke="#ff5d6a" stroke-opacity="0.7"/>
+          <text x="544" y="238" font-size="11" font-weight="700" fill="#ff5d6a" letter-spacing="1" font-family="'Hanken Grotesk',sans-serif">04 EMBODIED</text>
+          <text x="544" y="268" font-size="17" fill="#ff5d6a" font-family="'Shippori Mincho B1',serif">身体知</text>
+          <text x="544" y="296" font-size="11.5" fill="#9fb3d1">感覚・所作・間合い</text>
+          <text x="544" y="314" font-size="11.5" fill="#9fb3d1">書いても再現不能</text>
+          <path d="M544 332 H676" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+          <text x="544" y="354" font-size="11" fill="#ff5d6a" letter-spacing="0.6">AIへの渡し方</text>
+          <text x="544" y="378" font-size="11.5" fill="#ffd7da">渡さない。</text>
+          <text x="544" y="396" font-size="11.5" fill="#ffd7da">人に残す領域</text>
+
+          <text x="350" y="452" font-size="12.5" fill="#d8e4f0" text-anchor="middle">01〜03は、まだ書いていないだけ。書けば形式知になる</text>
+          <text x="350" y="474" font-size="12" fill="#ff5d6a" text-anchor="middle">04だけが、本当の意味での暗黙知</text>
+        </svg>
+      </div>
+      <p class="figure-cap">プロジェクトが扱うべきは02と03。04は人に残す</p>
+    </div>
+
+    <div class="calc">
+      1人90分のヒアリング × 対象30人 ＝ <b>45時間</b>
+      <span>それでも出てくるのは、記録が残っている業務の「なぜ」だけ</span>
+    </div>
+
+    <div class="deep">
+      <h3>ヒアリングが空振りする、たった一つの理由</h3>
+      <p>「あのとき、なぜ値引きを認めたんですか」と聞いても、本人は思い出せない。人間の記憶は、案件の一覧が目の前にあってはじめて再生される。</p>
+      <p>つまり暗黙知の抽出とは、記憶を掘る作業ではなく、記録に注釈を足す作業だ。注釈を足す先の記録がなければ、面談は雑談にしかならない。</p>
+    </div>
+
+    <div class="take">
+      <div class="take-avatar">OK</div>
+      <div class="take-body">
+        <div class="take-label">Ozaken's One Point</div>
+        <div class="take-author">小澤健祐（おざけん）</div>
+        <p class="take-text">
+          年間300回以上、企業の現場で研修や伴走をしてきて断言できる。うまくいく組織は、暗黙知プロジェクトを<span class="hot">ヒアリングから始めない</span>。最初の2週間はひたすら、どこに何が残っているかの棚卸しに使う。地味だが、ここを飛ばした案件で成功したのを見たことがない。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+  本文03（ライト）
+  ============================================= -->
+<section class="sec-light">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 03 — Foundation</span>
+    <h2 class="sec-title">暗黙知の下には、まだ3つの階層が眠っている</h2>
+    <p class="sec-sub">知識は5層でできている。上2層だけを議論しても、下3層が空ならAIは何も参照できない。</p>
+
+    <p class="kicker">
+      AIが「わかりません」と答えるとき、原因は暗黙知の不足ではないことが多い。
+      <span class="fw-bold text-azure">参照する先が、そもそも存在しない</span>のだ。
+      箱・構造・意味——この3層は、AI以前の情報システムの仕事である。
+    </p>
+
+    <div class="figure">
+      <p class="fig-title">Fig.3 ── 知識は5層でできていて、詰まるのは下3層だ</p>
+      <div class="figure-scroll">
+        <svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="データの箱から暗黙知までの5階層と、各層が答える問い">
+          <rect x="72" y="30" width="330" height="58" rx="6" fill="#fde8ea" stroke="#f2c4c9"/>
+          <text x="94" y="67" font-size="11.5" fill="#e23744" font-family="'Hanken Grotesk',sans-serif" font-weight="700">05</text>
+          <text x="124" y="68" font-size="16" fill="#e23744" font-family="'Shippori Mincho B1',serif">暗黙知</text>
+          <text x="430" y="55" font-size="13" fill="#1a1a2e">なぜ、そう判断したのか</text>
+          <text x="430" y="75" font-size="11.5" fill="#6b7a99">本人も説明できない領域</text>
+
+          <rect x="72" y="96" width="330" height="58" rx="6" fill="#eef3fa" stroke="#d8e4f0"/>
+          <text x="94" y="133" font-size="11.5" fill="#6b7a99" font-family="'Hanken Grotesk',sans-serif" font-weight="700">04</text>
+          <text x="124" y="134" font-size="16" fill="#1a1a2e" font-family="'Shippori Mincho B1',serif">形式知</text>
+          <text x="430" y="121" font-size="13" fill="#1a1a2e">どうやるのか</text>
+          <text x="430" y="141" font-size="11.5" fill="#6b7a99">マニュアル・手順書・SOP</text>
+
+          <rect x="72" y="162" width="330" height="58" rx="6" fill="#dbe6f4" stroke="#c3d6ec"/>
+          <text x="94" y="199" font-size="11.5" fill="#2e5496" font-family="'Hanken Grotesk',sans-serif" font-weight="700">03</text>
+          <text x="124" y="200" font-size="16" fill="#1a1a2e" font-family="'Shippori Mincho B1',serif">意味・定義</text>
+          <text x="430" y="187" font-size="13" fill="#1a1a2e">その項目は何を指すのか</text>
+          <text x="430" y="207" font-size="11.5" fill="#6b7a99">用語・粒度・単位・期間</text>
+
+          <rect x="72" y="228" width="330" height="58" rx="6" fill="#2e5496"/>
+          <text x="94" y="265" font-size="11.5" fill="rgba(255,255,255,0.7)" font-family="'Hanken Grotesk',sans-serif" font-weight="700">02</text>
+          <text x="124" y="266" font-size="16" fill="#ffffff" font-family="'Shippori Mincho B1',serif">構造</text>
+          <text x="430" y="253" font-size="13" fill="#1a1a2e">どこに何があるのか</text>
+          <text x="430" y="273" font-size="11.5" fill="#6b7a99">テーブル・ID・項目名</text>
+
+          <rect x="72" y="294" width="330" height="58" rx="6" fill="#1f3864"/>
+          <text x="94" y="331" font-size="11.5" fill="rgba(255,255,255,0.7)" font-family="'Hanken Grotesk',sans-serif" font-weight="700">01</text>
+          <text x="124" y="332" font-size="16" fill="#ffffff" font-family="'Shippori Mincho B1',serif">データの箱</text>
+          <text x="430" y="319" font-size="13" fill="#1a1a2e">そもそも残っているか</text>
+          <text x="430" y="339" font-size="11.5" fill="#6b7a99">記録・保存先・アクセス権</text>
+
+          <path d="M416 24 V358" stroke="#d8e4f0" stroke-width="1" stroke-dasharray="4 4"/>
+
+          <path d="M52 30 H40 V154 H52" stroke="#e23744" stroke-width="1.4" fill="none"/>
+          <text x="28" y="92" font-size="11.5" fill="#e23744" text-anchor="middle" transform="rotate(-90 28 92)">議論されがち</text>
+
+          <path d="M52 162 H40 V352 H52" stroke="#2e5496" stroke-width="1.4" fill="none"/>
+          <text x="28" y="257" font-size="11.5" fill="#2e5496" text-anchor="middle" transform="rotate(-90 28 257)">実際に欠けている</text>
+
+          <text x="350" y="392" font-size="13" fill="#2e5496" text-anchor="middle">暗黙知が出てこないのではない。その下の3層が、まだ空なのだ</text>
+        </svg>
+      </div>
+      <p class="figure-cap">下3層はAIの仕事ではなく、情報システムと業務設計の仕事</p>
+    </div>
+
+    <div class="bare">
+      <p>この5層のうち、日本の多くの企業で決定的に薄いのが「01 データの箱」と「02 構造」だ。理由ははっきりしている。日報は紙とExcel、見積書は個人フォルダ、判断の経緯はメールとチャットに分散し、業務システムには「結果の数字」しか入っていない。つまり、結論だけが残り、過程が捨てられている。</p>
+      <p>AIに渡して価値が出るのは、実はその捨てられた過程のほうだ。どの案件を断り、どこで値引きを止め、何を見てリスクだと判断したか。過程が残っていない組織では、どれだけ優秀なモデルを入れても、参照できる材料が結論の一覧しかない。</p>
+      <p>だから最初にやるべきことは、AIの選定でも暗黙知の抽出でもなく、「明日から、過程が残る場所を決める」ことになる。</p>
+    </div>
+
+    <p class="note">
+      ※ ここでいう「箱」は必ずしもデータ基盤製品を指さない。共有ドライブのフォルダ規約と命名ルールだけでも、箱は成立する。重要なのは、個人の端末とメールボックスの外に出すことだ。
+    </p>
+  </div>
+</section>
+
+<!-- =============================================
+  本文04（ネイビー）
+  ============================================= -->
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 04 — Sequence</span>
+    <h2 class="sec-title">順番を守ると、AIが答えられる範囲が段階的に広がる</h2>
+    <p class="sec-sub">図で全体像、ステッパーで各段の勘所。順序を入れ替えると、どこかで必ず戻ることになる。</p>
+
+    <div class="figure">
+      <p class="fig-title">Fig.4 ── 立ち上がりは重く、後半でヒアリング依存が逆転する</p>
+      <div class="figure-scroll">
+        <svg viewBox="0 0 700 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="5段階の整備とAIが自力で答えられる範囲の推移グラフ">
+          <path d="M70 217.5 H660" stroke="#ffffff" stroke-opacity="0.18" stroke-width="1"/>
+          <path d="M70 165 H660" stroke="#ffffff" stroke-opacity="0.18" stroke-width="1"/>
+          <path d="M70 112.5 H660" stroke="#ffffff" stroke-opacity="0.18" stroke-width="1"/>
+          <path d="M70 60 H660" stroke="#ffffff" stroke-opacity="0.18" stroke-width="1"/>
+          <path d="M70 270 H660" stroke="#ffffff" stroke-opacity="0.5" stroke-width="1.2"/>
+          <path d="M70 50 V270" stroke="#ffffff" stroke-opacity="0.5" stroke-width="1.2"/>
+
+          <text x="62" y="64" font-size="11" fill="#9fb3d1" text-anchor="end" font-family="'Hanken Grotesk',sans-serif">100%</text>
+          <text x="62" y="169" font-size="11" fill="#9fb3d1" text-anchor="end" font-family="'Hanken Grotesk',sans-serif">50%</text>
+
+          <rect x="86" y="249" width="86" height="21" rx="3" fill="#d8e4f0"/>
+          <rect x="206" y="211" width="86" height="59" rx="3" fill="#d8e4f0"/>
+          <rect x="326" y="169" width="86" height="101" rx="3" fill="#d8e4f0"/>
+          <rect x="446" y="123" width="86" height="147" rx="3" fill="#d8e4f0"/>
+          <rect x="566" y="85" width="86" height="185" rx="3" fill="#d8e4f0"/>
+
+          <text x="129" y="239" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle" font-family="'Hanken Grotesk',sans-serif">10%</text>
+          <text x="249" y="201" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle" font-family="'Hanken Grotesk',sans-serif">28%</text>
+          <text x="369" y="159" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle" font-family="'Hanken Grotesk',sans-serif">48%</text>
+          <text x="489" y="113" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle" font-family="'Hanken Grotesk',sans-serif">70%</text>
+          <text x="609" y="75" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle" font-family="'Hanken Grotesk',sans-serif">88%</text>
+
+          <polyline points="129,81 249,94 369,106 489,182 609,224" fill="none" stroke="#ff5d6a" stroke-width="2.5" stroke-dasharray="6 5"/>
+          <circle cx="129" cy="81" r="4.5" fill="#ff5d6a" stroke="#141d35" stroke-width="1.6"/>
+          <circle cx="249" cy="94" r="4.5" fill="#ff5d6a" stroke="#141d35" stroke-width="1.6"/>
+          <circle cx="369" cy="106" r="4.5" fill="#ff5d6a" stroke="#141d35" stroke-width="1.6"/>
+          <circle cx="489" cy="182" r="4.5" fill="#ff5d6a" stroke="#141d35" stroke-width="1.6"/>
+          <circle cx="609" cy="224" r="6" fill="#ff5d6a" stroke="#141d35" stroke-width="1.6"/>
+
+          <text x="24" y="160" font-size="11.5" fill="#9fb3d1" text-anchor="middle" transform="rotate(-90 24 160)">AIが自力で答えられる範囲</text>
+
+          <text x="129" y="292" font-size="11" fill="#d8e4f0" text-anchor="middle" letter-spacing="0.8" font-family="'Hanken Grotesk',sans-serif">STEP 1</text>
+          <text x="249" y="292" font-size="11" fill="#d8e4f0" text-anchor="middle" letter-spacing="0.8" font-family="'Hanken Grotesk',sans-serif">STEP 2</text>
+          <text x="369" y="292" font-size="11" fill="#d8e4f0" text-anchor="middle" letter-spacing="0.8" font-family="'Hanken Grotesk',sans-serif">STEP 3</text>
+          <text x="489" y="292" font-size="11" fill="#d8e4f0" text-anchor="middle" letter-spacing="0.8" font-family="'Hanken Grotesk',sans-serif">STEP 4</text>
+          <text x="609" y="292" font-size="11" fill="#d8e4f0" text-anchor="middle" letter-spacing="0.8" font-family="'Hanken Grotesk',sans-serif">STEP 5</text>
+
+          <text x="129" y="312" font-size="11.5" fill="#9fb3d1" text-anchor="middle">箱をつくる</text>
+          <text x="249" y="312" font-size="11.5" fill="#9fb3d1" text-anchor="middle">構造を与える</text>
+          <text x="369" y="312" font-size="11.5" fill="#9fb3d1" text-anchor="middle">意味を揃える</text>
+          <text x="489" y="312" font-size="11.5" fill="#9fb3d1" text-anchor="middle">手順を書く</text>
+          <text x="609" y="312" font-size="11.5" fill="#9fb3d1" text-anchor="middle">判断を残す</text>
+        </svg>
+      </div>
+      <div class="legend">
+        <div class="legend-item"><span class="legend-swatch" style="background:#d8e4f0"></span>AIが自力で答えられる範囲</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:#ff5d6a"></span>現場ヒアリングへの依存度</div>
+      </div>
+      <p class="figure-cap">暗黙知の抽出が効き始めるのは、STEP4以降</p>
+    </div>
+
+    <div class="stepper">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h3>箱をつくる — 保存先を1か所に決める</h3>
+          <p>新しいツールを買う前に、「この業務の記録はここに置く」を宣言する。個人フォルダとメール本文から出すだけで、初期の8割は片づく。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3>構造を与える — 自由記述をやめて、項目に切る</h3>
+          <p>日報を文章のままにしない。顧客ID・案件ID・日付・区分を必須項目にする。ここでIDが揃うかどうかが、後の全工程を決める。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h3>意味を揃える — 同じ言葉を同じ意味で使う</h3>
+          <p>「受注」が契約日なのか検収日なのか、部署ごとに違うまま放置しない。用語辞書は10行で始めてよい。粒度と期間の定義から先に固める。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h3>手順を書く — 形式知として一度、外に出す</h3>
+          <p>ここでようやくマニュアル化に着手する。ゼロから書かせない。既存の議事録・チャット・録画をAIに読ませて叩き台を作り、人は差分だけ直す。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <h3>判断を残す — 記録に「なぜ」を1行足す</h3>
+          <p>暗黙知の抽出はここで初めて機能する。案件一覧を見ながら、例外対応にだけ理由を1行付ける。面談ではなく、日々の記録の延長で回す。</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="note">
+      ※ Fig.4の数値は、整備段階と回答可能範囲の関係を示すための概念値。実際の比率は業務の型と既存システムの状態によって大きく変わる。
+    </p>
+  </div>
+</section>
+
+<!-- =============================================
+  本文05（ライト）
+  ============================================= -->
+<section class="sec-light">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 05 — Where to start</span>
+    <h2 class="sec-title">どの業務から手をつけるかは、2つの軸で決まる</h2>
+    <p class="sec-sub">「記録が残っているか」と「判断が言語化しにくいか」。この2軸で、自社の業務を置き直す。</p>
+
+    <div class="figure">
+      <p class="fig-title">Fig.5 ── 暗黙知の抽出が意味を持つのは、右上の象限だけ</p>
+      <div class="figure-scroll">
+        <svg viewBox="0 0 640 540" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="記録の有無と判断の言語化しにくさによる2×2マトリクス">
+          <defs>
+            <marker id="axm5" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+              <path d="M0 0 L8 4 L0 8 z" fill="#6b7a99"/>
+            </marker>
+          </defs>
+
+          <rect x="90" y="50" width="260" height="210" fill="#fde8ea"/>
+          <rect x="350" y="50" width="260" height="210" fill="#fbe3d8"/>
+          <rect x="90" y="260" width="260" height="210" fill="#eef1f5"/>
+          <rect x="350" y="260" width="260" height="210" fill="#dfeaf7"/>
+          <rect x="90" y="50" width="520" height="420" fill="none" stroke="#c3d6ec" stroke-width="1.2"/>
+          <path d="M350 50 V470" stroke="#ffffff" stroke-width="2"/>
+          <path d="M90 260 H610" stroke="#ffffff" stroke-width="2"/>
+
+          <circle cx="322" cy="80" r="13" fill="#e23744"/>
+          <text x="322" y="85" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle" font-family="'Hanken Grotesk',sans-serif">4</text>
+          <text x="110" y="96" font-size="15" font-weight="700" fill="#e23744">今は着手しない</text>
+          <text x="110" y="122" font-size="12.5" fill="#1a1a2e">ヒアリングより先に、記録を始める</text>
+          <text x="110" y="160" font-size="11.5" fill="#6b7a99">例）ベテランの与信判断</text>
+          <text x="110" y="180" font-size="11.5" fill="#6b7a99">例）職人の段取りと目利き</text>
+          <text x="110" y="216" font-size="11.5" fill="#6b7a99">語ってもらっても、</text>
+          <text x="110" y="234" font-size="11.5" fill="#6b7a99">裏を取る材料が存在しない</text>
+
+          <circle cx="582" cy="80" r="13" fill="#b95c2b"/>
+          <text x="582" y="85" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle" font-family="'Hanken Grotesk',sans-serif">3</text>
+          <text x="370" y="96" font-size="15" font-weight="700" fill="#b95c2b">暗黙知が主役になる</text>
+          <text x="370" y="122" font-size="12.5" fill="#1a1a2e">判断の理由をログに足していく</text>
+          <text x="370" y="160" font-size="11.5" fill="#6b7a99">例）見積の値引き判断</text>
+          <text x="370" y="180" font-size="11.5" fill="#6b7a99">例）クレームの初動対応</text>
+          <text x="370" y="216" font-size="11.5" fill="#6b7a99">事実はもう揃っている。</text>
+          <text x="370" y="234" font-size="11.5" fill="#6b7a99">欠けているのは理由だけ</text>
+
+          <circle cx="322" cy="290" r="13" fill="#46536b"/>
+          <text x="322" y="295" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle" font-family="'Hanken Grotesk',sans-serif">2</text>
+          <text x="110" y="306" font-size="15" font-weight="700" fill="#46536b">まず箱をつくる</text>
+          <text x="110" y="332" font-size="12.5" fill="#1a1a2e">保存先と項目名を先に決める</text>
+          <text x="110" y="370" font-size="11.5" fill="#6b7a99">例）紙とExcelの日報</text>
+          <text x="110" y="390" font-size="11.5" fill="#6b7a99">例）個人フォルダの見積書</text>
+          <text x="110" y="426" font-size="11.5" fill="#6b7a99">判断自体は単純なので、</text>
+          <text x="110" y="444" font-size="11.5" fill="#6b7a99">記録さえ揃えば自動化できる</text>
+
+          <circle cx="582" cy="290" r="13" fill="#2e5496"/>
+          <text x="582" y="295" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle" font-family="'Hanken Grotesk',sans-serif">1</text>
+          <text x="370" y="306" font-size="15" font-weight="700" fill="#2e5496">今すぐAIに渡す</text>
+          <text x="370" y="332" font-size="12.5" fill="#1a1a2e">検索・要約・下書きから始める</text>
+          <text x="370" y="370" font-size="11.5" fill="#6b7a99">例）問い合わせの一次回答</text>
+          <text x="370" y="390" font-size="11.5" fill="#6b7a99">例）議事録の要約</text>
+          <text x="370" y="426" font-size="11.5" fill="#6b7a99">ここでの成功体験が、</text>
+          <text x="370" y="444" font-size="11.5" fill="#6b7a99">上の象限の予算を生む</text>
+
+          <path d="M68 470 V44" stroke="#6b7a99" stroke-width="1.4" marker-end="url(#axm5)"/>
+          <text x="46" y="260" font-size="12.5" fill="#6b7a99" text-anchor="middle" transform="rotate(-90 46 260)">判断の言語化しにくさ</text>
+          <text x="68" y="34" font-size="11" fill="#6b7a99" text-anchor="middle">難しい</text>
+          <text x="68" y="490" font-size="11" fill="#6b7a99" text-anchor="middle">易しい</text>
+
+          <path d="M110 504 H614" stroke="#6b7a99" stroke-width="1.4" marker-end="url(#axm5)"/>
+          <text x="350" y="528" font-size="12.5" fill="#6b7a99" text-anchor="middle">事実の記録が残っているか</text>
+          <text x="120" y="490" font-size="11" fill="#6b7a99">残っていない</text>
+          <text x="604" y="490" font-size="11" fill="#6b7a99" text-anchor="end">残っている</text>
+        </svg>
+      </div>
+      <p class="figure-cap">着手順は1→2→3。4は、2を経由してからでないと辿り着けない</p>
+    </div>
+
+    <div class="two-col">
+      <div class="two-col-item">
+        <h3>先に「箱」をつくるべき業務</h3>
+        <p>記録が紙・Excel・個人フォルダに散っている。判断そのものは単純で、経験者なら誰でも同じ結論になる。この場合、暗黙知の抽出はほぼ不要で、保存先と項目を決めた時点で勝負がつく。</p>
+      </div>
+      <div class="two-col-item">
+        <h3>先に「暗黙知」を掘るべき業務</h3>
+        <p>案件データは基幹システムに揃っているのに、なぜその結論になったかだけが残っていない。この場合は記録に理由を1行足す運用を先に入れる。新しい基盤は要らない。</p>
+      </div>
+    </div>
+
+    <div class="take">
+      <div class="take-avatar">OK</div>
+      <div class="take-body">
+        <div class="take-label">Ozaken's One Point</div>
+        <div class="take-author">小澤健祐（おざけん）</div>
+        <p class="take-text">
+          ここまで書いておいて逆のことを言うが、「データ基盤が整うまでAI活用は待つ」という判断だけは絶対にしないでほしい。整備は3年かかるが、現場の熱は3か月で冷める。右下の象限で今すぐ小さく成果を出しながら、裏で箱をつくる。順序を守ることと、<span class="hot">同時に走らせること</span>は矛盾しない。
+        </p>
+      </div>
+    </div>
+
+    <p class="note">
+      ※ 2軸の判定は、業務単位ではなく「意思決定の単位」で行うと精度が上がる。同じ営業部門でも、見積作成と与信判断は別の象限に落ちる。
+    </p>
+  </div>
+</section>
+
+<!-- =============================================
+  SUMMARY
+  ============================================= -->
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <div class="summary">
+      <span class="eyebrow">Summary</span>
+      <p class="summary-text">
+        暗黙知が出てこないのではない。<br>
+        それを載せる箱と構造が、<br>
+        まだ用意されていないだけだ。
+      </p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2026 小澤健祐（おざけん）/ 一般社団法人AICX協会</p>
+</footer>
+
+<script>
+/* スクロール演出 — IntersectionObserver */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

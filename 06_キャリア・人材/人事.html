@@ -3,540 +3,518 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>労働力としてのAIエージェント — なぜ人事とDXは融合すべきなのか</title>
+<title>当たり前が、変わる ─ 労働力としてのAIエージェントと、人事の役割 | おざけん</title>
+<meta name="description" content="AIエージェントが「労働力」になった時代、組織の再設計を担うのは人事だ。評価・報酬・役割の3つの転換と、DXと人事が融合すべき理由を整理した解説。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..700&family=Noto+Sans+JP:wght@300;400;500;700&family=Shippori+Mincho+B1:wght@500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Shippori+Mincho+B1:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --paper:#F4F1EA;
-    --paper-2:#EDE9DF;
-    --ink:#15140F;
-    --ink-soft:#5C564A;
-    --line:rgba(21,20,15,.14);
-    --line-strong:rgba(21,20,15,.30);
-    --dx:#1E3AE6;       /* DX = electric blue */
-    --dx-ink:#0C1E8A;
-    --hr:#DA4711;       /* 人事 = vermilion */
-    --hr-ink:#8A2A06;
-    --serif:'Shippori Mincho B1',serif;
-    --sans:'Noto Sans JP',sans-serif;
-    --disp:'Fraunces',serif;
-  }
-  *{margin:0;padding:0;box-sizing:border-box}
-  html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
-  body{
-    background:var(--paper);
-    color:var(--ink);
-    font-family:var(--sans);
-    font-weight:400;
-    line-height:1.9;
-    font-feature-settings:"palt";
-    overflow-x:hidden;
-  }
-  body::before{
-    content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.045'/%3E%3C/svg%3E");
-    mix-blend-mode:multiply;opacity:.6;
-  }
-  .wrap{max-width:1180px;margin:0 auto;padding:0 clamp(20px,5vw,64px)}
-  ::selection{background:var(--hr);color:var(--paper)}
+:root {
+  --ink:         #1a1a2e;
+  --navy:        #1f3864;
+  --navy-deep:   #141d35;
+  --azure:       #2e5496;
+  --azure-pale:  #d8e4f0;
+  --paper:       #f8f7f4;
+  --white:       #ffffff;
+  --red:         #e23744;
+  --red-bright:  #ff5d6a;
+  --muted:       #6b7a99;
 
-  /* ---- nav ---- */
-  nav{
-    position:fixed;top:0;left:0;right:0;z-index:100;
-    display:flex;justify-content:space-between;align-items:center;
-    padding:18px clamp(20px,5vw,64px);
-    mix-blend-mode:difference;color:#fff;
-  }
-  nav .mark{font-family:var(--disp);font-weight:600;font-size:1.05rem;letter-spacing:.02em}
-  nav .meta{font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;opacity:.85}
-  @media(max-width:680px){nav .meta{display:none}}
+  --font-ja-sans:  'Zen Kaku Gothic New', sans-serif;
+  --font-ja-serif: 'Shippori Mincho B1', serif;
+  --font-en:       'Hanken Grotesk', sans-serif;
 
-  /* ---- hero ---- */
-  header.hero{padding:clamp(120px,17vh,200px) 0 clamp(60px,8vh,110px);position:relative}
-  .eyebrow{
-    font-family:var(--disp);font-style:italic;font-size:.95rem;
-    letter-spacing:.04em;color:var(--hr);margin-bottom:30px;
-    display:flex;align-items:center;gap:14px;
-  }
-  .eyebrow::before{content:"";width:42px;height:1px;background:var(--hr)}
-  h1.title{
-    font-family:var(--serif);font-weight:800;
-    font-size:clamp(3rem,10vw,7rem);line-height:.98;letter-spacing:-.01em;
-    margin-bottom:42px;
-  }
-  h1.title .dim{color:var(--ink-soft)}
-  .lead{
-    font-family:var(--serif);font-weight:500;
-    font-size:clamp(1.15rem,2.2vw,1.5rem);line-height:1.95;
-    max-width:34em;color:var(--ink);margin-bottom:26px;
-  }
-  .lead b{font-weight:700;background:linear-gradient(transparent 62%,rgba(218,71,17,.22) 62%)}
-  .sub{font-size:clamp(.98rem,1.5vw,1.08rem);max-width:33em;color:var(--ink-soft)}
-  .sub .hr-em{color:var(--hr-ink);font-weight:700}
+  --max-w: 880px;
+  --sec-pad: 5rem 1.5rem;
+  --radius: 10px;
+  --radius-sm: 6px;
+}
 
-  /* giant numbers */
-  .figures{
-    display:grid;grid-template-columns:repeat(3,1fr);
-    gap:clamp(16px,3vw,40px);margin-top:clamp(64px,9vh,110px);
-    border-top:1.5px solid var(--line-strong);padding-top:46px;
-  }
-  .fig .n{
-    font-family:var(--disp);font-weight:400;line-height:.8;
-    font-size:clamp(3.4rem,11vw,8.2rem);letter-spacing:-.02em;
-    display:flex;align-items:baseline;gap:.04em;
-  }
-  .fig:nth-child(1) .n{color:var(--hr)}
-  .fig:nth-child(2) .n{color:var(--ink)}
-  .fig:nth-child(3) .n{color:var(--dx)}
-  .fig .n .u{font-family:var(--serif);font-weight:700;font-size:.26em;letter-spacing:0}
-  .fig .cap{font-size:.82rem;letter-spacing:.05em;color:var(--ink-soft);margin-top:18px;line-height:1.6}
-  @media(max-width:680px){
-    .figures{grid-template-columns:1fr;gap:34px}
-    .fig{display:flex;align-items:baseline;gap:22px;border-bottom:1px solid var(--line);padding-bottom:24px}
-    .fig .n{font-size:clamp(3.6rem,22vw,5rem)}
-    .fig .cap{margin-top:0}
-  }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-ja-sans);
+  font-size: 16px; line-height: 1.8;
+  color: var(--ink); background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
 
-  /* ---- section frame ---- */
-  section{padding:clamp(70px,11vh,140px) 0;position:relative}
-  .shead{display:flex;gap:clamp(16px,3vw,44px);align-items:baseline;margin-bottom:clamp(40px,6vh,72px)}
-  .snum{
-    font-family:var(--disp);font-style:italic;font-weight:400;
-    font-size:clamp(1rem,1.4vw,1.2rem);color:var(--ink-soft);
-    flex-shrink:0;padding-top:.4em;
-  }
-  .stitle{
-    font-family:var(--serif);font-weight:700;
-    font-size:clamp(1.7rem,4.4vw,3.1rem);line-height:1.22;letter-spacing:-.005em;
-  }
-  .prose{max-width:42em;font-size:clamp(1rem,1.4vw,1.1rem);color:var(--ink)}
-  .prose p{margin-bottom:1.5em}
-  .prose .pull{
-    font-family:var(--serif);font-weight:700;font-size:clamp(1.3rem,2.6vw,1.85rem);
-    line-height:1.6;color:var(--ink);margin:1.6em 0;
-    padding-left:24px;border-left:3px solid var(--hr);
-  }
-  .divline{height:1px;background:var(--line);width:100%}
+[data-reveal] { opacity: 0; transform: translateY(24px); transition: opacity 0.65s ease, transform 0.65s ease; }
+[data-reveal].visible { opacity: 1; transform: none; }
 
-  /* ---- tool -> labor toggle row ---- */
-  .shift{display:grid;grid-template-columns:1fr auto 1fr;gap:clamp(14px,3vw,34px);align-items:stretch;margin-top:14px}
-  .shift .card{border:1.5px solid var(--line);padding:clamp(22px,3vw,34px);background:var(--paper-2)}
-  .shift .card .t{font-family:var(--disp);font-style:italic;font-size:.85rem;letter-spacing:.05em;color:var(--ink-soft);margin-bottom:14px}
-  .shift .card .h{font-family:var(--serif);font-weight:700;font-size:clamp(1.3rem,2.4vw,1.7rem);margin-bottom:10px}
-  .shift .card.now{border-color:var(--dx);background:rgba(30,58,230,.05)}
-  .shift .card.now .h{color:var(--dx-ink)}
-  .shift .card p{font-size:.92rem;color:var(--ink-soft);line-height:1.7}
-  .shift .arr{display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-size:2rem;color:var(--ink-soft)}
-  @media(max-width:680px){.shift{grid-template-columns:1fr;gap:12px}.shift .arr{transform:rotate(90deg);padding:4px 0}}
+.inner { max-width: var(--max-w); margin: 0 auto; padding: 0 1.5rem; }
+.sec-light { background: var(--paper); padding: var(--sec-pad); color: var(--ink); }
+.sec-navy  { background: var(--navy);  padding: var(--sec-pad); color: var(--white); }
 
-  /* ---- 3 layers ---- */
-  .layers{display:flex;flex-direction:column;gap:14px;margin-top:10px}
-  .layer{
-    display:grid;grid-template-columns:auto 1fr auto;gap:clamp(16px,3vw,30px);align-items:center;
-    border:1.5px solid var(--line);padding:clamp(20px,3vw,30px) clamp(20px,3vw,34px);
-    position:relative;overflow:hidden;
-  }
-  .layer .lab{font-family:var(--disp);font-weight:500;font-size:clamp(1.4rem,3vw,2.1rem);min-width:1.4em}
-  .layer .lx{font-family:var(--serif);font-weight:700;font-size:clamp(1.15rem,2.2vw,1.5rem)}
-  .layer .lx small{display:block;font-family:var(--sans);font-weight:400;font-size:.82rem;color:var(--ink-soft);margin-top:4px;letter-spacing:.02em}
-  .layer .tag{font-size:.74rem;letter-spacing:.04em;padding:6px 13px;border-radius:100px;white-space:nowrap;font-weight:500}
-  .layer.l1{border-color:rgba(30,58,230,.35)}
-  .layer.l1 .lab,.layer.l1 .lx{color:var(--dx-ink)}
-  .layer.l1 .tag{background:rgba(30,58,230,.12);color:var(--dx-ink)}
-  .layer.l2{border-color:rgba(30,58,230,.2)}
-  .layer.l2 .tag{background:rgba(30,58,230,.08);color:var(--dx-ink)}
-  .layer.l3{border-color:var(--hr);background:rgba(218,71,17,.05)}
-  .layer.l3 .lab,.layer.l3 .lx{color:var(--hr-ink)}
-  .layer.l3 .tag{background:var(--hr);color:var(--paper)}
-  @media(max-width:680px){
-    .layer{grid-template-columns:auto 1fr;gap:14px}
-    .layer .tag{grid-column:1/-1;justify-self:start}
-  }
+.eyebrow {
+  display: inline-block; font-family: var(--font-en);
+  font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--azure); background: var(--azure-pale);
+  padding: 3px 10px; border-radius: 4px; margin-bottom: 1.1rem;
+}
+.sec-navy .eyebrow { color: var(--white); background: rgba(255,255,255,0.15); }
 
-  /* ---- two specialties (DX / HR) ---- */
-  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:clamp(20px,3vw,2px);margin-top:18px;border:1.5px solid var(--ink);background:var(--ink)}
-  .col{background:var(--paper);padding:clamp(26px,3.4vw,44px)}
-  .col .badge{display:inline-flex;align-items:center;gap:10px;font-family:var(--disp);font-style:italic;font-size:.9rem;letter-spacing:.03em;margin-bottom:8px}
-  .col .badge .dot{width:11px;height:11px;border-radius:50%}
-  .col h3{font-family:var(--serif);font-weight:800;font-size:clamp(1.4rem,2.6vw,2rem);line-height:1.2;margin-bottom:8px}
-  .col .role{font-size:.86rem;color:var(--ink-soft);margin-bottom:30px;letter-spacing:.02em}
-  .col.dx .badge{color:var(--dx-ink)} .col.dx .badge .dot{background:var(--dx)}
-  .col.hr .badge{color:var(--hr-ink)} .col.hr .badge .dot{background:var(--hr)}
-  .item{padding:18px 0;border-top:1px solid var(--line);display:grid;grid-template-columns:auto 1fr;gap:16px}
-  .item:last-child{border-bottom:1px solid var(--line)}
-  .item .ix{font-family:var(--disp);font-weight:500;font-size:1.05rem;line-height:1.5;opacity:.55}
-  .col.dx .item .ix{color:var(--dx-ink)} .col.hr .item .ix{color:var(--hr-ink)}
-  .item .it{font-family:var(--sans);font-weight:700;font-size:1.02rem;margin-bottom:5px;line-height:1.5}
-  .item .id{font-size:.88rem;color:var(--ink-soft);line-height:1.7}
-  @media(max-width:760px){.twocol{grid-template-columns:1fr;gap:1.5px}}
+.sec-title {
+  font-family: var(--font-ja-serif);
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: 500; line-height: 1.4; margin-bottom: 0.6rem;
+}
+.sec-sub { font-size: 1rem; color: var(--muted); margin-bottom: 2.5rem; line-height: 1.7; }
+.sec-navy .sec-sub { color: rgba(255,255,255,0.7); }
 
-  /* ---- fusion ---- */
-  .fusion{position:relative;text-align:center;padding:clamp(56px,9vh,120px) 0}
-  .weave{position:relative;height:clamp(120px,22vw,220px);margin:0 auto clamp(40px,6vh,70px);max-width:760px}
-  .weave svg{width:100%;height:100%;overflow:visible}
-  .fusion .ftitle{font-family:var(--serif);font-weight:800;font-size:clamp(2rem,6vw,4rem);line-height:1.1;letter-spacing:-.01em;margin-bottom:30px}
-  .fusion .ftitle .b{color:var(--dx)} .fusion .ftitle .o{color:var(--hr)}
-  .fusion .fbody{max-width:36em;margin:0 auto;font-size:clamp(1rem,1.5vw,1.12rem);color:var(--ink-soft);line-height:1.95}
-  .fusion .fbody b{color:var(--ink);font-weight:700}
+.kicker {
+  font-family: var(--font-ja-serif);
+  font-size: 1.08rem; line-height: 1.9; margin-bottom: 2rem;
+  padding-left: 1.1rem; border-left: 3px solid var(--azure);
+}
+.sec-navy .kicker { border-left-color: var(--azure-pale); color: rgba(255,255,255,0.9); }
 
-  /* ---- HR turns (deep dive) ---- */
-  .turns{display:flex;flex-direction:column;border-top:1.5px solid var(--hr)}
-  .turn{display:grid;grid-template-columns:auto 1fr;gap:clamp(20px,4vw,56px);padding:clamp(30px,4vw,48px) 0;border-bottom:1px solid var(--line)}
-  .turn .tn{font-family:var(--disp);font-weight:300;font-size:clamp(2.6rem,6vw,4.6rem);line-height:.85;color:var(--hr);opacity:.9}
-  .turn .tbody h3{font-family:var(--serif);font-weight:700;font-size:clamp(1.3rem,2.7vw,1.95rem);margin-bottom:14px;color:var(--hr-ink);line-height:1.32}
-  .turn .tbody p{font-size:clamp(.98rem,1.4vw,1.1rem);color:var(--ink);line-height:1.92;max-width:40em}
-  .turn .tbody p b{font-weight:700;background:linear-gradient(transparent 58%,rgba(218,71,17,.24) 58%)}
-  @media(max-width:680px){.turn{grid-template-columns:1fr;gap:6px}.turn .tn{font-size:2.4rem}}
+.bare { margin: 1.5rem 0; }
+.bare p { font-size: 0.95rem; line-height: 1.95; }
+.sec-navy .bare p { color: rgba(255,255,255,0.8); }
+.bare p + p { margin-top: 1rem; }
 
-  /* ---- roadmap ---- */
-  .phases{margin-top:18px;border-top:1.5px solid var(--ink)}
-  .phase{display:grid;grid-template-columns:minmax(150px,1fr) 1.3fr 1.3fr;gap:clamp(16px,3vw,40px);padding:clamp(28px,3.6vw,42px) 0;border-bottom:1px solid var(--line)}
-  .phase .pmeta .pn{font-family:var(--disp);font-style:italic;color:var(--ink-soft);font-size:.95rem;margin-bottom:8px}
-  .phase .pmeta .ph{font-family:var(--serif);font-weight:700;font-size:clamp(1.2rem,2.2vw,1.55rem);line-height:1.3}
-  .phase .lane{position:relative;padding-left:20px}
-  .phase .lane::before{content:"";position:absolute;left:0;top:7px;width:9px;height:9px;border-radius:50%}
-  .phase .lane.dx::before{background:var(--dx)} .phase .lane.hr::before{background:var(--hr)}
-  .phase .lane .who{font-family:var(--disp);font-style:italic;font-size:.8rem;letter-spacing:.04em;margin-bottom:7px}
-  .phase .lane.dx .who{color:var(--dx-ink)} .phase .lane.hr .who{color:var(--hr-ink)}
-  .phase .lane .what{font-size:.94rem;line-height:1.7;color:var(--ink)}
-  @media(max-width:760px){
-    .phase{grid-template-columns:1fr;gap:18px}
-    .phase .pmeta{padding-bottom:4px;border-bottom:1px dashed var(--line)}
-  }
-  .rmnote{font-family:var(--serif);font-weight:700;font-size:clamp(1.15rem,2.2vw,1.6rem);line-height:1.6;margin-top:46px;max-width:30em}
+.hero {
+  background: var(--navy); padding: 5.5rem 1.5rem 4.5rem;
+  text-align: center; color: var(--white);
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 60% 25%, rgba(46,84,150,0.55) 0%, transparent 65%);
+  pointer-events: none;
+}
+.texture { position: absolute; inset: 0; opacity: 0.16; pointer-events: none; }
+.texture svg { width: 100%; height: 100%; }
+.hero .eyebrow { color: var(--white); background: rgba(255,255,255,0.15); }
+.hero-title {
+  font-family: var(--font-ja-serif);
+  font-size: clamp(1.85rem, 5vw, 2.9rem);
+  font-weight: 500; line-height: 1.4; margin-bottom: 1.2rem; position: relative;
+}
+.hero-copy {
+  font-size: 1.02rem; color: rgba(255,255,255,0.82);
+  max-width: 620px; margin: 0 auto 2.6rem; line-height: 1.9; position: relative;
+}
+.hero-glyph { position: relative; max-width: 640px; margin: 0 auto; }
+.hero-glyph svg { width: 100%; height: auto; display: block; }
 
-  /* ---- CTA ---- */
-  .cta{background:var(--ink);color:var(--paper);margin-top:clamp(40px,7vh,90px)}
-  .cta .wrap{padding-top:clamp(70px,11vh,130px);padding-bottom:clamp(70px,11vh,130px)}
-  .cta .ce{font-family:var(--disp);font-style:italic;color:#E9A98C;font-size:.95rem;letter-spacing:.04em;margin-bottom:26px;display:flex;align-items:center;gap:14px}
-  .cta .ce::before{content:"";width:42px;height:1px;background:#E9A98C}
-  .cta h2{font-family:var(--serif);font-weight:800;font-size:clamp(1.9rem,5.2vw,3.6rem);line-height:1.25;letter-spacing:-.01em;margin-bottom:34px}
-  .cta .cbody{max-width:40em;color:#C9C4B8;font-size:clamp(1rem,1.5vw,1.12rem);line-height:1.95;margin-bottom:18px}
-  .cta .pillars{display:flex;flex-wrap:wrap;gap:10px;margin:34px 0 44px}
-  .cta .pillars span{border:1px solid rgba(244,241,234,.28);padding:9px 18px;border-radius:100px;font-size:.86rem;font-family:var(--serif);font-weight:500}
-  .cta .pillars span b{color:#fff;font-weight:700}
-  .btn{
-    display:inline-flex;align-items:center;gap:14px;
-    background:var(--hr);color:#fff;text-decoration:none;
-    font-family:var(--sans);font-weight:700;font-size:1.02rem;
-    padding:18px 34px;border-radius:2px;transition:.3s cubic-bezier(.2,.8,.2,1);
-  }
-  .btn:hover{background:var(--paper);color:var(--ink);transform:translateY(-2px)}
-  .btn .x{font-family:var(--disp);transition:transform .3s}
-  .btn:hover .x{transform:translateX(5px)}
-  .cta .cnote{margin-top:22px;font-size:.84rem;color:#8C8678}
+.figure {
+  background: var(--white); border-radius: var(--radius);
+  padding: 1.75rem 1.5rem 1.25rem;
+  box-shadow: 0 2px 12px rgba(26,26,46,0.08);
+  margin: 2rem 0 0;
+}
+.sec-navy .figure { background: var(--navy-deep); box-shadow: none; }
+.figure-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.figure svg { width: 100%; height: auto; display: block; }
+.figure text { font-family: var(--font-ja-sans); }
+.figure-cap {
+  font-family: var(--font-en); font-size: 11px; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--muted); margin-top: 1rem; text-align: center;
+}
+.sec-navy .figure-cap { color: rgba(255,255,255,0.5); }
+.fig-title {
+  font-family: var(--font-ja-serif); font-size: 1rem; font-weight: 500;
+  margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--azure-pale);
+}
+.sec-navy .fig-title { color: var(--white); border-bottom-color: rgba(255,255,255,0.15); }
 
-  /* ---- footer ---- */
-  footer{padding:clamp(50px,8vh,90px) 0}
-  .frow{display:flex;justify-content:space-between;flex-wrap:wrap;gap:30px;align-items:flex-end}
-  .fauthor .fn{font-family:var(--serif);font-weight:700;font-size:1.25rem;margin-bottom:6px}
-  .fauthor .fr{font-size:.86rem;color:var(--ink-soft);line-height:1.7}
-  .fmission{font-family:var(--disp);font-style:italic;font-size:clamp(1.1rem,2vw,1.5rem);color:var(--ink);text-align:right}
-  .fmission small{display:block;font-family:var(--sans);font-style:normal;font-size:.72rem;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:8px}
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 2rem; }
+.stat {
+  background: var(--white); border-radius: var(--radius);
+  padding: 1.3rem 1rem; text-align: center;
+  box-shadow: 0 2px 8px rgba(26,26,46,0.07); border-top: 3px solid var(--azure);
+}
+.sec-navy .stat { background: var(--navy-deep); box-shadow: none; }
+.stat-num {
+  font-family: var(--font-en); font-size: 2rem; font-weight: 700;
+  line-height: 1.1; color: var(--azure);
+}
+.sec-navy .stat-num { color: var(--azure-pale); }
+.stat-num small { font-size: 0.9rem; font-weight: 600; }
+.stat-label { font-size: 0.78rem; color: var(--muted); margin-top: 0.4rem; line-height: 1.6; }
+.sec-navy .stat-label { color: rgba(255,255,255,0.65); }
 
-  /* ---- reveal ---- */
-  [data-rv]{opacity:0;transform:translateY(26px);transition:opacity .9s cubic-bezier(.2,.8,.2,1),transform .9s cubic-bezier(.2,.8,.2,1)}
-  [data-rv].vis{opacity:1;transform:none}
-  .hero [data-rv]{transition-duration:1.1s}
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+.card {
+  position: relative; overflow: hidden;
+  background: linear-gradient(180deg, #ffffff, #fbfcfe);
+  border: 1px solid var(--azure-pale); border-radius: var(--radius);
+  padding: 1.6rem 1.7rem 1.5rem; box-shadow: 0 2px 10px rgba(26,26,46,0.05);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+.card::before {
+  content: ""; position: absolute; left: 0; top: 0; width: 100%; height: 3px;
+  background: linear-gradient(90deg, var(--azure), var(--azure-pale));
+}
+.card:hover { transform: translateY(-4px); box-shadow: 0 18px 38px -16px rgba(31,56,100,0.28); border-color: var(--azure); }
+.sec-navy .card { background: var(--navy-deep); border-color: rgba(255,255,255,0.12); box-shadow: none; }
+.card h3 { font-family: var(--font-ja-serif); font-size: 1.12rem; font-weight: 600; margin-bottom: 0.45rem; padding-right: 2.8rem; color: var(--ink); }
+.sec-navy .card h3 { color: #fff; }
+.card p { font-size: 0.85rem; line-height: 1.8; color: var(--muted); }
+.sec-navy .card p { color: rgba(255,255,255,0.68); }
+.card-tag {
+  position: absolute; top: 0.55rem; right: 1.1rem; margin: 0; padding: 0;
+  font-family: var(--font-en); font-size: 2.6rem; font-weight: 700; line-height: 1;
+  letter-spacing: 0; color: transparent; background: none;
+  -webkit-text-stroke: 1.4px var(--azure-pale); pointer-events: none;
+}
+.sec-navy .card-tag { color: transparent; background: none; -webkit-text-stroke-color: rgba(255,255,255,0.22); }
+
+.doc-list { list-style: none; margin-top: 1rem; display: flex; flex-direction: column; gap: 0.45rem; }
+.doc-list a {
+  display: flex; align-items: center; justify-content: space-between; gap: 0.6rem;
+  font-size: 0.85rem; padding: 0.62rem 0.8rem; color: var(--ink);
+  border-radius: var(--radius-sm); background: rgba(46,84,150,0.05);
+  border-left: 3px solid var(--azure); transition: background 0.2s ease, border-color 0.2s ease;
+}
+.doc-list a::after {
+  content: "→"; font-family: var(--font-en); color: var(--azure); flex-shrink: 0;
+  opacity: 0; transform: translateX(-5px); transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.doc-list a:hover { background: rgba(46,84,150,0.12); }
+.doc-list a:hover::after { opacity: 1; transform: translateX(0); }
+.sec-navy .doc-list a { background: rgba(255,255,255,0.06); border-left-color: var(--azure-pale); color: rgba(255,255,255,0.9); }
+.sec-navy .doc-list a::after { color: var(--azure-pale); }
+.sec-navy .doc-list a:hover { background: rgba(255,255,255,0.12); }
+.doc-list a.doc-pdf { border-left-color: var(--red); font-weight: 600; }
+.doc-list a.doc-pdf:hover { background: rgba(226,55,68,0.10); }
+.sec-navy .doc-list a.doc-pdf { border-left-color: var(--red-bright); }
+
+/* 配布資料ダウンロード（フィーチャー） */
+.sec-download { background: var(--paper); padding: 3.5rem 1.5rem; }
+.dl-feature {
+  max-width: var(--max-w); margin: 0 auto;
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-deep) 100%);
+  border-radius: var(--radius); padding: 2.9rem 2.6rem; color: var(--white);
+  position: relative; overflow: hidden;
+  box-shadow: 0 24px 60px -24px rgba(20,29,53,0.65);
+}
+.dl-feature::before {
+  content: ""; position: absolute; top: 0; right: 0; width: 45%; height: 100%;
+  background: radial-gradient(circle at 90% 10%, rgba(226,55,68,0.28), transparent 65%);
+  pointer-events: none;
+}
+.dl-feature > * { position: relative; }
+.dl-badge {
+  display: inline-block; font-family: var(--font-en); font-size: 0.7rem;
+  letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700;
+  background: var(--red); color: #fff; padding: 0.35rem 0.75rem; border-radius: 100px;
+}
+.dl-title {
+  font-family: var(--font-ja-serif); font-size: 1.75rem; line-height: 1.42;
+  margin: 1.05rem 0 0.65rem; font-weight: 600;
+}
+.dl-title span { color: var(--azure-pale); }
+.dl-copy {
+  font-size: 0.9rem; line-height: 1.9; color: rgba(255,255,255,0.82);
+  max-width: 560px; margin-bottom: 1.85rem;
+}
+.dl-btn {
+  display: inline-flex; align-items: center; gap: 0.65rem;
+  background: var(--red); color: #fff; font-weight: 700; font-size: 0.98rem;
+  padding: 0.95rem 1.6rem; border-radius: var(--radius-sm); text-decoration: none;
+  transition: transform 0.15s ease, background 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 10px 24px -10px rgba(226,55,68,0.7);
+}
+.dl-btn:hover { background: var(--red-bright); transform: translateY(-2px); }
+.dl-btn-icon { font-size: 1.05rem; }
+.dl-btn-meta { font-family: var(--font-en); font-weight: 500; font-size: 0.75rem; opacity: 0.9; }
+.dl-items { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.5rem; }
+.dl-item { background: rgba(255,255,255,0.06); border: 1px solid rgba(216,228,240,0.16); border-radius: var(--radius-sm); padding: 1.15rem 1.2rem; display: flex; flex-direction: column; }
+.dl-item h3 { font-family: var(--font-ja-serif); font-size: 1.02rem; color: #fff; margin-bottom: 0.35rem; font-weight: 600; }
+.dl-item p { font-size: 0.8rem; color: rgba(255,255,255,0.72); line-height: 1.7; margin-bottom: 1rem; flex-grow: 1; }
+.dl-item .dl-btn { width: 100%; justify-content: center; }
+@media (max-width: 640px) {
+  .dl-feature { padding: 2.1rem 1.5rem; }
+  .dl-title { font-size: 1.4rem; }
+  .dl-btn { flex-wrap: wrap; row-gap: 0.3rem; }
+  .dl-items { grid-template-columns: 1fr; }
+}
+
+.note {
+  font-size: 0.82rem; color: var(--muted); line-height: 1.8;
+  padding: 0.85rem 1.1rem; border-left: 3px solid var(--azure-pale);
+  background: rgba(46,84,150,0.04);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin-top: 1.75rem;
+}
+.sec-navy .note { color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.05); border-left-color: rgba(255,255,255,0.25); }
+
+.summary { text-align: center; max-width: 660px; margin: 0 auto; }
+.summary-text {
+  font-family: var(--font-ja-serif);
+  font-size: clamp(1.12rem, 3vw, 1.45rem);
+  font-weight: 400; line-height: 1.95;
+}
+
+.take {
+  background: var(--navy-deep); border-radius: var(--radius);
+  padding: 1.55rem 1.75rem; display: flex; gap: 1.25rem; align-items: flex-start;
+  margin: 2rem 0 0; border-left: 4px solid var(--red);
+}
+.sec-light .take { background: #fff8f8; border-left: 4px solid var(--red); box-shadow: 0 2px 8px rgba(226,55,68,0.07); }
+.take-avatar {
+  flex-shrink: 0; width: 44px; height: 44px; border-radius: 50%;
+  background: var(--azure); color: var(--white);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-en); font-size: 0.75rem; font-weight: 700;
+}
+.take-label {
+  font-family: var(--font-en); font-size: 10px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--red-bright); margin-bottom: 4px;
+}
+.sec-light .take-label { color: var(--red); }
+.take-author { font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.45rem; }
+.sec-light .take-author { color: var(--muted); }
+.take-text { font-size: 0.89rem; line-height: 1.85; color: rgba(255,255,255,0.88); }
+.sec-light .take-text { color: var(--ink); }
+.hot { color: var(--red-bright); font-weight: 700; }
+.sec-light .hot { color: var(--red); }
+
+.text-azure { color: var(--azure); }
+.fw-bold { font-weight: 700; }
+
+footer {
+  background: var(--navy-deep); padding: 3rem 1.5rem; text-align: center;
+  color: rgba(255,255,255,0.5); font-size: 0.8rem;
+}
+
+@media (max-width: 640px) {
+  :root { --sec-pad: 3.5rem 1rem; }
+  .hero { padding: 4rem 1rem 3.5rem; }
+}
+
+/* プロフィール：ポートレート */
+.profile-lead {
+  display: grid; grid-template-columns: 220px 1fr; gap: 2.4rem; align-items: center;
+  margin: 1.6rem 0 0.4rem;
+}
+.portrait-wrap { position: relative; width: 220px; }
+.portrait-wrap::before {
+  content: ""; position: absolute; left: -12px; top: 12px; width: 220px; height: 220px;
+  border: 2px solid var(--azure); border-radius: 50%; z-index: 0;
+}
+.portrait {
+  position: relative; z-index: 1; width: 220px; height: 220px;
+  display: block; object-fit: cover; object-position: center 12%;
+  border-radius: 50%; box-shadow: 0 18px 44px -18px rgba(20,29,53,0.5);
+  filter: saturate(0.96) contrast(1.02);
+}
+.portrait-cap {
+  margin-top: 1.05rem; text-align: center; font-family: var(--font-en); font-size: 0.78rem;
+  letter-spacing: 0.06em; color: var(--muted); position: relative; z-index: 1;
+}
+.portrait-cap b { display: block; font-family: var(--font-ja-serif); font-size: 1rem; color: var(--ink); letter-spacing: 0; margin-bottom: 0.15rem; }
+.profile-lead .kicker { margin-top: 0; }
+.profile-link-wrap { margin-top: 1.7rem; }
+.profile-link {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  font-size: 0.9rem; font-weight: 700; color: var(--navy);
+  padding: 0.72rem 1.4rem; border: 1.5px solid var(--azure);
+  border-radius: 100px; text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+.profile-link:hover { background: var(--navy); color: #fff; border-color: var(--navy); transform: translateY(-2px); box-shadow: 0 10px 24px -12px rgba(31,56,100,0.5); }
+@media (max-width: 720px) {
+  .profile-lead { grid-template-columns: 1fr; gap: 1.4rem; justify-items: center; }
+  .profile-lead .kicker { text-align: left; }
+}
+
+/* AICX / ストラテジスト訴求 */
+.aicx-logo { display: block; width: 230px; max-width: 62%; margin-bottom: 1.3rem; }
+.aicx-logo img { width: 100%; height: auto; }
+.cert-logo {
+  display: inline-block; background: #fff; border-radius: var(--radius-sm);
+  padding: 0.7rem 0.9rem; margin-bottom: 0.85rem;
+}
+.cert-logo img { width: 128px; height: auto; display: block; }
+.aicx-hero {
+  background: linear-gradient(135deg, rgba(255,255,255,0.09), rgba(255,255,255,0.03));
+  border: 1px solid rgba(216,228,240,0.18); border-radius: var(--radius);
+  padding: 1.9rem 2rem; margin-top: 0.4rem;
+}
+.aicx-hero .role-pill {
+  display: inline-block; font-family: var(--font-en); font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--navy-deep);
+  background: var(--azure-pale); padding: 0.3rem 0.7rem; border-radius: 100px;
+}
+.aicx-hero h3 { font-family: var(--font-ja-serif); font-size: 1.5rem; margin: 0.8rem 0 0.5rem; color: #fff; }
+.aicx-hero p { font-size: 0.9rem; line-height: 1.95; color: rgba(255,255,255,0.82); }
+.cert {
+  margin-top: 1.6rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+}
+.cert-card {
+  background: var(--navy-deep); border: 1px solid rgba(216,228,240,0.16);
+  border-left: 3px solid var(--red-bright); border-radius: var(--radius-sm);
+  padding: 1.15rem 1.25rem;
+}
+.cert-card .cert-eyebrow { font-family: var(--font-en); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--red-bright); font-weight: 700; }
+.cert-card h4 { font-size: 1.02rem; color: #fff; margin: 0.4rem 0 0.35rem; font-weight: 700; }
+.cert-card p { font-size: 0.82rem; line-height: 1.8; color: rgba(255,255,255,0.72); }
+.cert-card a { color: var(--azure-pale); font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
+@media (max-width: 640px) { .cert { grid-template-columns: 1fr; } }
+
+/* ご依頼・ご相談 CTA */
+.lead-cta {
+  margin-top: 2.2rem; text-align: center;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(216,228,240,0.16);
+  border-radius: var(--radius); padding: 2rem 1.6rem;
+}
+.lead-cta-text { font-size: 0.92rem; line-height: 1.9; color: rgba(255,255,255,0.82); margin-bottom: 1.25rem; }
+.lead-btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: var(--red); color: #fff; font-weight: 700; font-size: 0.98rem;
+  padding: 0.95rem 1.9rem; border-radius: var(--radius-sm); text-decoration: none;
+  transition: transform 0.15s ease, background 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 12px 28px -12px rgba(226,55,68,0.7);
+}
+.lead-btn:hover { background: var(--red-bright); transform: translateY(-2px); }
+.lead-sub { margin-top: 1rem; font-size: 0.8rem; color: rgba(255,255,255,0.55); }
+.lead-sub a { color: var(--azure-pale); text-decoration: underline; text-underline-offset: 2px; }
+.lead-btns { display: flex; flex-wrap: wrap; gap: 0.7rem; justify-content: center; }
+.lead-btn-x { background: var(--navy-deep); box-shadow: 0 12px 28px -12px rgba(0,0,0,0.5); }
+.lead-btn-x:hover { background: #0b1020; }
+.offer-list { list-style: none; margin-top: 0.85rem; display: flex; flex-direction: column; gap: 0.42rem; }
+.offer-list li { position: relative; padding-left: 1rem; font-size: 0.83rem; line-height: 1.7; color: rgba(255,255,255,0.74); }
+.offer-list li::before { content: "―"; position: absolute; left: 0; color: var(--azure-pale); }
+
+/* リード獲得ゲート（モーダル） */
+.gate-overlay {
+  position: fixed; inset: 0; background: rgba(20,29,53,0.72);
+  -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+  display: none; align-items: center; justify-content: center; z-index: 1000; padding: 1.5rem;
+}
+.gate-overlay.open { display: flex; }
+.gate-modal {
+  background: var(--paper); border-radius: var(--radius); max-width: 440px; width: 100%;
+  padding: 2rem 1.9rem; box-shadow: 0 30px 70px -20px rgba(20,29,53,0.6); position: relative;
+}
+.gate-modal .gate-eyebrow { font-family: var(--font-en); font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--azure); font-weight: 700; }
+.gate-modal h3 { font-family: var(--font-ja-serif); font-size: 1.32rem; color: var(--ink); margin: 0.5rem 0; }
+.gate-lead { font-size: 0.84rem; color: var(--muted); line-height: 1.85; margin-bottom: 1.3rem; }
+.gate-field { margin-bottom: 0.85rem; }
+.gate-field label { display: block; font-size: 0.76rem; font-weight: 700; color: var(--navy); margin-bottom: 0.3rem; }
+.gate-field input {
+  width: 100%; padding: 0.7rem 0.8rem; border: 1px solid var(--azure-pale);
+  border-radius: var(--radius-sm); font-size: 0.9rem; font-family: inherit; color: var(--ink); background: #fff;
+}
+.gate-field input:focus { outline: none; border-color: var(--azure); box-shadow: 0 0 0 3px rgba(46,84,150,0.12); }
+.gate-err { color: var(--red); font-size: 0.76rem; margin: 0.2rem 0 0.2rem; min-height: 1em; }
+.gate-submit {
+  width: 100%; margin-top: 0.5rem; background: var(--red); color: #fff; font-weight: 700;
+  font-size: 0.95rem; padding: 0.9rem; border: none; border-radius: var(--radius-sm);
+  cursor: pointer; transition: background 0.2s ease;
+}
+.gate-submit:hover { background: var(--red-bright); }
+.gate-submit:disabled { opacity: 0.6; cursor: default; }
+.gate-note { font-size: 0.72rem; color: var(--muted); margin-top: 0.9rem; line-height: 1.65; }
+.gate-close { position: absolute; top: 0.7rem; right: 1rem; background: none; border: none; font-size: 1.5rem; color: var(--muted); cursor: pointer; line-height: 1; }
 </style>
 </head>
 <body>
 
-<nav>
-  <div class="mark">A I C X</div>
-  <div class="meta">AI Agent &times; Organization Design</div>
-</nav>
-
-<header class="hero">
-  <div class="wrap">
-    <div class="eyebrow" data-rv>労働力としてのAIエージェント</div>
-    <h1 class="title" data-rv>当たり前が、<br><span class="dim">変わる。</span></h1>
-    <p class="lead" data-rv>
-      週休4日制が、当たり前になるかもしれない。1日4時間労働が、当たり前になるかもしれない。そして、AIで生み出す価値が2倍になったのなら、<b>給料も2倍にならなければおかしい。</b>
-    </p>
-    <p class="sub" data-rv>
-      これは理想論ではない。AIエージェントが「労働力」として機能し始めたいま、現実として向き合うべき問いだ。そしてこの変化を設計する主役は、技術部門ではない——<span class="hr-em">人事</span>である。
-    </p>
-
-    <div class="figures">
-      <div class="fig" data-rv>
-        <div class="n">4<span class="u">日休</span></div>
-        <div class="cap">週休4日制が、<br>当たり前になるかもしれない</div>
-      </div>
-      <div class="fig" data-rv>
-        <div class="n">4<span class="u">時間</span></div>
-        <div class="cap">1日4時間労働が、<br>当たり前になるかもしれない</div>
-      </div>
-      <div class="fig" data-rv>
-        <div class="n">&times;2<span class="u">倍に</span></div>
-        <div class="cap">価値が2倍なら、<br>給料も2倍にならなければ</div>
-      </div>
-    </div>
+<section class="hero">
+  <div class="texture" aria-hidden="true">
+    <svg viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs><pattern id="pg" width="48" height="48" patternUnits="userSpaceOnUse"><path d="M48 0H0V48" fill="none" stroke="#ffffff" stroke-width="0.7"/></pattern></defs>
+      <rect width="1200" height="600" fill="url(#pg)"/>
+      <circle cx="210" cy="150" r="4" fill="#fff"/><circle cx="540" cy="330" r="4" fill="#fff"/><circle cx="870" cy="200" r="4" fill="#fff"/><circle cx="1020" cy="440" r="4" fill="#fff"/>
+      <path d="M210 150L540 330L870 200L1020 440" stroke="#fff" stroke-width="1" fill="none"/>
+    </svg>
   </div>
-</header>
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Career &amp; Talent ─ HR</span>
+    <h1 class="hero-title">当たり前が、変わる。<br>労働力としてのAIエージェントと、<br>人事の役割</h1>
+    <p class="hero-copy">週休4日制が、1日4時間労働が、当たり前になるかもしれない。AIで生み出す価値が2倍になったのなら、給料も2倍にならなければおかしい。これは理想論ではない。そしてこの変化を設計する主役は、技術部門ではなく——人事だ。</p>
+  </div>
+</section>
 
-<section>
-  <div class="wrap">
-    <div class="shead">
-      <div class="snum" data-rv>01</div>
-      <h2 class="stitle" data-rv>AIエージェントは、<br>「労働力」になった</h2>
-    </div>
-    <div class="prose">
-      <p data-rv>これまでのAIは、人間を補助するツールだった。人間が指示を出し、AIが答える。主体はあくまで人間の側にあった。</p>
-      <p data-rv>だが、いまのAIエージェントは違う。複数のステップにまたがるタスクを自ら計画し、ツールを使い分け、外部システムと連携し、状況を判断しながら業務を最後までやり切る。目的を渡せば、そこに至る道筋を自分で組み立てて動く。</p>
-      <div class="shift" data-rv>
-        <div class="card">
-          <div class="t">〜これまで</div>
-          <div class="h">ツール</div>
-          <p>使うもの。人間が一手ずつ操作し、指示を出して初めて動く道具。</p>
-        </div>
-        <div class="arr">&rarr;</div>
-        <div class="card now">
-          <div class="t">いま</div>
-          <div class="h">労働力</div>
-          <p>任せるもの。一定の業務を丸ごと委任でき、自律的にやり切る実行主体。</p>
-        </div>
-      </div>
-      <p class="pull" data-rv>これはソフトウェアの話ではない。新しい労働力が、組織に加わるという話である。</p>
+<section class="sec-light">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Chapter 1 ─ New Workforce</span>
+    <h2 class="sec-title">AIエージェントは、「労働力」になった</h2>
+    <p class="kicker">これまでのAIは、人間を補助する道具だった。だが、いまのAIエージェントは違う。複数ステップのタスクを自ら計画し、ツールを使い分け、状況を判断しながら業務を最後までやり切る。<span class="fw-bold">目的を渡せば、そこに至る道筋を自分で組み立てて動く。</span></p>
+    <div class="cards">
+      <div class="card"><span class="card-tag">01</span><h3>使うもの</h3><p>人間が一手ずつ操作し、指示を出して初めて動く道具。主体は人間の側にある。</p></div>
+      <div class="card"><span class="card-tag">02</span><h3>任せるもの</h3><p>一定の業務を丸ごと委任でき、自律的にやり切る実行主体。これはソフトの話ではなく、新しい労働力が組織に加わるという話だ。</p></div>
     </div>
   </div>
 </section>
 
-<div class="wrap"><div class="divline"></div></div>
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Chapter 2 ─ Reorganization</span>
+    <h2 class="sec-title">組織のかたちそのものが、書き換わる</h2>
+    <p class="kicker">組織とは、突き詰めれば「誰が、何を担うか」の編成だ。AIエージェントという労働力が加わり、組織を構成するメンバーに初めて人間以外が含まれる。要員計画の問いは「来期、何人採用するか」から、<span class="fw-bold">「どの業務に人を置き、どの業務にAIを置くか」</span>へ。</p>
+    <p class="note">チームは人間とAIが混在するハイブリッドな形が標準になる。AIエージェントの推進は、ツール導入ではない——組織の再設計だ。</p>
+  </div>
+</section>
 
-<section>
-  <div class="wrap">
-    <div class="shead">
-      <div class="snum" data-rv>02</div>
-      <h2 class="stitle" data-rv>人間に残るのは、<br>「仕事」になる</h2>
-    </div>
-    <div class="prose" style="margin-bottom:40px">
-      <p data-rv>仕事は3つの層に分けられる。AIが下の層を担うほど、人間の重心は上の層へと移っていく。</p>
-    </div>
-    <div class="layers">
-      <div class="layer l1" data-rv>
-        <div class="lab">01</div>
-        <div class="lx">作業<small>定型的・反復的な個別のアクション</small></div>
-        <div class="tag">AIが代替</div>
-      </div>
-      <div class="layer l2" data-rv>
-        <div class="lab">02</div>
-        <div class="lx">業務<small>複数の作業からなる一連のプロセス</small></div>
-        <div class="tag">エージェントが代替し始めた</div>
-      </div>
-      <div class="layer l3" data-rv>
-        <div class="lab">03</div>
-        <div class="lx">仕事<small>問いを立て、意味を見出し、判断する領域</small></div>
-        <div class="tag">人間に残る</div>
-      </div>
+<section class="sec-light">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Chapter 3 ─ Two Jobs</span>
+    <h2 class="sec-title">現場にAIを実装する、2つの仕事</h2>
+    <p class="sec-sub">労働力としてのAIを現場に根づかせるには、2つの専門性が要る。技術的に動かす力と、組織に組み込む力。</p>
+    <div class="cards">
+      <div class="card"><span class="card-tag">01</span><h3>労働力を、動かす（DX）</h3><p>セキュアな環境、システム連携、権限設計、評価・テスト。AIエージェントを技術的に「動く」状態にする仕事。</p></div>
+      <div class="card"><span class="card-tag">02</span><h3>労働力を、組み込む（人事）</h3><p>評価・報酬・役割・キャリアを設計し直し、AIという労働力を組織に「根づかせる」仕事。難しいのは、こちらだ。</p></div>
     </div>
   </div>
 </section>
 
-<div class="wrap"><div class="divline"></div></div>
-
-<section>
-  <div class="wrap">
-    <div class="shead">
-      <div class="snum" data-rv>03</div>
-      <h2 class="stitle" data-rv>組織のかたちそのものが、<br>書き換わる</h2>
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Chapter 4 ─ Three Shifts</span>
+    <h2 class="sec-title">人事が握る、3つの転換</h2>
+    <p class="sec-sub">技術は、導入すれば動く。だが、人の役割・評価・報酬をつくり直す作業に、決まった正解はない。</p>
+    <div class="cards">
+      <div class="card"><span class="card-tag">01</span><h3>評価 ── 時間から、成果へ</h3><p>これまでの評価は労働時間を暗黙の前提にしてきた。AIが作業を肩代わりすれば、その前提は崩れる。生み出した価値で測るアウトカム評価への転換が要る。</p></div>
+      <div class="card"><span class="card-tag">02</span><h3>報酬 ── 価値2倍なら、報酬2倍</h3><p>最も難しく、最も重要。生産性向上の果実を、すべて会社が回収すれば従業員はAIを使う動機を失う。「価値が増えたら、報酬も増える」接続をつくれるか。</p></div>
+      <div class="card"><span class="card-tag">03</span><h3>役割 ── 作業者から、考える人へ</h3><p>AIに作業を委ねた先で、人間に残るのは「考え抜く役割」。問いを立て判断することを正式な職務として位置づけ、報われるキャリアパスを設計する。</p></div>
     </div>
-    <div class="prose">
-      <p data-rv>組織とは、突き詰めれば「誰が、何を担うか」の編成である。これまでその「誰」は、当然ながら人間だけだった。組織図に並ぶのは人間であり、人員計画とは何人の人間を採るかの計画だった。</p>
-      <p data-rv>ところが、AIエージェントという労働力が加わったことで、組織を構成するメンバーに、初めて人間以外のものが含まれる。要員計画の問いは「来期、何人採用するか」から、<b>「どの業務に人を置き、どの業務にAIを置くか」</b>へ。チームは人間とAIが混在するハイブリッドな形が標準になり、中間管理職の役割も、階層構造も、設計し直す局面が来る。</p>
-      <p class="pull" data-rv>AIエージェントの推進は、ツール導入ではない。組織の再設計だ。</p>
+    <p class="note">どれも、技術では解けない。人と組織を見つめてきた人事にしか設計できない転換だ。だからこそ、<b>DXと人事は融合する</b>。別々の言語で別々の指標を追う限り、AIという労働力は宙に浮いたままだ。</p>
+  </div>
+</section>
+
+<section class="sec-light">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Chapter 5 ─ Rollout</span>
+    <h2 class="sec-title">現場への実装は、4つのフェーズで進む</h2>
+    <p class="kicker">人事とDXが手を組み、段階的に進める。各フェーズで両部門が並走することが要になる。<span class="fw-bold">技術の導入と制度の変革を、同じ歩幅で進める</span>——これが、現場にAIを根づかせる唯一の道だ。</p>
+    <div class="cards">
+      <div class="card"><span class="card-tag">01</span><h3>Phase 1 ─ 試す</h3><p>限定業務でPoC。動かす（DX）と、評価の試行（人事）を同時に始める。</p></div>
+      <div class="card"><span class="card-tag">02</span><h3>Phase 2 ─ 広げる</h3><p>成功パターンを型にして横展開。要員計画に「人／AIの配置」を組み込む。</p></div>
+      <div class="card"><span class="card-tag">03</span><h3>Phase 3 ─ 組み込む</h3><p>評価・報酬・JDを正式に更新。ハイブリッドなチーム編成を標準にする。</p></div>
+      <div class="card"><span class="card-tag">04</span><h3>Phase 4 ─ 定着</h3><p>考える人が報われるキャリアパスを運用。制度として回り続ける状態へ。</p></div>
     </div>
   </div>
 </section>
 
-<section style="background:var(--paper-2)">
-  <div class="wrap">
-    <div class="shead">
-      <div class="snum" data-rv>04</div>
-      <h2 class="stitle" data-rv>現場にAIを実装する、<br>2つの仕事</h2>
-    </div>
-    <div class="prose" style="margin-bottom:14px">
-      <p data-rv>労働力としてのAIを現場に根づかせるには、2つの専門性が要る。技術的に動かす力（DX）と、組織に組み込む力（人事）。それぞれが取り組むべき施策を整理する。</p>
-    </div>
-
-    <div class="twocol" data-rv>
-      <div class="col dx">
-        <div class="badge"><span class="dot"></span>DX部門</div>
-        <h3>労働力を、動かす</h3>
-        <div class="role">技術・実装・運用 ── AIを業務のなかで実際に稼働させる</div>
-
-        <div class="item"><div class="ix">01</div><div><div class="it">業務の可視化と棚卸し</div><div class="id">どの業務がAIで代替・支援できるかを洗い出し、プロセスを分解・標準化する。すべての起点。</div></div></div>
-        <div class="item"><div class="ix">02</div><div><div class="it">ツールと実行基盤の選定</div><div class="id">業務に適したエージェント・モデルを選び、セキュアに動かせる実行環境を整える。</div></div></div>
-        <div class="item"><div class="ix">03</div><div><div class="it">データとナレッジの整備</div><div class="id">AIが参照する社内情報を構造化する。出力の精度は、与えるコンテキストの質で決まる。</div></div></div>
-        <div class="item"><div class="ix">04</div><div><div class="it">エージェントの実装と連携</div><div class="id">業務システムやAPIと接続し、実際に動くワークフローを構築・運用する。</div></div></div>
-        <div class="item"><div class="ix">05</div><div><div class="it">セキュリティとガバナンス</div><div class="id">情報漏洩・アクセス権限・AIの挙動を統制し、安全な運用ルールと監視体制を敷く。</div></div></div>
-        <div class="item"><div class="ix">06</div><div><div class="it">効果測定と改善</div><div class="id">精度や稼働状況をモニタリングし、継続的に改善するサイクルを回す。</div></div></div>
-        <div class="item"><div class="ix">07</div><div><div class="it">内製化と技術人材</div><div class="id">エージェントを自走で改善できる人材を育て、ベンダー依存から脱する。</div></div></div>
-      </div>
-
-      <div class="col hr">
-        <div class="badge"><span class="dot"></span>人事部門</div>
-        <h3>労働力を、組み込む</h3>
-        <div class="role">人材・制度・組織 ── AIを前提に組織と人を設計し直す</div>
-
-        <div class="item"><div class="ix">01</div><div><div class="it">採用</div><div class="id">AIを使いこなし、問いを立て判断できる人材へと、求める人材像を切り替える。技術力そのもの以上に、業務の本質を理解し、暗黙知を言語化する力が問われるようになる。</div></div></div>
-        <div class="item"><div class="ix">02</div><div><div class="it">配置・要員設計</div><div class="id">人とAIを組み合わせた「労働力ポートフォリオ」を設計する。要員計画の問いは「何人採るか」から「どの業務を人に、どの業務をAIに任せるか」へと変わる。</div></div></div>
-        <div class="item"><div class="ix">03</div><div><div class="it">育成</div><div class="id">AIに委ねる領域と人が深める領域を切り分けたうえで、リスキリングを設計する。線引きが曖昧なまま研修を回すと、本来AIに任せるべき仕事を人が必死に学ぶ不毛が生まれる。</div></div></div>
-        <div class="item"><div class="ix">04</div><div><div class="it">評価</div><div class="id">投下した労働時間ではなく、生み出した成果で測るアウトカム評価へ転換する。AIをどれだけ使いこなし価値に変えたか、「AIとの協働度」そのものも指標に組み込む。</div></div></div>
-        <div class="item"><div class="ix">05</div><div><div class="it">処遇・報酬</div><div class="id">AIで生み出した付加価値を、正当に処遇へ還元する。価値が増えたら報酬も増える——この接続こそが、現場がAIを使う動機を生む。</div></div></div>
-        <div class="item"><div class="ix">06</div><div><div class="it">組織設計・変革</div><div class="id">職務定義書（JD）を書き直し、人間に残る「考え抜く役割」を制度として位置づける。中間管理職の機能や組織の階層構造そのものも見直す。</div></div></div>
-        <div class="item"><div class="ix">07</div><div><div class="it">カルチャー・エンゲージメント</div><div class="id">AIを脅威ではなく、共に働く存在として受け入れる文化を育てる。どれだけ制度を整えても、現場の納得がなければ組織は動かない。</div></div></div>
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Summary</span>
+    <h2 class="sec-title">人間とAIが共に働く組織を、設計する人へ</h2>
+    <p class="kicker">この役割を、AICX協会は<span class="fw-bold">「AIエージェント・ストラテジスト」</span>という認定資格として体系化した。業務設計 × 組織設計 × AIエージェント——この3つを掛け合わせ、本稿の施策を現場で動かすための知見を体系立てて学べる。</p>
+    <div class="take">
+      <div class="take-avatar">OK</div>
+      <div class="take-body">
+        <div class="take-label">Ozaken's One Point</div>
+        <div class="take-author">小澤健祐（おざけん）</div>
+        <p class="take-text">AIエージェントを「ツール導入」の話にしている限り、変革は起きない。これは<span class="hot">組織の再設計</span>であり、その主役は人事だ。価値が2倍なら報酬も2倍——この難問に正面から向き合える組織だけが、AIという新しい労働力を本当に手に入れる。 &nbsp; <a href="../index.html">← AI資料アーカイブに戻る</a></p>
       </div>
     </div>
   </div>
 </section>
-
-<section style="background:var(--paper-2)">
-  <div class="wrap">
-    <div class="shead">
-      <div class="snum" data-rv>05</div>
-      <h2 class="stitle" data-rv>人事が握る、<br>3つの転換</h2>
-    </div>
-    <div class="prose" style="margin-bottom:46px">
-      <p data-rv>DXと人事、2つの仕事を並べたとき、AI時代に本当に難しいのは人事の側だ。技術は、導入すれば動く。だが、人の役割・評価・報酬をつくり直す作業に、決まった正解はない。人事が主導すべき、3つの本質的な転換がある。</p>
-    </div>
-    <div class="turns">
-      <div class="turn" data-rv>
-        <div class="tn">01</div>
-        <div class="tbody">
-          <h3>評価 ── 時間から、成果へ</h3>
-          <p>これまでの評価は、どれだけ働いたか、つまり時間と労力を暗黙の前提にしてきた。AIが作業を肩代わりすれば、その前提は崩れる。短い時間で大きな成果を出す人を、正当に評価できるか。労働時間ではなく、生み出した価値で測る——アウトカム評価への転換が要る。さらに、AIをどれだけ使いこなし価値に変えたか、「AIとの協働度」そのものを評価軸に加える発想も必要になる。</p>
-        </div>
-      </div>
-      <div class="turn" data-rv>
-        <div class="tn">02</div>
-        <div class="tbody">
-          <h3>報酬 ── 価値が2倍なら、報酬も2倍に</h3>
-          <p>ここが最も難しく、最も重要だ。AIの活用で1人が生み出す価値が2倍になったとき、その果実を誰が受け取るのか。すべてを会社が回収してしまえば、従業員はAIを使う動機を失う。生産性向上の果実を、働く人にも還元する。<b>価値が増えたら、報酬も増える。</b>この接続をつくれるかどうかで、AIが現場に広がるかが決まる。週休4日も、1日4時間労働も、この報酬設計とセットで初めて現実になる。</p>
-        </div>
-      </div>
-      <div class="turn" data-rv>
-        <div class="tn">03</div>
-        <div class="tbody">
-          <h3>役割 ── 作業者から、考える人へ</h3>
-          <p>AIに作業と業務を委ねた先で、人間に残るのは「考え抜く役割」だ。だが、多くの組織には、この役割を評価し、処遇し、キャリアとして用意する仕組みがない。職務定義書（JD）を書き直し、問いを立て判断することを、正式な職務として位置づける。考える人が報われるキャリアパスを設計する。それが、これからの人事の中心的な仕事になる。</p>
-        </div>
-      </div>
-    </div>
-    <p class="rmnote" data-rv style="border-left:3px solid var(--hr);padding-left:24px">どれも、技術では解けない。人と組織を見つめてきた人事にしか、設計できない転換だ。</p>
-  </div>
-</section>
-
-<section class="fusion">
-  <div class="wrap">
-    <div class="weave" data-rv>
-      <svg viewBox="0 0 760 220" preserveAspectRatio="xMidYMid meet">
-        <path d="M0,40 C220,40 300,180 530,180 L760,180" fill="none" stroke="#1E3AE6" stroke-width="2.5"/>
-        <path d="M0,180 C220,180 300,40 530,40 L760,40" fill="none" stroke="#DA4711" stroke-width="2.5"/>
-        <circle cx="380" cy="110" r="7" fill="#15140F"/>
-        <circle cx="0" cy="40" r="5" fill="#1E3AE6"/>
-        <circle cx="0" cy="180" r="5" fill="#DA4711"/>
-        <circle cx="760" cy="180" r="5" fill="#1E3AE6"/>
-        <circle cx="760" cy="40" r="5" fill="#DA4711"/>
-      </svg>
-    </div>
-    <h2 class="ftitle" data-rv>だから、<span class="b">DX</span>と<span class="o">人事</span>は<br>融合する。</h2>
-    <p class="fbody" data-rv>
-      この2つは切り離せない。にもかかわらず、現実には分断されている。DXは「効率化ツール」として導入率を追い、人事は旧来の評価制度と組織図を守る。別々の言語で別々の指標を追いかける限り、AIという労働力は宙に浮いたままだ。<br><br>
-      DX主導だけでは「便利なツール」止まり。人事だけでは絵に描いた餅。両者が同じテーブルにつき、<b>技術の実装可能性と、労働力としての制度設計を、セットで議論する</b>しかない。
-    </p>
-  </div>
-</section>
-
-<section>
-  <div class="wrap">
-    <div class="shead">
-      <div class="snum" data-rv>06</div>
-      <h2 class="stitle" data-rv>現場への実装は、<br>4つのフェーズで進む</h2>
-    </div>
-    <div class="prose" style="margin-bottom:8px">
-      <p data-rv>人事とDXが手を組み、段階的に進める。各フェーズで、両部門が並走して取り組むことを示す。</p>
-    </div>
-
-    <div class="phases">
-      <div class="phase" data-rv>
-        <div class="pmeta"><div class="pn">Phase 01</div><div class="ph">可視化と<br>対象選定</div></div>
-        <div class="lane dx"><div class="who">DX</div><div class="what">業務を棚卸しし、AI化できる領域を特定する。</div></div>
-        <div class="lane hr"><div class="who">人事</div><div class="what">その業務を担う人の役割が、どう変わるかを見立てる。</div></div>
-      </div>
-      <div class="phase" data-rv>
-        <div class="pmeta"><div class="pn">Phase 02</div><div class="ph">試験導入<br><small style="font-family:var(--sans);font-weight:400;font-size:.7em;color:var(--ink-soft)">スモールスタート</small></div></div>
-        <div class="lane dx"><div class="who">DX</div><div class="what">対象業務にエージェントを実装し、まず動かしてみる。</div></div>
-        <div class="lane hr"><div class="who">人事</div><div class="what">役割・評価への影響を観察し、現場の声を拾う。</div></div>
-      </div>
-      <div class="phase" data-rv>
-        <div class="pmeta"><div class="pn">Phase 03</div><div class="ph">制度の<br>再設計</div></div>
-        <div class="lane dx"><div class="who">DX</div><div class="what">運用を安定させ、他部署へ横展開する基盤を整える。</div></div>
-        <div class="lane hr"><div class="who">人事</div><div class="what">評価・処遇・JDを、AIを前提とした形に更新する。</div></div>
-      </div>
-      <div class="phase" data-rv>
-        <div class="pmeta"><div class="pn">Phase 04</div><div class="ph">組織への<br>定着</div></div>
-        <div class="lane dx"><div class="who">DX</div><div class="what">内製化し、継続的な改善サイクルを回し続ける。</div></div>
-        <div class="lane hr"><div class="who">人事</div><div class="what">ハイブリッドな組織構成とカルチャーとして根づかせる。</div></div>
-      </div>
-    </div>
-
-    <p class="rmnote" data-rv>技術の導入と制度の変革を、同じ歩幅で進める。これが、現場にAIを根づかせる唯一の道だ。</p>
-  </div>
-</section>
-
-<section class="cta">
-  <div class="wrap">
-    <div class="ce" data-rv>AICX協会 認定資格</div>
-    <h2 data-rv>AIエージェントと、<br>現場と組織の未来を<br>設計する人へ。</h2>
-    <p class="cbody" data-rv>
-      人間とAIが共に働く組織を設計する——この役割を、私たちAICX協会は「AIエージェント・ストラテジスト」という認定資格として体系化した。
-    </p>
-    <div class="pillars" data-rv>
-      <span><b>AIエージェント</b></span>
-      <span>&times;</span>
-      <span><b>業務設計</b></span>
-      <span>&times;</span>
-      <span><b>組織設計</b></span>
-    </div>
-    <p class="cbody" data-rv style="margin-bottom:38px">
-      この3つを掛け合わせ、本稿で述べた施策を現場で実際に動かすための知見を、体系立てて学べる設計になっている。
-    </p>
-    <a class="btn" href="#" data-rv>認定資格の詳細を見る <span class="x">&rarr;</span></a>
-    <p class="cnote" data-rv>詳細・受験申込は、AICX協会 公式サイトにて。</p>
-  </div>
-</section>
-
-<footer>
-  <div class="wrap">
-    <div class="frow">
-      <div class="fauthor">
-        <div class="fn">小澤 健祐（おざけん）</div>
-        <div class="fr">一般社団法人AICX協会 代表理事<br>「人間とAIが共存する社会をつくる」</div>
-      </div>
-      <div class="fmission">
-        <small>Our Mission</small>
-        分断を超え、体験を変える。
-      </div>
-    </div>
-  </div>
-</footer>
 
 <script>
-  const io=new IntersectionObserver((es)=>{
-    es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');io.unobserve(e.target)}});
-  },{threshold:0.12,rootMargin:'0px 0px -8% 0px'});
-  document.querySelectorAll('[data-rv]').forEach((el,i)=>{
-    const inHero=el.closest('.hero');
-    if(inHero) el.style.transitionDelay=(i*0.09)+'s';
-    io.observe(el);
-  });
-  // ensure hero reveals on load even if observer timing lags
-  window.addEventListener('load',()=>{
-    document.querySelectorAll('.hero [data-rv]').forEach(el=>el.classList.add('vis'));
-  });
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+}, { threshold: 0.1 });
+document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
 </script>
 </body>
 </html>

@@ -3,1217 +3,511 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Google I/O 2026 — Gemini Omni & Spark 完全解説</title>
-<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@300;400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<title>Google I/O 2026 完全解説 ─ エージェントが主導する未来（Gemini Omni / Spark / 3.5） | おざけん</title>
+<meta name="description" content="Google I/O 2026の完全解説。Gemini Omni・Gemini Spark・Gemini 3.5の3大発表、Googleが有利な理由、プライバシーの課題、リリース情報までを整理。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Shippori+Mincho+B1:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #0d0d10;
-  --card: #13131a;
-  --card2: #18181f;
-  --border: rgba(255,255,255,0.07);
-  --text: #e2e2dc;
-  --sub: #7a7a85;
-  --blue: #4285f4;
-  --red: #ea4335;
-  --yellow: #fbbc04;
-  --green: #34a853;
+  --ink:         #1a1a2e;
+  --navy:        #1f3864;
+  --navy-deep:   #141d35;
+  --azure:       #2e5496;
+  --azure-pale:  #d8e4f0;
+  --paper:       #f8f7f4;
+  --white:       #ffffff;
+  --red:         #e23744;
+  --red-bright:  #ff5d6a;
+  --muted:       #6b7a99;
+
+  --font-ja-sans:  'Zen Kaku Gothic New', sans-serif;
+  --font-ja-serif: 'Shippori Mincho B1', serif;
+  --font-en:       'Hanken Grotesk', sans-serif;
+
+  --max-w: 880px;
+  --sec-pad: 5rem 1.5rem;
+  --radius: 10px;
+  --radius-sm: 6px;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+html { scroll-behavior: smooth; }
 body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Zen Kaku Gothic New', sans-serif;
-  font-weight: 300;
-  line-height: 1.8;
-  max-width: 780px;
-  margin: 0 auto;
-  padding: 60px 28px 120px;
-}
-
-/* ── TOP ── */
-.top-label {
-  font-family: 'Space Mono', monospace;
-  font-size: 11px;
-  color: var(--sub);
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  margin-bottom: 20px;
-}
-
-.top-title {
-  font-size: clamp(32px, 7vw, 60px);
-  font-weight: 900;
-  line-height: 1.1;
-  margin-bottom: 16px;
-}
-
-.top-title .g { color: var(--blue); }
-.top-title .r { color: var(--red); }
-.top-title .y { color: var(--yellow); }
-.top-title .gr { color: var(--green); }
-
-.top-desc {
-  font-size: 16px;
-  color: var(--sub);
-  border-left: 2px solid var(--border);
-  padding-left: 16px;
-  margin: 28px 0 56px;
-  line-height: 2;
-}
-
-/* ── SECTION ── */
-.section {
-  margin-bottom: 64px;
-}
-
-.section-eyebrow {
-  font-family: 'Space Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 3px;
-  color: var(--blue);
-  text-transform: uppercase;
-  margin-bottom: 12px;
-}
-
-.section-title {
-  font-size: 24px;
-  font-weight: 700;
-  margin-bottom: 24px;
-  line-height: 1.4;
-}
-
-/* ── HIGHLIGHT BOX ── */
-.highlight {
-  background: linear-gradient(135deg, rgba(66,133,244,0.07) 0%, rgba(66,133,244,0.02) 100%);
-  border: 1px solid rgba(66,133,244,0.18);
-  border-radius: 4px;
-  padding: 28px 32px;
-  margin-bottom: 16px;
-  position: relative;
-}
-
-.highlight-label {
-  font-family: 'Space Mono', monospace;
-  font-size: 10px;
-  color: var(--blue);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin-bottom: 10px;
-}
-
-.highlight-title {
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 10px;
-}
-
-.highlight-body {
-  font-size: 14px;
-  color: #9090a0;
-  line-height: 2;
-}
-
-/* ── OMNI MAIN CARD ── */
-.omni-hero {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-top: 3px solid var(--yellow);
-  padding: 40px 36px;
-  margin-bottom: 4px;
-}
-
-.omni-hero-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-family: 'Space Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 2px;
-  color: var(--yellow);
-  text-transform: uppercase;
-  margin-bottom: 16px;
-}
-
-.omni-hero-eyebrow::before {
-  content: '';
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--yellow);
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(0.8); }
-}
-
-.omni-hero-title {
-  font-size: clamp(28px, 5vw, 48px);
-  font-weight: 900;
-  line-height: 1.1;
-  margin-bottom: 16px;
-}
-
-.omni-hero-sub {
-  font-size: 15px;
-  color: var(--sub);
-  line-height: 2;
-  max-width: 560px;
-}
-
-/* ── WHAT IS ── */
-.what-is {
-  background: var(--card2);
-  border: 1px solid var(--border);
-  border-top: none;
-  padding: 32px 36px;
-  margin-bottom: 32px;
-}
-
-.what-is-q {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--yellow);
-  margin-bottom: 8px;
-  font-family: 'Space Mono', monospace;
-  letter-spacing: 1px;
-}
-
-.what-is-a {
-  font-size: 15px;
-  line-height: 2;
-  color: #b0b0bc;
-}
-
-.what-is-a strong {
-  color: var(--text);
-  font-weight: 700;
-}
-
-/* ── FEATURE CARDS ── */
-.feature-list {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin-bottom: 32px;
-}
-
-.feature-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  padding: 28px 32px;
-  display: grid;
-  grid-template-columns: 44px 1fr;
-  gap: 0 20px;
-  align-items: start;
-  transition: border-color 0.2s;
-}
-
-.feature-card:hover {
-  border-color: rgba(255,255,255,0.12);
-}
-
-.feature-icon {
-  font-size: 22px;
-  line-height: 1;
-  padding-top: 2px;
-}
-
-.feature-tag {
-  font-family: 'Space Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--sub);
-  margin-bottom: 6px;
-}
-
-.feature-title {
-  font-size: 16px;
-  font-weight: 700;
-  margin-bottom: 8px;
-  line-height: 1.4;
-}
-
-.feature-body {
-  font-size: 14px;
-  color: #7878888;
-  line-height: 1.9;
-  color: var(--sub);
-}
-
-.feature-example {
-  margin-top: 12px;
-  background: rgba(255,255,255,0.03);
-  border-left: 2px solid var(--yellow);
-  padding: 10px 14px;
-  font-size: 13px;
-  color: #9898a8;
-  line-height: 1.8;
-}
-
-.feature-example::before {
-  content: '例: ';
-  color: var(--yellow);
-  font-weight: 700;
-}
-
-/* ── BEFORE AFTER ── */
-.before-after {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4px;
-  margin-bottom: 32px;
-}
-
-@media (max-width: 560px) {
-  .before-after { grid-template-columns: 1fr; }
-  .feature-card { grid-template-columns: 1fr; }
-}
-
-.ba-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  padding: 28px 28px;
-}
-
-.ba-label {
-  font-family: 'Space Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.ba-label.before { color: var(--red); }
-.ba-label.after  { color: var(--green); }
-
-.ba-label::before {
-  content: '';
-  width: 6px; height: 6px; border-radius: 50%;
-}
-.ba-label.before::before { background: var(--red); }
-.ba-label.after::before  { background: var(--green); }
-
-.ba-items {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.ba-item {
-  font-size: 14px;
-  color: var(--sub);
-  line-height: 1.7;
-  padding-left: 14px;
-  position: relative;
-}
-
-.ba-item::before {
-  content: '→';
-  position: absolute;
-  left: 0;
-  color: rgba(255,255,255,0.2);
-}
-
-.ba-card.after .ba-item {
-  color: #a0a8b0;
-}
-
-.ba-card.after .ba-item::before {
-  color: var(--green);
-}
-
-/* ── INTEGRATION ── */
-.integration-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 4px;
-  margin-bottom: 32px;
-}
-
-@media (max-width: 560px) {
-  .integration-grid { grid-template-columns: 1fr 1fr; }
-}
-
-.int-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  padding: 20px;
-  text-align: center;
-}
-
-.int-icon { font-size: 24px; margin-bottom: 10px; }
-.int-name { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
-.int-desc { font-size: 12px; color: var(--sub); line-height: 1.6; }
-
-/* ── SHIFT NOTE ── */
-.shift-note {
-  background: linear-gradient(135deg, rgba(52,168,83,0.06) 0%, rgba(66,133,244,0.04) 100%);
-  border: 1px solid rgba(52,168,83,0.15);
-  border-radius: 4px;
-  padding: 32px 36px;
-  margin-bottom: 8px;
-}
-
-.shift-note-title {
-  font-size: 17px;
-  font-weight: 700;
-  color: var(--green);
-  margin-bottom: 14px;
-}
-
-.shift-note-body {
-  font-size: 14px;
-  color: #8888a0;
-  line-height: 2;
-}
-
-.shift-note-body strong {
-  color: var(--text);
-}
-
-/* ── OTHER NEWS ── */
-.other-list {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.other-item {
-  background: var(--card);
-  border: 1px solid var(--border);
-  padding: 22px 28px;
-  display: flex;
-  gap: 20px;
-  align-items: flex-start;
-}
-
-.other-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  margin-top: 8px;
-}
-
-.other-title {
-  font-size: 15px;
-  font-weight: 700;
-  margin-bottom: 6px;
-}
-
-.other-body {
-  font-size: 13px;
-  color: var(--sub);
-  line-height: 1.8;
-}
-
-/* ── DIVIDER ── */
-.hr {
-  border: none;
-  border-top: 1px solid var(--border);
-  margin: 48px 0;
-}
-
-/* ── REVEAL ── */
-.reveal {
-  opacity: 0;
-  transform: translateY(18px);
-  transition: opacity 0.55s ease, transform 0.55s ease;
-}
-/* ── SPARK STYLES ── */
-.spark-hero {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-top: 3px solid var(--green);
-  padding: 40px 36px;
-  margin-bottom: 4px;
-}
-
-.spark-hero-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-family: 'Space Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 2px;
-  color: var(--green);
-  text-transform: uppercase;
-  margin-bottom: 16px;
-}
-
-.spark-hero-eyebrow::before {
-  content: '';
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--green);
-  animation: pulse 1.8s infinite;
-}
-
-.spark-hero-title {
-  font-size: clamp(28px, 5vw, 48px);
-  font-weight: 900;
-  line-height: 1.1;
-  margin-bottom: 16px;
-}
-
-.spark-hero-sub {
-  font-size: 15px;
-  color: var(--sub);
-  line-height: 2;
-  max-width: 560px;
-}
-
-.spark-what {
-  background: var(--card2);
-  border: 1px solid var(--border);
-  border-top: none;
-  padding: 32px 36px;
-  margin-bottom: 32px;
-}
-
-.spark-what-q {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--green);
-  margin-bottom: 8px;
-  font-family: 'Space Mono', monospace;
-  letter-spacing: 1px;
-}
-
-.spark-what-a {
-  font-size: 15px;
-  line-height: 2;
-  color: #b0b0bc;
-}
-.spark-what-a strong { color: var(--text); font-weight: 700; }
-
-/* DEMO SCENE */
-.demo-scene {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--green);
-  padding: 28px 32px;
-  margin-bottom: 4px;
-}
-
-.demo-scene-label {
-  font-family: 'Space Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 2px;
-  color: var(--green);
-  text-transform: uppercase;
-  margin-bottom: 14px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.demo-flow {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.demo-step {
-  display: flex;
-  gap: 14px;
-  align-items: flex-start;
-}
-
-.demo-step-num {
-  font-family: 'Space Mono', monospace;
-  font-size: 11px;
-  color: var(--green);
-  background: rgba(52,168,83,0.1);
-  border: 1px solid rgba(52,168,83,0.2);
-  border-radius: 2px;
-  padding: 2px 8px;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-.demo-step-text {
-  font-size: 14px;
-  color: #9898a8;
-  line-height: 1.8;
-}
-.demo-step-text strong { color: var(--text); font-weight: 700; }
-
-/* PRIVACY WARNING */
-.privacy-card {
-  background: rgba(234,67,53,0.05);
-  border: 1px solid rgba(234,67,53,0.18);
-  border-radius: 4px;
-  padding: 28px 32px;
-  margin-bottom: 4px;
-}
-
-.privacy-label {
-  font-family: 'Space Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 2px;
-  color: var(--red);
-  text-transform: uppercase;
-  margin-bottom: 14px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.privacy-title {
-  font-size: 16px;
-  font-weight: 700;
-  margin-bottom: 10px;
-  color: #e8a0a0;
-}
-
-.privacy-body {
-  font-size: 14px;
-  color: #888898;
-  line-height: 2;
-}
-
-.privacy-body strong { color: #c0b0b0; }
-
-/* RELEASE INFO */
-.release-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4px;
-  margin-bottom: 32px;
-}
-
-@media (max-width: 560px) { .release-grid { grid-template-columns: 1fr; } }
-
-.release-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  padding: 22px 24px;
-}
-
-.release-card-label {
-  font-family: 'Space Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 2px;
-  color: var(--sub);
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
-
-.release-card-val {
-  font-size: 15px;
-  font-weight: 700;
-  margin-bottom: 4px;
-  color: var(--text);
-}
-
-.release-card-note {
-  font-size: 13px;
-  color: var(--sub);
-  line-height: 1.7;
-}
-
-/* GREEN HIGHLIGHT */
-.green-note {
-  background: linear-gradient(135deg, rgba(52,168,83,0.06) 0%, rgba(52,168,83,0.02) 100%);
-  border: 1px solid rgba(52,168,83,0.15);
-  border-radius: 4px;
-  padding: 28px 32px;
-  margin-bottom: 32px;
-}
-
-.green-note-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--green);
-  margin-bottom: 10px;
-}
-
-.green-note-body {
-  font-size: 14px;
-  color: #8888a0;
-  line-height: 2;
-}
-.green-note-body strong { color: var(--text); }
-
-.reveal.on { opacity: 1; transform: none; }
+  font-family: var(--font-ja-sans);
+  font-size: 16px; line-height: 1.8;
+  color: var(--ink); background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+
+[data-reveal] { opacity: 0; transform: translateY(24px); transition: opacity 0.65s ease, transform 0.65s ease; }
+[data-reveal].visible { opacity: 1; transform: none; }
+
+.inner { max-width: var(--max-w); margin: 0 auto; padding: 0 1.5rem; }
+.sec-light { background: var(--paper); padding: var(--sec-pad); color: var(--ink); }
+.sec-navy  { background: var(--navy);  padding: var(--sec-pad); color: var(--white); }
+
+.eyebrow {
+  display: inline-block; font-family: var(--font-en);
+  font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--azure); background: var(--azure-pale);
+  padding: 3px 10px; border-radius: 4px; margin-bottom: 1.1rem;
+}
+.sec-navy .eyebrow { color: var(--white); background: rgba(255,255,255,0.15); }
+
+.sec-title {
+  font-family: var(--font-ja-serif);
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: 500; line-height: 1.4; margin-bottom: 0.6rem;
+}
+.sec-sub { font-size: 1rem; color: var(--muted); margin-bottom: 2.5rem; line-height: 1.7; }
+.sec-navy .sec-sub { color: rgba(255,255,255,0.7); }
+
+.kicker {
+  font-family: var(--font-ja-serif);
+  font-size: 1.08rem; line-height: 1.9; margin-bottom: 2rem;
+  padding-left: 1.1rem; border-left: 3px solid var(--azure);
+}
+.sec-navy .kicker { border-left-color: var(--azure-pale); color: rgba(255,255,255,0.9); }
+
+.bare { margin: 1.5rem 0; }
+.bare p { font-size: 0.95rem; line-height: 1.95; }
+.sec-navy .bare p { color: rgba(255,255,255,0.8); }
+.bare p + p { margin-top: 1rem; }
+
+.hero {
+  background: var(--navy); padding: 5.5rem 1.5rem 4.5rem;
+  text-align: center; color: var(--white);
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 60% 25%, rgba(46,84,150,0.55) 0%, transparent 65%);
+  pointer-events: none;
+}
+.texture { position: absolute; inset: 0; opacity: 0.16; pointer-events: none; }
+.texture svg { width: 100%; height: 100%; }
+.hero .eyebrow { color: var(--white); background: rgba(255,255,255,0.15); }
+.hero-title {
+  font-family: var(--font-ja-serif);
+  font-size: clamp(1.85rem, 5vw, 2.9rem);
+  font-weight: 500; line-height: 1.4; margin-bottom: 1.2rem; position: relative;
+}
+.hero-copy {
+  font-size: 1.02rem; color: rgba(255,255,255,0.82);
+  max-width: 620px; margin: 0 auto 2.6rem; line-height: 1.9; position: relative;
+}
+.hero-glyph { position: relative; max-width: 640px; margin: 0 auto; }
+.hero-glyph svg { width: 100%; height: auto; display: block; }
+
+.figure {
+  background: var(--white); border-radius: var(--radius);
+  padding: 1.75rem 1.5rem 1.25rem;
+  box-shadow: 0 2px 12px rgba(26,26,46,0.08);
+  margin: 2rem 0 0;
+}
+.sec-navy .figure { background: var(--navy-deep); box-shadow: none; }
+.figure-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.figure svg { width: 100%; height: auto; display: block; }
+.figure text { font-family: var(--font-ja-sans); }
+.figure-cap {
+  font-family: var(--font-en); font-size: 11px; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--muted); margin-top: 1rem; text-align: center;
+}
+.sec-navy .figure-cap { color: rgba(255,255,255,0.5); }
+.fig-title {
+  font-family: var(--font-ja-serif); font-size: 1rem; font-weight: 500;
+  margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--azure-pale);
+}
+.sec-navy .fig-title { color: var(--white); border-bottom-color: rgba(255,255,255,0.15); }
+
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 2rem; }
+.stat {
+  background: var(--white); border-radius: var(--radius);
+  padding: 1.3rem 1rem; text-align: center;
+  box-shadow: 0 2px 8px rgba(26,26,46,0.07); border-top: 3px solid var(--azure);
+}
+.sec-navy .stat { background: var(--navy-deep); box-shadow: none; }
+.stat-num {
+  font-family: var(--font-en); font-size: 2rem; font-weight: 700;
+  line-height: 1.1; color: var(--azure);
+}
+.sec-navy .stat-num { color: var(--azure-pale); }
+.stat-num small { font-size: 0.9rem; font-weight: 600; }
+.stat-label { font-size: 0.78rem; color: var(--muted); margin-top: 0.4rem; line-height: 1.6; }
+.sec-navy .stat-label { color: rgba(255,255,255,0.65); }
+
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+.card {
+  position: relative; overflow: hidden;
+  background: linear-gradient(180deg, #ffffff, #fbfcfe);
+  border: 1px solid var(--azure-pale); border-radius: var(--radius);
+  padding: 1.6rem 1.7rem 1.5rem; box-shadow: 0 2px 10px rgba(26,26,46,0.05);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+.card::before {
+  content: ""; position: absolute; left: 0; top: 0; width: 100%; height: 3px;
+  background: linear-gradient(90deg, var(--azure), var(--azure-pale));
+}
+.card:hover { transform: translateY(-4px); box-shadow: 0 18px 38px -16px rgba(31,56,100,0.28); border-color: var(--azure); }
+.sec-navy .card { background: var(--navy-deep); border-color: rgba(255,255,255,0.12); box-shadow: none; }
+.card h3 { font-family: var(--font-ja-serif); font-size: 1.12rem; font-weight: 600; margin-bottom: 0.45rem; padding-right: 2.8rem; color: var(--ink); }
+.sec-navy .card h3 { color: #fff; }
+.card p { font-size: 0.85rem; line-height: 1.8; color: var(--muted); }
+.sec-navy .card p { color: rgba(255,255,255,0.68); }
+.card-tag {
+  position: absolute; top: 0.55rem; right: 1.1rem; margin: 0; padding: 0;
+  font-family: var(--font-en); font-size: 2.6rem; font-weight: 700; line-height: 1;
+  letter-spacing: 0; color: transparent; background: none;
+  -webkit-text-stroke: 1.4px var(--azure-pale); pointer-events: none;
+}
+.sec-navy .card-tag { color: transparent; background: none; -webkit-text-stroke-color: rgba(255,255,255,0.22); }
+
+.doc-list { list-style: none; margin-top: 1rem; display: flex; flex-direction: column; gap: 0.45rem; }
+.doc-list a {
+  display: flex; align-items: center; justify-content: space-between; gap: 0.6rem;
+  font-size: 0.85rem; padding: 0.62rem 0.8rem; color: var(--ink);
+  border-radius: var(--radius-sm); background: rgba(46,84,150,0.05);
+  border-left: 3px solid var(--azure); transition: background 0.2s ease, border-color 0.2s ease;
+}
+.doc-list a::after {
+  content: "→"; font-family: var(--font-en); color: var(--azure); flex-shrink: 0;
+  opacity: 0; transform: translateX(-5px); transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.doc-list a:hover { background: rgba(46,84,150,0.12); }
+.doc-list a:hover::after { opacity: 1; transform: translateX(0); }
+.sec-navy .doc-list a { background: rgba(255,255,255,0.06); border-left-color: var(--azure-pale); color: rgba(255,255,255,0.9); }
+.sec-navy .doc-list a::after { color: var(--azure-pale); }
+.sec-navy .doc-list a:hover { background: rgba(255,255,255,0.12); }
+.doc-list a.doc-pdf { border-left-color: var(--red); font-weight: 600; }
+.doc-list a.doc-pdf:hover { background: rgba(226,55,68,0.10); }
+.sec-navy .doc-list a.doc-pdf { border-left-color: var(--red-bright); }
+
+/* 配布資料ダウンロード（フィーチャー） */
+.sec-download { background: var(--paper); padding: 3.5rem 1.5rem; }
+.dl-feature {
+  max-width: var(--max-w); margin: 0 auto;
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-deep) 100%);
+  border-radius: var(--radius); padding: 2.9rem 2.6rem; color: var(--white);
+  position: relative; overflow: hidden;
+  box-shadow: 0 24px 60px -24px rgba(20,29,53,0.65);
+}
+.dl-feature::before {
+  content: ""; position: absolute; top: 0; right: 0; width: 45%; height: 100%;
+  background: radial-gradient(circle at 90% 10%, rgba(226,55,68,0.28), transparent 65%);
+  pointer-events: none;
+}
+.dl-feature > * { position: relative; }
+.dl-badge {
+  display: inline-block; font-family: var(--font-en); font-size: 0.7rem;
+  letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700;
+  background: var(--red); color: #fff; padding: 0.35rem 0.75rem; border-radius: 100px;
+}
+.dl-title {
+  font-family: var(--font-ja-serif); font-size: 1.75rem; line-height: 1.42;
+  margin: 1.05rem 0 0.65rem; font-weight: 600;
+}
+.dl-title span { color: var(--azure-pale); }
+.dl-copy {
+  font-size: 0.9rem; line-height: 1.9; color: rgba(255,255,255,0.82);
+  max-width: 560px; margin-bottom: 1.85rem;
+}
+.dl-btn {
+  display: inline-flex; align-items: center; gap: 0.65rem;
+  background: var(--red); color: #fff; font-weight: 700; font-size: 0.98rem;
+  padding: 0.95rem 1.6rem; border-radius: var(--radius-sm); text-decoration: none;
+  transition: transform 0.15s ease, background 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 10px 24px -10px rgba(226,55,68,0.7);
+}
+.dl-btn:hover { background: var(--red-bright); transform: translateY(-2px); }
+.dl-btn-icon { font-size: 1.05rem; }
+.dl-btn-meta { font-family: var(--font-en); font-weight: 500; font-size: 0.75rem; opacity: 0.9; }
+.dl-items { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.5rem; }
+.dl-item { background: rgba(255,255,255,0.06); border: 1px solid rgba(216,228,240,0.16); border-radius: var(--radius-sm); padding: 1.15rem 1.2rem; display: flex; flex-direction: column; }
+.dl-item h3 { font-family: var(--font-ja-serif); font-size: 1.02rem; color: #fff; margin-bottom: 0.35rem; font-weight: 600; }
+.dl-item p { font-size: 0.8rem; color: rgba(255,255,255,0.72); line-height: 1.7; margin-bottom: 1rem; flex-grow: 1; }
+.dl-item .dl-btn { width: 100%; justify-content: center; }
+@media (max-width: 640px) {
+  .dl-feature { padding: 2.1rem 1.5rem; }
+  .dl-title { font-size: 1.4rem; }
+  .dl-btn { flex-wrap: wrap; row-gap: 0.3rem; }
+  .dl-items { grid-template-columns: 1fr; }
+}
+
+.note {
+  font-size: 0.82rem; color: var(--muted); line-height: 1.8;
+  padding: 0.85rem 1.1rem; border-left: 3px solid var(--azure-pale);
+  background: rgba(46,84,150,0.04);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin-top: 1.75rem;
+}
+.sec-navy .note { color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.05); border-left-color: rgba(255,255,255,0.25); }
+
+.summary { text-align: center; max-width: 660px; margin: 0 auto; }
+.summary-text {
+  font-family: var(--font-ja-serif);
+  font-size: clamp(1.12rem, 3vw, 1.45rem);
+  font-weight: 400; line-height: 1.95;
+}
+
+.take {
+  background: var(--navy-deep); border-radius: var(--radius);
+  padding: 1.55rem 1.75rem; display: flex; gap: 1.25rem; align-items: flex-start;
+  margin: 2rem 0 0; border-left: 4px solid var(--red);
+}
+.sec-light .take { background: #fff8f8; border-left: 4px solid var(--red); box-shadow: 0 2px 8px rgba(226,55,68,0.07); }
+.take-avatar {
+  flex-shrink: 0; width: 44px; height: 44px; border-radius: 50%;
+  background: var(--azure); color: var(--white);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-en); font-size: 0.75rem; font-weight: 700;
+}
+.take-label {
+  font-family: var(--font-en); font-size: 10px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--red-bright); margin-bottom: 4px;
+}
+.sec-light .take-label { color: var(--red); }
+.take-author { font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.45rem; }
+.sec-light .take-author { color: var(--muted); }
+.take-text { font-size: 0.89rem; line-height: 1.85; color: rgba(255,255,255,0.88); }
+.sec-light .take-text { color: var(--ink); }
+.hot { color: var(--red-bright); font-weight: 700; }
+.sec-light .hot { color: var(--red); }
+
+.text-azure { color: var(--azure); }
+.fw-bold { font-weight: 700; }
+
+footer {
+  background: var(--navy-deep); padding: 3rem 1.5rem; text-align: center;
+  color: rgba(255,255,255,0.5); font-size: 0.8rem;
+}
+
+@media (max-width: 640px) {
+  :root { --sec-pad: 3.5rem 1rem; }
+  .hero { padding: 4rem 1rem 3.5rem; }
+}
+
+/* プロフィール：ポートレート */
+.profile-lead {
+  display: grid; grid-template-columns: 220px 1fr; gap: 2.4rem; align-items: center;
+  margin: 1.6rem 0 0.4rem;
+}
+.portrait-wrap { position: relative; width: 220px; }
+.portrait-wrap::before {
+  content: ""; position: absolute; left: -12px; top: 12px; width: 220px; height: 220px;
+  border: 2px solid var(--azure); border-radius: 50%; z-index: 0;
+}
+.portrait {
+  position: relative; z-index: 1; width: 220px; height: 220px;
+  display: block; object-fit: cover; object-position: center 12%;
+  border-radius: 50%; box-shadow: 0 18px 44px -18px rgba(20,29,53,0.5);
+  filter: saturate(0.96) contrast(1.02);
+}
+.portrait-cap {
+  margin-top: 1.05rem; text-align: center; font-family: var(--font-en); font-size: 0.78rem;
+  letter-spacing: 0.06em; color: var(--muted); position: relative; z-index: 1;
+}
+.portrait-cap b { display: block; font-family: var(--font-ja-serif); font-size: 1rem; color: var(--ink); letter-spacing: 0; margin-bottom: 0.15rem; }
+.profile-lead .kicker { margin-top: 0; }
+.profile-link-wrap { margin-top: 1.7rem; }
+.profile-link {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  font-size: 0.9rem; font-weight: 700; color: var(--navy);
+  padding: 0.72rem 1.4rem; border: 1.5px solid var(--azure);
+  border-radius: 100px; text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+.profile-link:hover { background: var(--navy); color: #fff; border-color: var(--navy); transform: translateY(-2px); box-shadow: 0 10px 24px -12px rgba(31,56,100,0.5); }
+@media (max-width: 720px) {
+  .profile-lead { grid-template-columns: 1fr; gap: 1.4rem; justify-items: center; }
+  .profile-lead .kicker { text-align: left; }
+}
+
+/* AICX / ストラテジスト訴求 */
+.aicx-logo { display: block; width: 230px; max-width: 62%; margin-bottom: 1.3rem; }
+.aicx-logo img { width: 100%; height: auto; }
+.cert-logo {
+  display: inline-block; background: #fff; border-radius: var(--radius-sm);
+  padding: 0.7rem 0.9rem; margin-bottom: 0.85rem;
+}
+.cert-logo img { width: 128px; height: auto; display: block; }
+.aicx-hero {
+  background: linear-gradient(135deg, rgba(255,255,255,0.09), rgba(255,255,255,0.03));
+  border: 1px solid rgba(216,228,240,0.18); border-radius: var(--radius);
+  padding: 1.9rem 2rem; margin-top: 0.4rem;
+}
+.aicx-hero .role-pill {
+  display: inline-block; font-family: var(--font-en); font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--navy-deep);
+  background: var(--azure-pale); padding: 0.3rem 0.7rem; border-radius: 100px;
+}
+.aicx-hero h3 { font-family: var(--font-ja-serif); font-size: 1.5rem; margin: 0.8rem 0 0.5rem; color: #fff; }
+.aicx-hero p { font-size: 0.9rem; line-height: 1.95; color: rgba(255,255,255,0.82); }
+.cert {
+  margin-top: 1.6rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+}
+.cert-card {
+  background: var(--navy-deep); border: 1px solid rgba(216,228,240,0.16);
+  border-left: 3px solid var(--red-bright); border-radius: var(--radius-sm);
+  padding: 1.15rem 1.25rem;
+}
+.cert-card .cert-eyebrow { font-family: var(--font-en); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--red-bright); font-weight: 700; }
+.cert-card h4 { font-size: 1.02rem; color: #fff; margin: 0.4rem 0 0.35rem; font-weight: 700; }
+.cert-card p { font-size: 0.82rem; line-height: 1.8; color: rgba(255,255,255,0.72); }
+.cert-card a { color: var(--azure-pale); font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
+@media (max-width: 640px) { .cert { grid-template-columns: 1fr; } }
+
+/* ご依頼・ご相談 CTA */
+.lead-cta {
+  margin-top: 2.2rem; text-align: center;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(216,228,240,0.16);
+  border-radius: var(--radius); padding: 2rem 1.6rem;
+}
+.lead-cta-text { font-size: 0.92rem; line-height: 1.9; color: rgba(255,255,255,0.82); margin-bottom: 1.25rem; }
+.lead-btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: var(--red); color: #fff; font-weight: 700; font-size: 0.98rem;
+  padding: 0.95rem 1.9rem; border-radius: var(--radius-sm); text-decoration: none;
+  transition: transform 0.15s ease, background 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 12px 28px -12px rgba(226,55,68,0.7);
+}
+.lead-btn:hover { background: var(--red-bright); transform: translateY(-2px); }
+.lead-sub { margin-top: 1rem; font-size: 0.8rem; color: rgba(255,255,255,0.55); }
+.lead-sub a { color: var(--azure-pale); text-decoration: underline; text-underline-offset: 2px; }
+.lead-btns { display: flex; flex-wrap: wrap; gap: 0.7rem; justify-content: center; }
+.lead-btn-x { background: var(--navy-deep); box-shadow: 0 12px 28px -12px rgba(0,0,0,0.5); }
+.lead-btn-x:hover { background: #0b1020; }
+.offer-list { list-style: none; margin-top: 0.85rem; display: flex; flex-direction: column; gap: 0.42rem; }
+.offer-list li { position: relative; padding-left: 1rem; font-size: 0.83rem; line-height: 1.7; color: rgba(255,255,255,0.74); }
+.offer-list li::before { content: "―"; position: absolute; left: 0; color: var(--azure-pale); }
+
+/* リード獲得ゲート（モーダル） */
+.gate-overlay {
+  position: fixed; inset: 0; background: rgba(20,29,53,0.72);
+  -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+  display: none; align-items: center; justify-content: center; z-index: 1000; padding: 1.5rem;
+}
+.gate-overlay.open { display: flex; }
+.gate-modal {
+  background: var(--paper); border-radius: var(--radius); max-width: 440px; width: 100%;
+  padding: 2rem 1.9rem; box-shadow: 0 30px 70px -20px rgba(20,29,53,0.6); position: relative;
+}
+.gate-modal .gate-eyebrow { font-family: var(--font-en); font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--azure); font-weight: 700; }
+.gate-modal h3 { font-family: var(--font-ja-serif); font-size: 1.32rem; color: var(--ink); margin: 0.5rem 0; }
+.gate-lead { font-size: 0.84rem; color: var(--muted); line-height: 1.85; margin-bottom: 1.3rem; }
+.gate-field { margin-bottom: 0.85rem; }
+.gate-field label { display: block; font-size: 0.76rem; font-weight: 700; color: var(--navy); margin-bottom: 0.3rem; }
+.gate-field input {
+  width: 100%; padding: 0.7rem 0.8rem; border: 1px solid var(--azure-pale);
+  border-radius: var(--radius-sm); font-size: 0.9rem; font-family: inherit; color: var(--ink); background: #fff;
+}
+.gate-field input:focus { outline: none; border-color: var(--azure); box-shadow: 0 0 0 3px rgba(46,84,150,0.12); }
+.gate-err { color: var(--red); font-size: 0.76rem; margin: 0.2rem 0 0.2rem; min-height: 1em; }
+.gate-submit {
+  width: 100%; margin-top: 0.5rem; background: var(--red); color: #fff; font-weight: 700;
+  font-size: 0.95rem; padding: 0.9rem; border: none; border-radius: var(--radius-sm);
+  cursor: pointer; transition: background 0.2s ease;
+}
+.gate-submit:hover { background: var(--red-bright); }
+.gate-submit:disabled { opacity: 0.6; cursor: default; }
+.gate-note { font-size: 0.72rem; color: var(--muted); margin-top: 0.9rem; line-height: 1.65; }
+.gate-close { position: absolute; top: 0.7rem; right: 1rem; background: none; border: none; font-size: 1.5rem; color: var(--muted); cursor: pointer; line-height: 1; }
 </style>
 </head>
 <body>
 
-<!-- TOP -->
-<div class="reveal">
-  <p class="top-label">Google I/O 2026 — 速報レポート</p>
-  <h1 class="top-title">
-    <span class="g">G</span><span class="r">o</span><span class="y">o</span><span class="gr">g</span><span class="r">l</span><span class="y">e</span><br>
-    I/O 2026<br>
-    完全解説
-  </h1>
-  <p class="top-desc">
-    今回のテーマは <strong>「エージェントが主導する未来（Agentic Era）」</strong>。<br>
-    「質問に答えるAI」から「自分で考えて動くAI」へ。<br>
-    最注目は <strong>「Gemini Omni」</strong>（物理世界を理解するAI）と <strong>「Gemini Spark」</strong>（眠っていても動き続けるAIエージェント）の2本柱。
-  </p>
-</div>
-
-
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ OMNI MAIN ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-
-<div class="section reveal">
-  <p class="section-eyebrow">📌 最注目発表</p>
-
-  <div class="omni-hero">
-    <div class="omni-hero-eyebrow">New AI Model Family</div>
-    <h2 class="omni-hero-title">Gemini Omni</h2>
-    <p class="omni-hero-sub">これまでの「会話するだけのAI」とはまったく別物。<br>物理世界のルールを理解し、テキスト・画像・音声・動画をすべて一つのモデルで扱える。</p>
+<section class="hero">
+  <div class="texture" aria-hidden="true">
+    <svg viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs><pattern id="pg" width="48" height="48" patternUnits="userSpaceOnUse"><path d="M48 0H0V48" fill="none" stroke="#ffffff" stroke-width="0.7"/></pattern></defs>
+      <rect width="1200" height="600" fill="url(#pg)"/>
+      <circle cx="210" cy="150" r="4" fill="#fff"/><circle cx="540" cy="330" r="4" fill="#fff"/><circle cx="870" cy="200" r="4" fill="#fff"/><circle cx="1020" cy="440" r="4" fill="#fff"/>
+      <path d="M210 150L540 330L870 200L1020 440" stroke="#fff" stroke-width="1" fill="none"/>
+    </svg>
   </div>
-
-  <div class="what-is">
-    <p class="what-is-q">Q. 一言で言うと何が変わったの？</p>
-    <p class="what-is-a">
-      これまでのAIは <strong>「言葉を処理する」</strong> ことが中心でした。Gemini Omni はそこに <strong>「現実世界の法則を理解する」</strong> 能力が加わりました。重力・動き・映像・音声…すべてを1つのモデルで扱い、指示だけで動画を作ったり物理シミュレーションを行ったりできます。
-    </p>
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Technology Watch ─ Google I/O 2026</span>
+    <h1 class="hero-title">エージェントが主導する未来へ<br>Google I/O 2026 完全解説</h1>
+    <p class="hero-copy">今回のテーマは「Agentic Era ─ エージェントが主導する未来」。「質問に答えるAI」から「自分で考えて動くAI」へ。最注目の Gemini Omni・Gemini Spark・Gemini 3.5 の3発表と、Googleが構造的に有利な理由、そして残された課題を整理する。</p>
   </div>
-</div>
+</section>
 
-
-<!-- ── OMNI 3大機能 ── -->
-<div class="section reveal">
-  <p class="section-eyebrow">Gemini Omni の3大能力</p>
-  <h2 class="section-title">具体的に何ができるのか</h2>
-
-  <div class="feature-list">
-
-    <div class="feature-card">
-      <div class="feature-icon">🌍</div>
-      <div>
-        <p class="feature-tag">能力① — 物理世界のシミュレーション</p>
-        <h3 class="feature-title">重力・動き・物理法則をAIが「理解」する</h3>
-        <p class="feature-body">
-          従来のAIは「重力とは何か」を文章で説明できても、それを映像や動きに反映する能力はありませんでした。Omni は重力・運動エネルギーなどの物理法則を内部で理解しており、ロボットの動作訓練などへの活用がすでに始まっています。
-        </p>
-        <p class="feature-example">「ボールが斜面を転がる様子を科学的に正確なアニメーションで作って」と指示するだけでOK</p>
-      </div>
-    </div>
-
-    <div class="feature-card">
-      <div class="feature-icon">🔄</div>
-      <div>
-        <p class="feature-tag">能力② — Any to Any マルチモーダル統合</p>
-        <h3 class="feature-title">テキスト・画像・音声・動画を「一つのAI」で処理</h3>
-        <p class="feature-body">
-          これまで別々のツールや別々のAIが担っていた作業を、Omni が一括対応。「Nano」「Genie」「Veo」などGoogleが持つ複数の技術がすべてOmniファミリーとして統合されました。入力も出力も形式を選ばない「何でもAI」です。
-        </p>
-        <p class="feature-example">動画をアップして「この映像の背景をブラックホールに変えて」と言えば、AIが物理的に自然な形で編集してくれる</p>
-      </div>
-    </div>
-
-    <div class="feature-card">
-      <div class="feature-icon">⚡</div>
-      <div>
-        <p class="feature-tag">能力③ — ワークフローのシームレス化</p>
-        <h3 class="feature-title">チャット画面だけで動画制作・編集・解析が完結</h3>
-        <p class="feature-body">
-          動画生成・画像編集・テキスト解析を別々のアプリで行う必要がなくなります。チャット上で指示を出すだけで、複雑なクリエイティブ作業を一気通貫で完結。Android XR・Workspace などのGoogleエコシステムとの深い連携も想定されています。
-        </p>
-        <p class="feature-example">「この商品画像を使って30秒のプロモ動画を作り、ナレーションも付けて」をチャット1本で完結</p>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-
-<!-- ── BEFORE / AFTER ── -->
-<div class="section reveal">
-  <p class="section-eyebrow">比較で見る変化</p>
-  <h2 class="section-title">従来のAIと Gemini Omni の違い</h2>
-
-  <div class="before-after">
-    <div class="ba-card">
-      <div class="ba-label before">Before — 従来のAI</div>
-      <ul class="ba-items">
-        <li class="ba-item">テキストで質問、テキストで回答</li>
-        <li class="ba-item">画像・動画・音声は別ツールが必要</li>
-        <li class="ba-item">物理的な現象は「説明」しかできない</li>
-        <li class="ba-item">複数モデルを組み合わせて使う必要がある</li>
-      </ul>
-    </div>
-    <div class="ba-card after">
-      <div class="ba-label after">After — Gemini Omni</div>
-      <ul class="ba-items">
-        <li class="ba-item">入力も出力も形式を選ばない</li>
-        <li class="ba-item">1つのAIが映像・音声・テキストを統合処理</li>
-        <li class="ba-item">物理法則を理解し、映像でシミュレート</li>
-        <li class="ba-item">チャット画面だけで完結するワークフロー</li>
-      </ul>
+<section class="sec-light">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Chapter 1 ─ Highlights</span>
+    <h2 class="sec-title">最注目は、この3つの発表だ</h2>
+    <p class="sec-sub">いずれも「対話するAI」から「自律して動くAI」への移行を象徴している。</p>
+    <div class="cards">
+      <div class="card"><span class="card-tag">01</span><h3>Gemini Omni</h3><p>1つのAIが映像・音声・テキストを統合処理。入力も出力も形式を選ばず、物理法則を理解して映像でシミュレートする。</p></div>
+      <div class="card"><span class="card-tag">02</span><h3>Gemini Spark</h3><p>眠っていても、画面を閉じていても裏で動き続ける。Gmail・カレンダー・Docsを横断する個人専用の自律エージェント。</p></div>
+      <div class="card"><span class="card-tag">03</span><h3>Gemini 3.5</h3><p>「賢さ」と「速さ」と「実行力」を同時に。エージェントが複雑な仕事を自律でこなすために設計された次世代モデル。</p></div>
     </div>
   </div>
+</section>
 
-  <div class="shift-note">
-    <p class="shift-note-title">🔄 パラダイムシフトとは</p>
-    <p class="shift-note-body">
-      従来の「対話型AI」は、人間が聞いたことに答えるだけでした。Gemini Omni は<strong>「現実世界の法則を理解し、あらゆるメディアを自在に操るAI」</strong>へのシフトです。これはAIが「道具」から「共同制作者」になることを意味します。
-    </p>
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Chapter 2 ─ Gemini Omni</span>
+    <h2 class="sec-title">AIが「道具」から「共同制作者」になる</h2>
+    <p class="kicker">従来の対話型AIは、人間が聞いたことに答えるだけだった。Gemini Omniは<span class="fw-bold">「現実世界の法則を理解し、あらゆるメディアを自在に操るAI」</span>へのシフトだ。画像・動画・音声を別ツールに分けず、1つのAIが統合して扱う。</p>
+    <p class="note">これまでは「画像・動画・音声は別ツール」「物理現象は説明しかできない」「複数モデルの組み合わせが必要」だった。Omniはそれを1つに束ね、物理法則を理解して映像でシミュレートできる点が新しい。</p>
   </div>
-</div>
+</section>
 
+<section class="sec-light">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Chapter 3 ─ Gemini Spark</span>
+    <h2 class="sec-title">「聞いたら答える」から「頼んだら自分で動く」へ</h2>
+    <p class="kicker">これまでのAIは「聞いたら答えてくれる」存在だった。Gemini Sparkは違う。<span class="fw-bold">「頼んだら自分で動いてくれる」</span>存在だ。あなたが寝ている間も、メールを読み、スケジュールを分析し、必要な下書きを用意しておく——それがエージェントだ。</p>
+    <p class="note">⚠ 課題：24時間バックグラウンドで動くSparkは、アカウントとデータへの広範なアクセス権を必要とする。リーク画面の「確認なしに情報を共有・購入する場合があります」の一文が反発を呼び、集団訴訟「Thele v. Google LLC」も継続中。専用のプライバシーポリシーはI/O時点で未公開だ。</p>
+  </div>
+</section>
 
-<!-- ── INTEGRATION ── -->
-<div class="section reveal">
-  <p class="section-eyebrow">Googleエコシステムとの連携</p>
-  <h2 class="section-title">どこで使えるようになるか</h2>
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Chapter 4 ─ Gemini 3.5</span>
+    <h2 class="sec-title">「フロンティア級の賢さ」を、他社の4倍速で</h2>
+    <p class="kicker">Gemini 3.5は、フロンティア級の賢さを持ちながら他社の約4倍速いモデル。<span class="fw-bold">エージェント専用設計</span>で、複数の作業を並列に進めながら長時間の複雑なワークフローを自律的にこなす。今日からGeminiアプリ・Google検索・Gemini APIで利用できる。</p>
+    <p class="note">エージェント用途の例：アプリ開発・コード保守・財務書類作成を、計画→構築→検証→修正と自分で繰り返しながら進める。更新された「Google Antigravity」と組み合わせれば、複数サブエージェントを並列稼働させた大規模ワークフローにも対応する。</p>
+  </div>
+</section>
 
-  <div class="integration-grid">
-    <div class="int-card">
-      <div class="int-icon">🥽</div>
-      <div class="int-name">Android XR</div>
-      <div class="int-desc">スマートグラスで現実の視界をOmniがリアルタイム解析</div>
-    </div>
-    <div class="int-card">
-      <div class="int-icon">📄</div>
-      <div class="int-name">Workspace</div>
-      <div class="int-desc">Docs・Sheets・Slidesとシームレスに連携</div>
-    </div>
-    <div class="int-card">
-      <div class="int-icon">🤖</div>
-      <div class="int-name">ロボット訓練</div>
-      <div class="int-desc">物理シミュレーション能力でロボットの学習を加速</div>
-    </div>
-    <div class="int-card">
-      <div class="int-icon">🔍</div>
-      <div class="int-name">Google検索</div>
-      <div class="int-desc">Omni Flash が検索コアとして統合済み</div>
-    </div>
-    <div class="int-card">
-      <div class="int-icon">🎬</div>
-      <div class="int-name">Veo / Imagen</div>
-      <div class="int-desc">動画・画像生成ツールがOmniに統合</div>
-    </div>
-    <div class="int-card">
-      <div class="int-icon">📱</div>
-      <div class="int-name">Android 17</div>
-      <div class="int-desc">Android Halo でAI動作をUI上に可視化</div>
+<section class="sec-light">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Chapter 5 ─ Why Google</span>
+    <h2 class="sec-title">Googleが、圧倒的に有利な理由</h2>
+    <p class="sec-sub">エージェント競争は「モデルの賢さ」だけでは決まらない。出発点のデータとスケールが効く。</p>
+    <div class="cards">
+      <div class="card"><span class="card-tag">01</span><h3>メールを全部持っている</h3><p>他社は「新しいアプリを開かせる」ところから始める。GoogleはGmail・カレンダー・Docsに何年分ものデータが既にある。出発点が根本的に違う。</p></div>
+      <div class="card"><span class="card-tag">02</span><h3>MAU 9億人超・230カ国</h3><p>昨年4億人だったGemini月間アクティブユーザーが9億人以上・70言語超に拡大。競合とはスケールが桁違い。</p></div>
+      <div class="card"><span class="card-tag">03</span><h3>外部連携の広さ</h3><p>Workspaceに加え、Canva・OpenTable・Instacartなど外部統合も発表。夏にはmacOSアプリからローカルファイルへのアクセスも予定。</p></div>
     </div>
   </div>
-</div>
+</section>
 
-<hr class="hr">
-
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ SPARK MAIN ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-
-<div class="section reveal">
-  <p class="section-eyebrow">📌 最注目発表 ②</p>
-
-  <div class="spark-hero">
-    <div class="spark-hero-eyebrow">Personal AI Agent</div>
-    <h2 class="spark-hero-title">Gemini Spark</h2>
-    <p class="spark-hero-sub">眠っていても、画面を閉じていても、AIが裏で動き続ける。<br>Gmail・カレンダー・Docsを横断しながら24時間365日自律稼働する、個人専用AIエージェント。</p>
-  </div>
-
-  <div class="spark-what">
-    <p class="spark-what-q">Q. 「エージェント」って普通のAIと何が違うの？</p>
-    <p class="spark-what-a">
-      これまでのAIは「聞いたら答えてくれる」存在でした。Gemini Spark は違います。<strong>「頼んだら自分で動いてくれる」</strong>存在です。あなたが寝ている間も、メールを読み、スケジュールを分析し、必要な下書きを用意しておく——それがエージェントです。
-    </p>
-  </div>
-</div>
-
-
-<!-- ── SPARK デモで見せた具体例 ── -->
-<div class="section reveal">
-  <p class="section-eyebrow">Gemini Spark — 発表デモの実例</p>
-  <h2 class="section-title">実際に何を自動でやってくれるのか</h2>
-
-  <div class="demo-scene" style="margin-bottom:4px;">
-    <div class="demo-label" style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--green);text-transform:uppercase;margin-bottom:16px;">デモ① — 上司へのステータスレポートを自動下書き</div>
-    <div class="demo-flow">
-      <div class="demo-step"><div class="demo-step-num">01</div><div class="demo-step-text">SparkがGmail・Docs・スプレッドシートを自律的にスキャン</div></div>
-      <div class="demo-step"><div class="demo-step-num">02</div><div class="demo-step-text">進捗に関する情報を自動で収集・まとめる</div></div>
-      <div class="demo-step"><div class="demo-step-num">03</div><div class="demo-step-text"><strong>上司へのステータス更新メールの下書きを自動生成</strong>。あとは確認して送るだけ</div></div>
-    </div>
-  </div>
-
-  <div class="demo-scene" style="margin-bottom:32px;">
-    <div class="demo-label" style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--green);text-transform:uppercase;margin-bottom:16px;">デモ② — 学校からのお知らせを整理・共有</div>
-    <div class="demo-flow">
-      <div class="demo-step"><div class="demo-step-num">01</div><div class="demo-step-text">学校からのメールや通知をSparkが24時間監視</div></div>
-      <div class="demo-step"><div class="demo-step-num">02</div><div class="demo-step-text">締め切りや重要イベントを自動で抽出・整理</div></div>
-      <div class="demo-step"><div class="demo-step-num">03</div><div class="demo-step-text"><strong>パートナーと共有できる日次レポートを自動生成</strong>。「見てなかった」が消える</div></div>
-    </div>
-  </div>
-</div>
-
-
-<!-- ── SPARK 強み：なぜGoogleが有利か ── -->
-<div class="section reveal">
-  <p class="section-eyebrow">Googleが圧倒的に有利な理由</p>
-  <h2 class="section-title">「メールを全部持っている」という最強の出発点</h2>
-
-  <div class="feature-list">
-    <div class="feature-card">
-      <div class="feature-icon">📧</div>
-      <div>
-        <p class="feature-tag">データの深さ</p>
-        <h3 class="feature-title">すでにあなたのメールを全部持っている</h3>
-        <p class="feature-body">OpenAIやAnthropicは「新しいアプリを開かせる」ところから始めなければなりません。GoogleはGmail・カレンダー・Docsに<strong>すでに何年分もあなたのデータが蓄積されています</strong>。エージェントとしての出発点が根本的に異なります。</p>
-      </div>
-    </div>
-
-    <div class="feature-card">
-      <div class="feature-icon">🌐</div>
-      <div>
-        <p class="feature-tag">ユーザー規模</p>
-        <h3 class="feature-title">Gemini MAU 9億人超・230カ国以上</h3>
-        <p class="feature-body">昨年のGoogle I/O時点で4億人だったGemini月間アクティブユーザーが<strong>9億人以上・70言語以上</strong>に拡大。競合他社とはスケールが桁違いです。</p>
-      </div>
-    </div>
-
-    <div class="feature-card">
-      <div class="feature-icon">🔗</div>
-      <div>
-        <p class="feature-tag">連携の広さ</p>
-        <h3 class="feature-title">外部サービスへの統合も拡充中</h3>
-        <p class="feature-body">Google Workspace（Gmail・Docs・Sheets・Slides）に加え、<strong>Canva・OpenTable・Instacart</strong>などの外部サービスとの統合も発表。夏にはmacOSのGeminiアプリからローカルファイルへのアクセスも予定。</p>
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Summary ─ Colleague AI</span>
+    <h2 class="sec-title">AIは「ツール」から「チームメンバー」になりつつある</h2>
+    <p class="kicker">AIエージェントはもはや「ツール」ではなく<span class="fw-bold">「チームメンバー」</span>として扱われる局面に入った。Deloitteはこれを「シリコンベースの労働力」と表現している。Sparkのような存在が日常インフラになれば、「AIを使う」感覚そのものが薄れていく。</p>
+    <p class="note">リリース情報：信頼テスターへの提供は今週中／米国ベータは来週〜（Google AI Ultra 月額$100・今回値下げ）。日本での展開時期は現時点で未定。</p>
+    <div class="take">
+      <div class="take-avatar">OK</div>
+      <div class="take-body">
+        <div class="take-label">Ozaken's One Point</div>
+        <div class="take-author">小澤健祐（おざけん）</div>
+        <p class="take-text">今回のI/Oの本質は、個別機能ではなく<span class="hot">「同僚としてのAI」</span>への移行だ。データを最も持つGoogleが最も有利——だが、その広範なアクセス権こそが最大の論点でもある。使いこなす前に、「何をどこまで任せるか」を組織として決める番だ。 &nbsp; <a href="../index.html">← AI資料アーカイブに戻る</a></p>
       </div>
     </div>
   </div>
-
-  <div class="green-note">
-    <p class="green-note-title">💡 「同僚としてのAI」という視点</p>
-    <p class="green-note-body">
-      AIエージェントはもはや「ツール」ではなく<strong>「チームメンバー」</strong>として扱われる局面に入っています。Deloitteのレポートはこれを「シリコンベースの労働力」と表現。Gemini Sparkのような存在が日常インフラになれば、「AIを使う」感覚そのものが薄れ、<strong>「気づいたらやっておいてくれた」</strong>という世界が近づきます。
-    </p>
-  </div>
-</div>
-
-
-<!-- ── SPARK プライバシー懸念 ── -->
-<div class="section reveal">
-  <p class="section-eyebrow">⚠ 気になる点</p>
-  <h2 class="section-title">プライバシーと権限の問題</h2>
-
-  <div class="privacy-card" style="margin-bottom:4px;">
-    <div class="privacy-label">⚠ リーク情報による懸念</div>
-    <p class="privacy-title">「確認なしに情報を共有・購入する場合があります」</p>
-    <p class="privacy-body">
-      発表前にリークされたオンボーディング画面にこの一文が含まれており、開発者コミュニティで大きな反発を呼びました。24時間バックグラウンドで動くSparkは、<strong>アカウントとデータへの広範なアクセス権</strong>を必要とします。Googleはデータの保存・活用範囲をまだ完全には公開していません。
-    </p>
-  </div>
-
-  <div class="privacy-card" style="margin-bottom:32px;background:rgba(234,67,53,0.03);">
-    <div class="privacy-label">⚠ 訴訟リスク</div>
-    <p class="privacy-title">集団訴訟「Thele v. Google LLC」が継続中</p>
-    <p class="privacy-body">
-      2025年11月、「Googleが同意なくGmail・Chat・MeetにGeminiを有効化した」として連邦裁判所に集団訴訟が提起されており、Google I/O 2026時点でSparkに関する独自のプライバシーポリシーは公開されていません。<strong>デフォルト設定がどこに置かれるか</strong>で体験は大きく変わります。初期設定のまま使う人がほとんどであることを考えると、リリース直後は設定を確認する時間を取ることをおすすめします。
-    </p>
-  </div>
-</div>
-
-
-<!-- ── SPARK リリース情報 ── -->
-<div class="section reveal">
-  <p class="section-eyebrow">リリース情報</p>
-  <h2 class="section-title">いつ・誰が使えるのか</h2>
-
-  <div class="release-grid">
-    <div class="release-card">
-      <p class="release-card-label">First Wave</p>
-      <p class="release-card-val">今週中</p>
-      <p class="release-card-note">信頼テスター（限定ユーザー）への提供開始</p>
-    </div>
-    <div class="release-card">
-      <p class="release-card-label">Beta</p>
-      <p class="release-card-val">来週〜（米国）</p>
-      <p class="release-card-note">Google AI Ultra サブスクライバー向けにベータ公開</p>
-    </div>
-    <div class="release-card">
-      <p class="release-card-label">価格</p>
-      <p class="release-card-val">月額 $100</p>
-      <p class="release-card-note">AI Ultraプランが今回値下げ。利用量制限も大幅拡充</p>
-    </div>
-    <div class="release-card" style="border-color:rgba(234,67,53,0.2);">
-      <p class="release-card-label" style="color:var(--red);">日本</p>
-      <p class="release-card-val">時期未定</p>
-      <p class="release-card-note">現時点では日本での展開時期は明らかになっていない</p>
-    </div>
-  </div>
-</div>
-
-<hr class="hr">
-
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ GEMINI 3.5 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-
-<div class="section reveal">
-  <p class="section-eyebrow">📌 最注目発表 ③</p>
-
-  <div class="spark-hero" style="border-top-color:var(--blue);">
-    <div class="spark-hero-eyebrow" style="color:var(--blue);">
-      <span style="width:6px;height:6px;border-radius:50%;background:var(--blue);display:inline-block;"></span>
-      New Model Series — 本日より提供開始
-    </div>
-    <h2 class="spark-hero-title">Gemini 3.5</h2>
-    <p class="spark-hero-sub">「賢さ」と「速さ」と「実行力」を同時に。<br>エージェントが複雑な仕事を自律でこなすために設計された、次世代モデルシリーズ。</p>
-  </div>
-
-  <div class="spark-what" style="border-left:3px solid var(--blue);">
-    <p class="spark-what-q" style="color:var(--blue);">Q. 何が一番すごいの？</p>
-    <p class="spark-what-a">
-      一言で言うと、<strong>「フロンティア級の賢さ」を持ちながら「他社の4倍速い」</strong>モデルです。しかもエージェント専用設計で、複数の作業を並列で進めながら長時間の複雑なワークフローを自律的にこなせます。さらに今日からGeminiアプリ・Google検索・Gemini APIで即座に使えます。
-    </p>
-  </div>
-</div>
-
-
-<!-- ── 3.5 スペック ── -->
-<div class="section reveal">
-  <p class="section-eyebrow">Gemini 3.5 Flash — ベンチマーク実績</p>
-  <h2 class="section-title">数字で見る性能</h2>
-
-  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:4px;margin-bottom:32px;">
-    <div style="background:var(--card);border:1px solid var(--border);padding:28px 24px;text-align:center;">
-      <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--sub);margin-bottom:10px;">Terminal-Bench 2.1</div>
-      <div style="font-size:36px;font-weight:900;color:var(--blue);line-height:1;">76.2<span style="font-size:18px;">%</span></div>
-      <div style="font-size:12px;color:var(--sub);margin-top:6px;">コーディング・ターミナル操作</div>
-    </div>
-    <div style="background:var(--card);border:1px solid var(--border);padding:28px 24px;text-align:center;">
-      <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--sub);margin-bottom:10px;">GDPval-AA</div>
-      <div style="font-size:36px;font-weight:900;color:var(--green);line-height:1;">1,656<span style="font-size:16px;"> Elo</span></div>
-      <div style="font-size:12px;color:var(--sub);margin-top:6px;">エージェント評価スコア</div>
-    </div>
-    <div style="background:var(--card);border:1px solid var(--border);padding:28px 24px;text-align:center;">
-      <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--sub);margin-bottom:10px;">MCP Atlas</div>
-      <div style="font-size:36px;font-weight:900;color:var(--yellow);line-height:1;">83.6<span style="font-size:18px;">%</span></div>
-      <div style="font-size:12px;color:var(--sub);margin-top:6px;">ツール活用・MCP対応</div>
-    </div>
-    <div style="background:var(--card);border:1px solid var(--border);padding:28px 24px;text-align:center;">
-      <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--sub);margin-bottom:10px;">出力トークン速度</div>
-      <div style="font-size:36px;font-weight:900;color:var(--red);line-height:1;">4<span style="font-size:18px;">倍</span></div>
-      <div style="font-size:12px;color:var(--sub);margin-top:6px;">他のフロンティアモデル比</div>
-    </div>
-  </div>
-
-  <div class="feature-list">
-    <div class="feature-card">
-      <div class="feature-icon">🏗️</div>
-      <div>
-        <p class="feature-tag">エージェント用途の例</p>
-        <h3 class="feature-title">アプリ開発・コード保守・財務書類作成を自律でこなす</h3>
-        <p class="feature-body">
-          計画→構築→検証→修正を自分で繰り返しながら、複数段階の作業を進める設計。更新された「Google Antigravity」との組み合わせで、<strong>複数のサブエージェントを並列稼働させた大規模ワークフロー</strong>にも対応します。
-        </p>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<!-- ── 3.5 デモ実績 ── -->
-<div class="section reveal">
-  <p class="section-eyebrow">Google I/O 2026 ライブデモの衝撃</p>
-  <h2 class="section-title">空のプロジェクトから動作するOSを12時間で構築</h2>
-
-  <div class="demo-scene" style="border-left-color:var(--blue);margin-bottom:4px;">
-    <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--blue);text-transform:uppercase;margin-bottom:16px;">デモ — Gemini 3.5 Flash × Antigravity</div>
-    <div class="demo-flow">
-      <div class="demo-step">
-        <div class="demo-step-num" style="color:var(--blue);background:rgba(66,133,244,0.1);border-color:rgba(66,133,244,0.2);">開始</div>
-        <div class="demo-step-text"><strong>空のプロジェクト</strong>からスタート。人間は最初の指示を出すだけ</div>
-      </div>
-      <div class="demo-step">
-        <div class="demo-step-num" style="color:var(--blue);background:rgba(66,133,244,0.1);border-color:rgba(66,133,244,0.2);">実行</div>
-        <div class="demo-step-text"><strong>93のサブエージェントが並行稼働</strong>。計画・コーディング・テストを自律で反復</div>
-      </div>
-      <div class="demo-step">
-        <div class="demo-step-num" style="color:var(--blue);background:rgba(66,133,244,0.1);border-color:rgba(66,133,244,0.2);">規模</div>
-        <div class="demo-step-text"><strong>15,000件以上のモデルリクエスト、26億トークン</strong>を12時間で処理</div>
-      </div>
-      <div class="demo-step">
-        <div class="demo-step-num" style="color:var(--blue);background:rgba(66,133,244,0.1);border-color:rgba(66,133,244,0.2);">結果</div>
-        <div class="demo-step-text"><strong>動作するOSの中核部分を完成</strong>。Googleは「Gemini 3.1 Proでは実現不可能だった」と明言</div>
-      </div>
-    </div>
-  </div>
-
-  <div style="background:rgba(66,133,244,0.05);border:1px solid rgba(66,133,244,0.15);border-radius:4px;padding:24px 28px;margin-bottom:32px;">
-    <p style="font-size:13px;font-weight:700;color:var(--blue);margin-bottom:8px;">💡 このデモが意味すること</p>
-    <p style="font-size:14px;color:#8888a0;line-height:2;">
-      従来、OSのようなソフトウェアを開発するには数十人のエンジニアチームが数ヶ月かける仕事でした。それを<strong style="color:#b0b0c0">AIエージェントが12時間で自律的に動かせる段階まで仕上げた</strong>ということです。「コーディングを手伝うAI」から「開発チームそのものになるAI」へのシフトを象徴するデモです。
-    </p>
-  </div>
-</div>
-
-
-<!-- ── 3.5 提供先・安全性 ── -->
-<div class="section reveal">
-  <p class="section-eyebrow">提供状況 &amp; 安全性への取り組み</p>
-  <h2 class="section-title">どこで使えるか・信頼できるか</h2>
-
-  <div class="release-grid" style="margin-bottom:20px;">
-    <div class="release-card">
-      <p class="release-card-label">本日〜 Flash</p>
-      <p class="release-card-val">即日グローバル提供</p>
-      <p class="release-card-note">Geminiアプリ・Google検索AIモード・Gemini APIが標準モデルとして採用</p>
-    </div>
-    <div class="release-card">
-      <p class="release-card-label">来月 Pro</p>
-      <p class="release-card-val">Gemini 3.5 Pro</p>
-      <p class="release-card-note">すでにGoogle社内で利用中。来月より外部展開予定</p>
-    </div>
-    <div class="release-card">
-      <p class="release-card-label">対応プラットフォーム</p>
-      <p class="release-card-val">6サービスで即対応</p>
-      <p class="release-card-note">Geminiアプリ / Google検索AIモード / Antigravity / AI Studio / Android Studio / Gemini Enterprise</p>
-    </div>
-    <div class="release-card">
-      <p class="release-card-label">Gemini Sparkとの関係</p>
-      <p class="release-card-val">3.5 Flashを搭載</p>
-      <p class="release-card-note">個人向けエージェント「Gemini Spark」のエンジンとして採用。Cloud上の専用VMで稼働</p>
-    </div>
-  </div>
-
-  <div class="privacy-card" style="background:rgba(52,168,83,0.04);border-color:rgba(52,168,83,0.15);">
-    <div class="privacy-label" style="color:var(--green);">🛡 安全性への取り組み</div>
-    <p class="privacy-title" style="color:#90c8a0;">Frontier Safety Framework に準拠して開発</p>
-    <p class="privacy-body">
-      サイバー攻撃・CBRN（化学・生物・放射線・核）に関する保護策を強化。新たな安全性トレーニングと緩和策により、<strong>有害コンテンツの生成を抑制しながら、安全な質問を誤って拒否するリスクも低減</strong>。「安全かつ有用」のバランスを改善している。
-    </p>
-  </div>
-</div>
-
-<hr class="hr">
-
-<!-- ── OTHER NEWS ── -->
-<div class="section reveal">
-  <p class="section-eyebrow">その他の主な発表</p>
-  <h2 class="section-title">その他で見逃せないニュース</h2>
-
-  <div class="other-list">
-
-    <div class="other-item">
-      <div class="other-dot" style="background:var(--yellow);"></div>
-      <div>
-        <p class="other-title">Samsung製 Android XRスマートグラス — 2026年秋後半登場</p>
-        <p class="other-body">装着者の視界をGemini Omniがリアルタイム解析。Apple・MetaへのGoogleの本格対抗馬として、「空間コンピューティング」覇権争いに参戦。</p>
-      </div>
-    </div>
-
-    <div class="other-item">
-      <div class="other-dot" style="background:var(--red);"></div>
-      <div>
-        <p class="other-title">Universal Cart — 複数ECサイトの買い物をAIが代行</p>
-        <p class="other-body">複数のネットショップをまたいだ購入手続きを、AIが一括で処理する新機能。AIによる「代理購買」が現実のものに。</p>
-      </div>
-    </div>
-
-    <div class="other-item">
-      <div class="other-dot" style="background:var(--sub);"></div>
-      <div>
-        <p class="other-title">Android Halo（Android 17）— AIの動きを画面上部でリアルタイム可視化</p>
-        <p class="other-body">バックグラウンドでAIエージェントが何をしているかを常に把握できる新UI。スマートフォンを「アプリを切り替える端末」から「AIへの指示書を出す作戦本部」へと変える試み。</p>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<hr class="hr">
-
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ INSIGHT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-
-<div class="section reveal">
-  <p class="section-eyebrow">📌 今回の発表が意味すること</p>
-  <h2 class="section-title">AIエージェントの「組織導入」がいよいよ本格化する</h2>
-
-  <div style="background:var(--card);border:1px solid var(--border);border-top:3px solid var(--yellow);padding:36px 36px 28px;margin-bottom:4px;">
-    <p style="font-size:17px;font-weight:700;color:#f0f0e0;line-height:1.7;margin-bottom:16px;">
-      今回のGoogle I/O 2026は、<span style="color:var(--yellow)">「AIが使えるかどうか」という時代の終わり</span>を告げる発表だった。
-    </p>
-    <p style="font-size:15px;color:#8888a0;line-height:2.2;">
-      Gemini 3.5が12時間・93エージェント並列でOSを自律構築したデモ。Gemini Sparkが24時間バックグラウンドで業務を代行する世界。これらが示すのは、AIはもはや「使いこなすツール」ではなく、<strong style="color:#c0c0d0">組織の中に配置・設計・管理しなければならない「戦力」</strong>になったということだ。
-    </p>
-  </div>
-
-  <!-- 2つのキーワード -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:4px;">
-
-    <div style="background:var(--card);border:1px solid var(--border);border-left:3px solid var(--blue);padding:32px 28px;">
-      <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--blue);text-transform:uppercase;margin-bottom:14px;">Keyword 01</div>
-      <h3 style="font-size:20px;font-weight:900;margin-bottom:12px;line-height:1.3;">ハーネス<br>エンジニアリング</h3>
-      <p style="font-size:13px;color:var(--sub);line-height:2;margin-bottom:14px;">
-        複数のAIエージェントを<strong style="color:#a0a0b8">「どう束ねて動かすか」</strong>を設計する技術。Gemini 3.5 × Antigravityのデモで示されたように、93のサブエージェントが並列で動くためには、タスクの分解・割り当て・結果統合の仕組みが不可欠だ。
-      </p>
-      <div style="border-top:1px solid var(--border);padding-top:14px;">
-        <p style="font-size:12px;color:var(--sub);">従来のソフトウェア開発における<span style="color:#8ab4f8">「アーキテクチャ設計」</span>に相当する、エージェント時代の核心スキル</p>
-      </div>
-    </div>
-
-    <div style="background:var(--card);border:1px solid var(--border);border-left:3px solid var(--green);padding:32px 28px;">
-      <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--green);text-transform:uppercase;margin-bottom:14px;">Keyword 02</div>
-      <h3 style="font-size:20px;font-weight:900;margin-bottom:12px;line-height:1.3;">コンテキスト<br>エンジニアリング</h3>
-      <p style="font-size:13px;color:var(--sub);line-height:2;margin-bottom:14px;">
-        AIエージェントに<strong style="color:#a0a0b8">「何を・どんな文脈で・どの順番で伝えるか」</strong>を設計する技術。Gemini SparkがGmail・カレンダー・Docsを横断して適切な行動を取れるのは、文脈を正しく設計されているから。指示の書き方ではなく、情報構造そのものの設計力が問われる。
-      </p>
-      <div style="border-top:1px solid var(--border);padding-top:14px;">
-        <p style="font-size:12px;color:var(--sub);">従来の<span style="color:#80c8a0">「プロンプトエンジニアリング」</span>を超えた、組織全体のAI活用を左右する上流工程</p>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- なぜ今か -->
-  <div style="background:var(--card2);border:1px solid var(--border);padding:32px 36px;margin-bottom:4px;">
-    <p style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--yellow);text-transform:uppercase;margin-bottom:16px;">🔑 なぜ「今」この2つが重要なのか</p>
-    <div style="display:flex;flex-direction:column;gap:14px;">
-      <div style="display:flex;gap:14px;align-items:flex-start;">
-        <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--yellow);background:rgba(251,188,4,0.08);border:1px solid rgba(251,188,4,0.2);border-radius:2px;padding:2px 8px;flex-shrink:0;margin-top:2px;">01</div>
-        <p style="font-size:14px;color:#9090a8;line-height:1.9;"><strong style="color:#d0d0e0">モデルの性能差は縮まっている。</strong>Gemini・Claude・GPT、どれも「賢さ」では拮抗しつつある。今後の競争優位は「どのモデルを使うか」ではなく、<strong style="color:#d0d0e0">「どう動かすか」の設計力</strong>に移る。</p>
-      </div>
-      <div style="display:flex;gap:14px;align-items:flex-start;">
-        <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--yellow);background:rgba(251,188,4,0.08);border:1px solid rgba(251,188,4,0.2);border-radius:2px;padding:2px 8px;flex-shrink:0;margin-top:2px;">02</div>
-        <p style="font-size:14px;color:#9090a8;line-height:1.9;"><strong style="color:#d0d0e0">エージェントは「作って終わり」ではない。</strong>業務フローへの統合・権限設計・モニタリング・改善のサイクル全体を組織として回す体制が必要になる。</p>
-      </div>
-      <div style="display:flex;gap:14px;align-items:flex-start;">
-        <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--yellow);background:rgba(251,188,4,0.08);border:1px solid rgba(251,188,4,0.2);border-radius:2px;padding:2px 8px;flex-shrink:0;margin-top:2px;">03</div>
-        <p style="font-size:14px;color:#9090a8;line-height:1.9;"><strong style="color:#d0d0e0">Googleが示したのは「完成品」ではなく「インフラ」だ。</strong>Gemini SparkもAntigravityも、それ単体ではなく<strong style="color:#d0d0e0">組織の業務設計と組み合わせて初めて価値を発揮する</strong>。使いこなす側の設計力こそが、これからの差を生む。</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- フェーズ変化 -->
-  <div style="background:linear-gradient(135deg,rgba(251,188,4,0.06) 0%,rgba(66,133,244,0.04) 100%);border:1px solid rgba(251,188,4,0.15);border-radius:4px;padding:32px 36px;">
-    <p style="font-size:16px;font-weight:700;color:var(--yellow);margin-bottom:14px;">📍 AIの企業導入は「活用フェーズ」から「実装・組織設計フェーズ」へ</p>
-    <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin-bottom:20px;">
-      <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);padding:16px;text-align:center;border-radius:2px;">
-        <div style="font-size:11px;color:var(--sub);margin-bottom:6px;font-family:'Space Mono',monospace;">〜2024年</div>
-        <div style="font-size:14px;font-weight:700;color:#8888a0;">ChatGPTを試す<br>使ってみる</div>
-      </div>
-      <div style="color:var(--yellow);font-size:20px;text-align:center;">→</div>
-      <div style="background:rgba(251,188,4,0.06);border:1px solid rgba(251,188,4,0.2);padding:16px;text-align:center;border-radius:2px;">
-        <div style="font-size:11px;color:var(--yellow);margin-bottom:6px;font-family:'Space Mono',monospace;">2025年〜今</div>
-        <div style="font-size:14px;font-weight:700;color:#e0d080;">エージェントを設計し<br>組織に組み込む</div>
-      </div>
-    </div>
-    <p style="font-size:14px;color:#8080a0;line-height:2.1;">
-      「AIを触れる人を増やす」段階は終わった。次の問いは<strong style="color:#c8c0d0">「誰がエージェントを設計・管理・改善するのか」</strong>——ハーネスエンジニアリングとコンテキストエンジニアリングは、その問いに答える組織の中核スキルになる。
-    </p>
-  </div>
-</div>
-
+</section>
 
 <script>
-const els = document.querySelectorAll('.reveal');
-const obs = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('on'); obs.unobserve(e.target); } });
-}, { threshold: 0.08 });
-els.forEach(el => obs.observe(el));
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+}, { threshold: 0.1 });
+document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
 </script>
 </body>
 </html>
