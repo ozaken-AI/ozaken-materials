@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>賢いモデルと軽いモデルの使い分け ── モデル分業16の型 | おざけん</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Shippori+Mincho+B1:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   OZAKEN WEB STYLE — DESIGN SYSTEM v5
+   図版主導（figure-first）版。CSSはこのまま維持し、body内だけ差し替える。
+   ============================================================ */
+
+/* ============================================================
+   OZAKEN WEB STYLE — DESIGN SYSTEM
+   ============================================================ */
+:root {
+  --ink:         #1a1a2e;
+  --navy:        #1f3864;
+  --navy-deep:   #141d35;
+  --azure:       #2e5496;
+  --azure-pale:  #d8e4f0;
+  --paper:       #f8f7f4;
+  --white:       #ffffff;
+  --red:         #e23744;
+  --red-bright:  #ff5d6a;
+  --muted:       #6b7a99;
+
+  --font-ja-sans:  'Zen Kaku Gothic New', sans-serif;
+  --font-ja-serif: 'Shippori Mincho B1', serif;
+  --font-en:       'Hanken Grotesk', sans-serif;
+
+  --max-w: 880px;
+  --sec-pad: 5rem 1.5rem;
+  --radius: 10px;
+  --radius-sm: 6px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-ja-sans);
+  font-size: 16px; line-height: 1.8;
+  color: var(--ink); background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+
+[data-reveal] { opacity: 0; transform: translateY(24px); transition: opacity 0.65s ease, transform 0.65s ease; }
+[data-reveal].visible { opacity: 1; transform: none; }
+
+.inner { max-width: var(--max-w); margin: 0 auto; padding: 0 1.5rem; }
+.sec-light { background: var(--paper); padding: var(--sec-pad); color: var(--ink); }
+.sec-navy  { background: var(--navy);  padding: var(--sec-pad); color: var(--white); }
+
+/* ----- eyebrow ----- */
+.eyebrow {
+  display: inline-block; font-family: var(--font-en);
+  font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--azure); background: var(--azure-pale);
+  padding: 3px 10px; border-radius: 4px; margin-bottom: 1.1rem;
+}
+.sec-navy .eyebrow { color: var(--white); background: rgba(255,255,255,0.15); }
+
+/* ----- 見出し ----- */
+.sec-title {
+  font-family: var(--font-ja-serif);
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: 500; line-height: 1.4; margin-bottom: 0.6rem;
+}
+.sec-sub { font-size: 1rem; color: var(--muted); margin-bottom: 2.5rem; line-height: 1.7; }
+.sec-navy .sec-sub { color: rgba(255,255,255,0.7); }
+
+/* ----- kicker ----- */
+.kicker {
+  font-family: var(--font-ja-serif);
+  font-size: 1.08rem; line-height: 1.9; margin-bottom: 2rem;
+  padding-left: 1.1rem; border-left: 3px solid var(--azure);
+}
+.sec-navy .kicker { border-left-color: var(--azure-pale); color: rgba(255,255,255,0.9); }
+
+/* ----- bare ----- */
+.bare { margin: 1.5rem 0; }
+.bare p { font-size: 0.95rem; line-height: 1.95; }
+.sec-navy .bare p { color: rgba(255,255,255,0.8); }
+.bare p + p { margin-top: 1rem; }
+
+/* ----- ヒーロー ----- */
+.hero {
+  background: var(--navy); padding: 5.5rem 1.5rem 4.5rem;
+  text-align: center; color: var(--white);
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 60% 25%, rgba(46,84,150,0.55) 0%, transparent 65%);
+  pointer-events: none;
+}
+.texture { position: absolute; inset: 0; opacity: 0.16; pointer-events: none; }
+.texture svg { width: 100%; height: 100%; }
+.hero .eyebrow { color: var(--white); background: rgba(255,255,255,0.15); }
+.hero-title {
+  font-family: var(--font-ja-serif);
+  font-size: clamp(1.85rem, 5vw, 2.9rem);
+  font-weight: 500; line-height: 1.4; margin-bottom: 1.2rem; position: relative;
+}
+.hero-copy {
+  font-size: 1.02rem; color: rgba(255,255,255,0.82);
+  max-width: 620px; margin: 0 auto 2.6rem; line-height: 1.9; position: relative;
+}
+.hero-glyph { position: relative; max-width: 640px; margin: 0 auto; }
+.hero-glyph svg { width: 100%; height: auto; display: block; }
+
+/* ----- figure / diagram ----- */
+.figure {
+  background: var(--white); border-radius: var(--radius);
+  padding: 1.75rem 1.5rem 1.25rem;
+  box-shadow: 0 2px 12px rgba(26,26,46,0.08);
+  margin: 2rem 0 0;
+}
+.sec-navy .figure { background: var(--navy-deep); box-shadow: none; }
+.figure-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.figure svg { width: 100%; height: auto; display: block; }
+.figure text { font-family: var(--font-ja-sans); }
+.figure-cap {
+  font-family: var(--font-en); font-size: 11px; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--muted); margin-top: 1rem; text-align: center;
+}
+.sec-navy .figure-cap { color: rgba(255,255,255,0.5); }
+.fig-title {
+  font-family: var(--font-ja-serif); font-size: 1rem; font-weight: 500;
+  margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--azure-pale);
+}
+.sec-navy .fig-title { color: var(--white); border-bottom-color: rgba(255,255,255,0.15); }
+.legend { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; margin-top: 0.75rem; }
+.legend-item { display: flex; align-items: center; gap: 0.45rem; font-size: 0.78rem; color: var(--muted); }
+.sec-navy .legend-item { color: rgba(255,255,255,0.6); }
+.legend-swatch { width: 22px; height: 3px; border-radius: 2px; }
+
+/* ----- 数値ストリップ ----- */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 2rem; }
+.stat {
+  background: var(--white); border-radius: var(--radius);
+  padding: 1.3rem 1rem; text-align: center;
+  box-shadow: 0 2px 8px rgba(26,26,46,0.07); border-top: 3px solid var(--azure);
+}
+.sec-navy .stat { background: var(--navy-deep); box-shadow: none; }
+.stat-num {
+  font-family: var(--font-en); font-size: 2rem; font-weight: 700;
+  line-height: 1.1; color: var(--azure);
+}
+.sec-navy .stat-num { color: var(--azure-pale); }
+.stat-num small { font-size: 0.9rem; font-weight: 600; }
+.stat-label { font-size: 0.78rem; color: var(--muted); margin-top: 0.4rem; line-height: 1.6; }
+.sec-navy .stat-label { color: rgba(255,255,255,0.65); }
+
+/* ----- ステッパー ----- */
+.stepper { display: flex; flex-direction: column; gap: 1.25rem; }
+.step {
+  display: flex; gap: 1.25rem; align-items: flex-start;
+  background: var(--white); border-radius: var(--radius);
+  padding: 1.4rem 1.7rem; border-left: 4px solid var(--azure);
+  box-shadow: 0 2px 8px rgba(26,26,46,0.06);
+}
+.sec-navy .step { background: var(--navy-deep); box-shadow: none; }
+.step-num {
+  flex-shrink: 0; width: 36px; height: 36px; border-radius: 50%;
+  background: var(--azure); color: var(--white);
+  font-family: var(--font-en); font-size: 0.9rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; margin-top: 2px;
+}
+.step-body h3 { font-family: var(--font-ja-serif); font-size: 1.03rem; font-weight: 500; margin-bottom: 0.3rem; }
+.step-body p { font-size: 0.88rem; line-height: 1.8; color: var(--muted); }
+.sec-navy .step-body p { color: rgba(255,255,255,0.68); }
+
+/* ----- カード ----- */
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1.25rem; }
+.card {
+  background: var(--white); border-radius: var(--radius);
+  padding: 1.4rem 1.6rem; box-shadow: 0 2px 8px rgba(26,26,46,0.07);
+  border-top: 3px solid var(--azure);
+}
+.sec-navy .card { background: var(--navy-deep); box-shadow: none; }
+.card-icon { width: 36px; height: 36px; margin-bottom: 0.85rem; color: var(--azure); }
+.sec-navy .card-icon { color: var(--azure-pale); }
+.card h3 { font-family: var(--font-ja-serif); font-size: 1rem; font-weight: 500; margin-bottom: 0.45rem; }
+.card p { font-size: 0.85rem; line-height: 1.8; color: var(--muted); }
+.sec-navy .card p { color: rgba(255,255,255,0.68); }
+.card-tag {
+  display: inline-block; font-family: var(--font-en);
+  font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+  color: var(--azure); background: var(--azure-pale);
+  padding: 2px 8px; border-radius: 4px; margin-bottom: 0.6rem;
+}
+.sec-navy .card-tag { color: var(--white); background: rgba(255,255,255,0.15); }
+
+/* ----- VS比較 ----- */
+.vs { display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: stretch; }
+.vs-card { background: var(--white); border-radius: var(--radius); padding: 1.5rem; box-shadow: 0 2px 8px rgba(26,26,46,0.07); }
+.sec-navy .vs-card { background: var(--navy-deep); box-shadow: none; }
+.vs-badge {
+  font-family: var(--font-en); font-size: 11px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 4px; display: inline-block; margin-bottom: 0.7rem;
+}
+.vs-badge.pos { background: var(--azure-pale); color: var(--azure); }
+.vs-badge.neg { background: #fde8ea; color: var(--red); }
+.sec-navy .vs-badge.neg { background: rgba(226,55,68,0.2); color: var(--red-bright); }
+.vs-label {
+  display: flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--azure); color: var(--white);
+  font-family: var(--font-en); font-size: 0.8rem; font-weight: 700;
+  flex-shrink: 0; margin: auto;
+}
+.vs-card h3 { font-family: var(--font-ja-serif); font-size: 1.03rem; font-weight: 500; margin-bottom: 0.45rem; }
+.vs-card p { font-size: 0.86rem; line-height: 1.8; color: var(--muted); }
+.sec-navy .vs-card p { color: rgba(255,255,255,0.68); }
+.vs-meta {
+  margin-top: 0.9rem; padding-top: 0.8rem;
+  border-top: 1px dashed rgba(46,84,150,0.3);
+  font-size: 0.78rem; line-height: 1.75; color: var(--muted);
+}
+.sec-navy .vs-meta { border-top-color: rgba(255,255,255,0.18); color: rgba(255,255,255,0.6); }
+.vs-meta b { font-family: var(--font-en); color: var(--azure); font-weight: 700; }
+.sec-navy .vs-meta b { color: var(--azure-pale); }
+
+/* ----- 深掘り ----- */
+.deep {
+  background: var(--navy-deep); border-radius: var(--radius);
+  padding: 1.9rem 2.1rem; border-left: 4px solid var(--azure); margin: 1.75rem 0;
+}
+.deep h3 { font-family: var(--font-ja-serif); font-size: 1.12rem; font-weight: 500; margin-bottom: 0.7rem; color: var(--white); }
+.deep p { font-size: 0.89rem; line-height: 1.85; color: rgba(255,255,255,0.75); }
+.deep p + p { margin-top: 0.85rem; }
+
+/* ----- 計算ブロック ----- */
+.calc {
+  background: rgba(255,255,255,0.06);
+  border: 1px dashed rgba(255,255,255,0.25);
+  border-radius: var(--radius-sm);
+  padding: 1.1rem 1.3rem; margin: 1.5rem 0;
+  font-family: var(--font-en); font-size: 0.95rem; line-height: 1.8;
+  color: var(--white); text-align: center; letter-spacing: 0.02em;
+}
+.calc b { color: var(--red-bright); font-size: 1.15rem; }
+.calc span { font-size: 0.76rem; color: rgba(255,255,255,0.6); display: block; font-family: var(--font-ja-sans); letter-spacing: 0; }
+
+/* ----- 2カラム ----- */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+@media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+.two-col-item h3 {
+  font-family: var(--font-ja-serif); font-size: 1.02rem; font-weight: 500;
+  margin-bottom: 0.55rem; padding-bottom: 0.4rem; border-bottom: 2px solid var(--azure);
+}
+.two-col-item p { font-size: 0.88rem; line-height: 1.85; color: var(--muted); }
+.sec-navy .two-col-item p { color: rgba(255,255,255,0.72); }
+
+/* ----- 注記 ----- */
+.note {
+  font-size: 0.82rem; color: var(--muted); line-height: 1.8;
+  padding: 0.85rem 1.1rem; border-left: 3px solid var(--azure-pale);
+  background: rgba(46,84,150,0.04);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin-top: 1.75rem;
+}
+.sec-navy .note { color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.05); border-left-color: rgba(255,255,255,0.25); }
+
+/* ----- まとめ ----- */
+.summary { text-align: center; max-width: 660px; margin: 0 auto; }
+.summary-text {
+  font-family: var(--font-ja-serif);
+  font-size: clamp(1.12rem, 3vw, 1.45rem);
+  font-weight: 400; line-height: 1.95;
+}
+
+/* ----- take ----- */
+.take {
+  background: var(--navy-deep); border-radius: var(--radius);
+  padding: 1.55rem 1.75rem; display: flex; gap: 1.25rem; align-items: flex-start;
+  margin: 2rem 0 0; border-left: 4px solid var(--red);
+}
+.sec-light .take { background: #fff8f8; border-left: 4px solid var(--red); box-shadow: 0 2px 8px rgba(226,55,68,0.07); }
+.take-avatar {
+  flex-shrink: 0; width: 44px; height: 44px; border-radius: 50%;
+  background: var(--azure); color: var(--white);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-en); font-size: 0.75rem; font-weight: 700;
+}
+.take-label {
+  font-family: var(--font-en); font-size: 10px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--red-bright); margin-bottom: 4px;
+}
+.sec-light .take-label { color: var(--red); }
+.take-author { font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.45rem; }
+.sec-light .take-author { color: var(--muted); }
+.take-text { font-size: 0.89rem; line-height: 1.85; color: rgba(255,255,255,0.88); }
+.sec-light .take-text { color: var(--ink); }
+.hot { color: var(--red-bright); font-weight: 700; }
+.sec-light .hot { color: var(--red); }
+
+.text-azure { color: var(--azure); }
+.fw-bold { font-weight: 700; }
+
+footer {
+  background: var(--navy-deep); padding: 3rem 1.5rem; text-align: center;
+  color: rgba(255,255,255,0.5); font-size: 0.8rem;
+}
+
+@media (max-width: 720px) {
+  .figure-scroll svg { min-width: 560px; }
+  .figure-scroll::after { content: ''; display: block; }
+}
+@media (max-width: 640px) {
+  :root { --sec-pad: 3.5rem 1rem; }
+  .vs { grid-template-columns: 1fr; }
+  .vs-label { display: none; }
+  .hero { padding: 4rem 1rem 3.5rem; }
+  .deep { padding: 1.5rem 1.4rem; }
+  .figure { padding: 1.4rem 1rem 1rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- =============================================
+  HERO
+  ============================================= -->
+<section class="hero">
+  <div class="texture" aria-hidden="true">
+    <svg viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+          <path d="M48 0H0V48" fill="none" stroke="#ffffff" stroke-width="0.7"/>
+        </pattern>
+      </defs>
+      <rect width="1200" height="600" fill="url(#grid)"/>
+      <circle cx="180" cy="140" r="4" fill="#ffffff"/>
+      <circle cx="420" cy="300" r="4" fill="#ffffff"/>
+      <circle cx="760" cy="180" r="4" fill="#ffffff"/>
+      <circle cx="980" cy="420" r="4" fill="#ffffff"/>
+      <path d="M180 140L420 300L760 180L980 420" stroke="#ffffff" stroke-width="1" fill="none"/>
+    </svg>
+  </div>
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Model Orchestration</span>
+    <h1 class="hero-title">賢いモデルを、<br>全工程で使ってはいけない</h1>
+    <p class="hero-copy">Opus 5 や Mythos クラスの上位モデルは、どの工程に置いても強い。だから「とりあえず一番賢いやつで」に流れる。だが実運用で効くのは、上位モデルを<b>どの工程だけに置くか</b>という分業設計のほうだ。ここでは16の型を、パイプライン上の置き場所で5家系に整理する。</p>
+
+    <div class="hero-glyph">
+      <svg viewBox="0 0 660 190" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="軽量モデルと上位モデルを工程ごとに配置したパイプラインの全体像">
+        <defs>
+          <marker id="hg" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <path d="M0 0 L8 4 L0 8 z" fill="#ffffff" fill-opacity="0.7"/>
+          </marker>
+        </defs>
+        <circle cx="70" cy="80" r="26" fill="none" stroke="#ffffff" stroke-width="1.6" stroke-opacity="0.55"/>
+        <text x="70" y="85" font-size="13" fill="#ffffff" text-anchor="middle">整形</text>
+        <path d="M100 80 H136" stroke="#ffffff" stroke-width="1.4" stroke-opacity="0.6" fill="none" marker-end="url(#hg)"/>
+
+        <circle cx="188" cy="80" r="42" fill="#ffffff" fill-opacity="0.16" stroke="#ffffff" stroke-width="2"/>
+        <text x="188" y="76" font-size="16" fill="#ffffff" text-anchor="middle" font-weight="700">計画</text>
+        <text x="188" y="96" font-size="11" fill="#ffffff" fill-opacity="0.8" text-anchor="middle">判断</text>
+
+        <path d="M234 66 C286 40, 320 30, 360 30" stroke="#ffffff" stroke-width="1.4" stroke-opacity="0.6" fill="none" marker-end="url(#hg)"/>
+        <path d="M234 80 H360" stroke="#ffffff" stroke-width="1.4" stroke-opacity="0.6" fill="none" marker-end="url(#hg)"/>
+        <path d="M234 94 C286 120, 320 130, 360 130" stroke="#ffffff" stroke-width="1.4" stroke-opacity="0.6" fill="none" marker-end="url(#hg)"/>
+
+        <circle cx="388" cy="30" r="22" fill="none" stroke="#ffffff" stroke-width="1.6" stroke-opacity="0.55"/>
+        <text x="388" y="35" font-size="12" fill="#ffffff" text-anchor="middle">実行</text>
+        <circle cx="388" cy="80" r="22" fill="none" stroke="#ffffff" stroke-width="1.6" stroke-opacity="0.55"/>
+        <text x="388" y="85" font-size="12" fill="#ffffff" text-anchor="middle">実行</text>
+        <circle cx="388" cy="130" r="22" fill="none" stroke="#ffffff" stroke-width="1.6" stroke-opacity="0.55"/>
+        <text x="388" y="135" font-size="12" fill="#ffffff" text-anchor="middle">実行</text>
+
+        <path d="M414 30 C466 30, 494 48, 508 64" stroke="#ffffff" stroke-width="1.4" stroke-opacity="0.6" fill="none" marker-end="url(#hg)"/>
+        <path d="M414 80 H508" stroke="#ffffff" stroke-width="1.4" stroke-opacity="0.6" fill="none" marker-end="url(#hg)"/>
+        <path d="M414 130 C466 130, 494 112, 508 96" stroke="#ffffff" stroke-width="1.4" stroke-opacity="0.6" fill="none" marker-end="url(#hg)"/>
+
+        <circle cx="552" cy="80" r="38" fill="#ffffff" fill-opacity="0.16" stroke="#ffffff" stroke-width="2"/>
+        <text x="552" y="76" font-size="15" fill="#ffffff" text-anchor="middle" font-weight="700">検証</text>
+        <text x="552" y="96" font-size="11" fill="#ffffff" fill-opacity="0.8" text-anchor="middle">責任</text>
+
+        <text x="70" y="174" font-size="12" fill="#ffffff" fill-opacity="0.75" text-anchor="middle">軽量</text>
+        <text x="188" y="174" font-size="12" fill="#ffffff" fill-opacity="0.75" text-anchor="middle">上位モデル</text>
+        <text x="388" y="174" font-size="12" fill="#ffffff" fill-opacity="0.75" text-anchor="middle">軽量 × N</text>
+        <text x="552" y="174" font-size="12" fill="#ffffff" fill-opacity="0.75" text-anchor="middle">上位モデル</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+  本文01（ライト）
+  ============================================= -->
+<section class="sec-light">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 01</span>
+    <h2 class="sec-title">モデルの使い分けは、<br>コスト削減ではなく工程設計だ</h2>
+    <p class="sec-sub">上位モデルと軽量モデルは、性能の上下ではなく担当の違いとして扱う。</p>
+
+    <p class="kicker">
+      上位モデルと軽量モデルは、上位互換の関係ではない。上位モデルが圧倒的に強いのは<span class="fw-bold text-azure">決めること</span>であって、
+      決まったことを繰り返すことではない。分業設計とは、この2つを工程として切り分ける作業にほかならない。
+    </p>
+
+    <div class="vs">
+      <div class="vs-card">
+        <span class="vs-badge neg">単一モデル運用</span>
+        <h3>全部を一番賢いモデルで回す</h3>
+        <p>設計は速いが、上位モデルの呼び出し回数が工程数ぶんそのまま積み上がる。速度も遅くなる。</p>
+        <div class="vs-meta">
+          <b>強み:</b> 設計が不要・品質が読める<br>
+          <b>弱み:</b> コストと遅延が工程数に比例<br>
+          <b>限界:</b> 件数が増えた瞬間に破綻する
+        </div>
+      </div>
+      <div class="vs-label">vs</div>
+      <div class="vs-card">
+        <span class="vs-badge pos">分業運用</span>
+        <h3>決める工程だけを上位に残す</h3>
+        <p>工程の数も順序も変えない。どの工程を誰が担うかだけを組み替える。</p>
+        <div class="vs-meta">
+          <b>強み:</b> 呼び出し回数を工程単位で削れる<br>
+          <b>弱み:</b> 工程の切り分けに設計コスト<br>
+          <b>限界:</b> 境界を誤ると品質が落ちる
+        </div>
+      </div>
+    </div>
+
+    <div class="figure">
+      <p class="fig-title">Fig.1 ── 変えたのは工程ではなく、工程の割り当てだけ</p>
+      <div class="figure-scroll">
+        <svg viewBox="0 0 700 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="単一モデル運用と分業運用のパイプライン構造の比較図">
+          <defs>
+            <marker id="f1a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+              <path d="M0 0 L8 4 L0 8 z" fill="#2e5496"/>
+            </marker>
+          </defs>
+
+          <rect x="30" y="36" width="640" height="214" rx="12" fill="#f1f4f9"/>
+          <text x="52" y="70" font-size="13" fill="#2e5496" font-weight="700" letter-spacing="1.4">単一モデル運用</text>
+          <text x="648" y="70" font-size="12.5" fill="#e23744" text-anchor="end" font-weight="700">全工程を上位モデルで回す</text>
+
+          <rect x="52" y="110" width="100" height="64" rx="8" fill="#1f3864"/>
+          <text x="102" y="147" font-size="14" fill="#ffffff" text-anchor="middle">整形</text>
+          <path d="M156 142 H172" stroke="#2e5496" stroke-width="1.8" fill="none" marker-end="url(#f1a)"/>
+          <rect x="176" y="110" width="100" height="64" rx="8" fill="#1f3864"/>
+          <text x="226" y="147" font-size="14" fill="#ffffff" text-anchor="middle">計画</text>
+          <path d="M280 142 H296" stroke="#2e5496" stroke-width="1.8" fill="none" marker-end="url(#f1a)"/>
+          <rect x="300" y="110" width="100" height="64" rx="8" fill="#1f3864"/>
+          <text x="350" y="147" font-size="14" fill="#ffffff" text-anchor="middle">実行</text>
+          <path d="M404 142 H420" stroke="#2e5496" stroke-width="1.8" fill="none" marker-end="url(#f1a)"/>
+          <rect x="424" y="110" width="100" height="64" rx="8" fill="#1f3864"/>
+          <text x="474" y="147" font-size="14" fill="#ffffff" text-anchor="middle">統合</text>
+          <path d="M528 142 H544" stroke="#2e5496" stroke-width="1.8" fill="none" marker-end="url(#f1a)"/>
+          <rect x="548" y="110" width="100" height="64" rx="8" fill="#1f3864"/>
+          <text x="598" y="147" font-size="14" fill="#ffffff" text-anchor="middle">検証</text>
+
+          <text x="52" y="212" font-size="12" fill="#6b7a99">賢さは十分。しかし単価も遅延も工程数ぶん積み上がる</text>
+          <text x="648" y="212" font-size="13" fill="#e23744" text-anchor="end" font-weight="700">上位モデルの呼び出し：5工程</text>
+
+          <rect x="30" y="286" width="640" height="242" rx="12" fill="#eef3fa"/>
+          <text x="52" y="320" font-size="13" fill="#2e5496" font-weight="700" letter-spacing="1.4">分業運用</text>
+          <text x="648" y="320" font-size="12.5" fill="#2e5496" text-anchor="end" font-weight="700">上位は「決める工程」だけに置く</text>
+
+          <rect x="52" y="356" width="100" height="64" rx="8" fill="#ffffff" stroke="#2e5496" stroke-width="1.6"/>
+          <text x="102" y="393" font-size="14" fill="#1f3864" text-anchor="middle">整形</text>
+          <path d="M156 388 H172" stroke="#2e5496" stroke-width="1.8" fill="none" marker-end="url(#f1a)"/>
+          <rect x="176" y="356" width="100" height="64" rx="8" fill="#1f3864"/>
+          <text x="226" y="393" font-size="14" fill="#ffffff" text-anchor="middle">計画</text>
+          <path d="M280 388 H296" stroke="#2e5496" stroke-width="1.8" fill="none" marker-end="url(#f1a)"/>
+          <rect x="300" y="356" width="100" height="64" rx="8" fill="#ffffff" stroke="#2e5496" stroke-width="1.6"/>
+          <text x="350" y="393" font-size="14" fill="#1f3864" text-anchor="middle">実行</text>
+          <path d="M404 388 H420" stroke="#2e5496" stroke-width="1.8" fill="none" marker-end="url(#f1a)"/>
+          <rect x="424" y="356" width="100" height="64" rx="8" fill="#ffffff" stroke="#2e5496" stroke-width="1.6"/>
+          <text x="474" y="393" font-size="14" fill="#1f3864" text-anchor="middle">統合</text>
+          <path d="M528 388 H544" stroke="#2e5496" stroke-width="1.8" fill="none" marker-end="url(#f1a)"/>
+          <rect x="548" y="356" width="100" height="64" rx="8" fill="#1f3864"/>
+          <text x="598" y="393" font-size="14" fill="#ffffff" text-anchor="middle">検証</text>
+
+          <text x="102" y="444" font-size="11.5" fill="#6b7a99" text-anchor="middle">軽量</text>
+          <text x="226" y="444" font-size="11.5" fill="#2e5496" text-anchor="middle" font-weight="700">上位</text>
+          <text x="350" y="444" font-size="11.5" fill="#6b7a99" text-anchor="middle">軽量</text>
+          <text x="474" y="444" font-size="11.5" fill="#6b7a99" text-anchor="middle">軽量</text>
+          <text x="598" y="444" font-size="11.5" fill="#2e5496" text-anchor="middle" font-weight="700">上位</text>
+
+          <text x="52" y="492" font-size="12" fill="#6b7a99">工程の数も順序も変えていない。担当だけを組み替えた</text>
+          <text x="648" y="492" font-size="13" fill="#2e5496" text-anchor="end" font-weight="700">上位モデルの呼び出し：2工程</text>
+        </svg>
+      </div>
+      <p class="figure-cap">分業とは、安いモデルへの置き換えではなく、工程ごとの担当の割り当て直しである</p>
+    </div>
+
+    <p class="note">
+      ※ 本稿では Mythos クラスと Opus クラスを「上位モデル」、Sonnet クラスを「中位」、Haiku クラスを「軽量モデル」と呼ぶ。Mythos ティアのうち一般提供されているのは Claude Fable 5 で、Mythos 5 とは同じ基盤モデルに追加の安全対策を載せた関係にある。ベンダーが変わっても階層の構造は同じなので、手元のラインナップに読み替えて使ってほしい。
+    </p>
+  </div>
+</section>
+
+<!-- =============================================
+  本文02（ネイビー）
+  ============================================= -->
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 02</span>
+    <h2 class="sec-title">効くのは単価ではなく、<br>上位モデルに届く件数だ</h2>
+    <p class="sec-sub">値引き交渉で動くのは単価だけ。設計で動かせるのは件数のほうである。</p>
+
+    <p class="kicker">
+      まず全件を軽量モデルに通し、そこで決着しなかったぶんだけ上位モデルに回す。この2段構えを
+      <span class="fw-bold text-azure">カスケード</span>と呼ぶ。効くのは単価差そのものではなく、
+      上位モデルまで<span class="fw-bold text-azure">たどり着く件数が減る</span>ことだ。
+    </p>
+
+    <div class="figure">
+      <p class="fig-title">Fig.2 ── 上位モデルに届く件数が減れば、総コストはそのぶん落ちる</p>
+      <div class="figure-scroll">
+        <svg viewBox="0 0 700 468" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="100件をカスケード構成で処理したときの件数の流れと、上位モデル単独運用との総コスト比較">
+          <rect x="30" y="36" width="640" height="212" rx="12" fill="#ffffff" fill-opacity="0.05"/>
+          <text x="52" y="68" font-size="12.5" fill="#d8e4f0" font-weight="700" letter-spacing="1.2">件数の流れ（100件を処理する場合）</text>
+
+          <text x="44" y="107" font-size="12" fill="#d8e4f0" fill-opacity="0.75">入力</text>
+          <rect x="210" y="88" width="420" height="28" rx="4" fill="#ffffff" fill-opacity="0.18"/>
+          <text x="420" y="107" font-size="12.5" fill="#ffffff" text-anchor="middle">100件</text>
+
+          <text x="44" y="147" font-size="12" fill="#d8e4f0" fill-opacity="0.75">軽量モデル</text>
+          <rect x="210" y="128" width="420" height="28" rx="4" fill="#d8e4f0" fill-opacity="0.85"/>
+          <text x="420" y="147" font-size="12.5" fill="#1f3864" text-anchor="middle" font-weight="700">全100件を軽量モデルが処理</text>
+
+          <path d="M462 118 V166" stroke="#ffffff" stroke-opacity="0.35" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+
+          <rect x="210" y="168" width="252" height="26" rx="4" fill="#d8e4f0" fill-opacity="0.4"/>
+          <text x="336" y="186" font-size="12" fill="#ffffff" text-anchor="middle">ここで決着 60件</text>
+          <rect x="462" y="168" width="168" height="26" rx="4" fill="#ff5d6a" fill-opacity="0.9"/>
+          <text x="546" y="186" font-size="12" fill="#ffffff" text-anchor="middle" font-weight="700">昇格 40件</text>
+
+          <text x="44" y="225" font-size="12" fill="#d8e4f0" fill-opacity="0.75">上位モデル</text>
+          <rect x="462" y="206" width="168" height="28" rx="4" fill="#ff5d6a"/>
+          <text x="546" y="225" font-size="12.5" fill="#ffffff" text-anchor="middle" font-weight="700">40件だけが届く</text>
+
+          <rect x="30" y="278" width="640" height="154" rx="12" fill="#ffffff" fill-opacity="0.05"/>
+          <text x="52" y="310" font-size="12.5" fill="#d8e4f0" font-weight="700" letter-spacing="1.2">総コスト指数（上位モデル単独＝100）</text>
+
+          <text x="44" y="350" font-size="12" fill="#d8e4f0" fill-opacity="0.75">上位単独</text>
+          <rect x="210" y="330" width="420" height="30" rx="4" fill="#ff5d6a"/>
+          <text x="618" y="352" font-size="16" fill="#ffffff" text-anchor="end" font-weight="700" font-family="'Hanken Grotesk',sans-serif">100</text>
+
+          <text x="44" y="396" font-size="12" fill="#d8e4f0" fill-opacity="0.75">カスケード</text>
+          <rect x="210" y="376" width="189" height="30" rx="4" fill="#ff5d6a"/>
+          <rect x="210" y="376" width="21" height="30" rx="4" fill="#d8e4f0"/>
+          <text x="412" y="398" font-size="16" fill="#d8e4f0" font-weight="700" font-family="'Hanken Grotesk',sans-serif">45</text>
+          <text x="210" y="424" font-size="11" fill="#d8e4f0" fill-opacity="0.65">内訳：軽量モデル 5 ＋ 上位モデル 40</text>
+        </svg>
+      </div>
+      <div class="legend">
+        <div class="legend-item"><span class="legend-swatch" style="background:#d8e4f0"></span>軽量モデルが担う分</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:#ff5d6a"></span>上位モデルが担う分</div>
+      </div>
+      <p class="figure-cap">上位モデルに届く件数が100→40に減れば、総コストは45まで落ちる（単価差20倍で試算）</p>
+    </div>
+
+    <div class="calc">
+      上位モデルの単価 × 上位モデルに届く件数 ＝ <b>総コストのほぼ全部</b>
+      <span>値引き交渉で動くのは左の項だけ。設計で動かせるのは右の項だ</span>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-num">×20</div>
+        <div class="stat-label">上位と軽量の単価差は<br>この程度の桁で開く</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">40<small>件</small></div>
+        <div class="stat-label">100件のうち上位モデルに<br>届くのはこれだけ</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">45</div>
+        <div class="stat-label">総コスト指数<br>（上位単独＝100）</div>
+      </div>
+    </div>
+
+    <div class="deep">
+      <h3>カスケードが逆に高くつく分岐点がある</h3>
+      <p>軽量モデルで決着しなかった件は、軽量ぶんのコストが丸ごと無駄になる。上の試算で言えば、一次解決率が0%まで落ちると総コストは105になり、上位モデル単独より高い。カスケードを入れる前に確かめるべきなのは単価差ではなく、「軽量モデルで決着したかどうかを、機械的に判定できるか」のほうだ。判定できない業務にカスケードを載せてはいけない。</p>
+      <p>もう1つの典型的な失敗が、工程を切らずにプロンプトのモデル名だけを差し替えることだ。これは分業ではなく単なる劣化で、落ちた品質をリトライで埋めるうちに、結局は元より高くつく。まず工程を切り、「この工程は判断を含むか」を1つずつ問う。判断を含まない工程だけが、軽量モデルに降ろせる候補になる。</p>
+    </div>
+
+    <div class="take">
+      <div class="take-avatar">OK</div>
+      <div class="take-body">
+        <div class="take-label">Ozaken's One Point</div>
+        <div class="take-author">小澤健祐（おざけん）</div>
+        <p class="take-text">
+          分業したのにコストが下がらない現場を、何度も見てきた。原因はだいたい同じで、軽量モデルに判断まで渡している。安いモデルが迷うと、リトライとエスカレーションで結局2回も3回も呼ぶことになる。軽量モデルに渡していいのは、判断が終わったあとの作業だけだ。設計の急所は、安いモデルを<span class="hot">迷わせない</span>ことにある。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+  本文03（ライト）
+  ============================================= -->
+<section class="sec-light">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 03</span>
+    <h2 class="sec-title">16の型は、上位モデルを<br>どこに置くかで5家系に分かれる</h2>
+    <p class="sec-sub">個々の手法名を覚えるより、パイプライン上の位置で捉えたほうが応用が利く。</p>
+
+    <p class="kicker">
+      世に出ている分業手法は数多いが、構造で見ると<span class="fw-bold text-azure">上位モデルの置き場所</span>が違うだけだ。
+      上流に置くか、下流に置くか、前段で軽量に削らせるか、1件ごとに切り替えるか、そもそも構造で分けるか。この5通りしかない。
+    </p>
+
+    <div class="figure">
+      <p class="fig-title">Fig.3 ── 分業16型を、上位モデルの置き場所で5家系に整理する</p>
+      <div class="figure-scroll">
+        <svg viewBox="0 0 700 510" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="上流集中型・下流集中型・前処理型・動的切替型・構造分離型の5家系のパイプライン配置図">
+          <defs>
+            <marker id="f3a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+              <path d="M0 0 L8 4 L0 8 z" fill="#2e5496"/>
+            </marker>
+            <marker id="f3b" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+              <path d="M0 0 L8 4 L0 8 z" fill="#e23744"/>
+            </marker>
+          </defs>
+
+          <text x="20" y="32" font-size="11" fill="#6b7a99" letter-spacing="1.2" font-family="'Hanken Grotesk',sans-serif">FAMILY</text>
+          <text x="210" y="32" font-size="11" fill="#6b7a99" letter-spacing="1.2" font-family="'Hanken Grotesk',sans-serif">PIPELINE</text>
+          <text x="690" y="32" font-size="11" fill="#6b7a99" letter-spacing="1.2" text-anchor="end" font-family="'Hanken Grotesk',sans-serif">TYPES</text>
+
+          <path d="M20 136 H690" stroke="#e6ecf4" stroke-width="1"/>
+          <path d="M20 232 H690" stroke="#e6ecf4" stroke-width="1"/>
+          <path d="M20 328 H690" stroke="#e6ecf4" stroke-width="1"/>
+          <path d="M20 424 H690" stroke="#e6ecf4" stroke-width="1"/>
+
+          <text x="20" y="76" font-size="14" fill="#1a1a2e" font-family="'Shippori Mincho B1',serif">上流集中型</text>
+          <text x="20" y="94" font-size="11" fill="#6b7a99" letter-spacing="0.6" font-family="'Hanken Grotesk',sans-serif">TOP-HEAVY</text>
+          <rect x="210" y="56" width="70" height="44" rx="7" fill="#1f3864"/>
+          <text x="245" y="83" font-size="12" fill="#ffffff" text-anchor="middle">計画設計</text>
+          <path d="M282 78 H296" stroke="#2e5496" stroke-width="1.6" fill="none" marker-end="url(#f3a)"/>
+          <rect x="300" y="56" width="70" height="44" rx="7" fill="#ffffff" stroke="#2e5496" stroke-width="1.4"/>
+          <text x="335" y="83" font-size="12" fill="#1f3864" text-anchor="middle">指示分解</text>
+          <path d="M372 78 H386" stroke="#2e5496" stroke-width="1.6" fill="none" marker-end="url(#f3a)"/>
+          <rect x="390" y="56" width="70" height="44" rx="7" fill="#ffffff" stroke="#2e5496" stroke-width="1.4"/>
+          <text x="425" y="83" font-size="12" fill="#1f3864" text-anchor="middle">実行</text>
+          <path d="M462 78 H476" stroke="#2e5496" stroke-width="1.6" fill="none" marker-end="url(#f3a)"/>
+          <rect x="480" y="56" width="70" height="44" rx="7" fill="#ffffff" stroke="#2e5496" stroke-width="1.4"/>
+          <text x="515" y="83" font-size="12" fill="#1f3864" text-anchor="middle">統合</text>
+          <text x="596" y="86" font-size="20" fill="#2e5496" font-weight="700" font-family="'Hanken Grotesk',sans-serif">3</text>
+          <text x="614" y="86" font-size="11.5" fill="#6b7a99">型</text>
+
+          <text x="20" y="172" font-size="14" fill="#1a1a2e" font-family="'Shippori Mincho B1',serif">下流集中型</text>
+          <text x="20" y="190" font-size="11" fill="#6b7a99" letter-spacing="0.6" font-family="'Hanken Grotesk',sans-serif">BOTTOM-HEAVY</text>
+          <rect x="210" y="152" width="70" height="44" rx="7" fill="#ffffff" stroke="#2e5496" stroke-width="1.4"/>
+          <text x="245" y="179" font-size="12" fill="#1f3864" text-anchor="middle">下書き</text>
+          <path d="M282 174 H296" stroke="#2e5496" stroke-width="1.6" fill="none" marker-end="url(#f3a)"/>
+          <rect x="300" y="152" width="70" height="44" rx="7" fill="#ffffff" stroke="#2e5496" stroke-width="1.4"/>
+          <text x="335" y="179" font-size="12" fill="#1f3864" text-anchor="middle">量産</text>
+          <path d="M372 174 H386" stroke="#2e5496" stroke-width="1.6" fill="none" marker-end="url(#f3a)"/>
+          <rect x="390" y="152" width="70" height="44" rx="7" fill="#1f3864"/>
+          <text x="425" y="179" font-size="12" fill="#ffffff" text-anchor="middle">検証選抜</text>
+          <path d="M462 174 H476" stroke="#2e5496" stroke-width="1.6" fill="none" marker-end="url(#f3a)"/>
+          <rect x="480" y="152" width="70" height="44" rx="7" fill="#1f3864"/>
+          <text x="515" y="179" font-size="12" fill="#ffffff" text-anchor="middle">仕上げ</text>
+          <text x="596" y="182" font-size="20" fill="#2e5496" font-weight="700" font-family="'Hanken Grotesk',sans-serif">3</text>
+          <text x="614" y="182" font-size="11.5" fill="#6b7a99">型</text>
+
+          <text x="20" y="268" font-size="14" fill="#1a1a2e" font-family="'Shippori Mincho B1',serif">前処理型</text>
+          <text x="20" y="286" font-size="11" fill="#6b7a99" letter-spacing="0.6" font-family="'Hanken Grotesk',sans-serif">PRE-PROCESS</text>
+          <rect x="210" y="248" width="70" height="44" rx="7" fill="#ffffff" stroke="#2e5496" stroke-width="1.4"/>
+          <text x="245" y="275" font-size="12" fill="#1f3864" text-anchor="middle">収集</text>
+          <path d="M282 270 H296" stroke="#2e5496" stroke-width="1.6" fill="none" marker-end="url(#f3a)"/>
+          <rect x="300" y="248" width="70" height="44" rx="7" fill="#ffffff" stroke="#2e5496" stroke-width="1.4"/>
+          <text x="335" y="275" font-size="12" fill="#1f3864" text-anchor="middle">圧縮要約</text>
+          <path d="M372 270 H386" stroke="#2e5496" stroke-width="1.6" fill="none" marker-end="url(#f3a)"/>
+          <rect x="390" y="248" width="70" height="44" rx="7" fill="#ffffff" stroke="#2e5496" stroke-width="1.4"/>
+          <text x="425" y="275" font-size="12" fill="#1f3864" text-anchor="middle">論点整理</text>
+          <path d="M462 270 H476" stroke="#2e5496" stroke-width="1.6" fill="none" marker-end="url(#f3a)"/>
+          <rect x="480" y="248" width="70" height="44" rx="7" fill="#1f3864"/>
+          <text x="515" y="275" font-size="12" fill="#ffffff" text-anchor="middle">判断</text>
+          <text x="596" y="278" font-size="20" fill="#2e5496" font-weight="700" font-family="'Hanken Grotesk',sans-serif">3</text>
+          <text x="614" y="278" font-size="11.5" fill="#6b7a99">型</text>
+
+          <text x="20" y="364" font-size="14" fill="#1a1a2e" font-family="'Shippori Mincho B1',serif">動的切替型</text>
+          <text x="20" y="382" font-size="11" fill="#6b7a99" letter-spacing="0.6" font-family="'Hanken Grotesk',sans-serif">ROUTING</text>
+          <rect x="210" y="344" width="70" height="44" rx="7" fill="#ffffff" stroke="#2e5496" stroke-width="1.4"/>
+          <text x="245" y="371" font-size="12" fill="#1f3864" text-anchor="middle">難易度判定</text>
+          <path d="M282 366 H296" stroke="#2e5496" stroke-width="1.6" fill="none" marker-end="url(#f3a)"/>
+          <rect x="300" y="344" width="70" height="44" rx="7" fill="#ffffff" stroke="#2e5496" stroke-width="1.4"/>
+          <text x="335" y="371" font-size="12" fill="#1f3864" text-anchor="middle">一次処理</text>
+          <path d="M372 366 H386" stroke="#2e5496" stroke-width="1.6" fill="none" marker-end="url(#f3a)"/>
+          <rect x="390" y="344" width="70" height="44" rx="7" fill="#ffffff" stroke="#2e5496" stroke-width="1.4"/>
+          <text x="425" y="371" font-size="12" fill="#1f3864" text-anchor="middle">自己検証</text>
+          <path d="M462 366 H476" stroke="#e23744" stroke-width="1.8" stroke-dasharray="4 3" fill="none" marker-end="url(#f3b)"/>
+          <rect x="480" y="344" width="70" height="44" rx="7" fill="#1f3864"/>
+          <text x="515" y="371" font-size="12" fill="#ffffff" text-anchor="middle">昇格処理</text>
+          <text x="596" y="374" font-size="20" fill="#2e5496" font-weight="700" font-family="'Hanken Grotesk',sans-serif">4</text>
+          <text x="614" y="374" font-size="11.5" fill="#6b7a99">型</text>
+
+          <text x="20" y="460" font-size="14" fill="#1a1a2e" font-family="'Shippori Mincho B1',serif">構造分離型</text>
+          <text x="20" y="478" font-size="11" fill="#6b7a99" letter-spacing="0.6" font-family="'Hanken Grotesk',sans-serif">STRUCTURAL</text>
+          <rect x="210" y="440" width="70" height="44" rx="7" fill="#1f3864"/>
+          <text x="245" y="467" font-size="12" fill="#ffffff" text-anchor="middle">親の設計</text>
+          <path d="M282 462 H296" stroke="#2e5496" stroke-width="1.6" fill="none" marker-end="url(#f3a)"/>
+          <rect x="300" y="440" width="70" height="44" rx="7" fill="#ffffff" stroke="#2e5496" stroke-width="1.4"/>
+          <text x="335" y="467" font-size="12" fill="#1f3864" text-anchor="middle">子 × N</text>
+          <path d="M372 462 H386" stroke="#2e5496" stroke-width="1.6" fill="none" marker-end="url(#f3a)"/>
+          <rect x="390" y="440" width="70" height="44" rx="7" fill="#ffffff" stroke="#2e5496" stroke-width="1.4"/>
+          <text x="425" y="467" font-size="12" fill="#1f3864" text-anchor="middle">個別文脈</text>
+          <path d="M462 462 H476" stroke="#2e5496" stroke-width="1.6" fill="none" marker-end="url(#f3a)"/>
+          <rect x="480" y="440" width="70" height="44" rx="7" fill="#1f3864"/>
+          <text x="515" y="467" font-size="12" fill="#ffffff" text-anchor="middle">結果統合</text>
+          <text x="596" y="470" font-size="20" fill="#2e5496" font-weight="700" font-family="'Hanken Grotesk',sans-serif">3</text>
+          <text x="614" y="470" font-size="11.5" fill="#6b7a99">型</text>
+        </svg>
+      </div>
+      <div class="legend">
+        <div class="legend-item"><span class="legend-swatch" style="background:#1f3864"></span>上位モデルが担う工程</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:#2e5496"></span>軽量モデルが担う工程</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:#e23744"></span>条件を満たしたときだけ通る経路</div>
+      </div>
+      <p class="figure-cap">手法名ではなく、上位モデルが列のどこに座っているかで覚える</p>
+    </div>
+
+    <div class="cards" style="margin-top:2rem">
+      <div class="card">
+        <div class="card-icon">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="8" y="8" width="20" height="20" rx="3" stroke="currentColor" stroke-width="2"/>
+            <rect x="12" y="12" width="12" height="12" rx="2" fill="currentColor" opacity="0.25"/>
+          </svg>
+        </div>
+        <span class="card-tag">01 TOP-HEAVY</span>
+        <h3>上流集中型</h3>
+        <p>上位モデルは計画だけを立て、実行は軽量に降ろす。①プランナー分離 ②プロンプト・コンパイラ（上位に虎の巻そのものを書かせ、以降は軽量で回す） ③出力スキーマ設計。実務でいちばん費用対効果が高いのは②で、次のセクションで詳しく扱う。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 26V14M14 26V18M20 26V10M26 26V16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M6 28h24" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span class="card-tag">02 BOTTOM-HEAVY</span>
+        <h3>下流集中型</h3>
+        <p>軽量に数を出させ、上位が絞る。④仕上げ・リライト ⑤検証（LLM-as-a-Judge） ⑥Best-of-N選抜。生成より評価のほうが賢さを要する領域で効く。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="2"/>
+            <circle cx="24" cy="24" r="5" stroke="currentColor" stroke-width="2"/>
+            <path d="M16 16l4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span class="card-tag">03 PRE-PROCESS</span>
+        <h3>前処理型</h3>
+        <p>上位に渡す前に、軽量で文脈を削る。⑦文脈圧縮・要約 ⑧タスク詳細化（曖昧な依頼を仕様文に変換してから投げる） ⑨抽出・正規化。上位の入力トークンが最大の変動費になる構成で効く。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 6l-8 14h8l-4 10 12-16h-8z" fill="currentColor" opacity="0.9"/>
+          </svg>
+        </div>
+        <span class="card-tag">04 ROUTING</span>
+        <h3>動的切替型</h3>
+        <p>1件ごとに宛先を変える。⑩難易度ルーティング ⑪カスケード（自己検証に落ちたものだけ昇格） ⑫例外検知時のみ上位 ⑬セマンティックキャッシュ（同義の質問は上位の過去回答を再利用）。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="18" cy="18" r="6" fill="currentColor"/>
+            <circle cx="18" cy="18" r="12" stroke="currentColor" stroke-width="1.5" opacity="0.3"/>
+          </svg>
+        </div>
+        <span class="card-tag">05 STRUCTURAL</span>
+        <h3>構造分離型</h3>
+        <p>モデルではなく構造で分ける。⑭サブエージェント（子ごとに文脈を隔離し、親の文脈を汚さない） ⑮並列ファンアウトと統合 ⑯蒸留・専用モデル化（上位の出力を教師データに軽量を仕立てる）。</p>
+      </div>
+    </div>
+
+    <p class="note">
+      ※ 投機的デコード（ドラフトモデルで先読みし、上位モデルが検証する）も広義には同じ発想だが、これは推論基盤側のレイヤの話で、アプリケーション側で設計する対象ではない。同じ「軽量が先、上位が後」でも、層が違うことは押さえておきたい。
+    </p>
+  </div>
+</section>
+
+<!-- =============================================
+  本文04（ネイビー）
+  ============================================= -->
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 04</span>
+    <h2 class="sec-title">分業は最初から組まず、<br>上から順に剥がしていく</h2>
+    <p class="sec-sub">最初から最適配置を狙うと、品質が落ちた原因を特定できなくなる。到達点は、上位モデルに書かせた虎の巻を軽量モデルが回す状態だ。</p>
+
+    <p class="kicker">
+      いきなり分業構成で作り始めてはいけない。まず<span class="fw-bold text-azure">全工程を上位モデル</span>で一度作り切り、
+      その出力を正解ログとして持つ。そこから工程を1つずつ軽量に降ろし、そのつど正解ログと突き合わせる。
+    </p>
+
+    <div class="figure">
+      <p class="fig-title">Fig.4 ── 上位モデルの持ち分は段階的に下げ、品質ラインは動かさない</p>
+      <div class="figure-scroll">
+        <svg viewBox="0 0 700 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="移行ステップごとの上位モデル担当比率と、一定に保つ品質ラインの棒グラフ">
+          <path d="M70 60 H660" stroke="#ffffff" stroke-opacity="0.18" stroke-width="1"/>
+          <path d="M70 165 H660" stroke="#ffffff" stroke-opacity="0.18" stroke-width="1"/>
+          <path d="M70 270 H660" stroke="#ffffff" stroke-opacity="0.5" stroke-width="1.2"/>
+
+          <text x="58" y="64" font-size="11.5" fill="#d8e4f0" fill-opacity="0.7" text-anchor="end" font-family="'Hanken Grotesk',sans-serif">100%</text>
+          <text x="58" y="169" font-size="11.5" fill="#d8e4f0" fill-opacity="0.7" text-anchor="end" font-family="'Hanken Grotesk',sans-serif">50%</text>
+          <text x="58" y="274" font-size="11.5" fill="#d8e4f0" fill-opacity="0.7" text-anchor="end" font-family="'Hanken Grotesk',sans-serif">0%</text>
+
+          <rect x="86" y="60" width="86" height="210" rx="4" fill="#d8e4f0"/>
+          <rect x="206" y="102" width="86" height="168" rx="4" fill="#d8e4f0"/>
+          <rect x="326" y="154" width="86" height="116" rx="4" fill="#d8e4f0"/>
+          <rect x="446" y="196" width="86" height="74" rx="4" fill="#d8e4f0"/>
+          <rect x="566" y="228" width="86" height="42" rx="4" fill="#d8e4f0"/>
+
+          <text x="129" y="90" font-size="14" fill="#1f3864" text-anchor="middle" font-weight="700" font-family="'Hanken Grotesk',sans-serif">100%</text>
+          <text x="249" y="132" font-size="14" fill="#1f3864" text-anchor="middle" font-weight="700" font-family="'Hanken Grotesk',sans-serif">80%</text>
+          <text x="369" y="184" font-size="14" fill="#1f3864" text-anchor="middle" font-weight="700" font-family="'Hanken Grotesk',sans-serif">55%</text>
+          <text x="489" y="226" font-size="14" fill="#1f3864" text-anchor="middle" font-weight="700" font-family="'Hanken Grotesk',sans-serif">35%</text>
+          <text x="609" y="258" font-size="14" fill="#1f3864" text-anchor="middle" font-weight="700" font-family="'Hanken Grotesk',sans-serif">20%</text>
+
+          <path d="M70 66 H660" stroke="#ff5d6a" stroke-width="2" stroke-dasharray="6 4" fill="none"/>
+          <text x="656" y="54" font-size="11.5" fill="#ff5d6a" text-anchor="end" font-weight="700">品質の合格ライン（動かさない）</text>
+
+          <text x="129" y="292" font-size="11.5" fill="#d8e4f0" fill-opacity="0.65" text-anchor="middle" font-family="'Hanken Grotesk',sans-serif">STEP 1</text>
+          <text x="129" y="310" font-size="11" fill="#d8e4f0" text-anchor="middle">全工程を上位で</text>
+          <text x="249" y="292" font-size="11.5" fill="#d8e4f0" fill-opacity="0.65" text-anchor="middle" font-family="'Hanken Grotesk',sans-serif">STEP 2</text>
+          <text x="249" y="310" font-size="11" fill="#d8e4f0" text-anchor="middle">実行を軽量に</text>
+          <text x="369" y="292" font-size="11.5" fill="#d8e4f0" fill-opacity="0.65" text-anchor="middle" font-family="'Hanken Grotesk',sans-serif">STEP 3</text>
+          <text x="369" y="310" font-size="11" fill="#d8e4f0" text-anchor="middle">前処理も軽量に</text>
+          <text x="489" y="292" font-size="11.5" fill="#d8e4f0" fill-opacity="0.65" text-anchor="middle" font-family="'Hanken Grotesk',sans-serif">STEP 4</text>
+          <text x="489" y="310" font-size="11" fill="#d8e4f0" text-anchor="middle">検証は抜き取り</text>
+          <text x="609" y="292" font-size="11.5" fill="#d8e4f0" fill-opacity="0.65" text-anchor="middle" font-family="'Hanken Grotesk',sans-serif">STEP 5</text>
+          <text x="609" y="310" font-size="11" fill="#d8e4f0" text-anchor="middle">上位は設計時のみ</text>
+        </svg>
+      </div>
+      <div class="legend">
+        <div class="legend-item"><span class="legend-swatch" style="background:#d8e4f0"></span>上位モデルが担当する工程の割合</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:#ff5d6a"></span>下げてはいけない品質ライン</div>
+      </div>
+      <p class="figure-cap">下げるのは上位モデルの持ち分だけ。品質ラインを一緒に下げた時点で、この移行は失敗している</p>
+    </div>
+
+    <div class="stepper">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h3>全工程を上位モデルで一度作り切る</h3>
+          <p>ここで出た出力が、以降すべての比較基準になる。正解ログのないまま分業に入ると、品質劣化の原因が切り分けられなくなる。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3>判断を含まない実行工程だけを軽量に降ろす</h3>
+          <p>整形・転記・分類・定型文生成など、正解が一意に決まる工程から。降ろすたびに正解ログと突き合わせ、差分を数える。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h3>前処理を軽量に移し、上位への入力を短くする</h3>
+          <p>上位モデルの変動費は、たいてい入力トークンで決まる。検索結果や長文の要約・論点抽出を軽量に任せ、上位には削ったものだけを渡す。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h3>検証を全件から抜き取りに切り替える</h3>
+          <p>差し戻し率が閾値を下回って初めて、上位モデルによる全件検証を抜き取りに落とす。閾値を超えたら即座に全件へ戻す運用をセットで用意する。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <h3>上位モデルに虎の巻を書かせて凍結する</h3>
+          <p>判断基準・NG例・出力形式・例外条件を上位モデルにまとめさせ、文書として固定する。以降の実行は軽量モデルがその文書を読んで回すだけになる。ここまで来ると、モデルが世代交代しても文書はそのまま生き残る。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="deep">
+      <h3>虎の巻方式の本質は、安さではなくブレの移動にある</h3>
+      <p>この構成の効きどころは費用ではない。出力がブレたときの着地点が変わることだ。モデルに直接やらせている限り、ブレの原因は「モデルの揺らぎ」に帰着してしまい、これはデバッグできない。虎の巻を挟むと、原因は必ず「この行の書き方が曖昧だった」に着地する。文書の曖昧さは直せる。再現性と改善可能性が同時に手に入るのは、この一点による。</p>
+      <p>もうひとつは償却だ。上位モデルの推論はトークンとして消えていくが、虎の巻は成果物として残る。1回ぶんのコストが以降の実行回数で割られていくうえ、モデルが世代交代しても文書は生き残る。Section 05で書いた「標準化すべきはモデルではなく工程の切り方」が、具体物として手元に残る形でもある。</p>
+    </div>
+
+    <div class="cards" style="margin-top:2rem">
+      <div class="card">
+        <div class="card-icon">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="8" y="8" width="20" height="16" rx="3" stroke="currentColor" stroke-width="2"/>
+            <circle cx="13" cy="28" r="2.5" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="23" cy="28" r="2.5" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M6 28h24" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M18 8v16" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <span class="card-tag">01 IF-THEN</span>
+        <h3>判断の分岐</h3>
+        <p>「〜のときは〜する」の形にすべて書き下す。「丁寧に扱うこと」のような心構えの文は、軽量モデルにはほとんど効かない。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 6l-8 14h8l-4 10 12-16h-8z" fill="currentColor" opacity="0.9"/>
+          </svg>
+        </div>
+        <span class="card-tag">02 NG CASES</span>
+        <h3>NG例と、その理由</h3>
+        <p>過去の差し戻し案件から起こす。虎の巻の中で唯一、上位モデルには書けない要素。持っているのは現場のログだけだ。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="6" y="8" width="24" height="16" rx="4" stroke="currentColor" stroke-width="2"/>
+            <path d="M12 28l4-4h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M11 16h14M11 20h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span class="card-tag">03 FORMAT</span>
+        <h3>出力フォーマットの型</h3>
+        <p>雛形とスキーマを渡し、自由記述の余地を残さない。形式が固定されているほど、機械的な合否判定に落としやすくなる。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="2"/>
+            <circle cx="24" cy="24" r="5" stroke="currentColor" stroke-width="2"/>
+            <path d="M16 16l4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span class="card-tag">04 ESCALATION</span>
+        <h3>上位に上げる条件</h3>
+        <p>迷ったら止めて上位に渡す、その境界を明示する。ここがそのまま、Section 02のカスケードの昇格条件になる。</p>
+      </div>
+    </div>
+
+    <p class="note">
+      ※ 3つの落とし穴。（1）虎の巻は長いほどブレる。軽量モデルの指示追従には上限があり、10ページの規程を渡せば一部は確実に無視される。上の4点に絞りきること。（2）NG例だけは自分たちで用意する。上位モデルにできるのは整形までで、何が不合格かを知っているのは差し戻しログだけだ。（3）腐る前提で更新トリガーを決める。差し戻し率が閾値を超えたら虎の巻を見直す、という運用をセットにしないと、半年後には現場と乖離した文書だけが残る。
+    </p>
+  </div>
+</section>
+
+<!-- =============================================
+  本文05（ライト）
+  ============================================= -->
+<section class="sec-light">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 05</span>
+    <h2 class="sec-title">置き場所は、失敗コストと<br>反復回数の2軸で決まる</h2>
+    <p class="sec-sub">どの型を採るかは好みではなく、業務の性質から一意に決まる。</p>
+
+    <p class="kicker">
+      判断軸は2つでいい。<span class="fw-bold text-azure">失敗したときの取り返しにくさ</span>と、
+      <span class="fw-bold text-azure">同じ処理を何回繰り返すか</span>。この2軸を置くと、16の型は4つの置き場所に収束する。
+    </p>
+
+    <div class="figure">
+      <p class="fig-title">Fig.5 ── 失敗コストと反復回数で、上位モデルの置き場所は決まる</p>
+      <div class="figure-scroll">
+        <svg viewBox="0 0 640 540" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="失敗の取り返しにくさと実行頻度による2×2の使い分けマトリクス">
+          <defs>
+            <marker id="f5a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+              <path d="M0 0 L8 4 L0 8 z" fill="#6b7a99"/>
+            </marker>
+            <marker id="f5b" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+              <path d="M0 0 L8 4 L0 8 z" fill="#2e5496"/>
+            </marker>
+          </defs>
+
+          <rect x="90" y="50" width="260" height="210" fill="#fde8ea"/>
+          <rect x="350" y="50" width="260" height="210" fill="#fbe3d8"/>
+          <rect x="90" y="260" width="260" height="210" fill="#eef1f5"/>
+          <rect x="350" y="260" width="260" height="210" fill="#dfeaf7"/>
+          <rect x="90" y="50" width="520" height="420" fill="none" stroke="#c9d5e4" stroke-width="1.4"/>
+          <path d="M350 50 V470" stroke="#c9d5e4" stroke-width="1.4"/>
+          <path d="M90 260 H610" stroke="#c9d5e4" stroke-width="1.4"/>
+
+          <text x="106" y="96" font-size="15" fill="#e23744" font-weight="700">上位モデルを直接使い切る</text>
+          <text x="106" y="122" font-size="12.5" fill="#1a1a2e">分業させず、思考を切らない</text>
+          <text x="106" y="160" font-size="11.5" fill="#6b7a99">例：事業計画・契約レビュー</text>
+          <text x="106" y="180" font-size="11.5" fill="#6b7a99">　　新規プロダクトの設計</text>
+          <text x="106" y="216" font-size="11.5" fill="#6b7a99">1回の失敗コストが、</text>
+          <text x="106" y="234" font-size="11.5" fill="#6b7a99">モデル単価より桁違いに高い</text>
+
+          <text x="366" y="96" font-size="15" fill="#b35a2a" font-weight="700">カスケード＋全件検証</text>
+          <text x="366" y="122" font-size="12.5" fill="#1a1a2e">軽量が処理し、上位が監査する</text>
+          <text x="366" y="160" font-size="11.5" fill="#6b7a99">例：与信の一次判定</text>
+          <text x="366" y="180" font-size="11.5" fill="#6b7a99">　　医療・法務の一次対応</text>
+          <text x="366" y="216" font-size="11.5" fill="#6b7a99">量は軽量でしか吸えず、</text>
+          <text x="366" y="234" font-size="11.5" fill="#6b7a99">責任は上位でしか持てない</text>
+
+          <text x="106" y="306" font-size="15" fill="#1a1a2e" font-weight="700">軽量モデル単独で即答</text>
+          <text x="106" y="332" font-size="12.5" fill="#1a1a2e">分業の設計コストが見合わない</text>
+          <text x="106" y="370" font-size="11.5" fill="#6b7a99">例：社内文書の要約</text>
+          <text x="106" y="390" font-size="11.5" fill="#6b7a99">　　議事メモの整形</text>
+          <text x="106" y="426" font-size="11.5" fill="#6b7a99">分けた瞬間に、運用の手間が</text>
+          <text x="106" y="444" font-size="11.5" fill="#6b7a99">削減額を上回ってしまう</text>
+
+          <text x="366" y="306" font-size="15" fill="#2e5496" font-weight="700">上位は設計時だけ使う</text>
+          <text x="366" y="332" font-size="12.5" fill="#1a1a2e">運用は軽量モデルに固定する</text>
+          <text x="366" y="370" font-size="11.5" fill="#6b7a99">例：問い合わせの自動分類</text>
+          <text x="366" y="390" font-size="11.5" fill="#6b7a99">　　商品説明文の量産</text>
+          <text x="366" y="426" font-size="11.5" fill="#6b7a99">上位に手順を書かせ、実行は</text>
+          <text x="366" y="444" font-size="11.5" fill="#6b7a99">最も安い経路に落とし切る</text>
+
+          <path d="M580 244 V286" stroke="#2e5496" stroke-width="1.8" fill="none" marker-end="url(#f5b)"/>
+          <text x="566" y="272" font-size="11" fill="#2e5496" text-anchor="end" font-weight="700">型が固まったら降ろす</text>
+
+          <path d="M64 470 V56" stroke="#6b7a99" stroke-width="1.6" fill="none" marker-end="url(#f5a)"/>
+          <text x="34" y="260" font-size="13" fill="#1a1a2e" font-weight="700" text-anchor="middle" transform="rotate(-90 34 260)">失敗の取り返しにくさ</text>
+          <path d="M100 496 H598" stroke="#6b7a99" stroke-width="1.6" fill="none" marker-end="url(#f5a)"/>
+          <text x="120" y="520" font-size="11.5" fill="#6b7a99">1回きり・少数</text>
+          <text x="350" y="520" font-size="13" fill="#1a1a2e" font-weight="700" text-anchor="middle">実行頻度</text>
+          <text x="580" y="520" font-size="11.5" fill="#6b7a99" text-anchor="end">大量反復</text>
+        </svg>
+      </div>
+      <p class="figure-cap">右上に置いた業務は、型が固まりしだい右下へ降ろしていくのが移行のゴールになる</p>
+    </div>
+
+    <div class="two-col">
+      <div class="two-col-item">
+        <h3>上位モデルを直接使い切るとき</h3>
+        <p>失敗が取り返せない。前提が毎回違う。判断の途中経過そのものに価値がある。件数が少なく、分業の設計コストを回収できない。──この4つのうち2つ以上が当てはまるなら、迷わず上位モデルに通しで考えさせたほうがいい。</p>
+      </div>
+      <div class="two-col-item">
+        <h3>上位モデルを設計時に退避させるとき</h3>
+        <p>入力の型が決まっている。合否を機械的に判定できる。同じ処理が月に数千件走る。失敗しても差し戻せる。──こちらに寄るなら、上位モデルの仕事は手順書と判断基準を書くところまでで終わりだ。</p>
+      </div>
+    </div>
+
+    <div class="bare">
+      <p>この2軸で整理すると、社内で標準化すべきものが何かも見えてくる。標準化の対象はモデルではなく、工程の切り方だ。工程が切れていれば、半年後に新世代が出ても該当工程を差し替えるだけで済む。切れていない組織は、モデルが変わるたびに検証をやり直すことになる。</p>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+  本文06（ネイビー）
+  ============================================= -->
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 06</span>
+    <h2 class="sec-title">結局のところ、その出力に<br>Goを出せる人間がいるかどうかだ</h2>
+    <p class="sec-sub">モデル構成をどれだけ精緻に組んでも、出てきたものにGoを出せなければ何も前に進まない。</p>
+
+    <p class="kicker">
+      ここまで16の型を並べてきたが、どれを選んでも成立の前提はひとつしかない。
+      <span class="fw-bold text-azure">完成したアウトプットを、人間が先に想像できていること</span>だ。
+      想像できていれば工程が切れる。切れていれば合格条件が書ける。書ければ、どのモデルに任せるかは自動的に決まる。
+    </p>
+
+    <div class="figure">
+      <p class="fig-title">Fig.6 ── 分業できるかどうかは、モデルではなく人間の側で分岐する</p>
+      <div class="figure-scroll">
+        <svg viewBox="0 0 700 410" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="アウトプットを想像できているかで分業の成否が分かれる分岐図">
+          <defs>
+            <marker id="f6a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+              <path d="M0 0 L8 4 L0 8 z" fill="#d8e4f0"/>
+            </marker>
+            <marker id="f6b" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+              <path d="M0 0 L8 4 L0 8 z" fill="#ff5d6a"/>
+            </marker>
+          </defs>
+
+          <rect x="30" y="170" width="140" height="80" rx="10" fill="#ffffff" fill-opacity="0.12" stroke="#ffffff" stroke-width="1.6"/>
+          <text x="100" y="204" font-size="12.5" fill="#ffffff" text-anchor="middle">アウトプットを</text>
+          <text x="100" y="226" font-size="12.5" fill="#ffffff" text-anchor="middle" font-weight="700">想像できているか</text>
+
+          <path d="M172 190 C200 150, 214 120, 238 120" stroke="#d8e4f0" stroke-width="1.8" fill="none" marker-end="url(#f6a)"/>
+          <path d="M172 230 C200 270, 214 300, 238 300" stroke="#ff5d6a" stroke-width="1.8" fill="none" marker-end="url(#f6b)"/>
+          <text x="238" y="104" font-size="12" fill="#d8e4f0" text-anchor="end" font-weight="700" font-family="'Hanken Grotesk',sans-serif">YES</text>
+          <text x="238" y="332" font-size="12" fill="#ff5d6a" text-anchor="end" font-weight="700" font-family="'Hanken Grotesk',sans-serif">NO</text>
+
+          <rect x="244" y="96" width="134" height="48" rx="8" fill="#d8e4f0"/>
+          <text x="311" y="125" font-size="12.5" fill="#1f3864" text-anchor="middle" font-weight="700">工程が切れる</text>
+          <path d="M380 120 H394" stroke="#d8e4f0" stroke-width="1.6" fill="none" marker-end="url(#f6a)"/>
+          <rect x="400" y="96" width="134" height="48" rx="8" fill="#d8e4f0"/>
+          <text x="467" y="125" font-size="12.5" fill="#1f3864" text-anchor="middle" font-weight="700">合格条件が書ける</text>
+          <path d="M536 120 H550" stroke="#d8e4f0" stroke-width="1.6" fill="none" marker-end="url(#f6a)"/>
+          <rect x="556" y="96" width="114" height="48" rx="8" fill="#d8e4f0"/>
+          <text x="613" y="125" font-size="12.5" fill="#1f3864" text-anchor="middle" font-weight="700">分業が成立</text>
+
+          <rect x="244" y="276" width="134" height="48" rx="8" fill="none" stroke="#ff5d6a" stroke-width="1.6"/>
+          <text x="311" y="305" font-size="12.5" fill="#ff5d6a" text-anchor="middle">工程が切れない</text>
+          <path d="M380 300 H394" stroke="#ff5d6a" stroke-width="1.6" fill="none" marker-end="url(#f6b)"/>
+          <rect x="400" y="276" width="134" height="48" rx="8" fill="none" stroke="#ff5d6a" stroke-width="1.6"/>
+          <text x="467" y="305" font-size="12.5" fill="#ff5d6a" text-anchor="middle">Goが出せない</text>
+          <path d="M536 300 H550" stroke="#ff5d6a" stroke-width="1.6" fill="none" marker-end="url(#f6b)"/>
+          <rect x="556" y="276" width="114" height="48" rx="8" fill="none" stroke="#ff5d6a" stroke-width="1.6"/>
+          <text x="613" y="305" font-size="12.5" fill="#ff5d6a" text-anchor="middle">全件を目視</text>
+
+          <text x="350" y="376" font-size="13" fill="#d8e4f0" fill-opacity="0.85" text-anchor="middle">分かれ目はモデルの賢さではなく、人間の側の解像度にある</text>
+        </svg>
+      </div>
+      <p class="figure-cap">上の分岐に入れなければ、どんなモデル構成を組んでも人間が全件を見ることになる</p>
+    </div>
+
+    <div class="deep">
+      <h3>「どのモデルを使うか」の議論は、たいてい逃げになっている</h3>
+      <p>アウトプットが想像できていないとき、その不安はほぼ確実にモデル選定の議論に化ける。もっと賢いモデルなら、もっといいプロンプトなら、と手段の側に問いが移っていく。だが実際に詰まっているのは、出てきたものを見て「これでいい」と言える基準が誰の頭にもない、という一点だ。</p>
+      <p>この状態で上位モデルを入れると、出力の質は上がるのに意思決定は1ミリも進まない。むしろ、もっともらしい出力が出てくるぶん、Goを出せない状態が見えづらくなって厄介になる。まず人間の側で完成形を1つ作る。分業の設計はそのあとでいい。</p>
+    </div>
+
+    <div class="take">
+      <div class="take-avatar">OK</div>
+      <div class="take-body">
+        <div class="take-label">Ozaken's One Point</div>
+        <div class="take-author">小澤健祐（おざけん）</div>
+        <p class="take-text">
+          「どのモデルがいいですか」と聞かれたら、僕はいつも逆に聞き返している。「その仕事の完成形、1文で言えますか」と。言えない相手に上位モデルを渡しても、出てきたものにGoが出せないので、結局そこで止まる。年間300回近く現場に入ってきて確信しているのは、ボトルネックはモデルの賢さではなく<span class="hot">Goを出す側の解像度</span>だということだ。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+  本文07（ライト）
+  ============================================= -->
+<section class="sec-light">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 07</span>
+    <h2 class="sec-title">Goの解像度が、<br>任せられる範囲の上限を決める</h2>
+    <p class="sec-sub">同じ業務でも、Goの出し方が変わるだけで分業できる範囲が変わる。</p>
+
+    <p class="kicker">
+      Goには解像度がある。「いい感じにして」しか言えない状態と、「この条件を満たせば通す」まで書けている状態では、
+      任せられる範囲がまるで違う。<span class="fw-bold text-azure">上げるべきはモデルの性能ではなく、この解像度のほう</span>だ。
+    </p>
+
+    <div class="figure">
+      <p class="fig-title">Fig.7 ── Goの言語化が進むほど、人間が現物に触る量は減る</p>
+      <div class="figure-scroll">
+        <svg viewBox="0 0 700 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Goの解像度3段階と、それぞれで可能になる分業範囲の階段図">
+          <defs>
+            <marker id="f7a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+              <path d="M0 0 L8 4 L0 8 z" fill="#2e5496"/>
+            </marker>
+            <marker id="f7b" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+              <path d="M0 0 L8 4 L0 8 z" fill="#6b7a99"/>
+            </marker>
+          </defs>
+
+          <text x="350" y="40" font-size="13" fill="#1a1a2e" text-anchor="middle" font-weight="700">Goの出し方が変わると、任せられる範囲が変わる</text>
+
+          <path d="M46 330 V96" stroke="#6b7a99" stroke-width="1.6" fill="none" marker-end="url(#f7b)"/>
+          <text x="24" y="215" font-size="12.5" fill="#1a1a2e" font-weight="700" text-anchor="middle" transform="rotate(-90 24 215)">Goの解像度</text>
+          <path d="M50 330 H660" stroke="#c9d5e4" stroke-width="1.4"/>
+
+          <rect x="60" y="230" width="180" height="100" rx="6" fill="#f1f4f9" stroke="#c9d5e4" stroke-width="1.2"/>
+          <text x="150" y="252" font-size="11" fill="#6b7a99" text-anchor="middle" letter-spacing="1" font-family="'Hanken Grotesk',sans-serif">LEVEL 1</text>
+          <text x="150" y="274" font-size="13" fill="#1a1a2e" text-anchor="middle" font-weight="700">「いい感じに」</text>
+          <text x="150" y="294" font-size="11.5" fill="#6b7a99" text-anchor="middle">基準が言葉になっていない</text>
+          <path d="M74 306 H226" stroke="#c9d5e4" stroke-width="1"/>
+          <text x="150" y="324" font-size="12.5" fill="#e23744" text-anchor="middle" font-weight="700">分業できない</text>
+
+          <path d="M244 268 H256" stroke="#2e5496" stroke-width="1.6" fill="none" marker-end="url(#f7a)"/>
+
+          <rect x="260" y="180" width="180" height="150" rx="6" fill="#eef3fa" stroke="#c9d5e4" stroke-width="1.2"/>
+          <text x="350" y="202" font-size="11" fill="#6b7a99" text-anchor="middle" letter-spacing="1" font-family="'Hanken Grotesk',sans-serif">LEVEL 2</text>
+          <text x="350" y="224" font-size="13" fill="#1a1a2e" text-anchor="middle" font-weight="700">「項目が揃えばOK」</text>
+          <text x="350" y="244" font-size="11.5" fill="#6b7a99" text-anchor="middle">人が見れば判定できる</text>
+          <path d="M274 262 H426" stroke="#c9d5e4" stroke-width="1"/>
+          <text x="350" y="286" font-size="12.5" fill="#2e5496" text-anchor="middle" font-weight="700">上流だけ分業できる</text>
+          <text x="350" y="308" font-size="11" fill="#6b7a99" text-anchor="middle">（計画は上位／実行は軽量）</text>
+
+          <path d="M444 200 H456" stroke="#2e5496" stroke-width="1.6" fill="none" marker-end="url(#f7a)"/>
+
+          <rect x="460" y="110" width="180" height="220" rx="6" fill="#dfeaf7" stroke="#c9d5e4" stroke-width="1.2"/>
+          <text x="550" y="132" font-size="11" fill="#6b7a99" text-anchor="middle" letter-spacing="1" font-family="'Hanken Grotesk',sans-serif">LEVEL 3</text>
+          <text x="550" y="154" font-size="13" fill="#1a1a2e" text-anchor="middle" font-weight="700">「条件を満たせば通す」</text>
+          <text x="550" y="174" font-size="11.5" fill="#6b7a99" text-anchor="middle">機械的に判定できる</text>
+          <path d="M474 192 H626" stroke="#c9d5e4" stroke-width="1"/>
+          <text x="550" y="216" font-size="12.5" fill="#2e5496" text-anchor="middle" font-weight="700">全工程を分業できる</text>
+          <text x="550" y="238" font-size="11" fill="#6b7a99" text-anchor="middle">（カスケード・自動化が乗る）</text>
+          <text x="550" y="272" font-size="11.5" fill="#2e5496" text-anchor="middle">上位モデルは設計時のみ</text>
+
+          <text x="350" y="362" font-size="11.5" fill="#6b7a99" text-anchor="middle">右へ行くほど、人間が現物に触る量は減っていく</text>
+        </svg>
+      </div>
+      <p class="figure-cap">レベル2で止まっている業務にカスケードを載せても回らない。先に上げるのはGoの言語化のほうだ</p>
+    </div>
+
+    <div class="stepper" style="margin-top:2rem">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h3>完成物を1文で言えるか</h3>
+          <p>「誰が読んで、何を判断できる状態になっていればいいか」を1文で言う。ここで詰まる業務は、モデル以前に依頼が固まっていない。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3>NG例を3つ挙げられるか</h3>
+          <p>合格条件より先に、不合格の実例を挙げるほうが速い。過去の差し戻し案件を3つ持ってくれば、それがそのまま検証工程の仕様になる。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h3>最終Goを出す人を1人に指名できるか</h3>
+          <p>Goの主体が曖昧なまま自動化すると、誰も止められない代わりに誰も通せなくなる。指名できて初めて、抜き取り検証に落とす判断ができる。</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="note">
+      ※ この3つは、そのまま Section 04 の STEP 1（全工程を上位モデルで作り切る）の中身になる。最初の1周は分業のためではなく、Goの基準を人間の側に作るために回すものだと考えたほうがいい。
+    </p>
+  </div>
+</section>
+
+<!-- =============================================
+  SUMMARY
+  ============================================= -->
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <div class="summary">
+      <span class="eyebrow">Summary</span>
+      <p class="summary-text">
+        賢いモデルを選ぶ前に、<br>
+        その出力にGoを出せるかを問う。<br>
+        分業の設計が始まるのは、そのあとだ。
+      </p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2026 小澤健祐（おざけん）/ 一般社団法人AICX協会</p>
+</footer>
+
+<script>
+
+/* スクロール演出 — IntersectionObserver */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
