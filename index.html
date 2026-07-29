@@ -304,6 +304,15 @@ footer {
 }
 .portrait-cap b { display: block; font-family: var(--font-ja-serif); font-size: 1rem; color: var(--ink); letter-spacing: 0; margin-bottom: 0.15rem; }
 .profile-lead .kicker { margin-top: 0; }
+.profile-link-wrap { margin-top: 1.7rem; }
+.profile-link {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  font-size: 0.9rem; font-weight: 700; color: var(--navy);
+  padding: 0.72rem 1.4rem; border: 1.5px solid var(--azure);
+  border-radius: 100px; text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+.profile-link:hover { background: var(--navy); color: #fff; border-color: var(--navy); transform: translateY(-2px); box-shadow: 0 10px 24px -12px rgba(31,56,100,0.5); }
 @media (max-width: 720px) {
   .profile-lead { grid-template-columns: 1fr; gap: 1.4rem; justify-items: center; }
   .profile-lead .kicker { text-align: left; }
@@ -475,6 +484,10 @@ footer {
         日本大学文理学部次世代社会研究センターのプロボノなど、多彩な経験を活かして活動している。
       </p>
     </div>
+
+    <p class="profile-link-wrap">
+      <a class="profile-link" href="https://ozaken-ai.studio.site/" target="_blank" rel="noopener">ポートフォリオサイトを見る →</a>
+    </p>
   </div>
 </section>
 
