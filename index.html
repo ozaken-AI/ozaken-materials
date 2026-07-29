@@ -369,6 +369,9 @@ footer {
 .lead-btn:hover { background: var(--red-bright); transform: translateY(-2px); }
 .lead-sub { margin-top: 1rem; font-size: 0.8rem; color: rgba(255,255,255,0.55); }
 .lead-sub a { color: var(--azure-pale); text-decoration: underline; text-underline-offset: 2px; }
+.lead-btns { display: flex; flex-wrap: wrap; gap: 0.7rem; justify-content: center; }
+.lead-btn-x { background: var(--navy-deep); box-shadow: 0 12px 28px -12px rgba(0,0,0,0.5); }
+.lead-btn-x:hover { background: #0b1020; }
 .offer-list { list-style: none; margin-top: 0.85rem; display: flex; flex-direction: column; gap: 0.42rem; }
 .offer-list li { position: relative; padding-left: 1rem; font-size: 0.83rem; line-height: 1.7; color: rgba(255,255,255,0.74); }
 .offer-list li::before { content: "―"; position: absolute; left: 0; color: var(--azure-pale); }
@@ -680,6 +683,11 @@ footer {
         </p>
       </div>
     </div>
+
+    <div class="lead-cta">
+      <p class="lead-cta-text">AICX協会の活動、AIエージェント・ストラテジスト／アーキテクト認定の導入に関するお問い合わせは、AICX協会 公式サイトの窓口より承っています。</p>
+      <a class="lead-btn" href="https://aicx.jp" target="_blank" rel="noopener">AICX協会 公式サイトへ →</a>
+    </div>
   </div>
 </section>
 
@@ -720,8 +728,11 @@ footer {
     </div>
 
     <div class="lead-cta">
-      <p class="lead-cta-text">お問い合わせは、AICX協会 公式サイトのお問い合わせ窓口、または各SNSのDMより承っています。</p>
-      <a class="lead-btn" href="https://aicx.jp" target="_blank" rel="noopener">AICX協会 公式サイトから相談する →</a>
+      <p class="lead-cta-text">講演・研修、顧問・アドバイザーのご相談は、ポートフォリオサイト、またはX（@ozaken_AI）のDMより承っています。</p>
+      <div class="lead-btns">
+        <a class="lead-btn" href="https://ozaken-ai.studio.site/" target="_blank" rel="noopener">ポートフォリオサイトから相談する →</a>
+        <a class="lead-btn lead-btn-x" href="https://x.com/ozaken_AI" target="_blank" rel="noopener">X（@ozaken_AI）のDMへ →</a>
+      </div>
       <p class="lead-sub">小澤健祐（おざけん）／ AICX協会 代表理事・Cynthialy 取締役CCO・Cinematorico 創業者COO。経済産業省「AX時代におけるスキルのあり方検討WG」委員。</p>
     </div>
   </div>
