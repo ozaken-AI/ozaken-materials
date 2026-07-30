@@ -48,10 +48,11 @@ a { color: inherit; text-decoration: none; }
 .sec-light { background: var(--paper); padding: var(--sec-pad); color: var(--ink); }
 .sec-navy  { background: var(--navy);  padding: var(--sec-pad); color: var(--white); }
 
-/* ── アンビエント：背景がゆっくり常時ドリフト ── */
-.sec-light, .sec-navy { position: relative; overflow: hidden; }
-.sec-light > *, .sec-navy > * { position: relative; z-index: 1; }
-.sec-light::before, .sec-navy::before {
+/* ── アンビエント：背景がゆっくり常時ドリフト（全セクション） ── */
+.sec-light, .sec-navy, .sec-download { position: relative; overflow: hidden; }
+.sec-light > *, .sec-navy > *, .sec-download > * { position: relative; z-index: 1; }
+/* レイヤー1：淡いグロー（にじむ光がドリフト） */
+.sec-light::before, .sec-navy::before, .sec-download::before {
   content: ''; position: absolute; inset: -25%; z-index: 0; pointer-events: none;
   will-change: transform;
 }
@@ -62,19 +63,34 @@ a { color: inherit; text-decoration: none; }
     radial-gradient(54% 58% at 72% 92%, rgba(46,84,150,0.50), transparent 72%);
   animation: ambientDrift 20s ease-in-out infinite alternate;
 }
-.sec-light::before {
+.sec-light::before, .sec-download::before {
   background:
     radial-gradient(46% 50% at 8% 14%, rgba(46,84,150,0.18), transparent 70%),
     radial-gradient(42% 46% at 92% 86%, rgba(255,93,106,0.09), transparent 72%),
     radial-gradient(40% 44% at 60% 50%, rgba(46,84,150,0.10), transparent 74%);
   animation: ambientDrift 26s ease-in-out infinite alternate;
 }
+.sec-download::before { animation-duration: 31s; }
+/* レイヤー2：細かいドットのグリッドが斜めにゆっくり流れる */
+.sec-light::after, .sec-navy::after, .sec-download::after {
+  content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background-image: radial-gradient(currentColor 1px, transparent 1.5px);
+  background-size: 30px 30px;
+  animation: ambientPan 34s linear infinite;
+}
+.sec-navy::after   { opacity: 0.10; }
+.sec-light::after, .sec-download::after { opacity: 0.055; }
 @keyframes ambientDrift {
   0%   { transform: translate3d(-4%, -3%, 0) scale(1.08); }
   100% { transform: translate3d(5%,   4%,  0) scale(1.20); }
 }
+@keyframes ambientPan {
+  from { background-position: 0 0; }
+  to   { background-position: 300px 150px; }
+}
 @media (prefers-reduced-motion: reduce) {
-  .sec-light::before, .sec-navy::before { animation: none; }
+  .sec-light::before, .sec-navy::before, .sec-download::before,
+  .sec-light::after,  .sec-navy::after,  .sec-download::after { animation: none; }
 }
 
 .eyebrow {
