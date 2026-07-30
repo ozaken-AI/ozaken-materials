@@ -589,9 +589,12 @@ footer {
 .pf-themes { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 .pf-theme { font-size: clamp(0.75rem, 1.3vw, 0.88rem); color: rgba(216,228,240,0.9); background: rgba(255,255,255,0.05); border: 1px solid rgba(216,228,240,0.14); border-radius: 8px; padding: 0.45em 0.85em; }
 
-.pf-cta { text-align: center; margin-top: clamp(2rem, 5vh, 3.4rem); }
+.pf-cta { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.8rem; margin-top: clamp(2rem, 5vh, 3.4rem); }
 .pf-cta a { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-en); font-weight: 600; letter-spacing: 0.06em; color: var(--navy-deep); background: var(--azure-pale); border-radius: 999px; padding: 0.85em 1.8em; text-decoration: none; transition: transform 0.25s ease, box-shadow 0.25s ease; }
 .pf-cta a:hover { transform: translateY(-3px); box-shadow: 0 16px 40px -14px rgba(216,228,240,0.5); }
+.pf-cta a.pf-x { color: #fff; background: #14181f; border: 1px solid rgba(216,228,240,0.28); }
+.pf-cta a.pf-x:hover { background: #05070a; box-shadow: 0 16px 40px -14px rgba(0,0,0,0.6); }
+.pf-cta a.pf-x svg { width: 15px; height: 15px; fill: currentColor; }
 .pf-scrollhint { position: fixed; bottom: 1.4rem; left: 0; right: 0; text-align: center; font-family: var(--font-en); font-size: 11px; letter-spacing: 0.18em; color: rgba(216,228,240,0.45); z-index: 5; pointer-events: none; transition: opacity 0.4s ease; }
 .pf-scrollhint .arw { display: block; margin: 0.3rem auto 0; width: 16px; height: 16px; border-right: 2px solid rgba(216,228,240,0.5); border-bottom: 2px solid rgba(216,228,240,0.5); transform: rotate(45deg); animation: pfBounce 1.6s infinite ease-in-out; }
 @keyframes pfBounce { 0%,100% { transform: rotate(45deg) translate(0,0); } 50% { transform: rotate(45deg) translate(4px,4px); } }
@@ -1542,6 +1545,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
 
     <div class="pf-cta" data-reveal>
       <a href="https://ozaken-ai.studio.site/" target="_blank" rel="noopener">ポートフォリオサイトを見る →</a>
+      <a class="pf-x" href="https://x.com/ozaken_AI" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>@ozaken_AI</a>
     </div>
   </div>
 
