@@ -687,6 +687,29 @@ footer {
 @media (max-width: 720px) {
   .pf-figure .fig-cap { flex-direction: column; gap: 0.8rem; }
 }
+/* バンド見出し */
+.pf-band-eyebrow { font-family: var(--font-en); font-size: clamp(11px,1.4vw,14px); font-weight:700; letter-spacing:0.3em; color: var(--azure-pale); text-align:center; margin-bottom: 1.4rem; }
+/* AICX メトリクス */
+.pf-metrics { display:grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap: clamp(0.9rem,2vw,1.4rem); margin-bottom: clamp(1.8rem,4vh,2.6rem); }
+.pf-metric { position:relative; overflow:hidden; background: rgba(255,255,255,0.05); border:1px solid rgba(216,228,240,0.16); border-radius:16px; padding: clamp(1.4rem,3vw,2rem); text-align:center; }
+.pf-metric .mnum { font-family: var(--font-en); font-weight:700; font-size: clamp(2.6rem,7vw,4.4rem); line-height:1; color:#fff; }
+.pf-metric .mnum small { font-size:0.34em; color: var(--azure-pale); margin-left:0.12em; }
+.pf-metric .mttl { font-family: var(--font-ja-serif); color:#fff; font-size: clamp(1rem,2vw,1.28rem); margin-top:0.55rem; }
+.pf-metric .msub { font-size: clamp(0.76rem,1.3vw,0.9rem); color: rgba(216,228,240,0.75); margin-top:0.45rem; line-height:1.65; }
+.pf-metric.accent { border-color: rgba(255,93,106,0.34); background: radial-gradient(120% 130% at 50% 0%, rgba(226,55,68,0.16), rgba(255,255,255,0.04) 62%); }
+.pf-metric.accent .mnum { background:linear-gradient(180deg,#fff 0%,#ffd0d4 58%,var(--red-bright) 100%); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.pf-metric.accent .mnum small { -webkit-text-fill-color: var(--red-bright); }
+/* 3本柱 */
+.pf-pillars { display:grid; grid-template-columns: repeat(3,1fr); gap: clamp(0.7rem,1.8vw,1.2rem); }
+.pf-pillar { position:relative; overflow:hidden; background: rgba(255,255,255,0.05); border:1px solid rgba(216,228,240,0.14); border-radius:14px; padding: clamp(1.1rem,2.4vw,1.6rem); transition: transform .3s ease, border-color .3s ease, background .3s ease; }
+.pf-pillar:hover { transform: translateY(-5px); border-color: rgba(216,228,240,0.42); background: rgba(255,255,255,0.08); }
+.pf-pillar .pno { font-family: var(--font-en); font-weight:700; font-size:1rem; color: var(--navy-deep); background: var(--azure-pale); width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-bottom:0.8rem; }
+.pf-pillar .pen { font-family: var(--font-en); font-size:0.64rem; letter-spacing:0.16em; color: var(--azure-pale); opacity:0.72; display:block; margin-bottom:0.4rem; }
+.pf-pillar h5 { font-family: var(--font-ja-serif); color:#fff; font-size: clamp(1rem,2vw,1.2rem); margin-bottom:0.45rem; }
+.pf-pillar p { font-size: clamp(0.78rem,1.4vw,0.9rem); color: rgba(216,228,240,0.8); line-height:1.7; }
+.pf-pillar-goal { text-align:center; margin-top:1.3rem; font-family: var(--font-ja-serif); color:#fff; font-size: clamp(0.95rem,1.9vw,1.2rem); }
+@media (max-width:640px){ .pf-pillars { grid-template-columns:1fr; } }
+
 @media (prefers-reduced-motion: reduce) {
   .pf-portrait img { animation: none; }
   .pf-portrait::after { animation: none; }
@@ -1356,59 +1379,92 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     <div class="pf-figure" data-reveal>
       <p class="fig-t">掲げるのは、<span class="accent">分断を超え</span>、人間とAIが共存する社会。</p>
       <div class="pf-figscroll">
-        <svg viewBox="0 0 700 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="分断された社会（人間とAIが分かれている状態）から、ミッション『分断を超える』を経て、人間とAIが相互につながり共存する社会へ移行する構造図">
-          <defs>
-            <marker id="pfBr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="#ff5d6a"/></marker>
-          </defs>
-          <text x="40" y="46" font-size="13.5" font-family="'Shippori Mincho B1',serif" fill="#d8e4f0">分断された、いまの社会</text>
-          <rect x="34" y="60" width="266" height="250" rx="14" fill="rgba(255,255,255,0.05)" stroke="rgba(216,228,240,0.16)"/>
-          <circle class="pf-pop" cx="95" cy="115" r="11" fill="#d8e4f0"/>
-          <circle class="pf-pop" cx="162" cy="100" r="11" fill="#d8e4f0"/>
-          <circle class="pf-pop" cx="135" cy="153" r="11" fill="#d8e4f0"/>
-          <text x="196" y="106" font-size="12" fill="rgba(216,228,240,0.75)">人間</text>
-          <rect class="pf-pop" x="92" y="228" width="20" height="20" rx="3" fill="#ffffff"/>
-          <rect class="pf-pop" x="156" y="240" width="20" height="20" rx="3" fill="#ffffff"/>
-          <rect class="pf-pop" x="126" y="196" width="20" height="20" rx="3" fill="#ffffff"/>
-          <text x="196" y="240" font-size="12" fill="rgba(216,228,240,0.75)">AI</text>
-          <line x1="50" y1="180" x2="284" y2="180" stroke="#ff5d6a" stroke-width="1.6" stroke-dasharray="6 5" opacity="0.9"/>
-          <text x="167" y="176" text-anchor="middle" font-size="12.5" font-family="'Shippori Mincho B1',serif" fill="#ff5d6a">分断</text>
-          <text x="350" y="106" text-anchor="middle" font-size="10.5" font-family="'Hanken Grotesk',sans-serif" letter-spacing="3" fill="#ff5d6a">MISSION</text>
-          <text x="350" y="132" text-anchor="middle" font-size="16" font-family="'Shippori Mincho B1',serif" fill="#ff5d6a">分断を超える</text>
-          <path class="pf-draw" d="M306 190 L392 190" stroke="#ff5d6a" stroke-width="3.4" fill="none" marker-end="url(#pfBr)"/>
-          <text x="350" y="224" text-anchor="middle" font-size="11.5" fill="rgba(216,228,240,0.7)">つなぎ直す</text>
-          <text x="415" y="46" font-size="13.5" font-family="'Shippori Mincho B1',serif" fill="#d8e4f0">人間とAIが共存する社会</text>
-          <rect x="400" y="60" width="266" height="250" rx="14" fill="rgba(255,255,255,0.05)" stroke="rgba(216,228,240,0.16)"/>
-          <g stroke="#8fb0e0" stroke-width="1.4" opacity="0.85">
-            <line class="pf-draw" x1="460" y1="115" x2="527" y2="100"/>
-            <line class="pf-draw" x1="527" y1="100" x2="500" y2="153"/>
-            <line class="pf-draw" x1="460" y1="115" x2="500" y2="153"/>
-            <line class="pf-draw" x1="457" y1="238" x2="521" y2="250"/>
-            <line class="pf-draw" x1="521" y1="250" x2="491" y2="206"/>
-            <line class="pf-draw" x1="457" y1="238" x2="491" y2="206"/>
-            <line class="pf-draw" x1="500" y1="153" x2="491" y2="206"/>
-            <line class="pf-draw" x1="460" y1="115" x2="457" y2="238"/>
-            <line class="pf-draw" x1="527" y1="100" x2="521" y2="250"/>
+        <svg viewBox="0 0 700 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="産学官・顧客とサプライヤー・部署間などバラバラに分断された状態から、ミッション『分断を超え、AI業界を再定義する』を経て、AIエージェントがすべてを一つにつなぐ共存社会へ移行する構造図">
+          <defs><marker id="pfBr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="#ff5d6a"/></marker></defs>
+
+          <!-- 左：分断 -->
+          <text x="40" y="40" font-size="13.5" font-family="'Shippori Mincho B1',serif" fill="#d8e4f0">分断された、いまの社会</text>
+          <rect x="34" y="56" width="252" height="270" rx="14" fill="rgba(255,255,255,0.05)" stroke="rgba(216,228,240,0.16)"/>
+          <!-- 6つの島（バラバラ） -->
+          <g>
+            <rect class="pf-pop" x="58" y="82" width="94" height="46" rx="9" fill="rgba(255,255,255,0.1)" stroke="rgba(216,228,240,0.3)"/>
+            <text x="105" y="103" text-anchor="middle" font-size="11.5" fill="#ffffff">産</text>
+            <text x="105" y="119" text-anchor="middle" font-size="9.5" fill="rgba(216,228,240,0.6)">企業</text>
+            <rect class="pf-pop" x="168" y="82" width="94" height="46" rx="9" fill="rgba(255,255,255,0.1)" stroke="rgba(216,228,240,0.3)"/>
+            <text x="215" y="103" text-anchor="middle" font-size="11.5" fill="#ffffff">学</text>
+            <text x="215" y="119" text-anchor="middle" font-size="9.5" fill="rgba(216,228,240,0.6)">大学・研究</text>
+            <rect class="pf-pop" x="58" y="146" width="94" height="46" rx="9" fill="rgba(255,255,255,0.1)" stroke="rgba(216,228,240,0.3)"/>
+            <text x="105" y="167" text-anchor="middle" font-size="11.5" fill="#ffffff">官</text>
+            <text x="105" y="183" text-anchor="middle" font-size="9.5" fill="rgba(216,228,240,0.6)">行政</text>
+            <rect class="pf-pop" x="168" y="146" width="94" height="46" rx="9" fill="rgba(255,255,255,0.1)" stroke="rgba(216,228,240,0.3)"/>
+            <text x="215" y="167" text-anchor="middle" font-size="11.5" fill="#ffffff">顧客</text>
+            <text x="215" y="183" text-anchor="middle" font-size="9.5" fill="rgba(216,228,240,0.6)">サプライヤー</text>
+            <rect class="pf-pop" x="58" y="210" width="94" height="46" rx="9" fill="rgba(255,255,255,0.1)" stroke="rgba(216,228,240,0.3)"/>
+            <text x="105" y="231" text-anchor="middle" font-size="11.5" fill="#ffffff">部署</text>
+            <text x="105" y="247" text-anchor="middle" font-size="9.5" fill="rgba(216,228,240,0.6)">部門の壁</text>
+            <rect class="pf-pop" x="168" y="210" width="94" height="46" rx="9" fill="rgba(255,255,255,0.1)" stroke="rgba(216,228,240,0.3)"/>
+            <text x="215" y="231" text-anchor="middle" font-size="11.5" fill="#ffffff">人 と AI</text>
+            <text x="215" y="247" text-anchor="middle" font-size="9.5" fill="rgba(216,228,240,0.6)">断絶</text>
           </g>
-          <circle class="pf-pop" cx="460" cy="115" r="11" fill="#d8e4f0"/>
-          <circle class="pf-pop" cx="527" cy="100" r="11" fill="#d8e4f0"/>
-          <circle class="pf-pop" cx="500" cy="153" r="11" fill="#d8e4f0"/>
-          <rect class="pf-pop" x="447" y="228" width="20" height="20" rx="3" fill="#ffffff"/>
-          <rect class="pf-pop" x="511" y="240" width="20" height="20" rx="3" fill="#ffffff"/>
-          <rect class="pf-pop" x="481" y="196" width="20" height="20" rx="3" fill="#ffffff"/>
+          <!-- 分断の亀裂 -->
+          <line x1="160" y1="70" x2="160" y2="312" stroke="#ff5d6a" stroke-width="1.6" stroke-dasharray="6 5" opacity="0.85"/>
+          <line x1="46" y1="139" x2="274" y2="139" stroke="#ff5d6a" stroke-width="1.6" stroke-dasharray="6 5" opacity="0.85"/>
+          <line x1="46" y1="203" x2="274" y2="203" stroke="#ff5d6a" stroke-width="1.6" stroke-dasharray="6 5" opacity="0.85"/>
+          <text x="160" y="308" text-anchor="middle" font-size="12" font-family="'Shippori Mincho B1',serif" fill="#ff5d6a">それぞれが、つながっていない</text>
+
+          <!-- 中央：ミッション -->
+          <text x="350" y="120" text-anchor="middle" font-size="10.5" font-family="'Hanken Grotesk',sans-serif" letter-spacing="3" fill="#ff5d6a">MISSION</text>
+          <text x="350" y="146" text-anchor="middle" font-size="14.5" font-family="'Shippori Mincho B1',serif" fill="#ff5d6a">分断を超え、</text>
+          <text x="350" y="167" text-anchor="middle" font-size="14.5" font-family="'Shippori Mincho B1',serif" fill="#ff5d6a">AI業界を再定義する</text>
+          <path class="pf-draw" d="M300 200 L400 200" stroke="#ff5d6a" stroke-width="3.4" fill="none" marker-end="url(#pfBr)"/>
+          <text x="350" y="228" text-anchor="middle" font-size="11" fill="rgba(216,228,240,0.7)">AIエージェントが</text>
+          <text x="350" y="245" text-anchor="middle" font-size="11" fill="rgba(216,228,240,0.7)">横串を通す</text>
+
+          <!-- 右：統合 -->
+          <text x="414" y="40" font-size="13.5" font-family="'Shippori Mincho B1',serif" fill="#d8e4f0">人間とAIが共存する社会</text>
+          <rect x="414" y="56" width="252" height="270" rx="14" fill="rgba(255,255,255,0.05)" stroke="rgba(216,228,240,0.16)"/>
+          <!-- ハブ&スポーク（整然） -->
+          <g stroke="#8fb0e0" stroke-width="1.4" opacity="0.9">
+            <line class="pf-draw" x1="540" y1="191" x2="540" y2="106"/>
+            <line class="pf-draw" x1="540" y1="191" x2="613" y2="148"/>
+            <line class="pf-draw" x1="540" y1="191" x2="613" y2="234"/>
+            <line class="pf-draw" x1="540" y1="191" x2="540" y2="276"/>
+            <line class="pf-draw" x1="540" y1="191" x2="467" y2="234"/>
+            <line class="pf-draw" x1="540" y1="191" x2="467" y2="148"/>
+          </g>
+          <g>
+            <circle class="pf-pop" cx="540" cy="106" r="19" fill="rgba(255,255,255,0.12)" stroke="#d8e4f0" stroke-width="1.2"/><text x="540" y="110" text-anchor="middle" font-size="10.5" fill="#fff">産</text>
+            <circle class="pf-pop" cx="613" cy="148" r="19" fill="rgba(255,255,255,0.12)" stroke="#d8e4f0" stroke-width="1.2"/><text x="613" y="152" text-anchor="middle" font-size="10.5" fill="#fff">学</text>
+            <circle class="pf-pop" cx="613" cy="234" r="19" fill="rgba(255,255,255,0.12)" stroke="#d8e4f0" stroke-width="1.2"/><text x="613" y="238" text-anchor="middle" font-size="10.5" fill="#fff">官</text>
+            <circle class="pf-pop" cx="540" cy="276" r="19" fill="rgba(255,255,255,0.12)" stroke="#d8e4f0" stroke-width="1.2"/><text x="540" y="280" text-anchor="middle" font-size="10.5" fill="#fff">顧客</text>
+            <circle class="pf-pop" cx="467" cy="234" r="19" fill="rgba(255,255,255,0.12)" stroke="#d8e4f0" stroke-width="1.2"/><text x="467" y="238" text-anchor="middle" font-size="10.5" fill="#fff">部署</text>
+            <circle class="pf-pop" cx="467" cy="148" r="19" fill="rgba(255,255,255,0.12)" stroke="#d8e4f0" stroke-width="1.2"/><text x="467" y="152" text-anchor="middle" font-size="10.5" fill="#fff">人</text>
+          </g>
+          <circle class="pf-pop" cx="540" cy="191" r="30" fill="#141d35" stroke="#d8e4f0" stroke-width="1.6"/>
+          <text x="540" y="188" text-anchor="middle" font-size="11.5" font-family="'Shippori Mincho B1',serif" fill="#ffffff">AI</text>
+          <text x="540" y="203" text-anchor="middle" font-size="9" font-family="'Hanken Grotesk',sans-serif" fill="rgba(216,228,240,0.72)">AGENT</text>
+          <text x="540" y="312" text-anchor="middle" font-size="12" font-family="'Shippori Mincho B1',serif" fill="#d8e4f0">すべてが、ひとつにつながる</text>
         </svg>
       </div>
       <div class="fig-cap">
         <span class="vm vision"><b>VISION</b><span class="lead">人間とAIが共存する社会をつくる</span></span>
-        <span class="vm mission"><b>MISSION</b><span class="lead">分断を超える</span></span>
+        <span class="vm mission"><b>MISSION</b><span class="lead">分断を超え、AI業界を再定義する</span></span>
       </div>
-    </div>
 
-    <!-- スタッツ -->
-    <div class="pf-stats pf-stag" data-reveal>
-      <div class="pf-stat"><div class="num"><span class="cval" data-to="2">2</span><small>冊</small></div><div class="lbl">書籍刊行</div></div>
-      <div class="pf-stat"><div class="num"><span class="cval" data-to="1500">1,500</span><small>本+</small></div><div class="lbl">AI関連記事の執筆</div></div>
-      <div class="pf-stat"><div class="num"><span class="cval" data-to="300">300</span><small>回+</small></div><div class="lbl">年間登壇回数</div></div>
-    </div>
+    <!-- 発信の規模（独立セクション） -->
+    <section class="pf-sec" data-reveal>
+      <div class="pf-sec-head"><span class="pf-sec-no">01</span><h3 class="pf-sec-title">発信の規模</h3></div>
+      <p class="pf-lead">書籍・記事・登壇。<span class="pf-hot">発信し続けること</span>そのものを、現場で何が起きているかを掴む手段にしてきました。</p>
+      <div class="pf-stats pf-stag">
+        <div class="pf-stat"><div class="num"><span class="cval" data-to="2">2</span><small>冊</small></div><div class="lbl">書籍刊行<br>『AIエージェントの教科書』『生成AI導入の教科書』</div></div>
+        <div class="pf-stat"><div class="num"><span class="cval" data-to="1500">1,500</span><small>本+</small></div><div class="lbl">AI関連記事の執筆<br>AINOW編集長として1,000本以上を制作</div></div>
+        <div class="pf-stat"><div class="num"><span class="cval" data-to="300">300</span><small>回+</small></div><div class="lbl">年間登壇回数<br>カンファレンス・企業・自治体</div></div>
+      </div>
+      <div class="pf-books" style="justify-content:flex-start;margin-top:1.4rem">
+        <img src="99_assets/book-ai-agent.jpg" alt="『AIエージェントの教科書』書影" loading="lazy">
+        <img src="99_assets/book-seisei-ai.jpg" alt="『生成AI導入の教科書』書影" loading="lazy">
+      </div>
+    </section>
 
     <!-- Udemy 訴求バンド -->
     <div class="pf-udemy" data-reveal>
@@ -1419,9 +1475,34 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
       <span class="pf-udemy-badge">Udemy Bestseller Instructor</span>
     </div>
 
+    <!-- AICX協会（独立セクション） -->
+    <section class="pf-sec" data-reveal>
+      <div class="pf-sec-head"><span class="pf-sec-no">02</span><h3 class="pf-sec-title">AICX協会 ── 代表理事として</h3></div>
+      <p class="pf-lead">国内初のAIエージェント特化型の業界団体として、<span class="pf-hot">日本最大級</span>のカンファレンスと、人材の“格”を定義する資格制度を企画・運営しています。</p>
+      <div class="pf-metrics pf-stag">
+        <div class="pf-metric accent">
+          <div class="mnum"><span class="cval" data-to="4000">4,000</span><small>人</small></div>
+          <div class="mttl">AI Agent Day 2026 Summer</div>
+          <p class="msub">主催・企画・登壇。AIエージェントをテーマにした国内最大級のカンファレンスに、約4,000人が参加。</p>
+        </div>
+        <div class="pf-metric accent">
+          <div class="mnum"><span class="cval" data-to="1300">1,300</span><small>人</small></div>
+          <div class="mttl">AIエージェント・ストラテジスト</div>
+          <p class="msub">AICX協会の認定資格制度。これまでに約1,300人が受験し、AI実装を担う人材の基準になりつつある。</p>
+        </div>
+      </div>
+      <p class="pf-lead" style="margin-top:0.6rem">技術だけでも、掛け声だけでも実装は進まない。<span class="pf-hot">3本柱</span>を貫いて設計できる人材を育てることが、協会の役割です。</p>
+      <div class="pf-pillars pf-stag">
+        <div class="pf-pillar"><div class="pno">1</div><span class="pen">AI AGENT</span><h5>AIエージェント</h5><p>自律的に動く、実装の基盤をつくる。</p></div>
+        <div class="pf-pillar"><div class="pno">2</div><span class="pen">WORKFLOW</span><h5>業務変革</h5><p>プロセスをAI前提に組み替える。</p></div>
+        <div class="pf-pillar"><div class="pno">3</div><span class="pen">ORGANIZATION</span><h5>組織変革</h5><p>人と組織の役割を再設計する。</p></div>
+      </div>
+      <p class="pf-pillar-goal">3本柱を貫いて設計する人材 ＝ <span class="pf-hot">AIエージェント・ストラテジスト</span></p>
+    </section>
+
     <!-- プロフィール本文 -->
     <section class="pf-sec" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">01</span><h3 class="pf-sec-title">プロフィール</h3></div>
+      <div class="pf-sec-head"><span class="pf-sec-no">03</span><h3 class="pf-sec-title">プロフィール</h3></div>
       <p class="pf-lead">一般社団法人AICX協会 代表理事として、企業のAIエージェント実装を業界横断で牽引。あわせて複数のAI企業の経営・アドバイザーに参画し、日本HP・NTTデータグループなど大手の実装現場に伴走している。</p>
       <p class="pf-lead">NewsPicksのAI番組「AI DIVE」メインMC、千葉県船橋市 生成AIアドバイザーとして行政のDX推進にも携わる。NewsPicksプロピッカー、Udemyベストセラー講師、SHIFT AI公式モデレーターとしても活動中。</p>
       <p class="pf-lead">AI領域以外では、2022年にCinematoricoを創業しCOOに就任。PRやフリーカメラマン、日本大学文理学部次世代社会研究センターのプロボノなど、多彩な経験を活かして活動している。</p>
@@ -1429,7 +1510,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
 
     <!-- 現職・役割 -->
     <section class="pf-sec" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">02</span><h3 class="pf-sec-title">現在の役割</h3></div>
+      <div class="pf-sec-head"><span class="pf-sec-no">04</span><h3 class="pf-sec-title">現在の役割</h3></div>
       <div class="pf-timeline pf-stag">
         <div class="pf-tl-item"><h5>一般社団法人AICX協会　代表理事 / Founder</h5><p>国内初のAIエージェント特化型の業界団体。AI Agent Day（5,600名超）やAICX Forumの開催、認定資格制度の運営を通じ、企業のAIエージェント実装の土台をつくる。</p></div>
         <div class="pf-tl-item"><h5>株式会社Cynthialy　取締役CCO</h5><p>生成AI人材育成・組織変革支援の事業を推進。</p></div>
@@ -1440,7 +1521,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
 
     <!-- 顧問・アドバイザー -->
     <section class="pf-sec" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">03</span><h3 class="pf-sec-title">顧問・アドバイザー・委員</h3></div>
+      <div class="pf-sec-head"><span class="pf-sec-no">05</span><h3 class="pf-sec-title">顧問・アドバイザー・委員</h3></div>
       <p class="pf-lead">企業・行政の実装現場に、顧問／アドバイザーとして伴走している。</p>
       <div class="pf-chips pf-stag">
         <span class="pf-chip"><span class="em">日本HP</span> 顧問</span>
@@ -1458,7 +1539,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
 
     <!-- 実績 -->
     <section class="pf-sec" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">04</span><h3 class="pf-sec-title">実績</h3></div>
+      <div class="pf-sec-head"><span class="pf-sec-no">06</span><h3 class="pf-sec-title">実績</h3></div>
       <div class="pf-cards pf-stag">
         <div class="pf-card">
           <h4><span class="tag">01</span>メディア出演・取材</h4>
@@ -1475,10 +1556,6 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
         </div>
         <div class="pf-card">
           <h4><span class="tag">03</span>著書・執筆</h4>
-          <div class="pf-books">
-            <img src="99_assets/book-ai-agent.jpg" alt="『AIエージェントの教科書』書影" loading="lazy">
-            <img src="99_assets/book-seisei-ai.jpg" alt="『生成AI導入の教科書』書影" loading="lazy">
-          </div>
           <p><b>著書：</b>『AIエージェントの教科書』（2025年8月・ワン・パブリッシング）／『生成AI導入の教科書』（2023年9月）</p>
           <p><b>編集長：</b>日本最大のAI専門メディア「AINOW」編集長として1,000本以上を制作。「SDGs CONNECT」「ライフシフトラボ・ジャーナル」編集長も歴任</p>
         </div>
@@ -1493,7 +1570,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
 
     <!-- 主要支援先（社名非公開） -->
     <section class="pf-sec" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">05</span><h3 class="pf-sec-title">主要支援先（社名非公開）</h3></div>
+      <div class="pf-sec-head"><span class="pf-sec-no">07</span><h3 class="pf-sec-title">主要支援先（社名非公開）</h3></div>
       <p class="pf-lead">守秘義務により社名は伏せていますが、各業界を代表する<span class="pf-hot">日本有数のリーディングカンパニー</span>の現場に入り、AI活用・実装を支援してきました。</p>
       <div class="pf-clients pf-stag">
         <div class="pf-client">
@@ -1530,7 +1607,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
 
     <!-- 講演テーマ -->
     <section class="pf-sec" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">06</span><h3 class="pf-sec-title">主な講演テーマ</h3></div>
+      <div class="pf-sec-head"><span class="pf-sec-no">08</span><h3 class="pf-sec-title">主な講演テーマ</h3></div>
       <div class="pf-themes pf-stag">
         <span class="pf-theme">AIエージェントが変えるビジネスの未来</span>
         <span class="pf-theme">生成AI活用術</span>
