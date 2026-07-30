@@ -63,14 +63,19 @@ a { color: inherit; text-decoration: none; }
     radial-gradient(54% 58% at 72% 92%, rgba(46,84,150,0.50), transparent 72%);
   animation: ambientDrift 20s ease-in-out infinite alternate;
 }
-.sec-light::before, .sec-download::before {
+.sec-light::before {
   background:
     radial-gradient(46% 50% at 8% 14%, rgba(46,84,150,0.28), transparent 70%),
     radial-gradient(42% 46% at 92% 86%, rgba(255,93,106,0.15), transparent 72%),
     radial-gradient(40% 44% at 60% 50%, rgba(46,84,150,0.18), transparent 74%);
   animation: ambientDrift 26s ease-in-out infinite alternate;
 }
-.sec-download::before { animation-duration: 31s; }
+.sec-download::before {
+  background:
+    radial-gradient(46% 50% at 8% 14%, rgba(46,84,150,0.20), transparent 70%),
+    radial-gradient(42% 46% at 92% 86%, rgba(46,84,150,0.15), transparent 72%);
+  animation: ambientDrift 31s ease-in-out infinite alternate;
+}
 /* レイヤー2：パーティクル・ネットワーク（点が漂い、近い点同士が線でつながる） */
 .net-canvas { position: absolute; inset: 0; z-index: 0; pointer-events: none; display: block; }
 @keyframes ambientDrift {
@@ -262,15 +267,17 @@ a { color: inherit; text-decoration: none; }
 .sec-download { background: var(--paper); padding: 3.5rem 1.5rem; }
 .dl-feature {
   max-width: var(--max-w); margin: 0 auto;
-  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-deep) 100%);
+  background: linear-gradient(140deg, #26497e 0%, var(--navy) 46%, var(--navy-deep) 100%);
+  border: 1px solid rgba(216,228,240,0.10);
   border-radius: var(--radius); padding: 2.9rem 2.6rem; color: var(--white);
   position: relative; overflow: hidden;
   box-shadow: 0 24px 60px -24px rgba(20,29,53,0.65);
 }
 .dl-feature::before {
-  content: ""; position: absolute; top: 0; right: 0; width: 45%; height: 100%;
-  background: radial-gradient(circle at 90% 10%, rgba(226,55,68,0.28), transparent 65%);
-  pointer-events: none;
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(58% 78% at 90% 4%, rgba(46,84,150,0.55), transparent 62%),
+    radial-gradient(46% 66% at 8% 106%, rgba(140,175,230,0.18), transparent 58%);
 }
 .dl-feature > * { position: relative; }
 .dl-badge {
