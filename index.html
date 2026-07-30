@@ -607,6 +607,90 @@ footer {
   .profile-fs { scroll-behavior: auto; }
   .pf-scrollhint .arw { animation: none; }
 }
+
+/* ══ プロフィール：アニメーション強化・図版・差し色（赤） ══ */
+.pf-hot { color: var(--red-bright); font-weight: 700; }
+/* 段階表示（stagger） */
+.pf-stag > * { opacity: 0; transform: translateY(18px); transition: opacity 0.55s ease, transform 0.55s ease; }
+.visible .pf-stag > *, .pf-stag.visible > * { opacity: 1; transform: none; }
+.pf-stag > *:nth-child(1){ transition-delay: .05s } .pf-stag > *:nth-child(2){ transition-delay: .11s }
+.pf-stag > *:nth-child(3){ transition-delay: .17s } .pf-stag > *:nth-child(4){ transition-delay: .23s }
+.pf-stag > *:nth-child(5){ transition-delay: .29s } .pf-stag > *:nth-child(6){ transition-delay: .35s }
+.pf-stag > *:nth-child(7){ transition-delay: .41s } .pf-stag > *:nth-child(8){ transition-delay: .47s }
+.pf-stag > *:nth-child(9){ transition-delay: .53s } .pf-stag > *:nth-child(10){ transition-delay: .59s }
+.pf-stag > *:nth-child(n+11){ transition-delay: .65s }
+/* セクション見出しの下線スイープ */
+.pf-sec-head { position: relative; }
+.pf-sec-head::after { content: ""; position: absolute; left: 0; bottom: -1px; height: 2px; width: 0; background: linear-gradient(90deg, var(--red-bright) 0 18%, var(--azure-pale) 60% 100%); transition: width 0.85s cubic-bezier(.2,.7,.2,1) .1s; }
+.pf-sec.visible .pf-sec-head::after, .visible > .pf-sec-head::after { width: 44%; }
+/* タイムライン描画 */
+.pf-timeline::before { transform-origin: top; transform: scaleY(0); transition: transform 0.95s cubic-bezier(.2,.7,.2,1) .15s; }
+.visible .pf-timeline::before { transform: scaleY(1); }
+/* ポートレートの浮遊＋回転リング */
+.pf-portrait img { animation: pfFloat 6.5s ease-in-out infinite; }
+.pf-portrait::after { content: ""; position: absolute; left: -14px; top: 14px; width: 100%; height: 100%; border: 1.5px dashed rgba(216,228,240,0.35); border-radius: 50%; animation: pfSpin 26s linear infinite; z-index: 0; }
+@keyframes pfFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+@keyframes pfSpin { to { transform: rotate(360deg); } }
+/* カウントアップ数値の赤アンダーライン */
+.pf-stat .num .cval { position: relative; }
+
+/* ビジョン／ミッション図版 */
+.pf-figure { background: rgba(255,255,255,0.04); border: 1px solid rgba(216,228,240,0.14); border-radius: 18px; padding: clamp(1.4rem, 3.2vw, 2.3rem); margin-bottom: clamp(2.4rem, 6vh, 3.8rem); }
+.pf-figure .fig-t { font-family: var(--font-ja-serif); color: #fff; font-size: clamp(1.05rem, 2.3vw, 1.55rem); line-height: 1.5; margin-bottom: 1.2rem; }
+.pf-figure .fig-t .accent { color: var(--red-bright); }
+.pf-figscroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.pf-figscroll svg { display: block; width: 100%; min-width: 580px; height: auto; }
+.pf-figure .fig-cap { margin-top: 1.1rem; display: flex; flex-wrap: wrap; gap: 0.5rem 1.4rem; font-size: clamp(0.78rem, 1.4vw, 0.95rem); line-height: 1.6; }
+.pf-figure .fig-cap .vm { color: rgba(216,228,240,0.85); }
+.pf-figure .fig-cap .vm b { display: block; font-family: var(--font-en); font-size: 0.7rem; letter-spacing: 0.2em; margin-bottom: 0.15rem; }
+.pf-figure .fig-cap .vm.mission b { color: var(--red-bright); }
+.pf-figure .fig-cap .vm.vision b { color: var(--azure-pale); }
+.pf-figure .fig-cap .vm .lead { color: #fff; font-family: var(--font-ja-serif); }
+/* SVG内の描画アニメーション */
+.pf-draw { stroke-dasharray: 240; stroke-dashoffset: 240; transition: stroke-dashoffset 1.25s ease .35s; }
+.pf-figure.visible .pf-draw { stroke-dashoffset: 0; }
+.pf-pop { opacity: 0; transform: scale(0.4); transform-box: fill-box; transform-origin: center; transition: opacity .5s ease, transform .5s cubic-bezier(.2,.9,.3,1.4); }
+.pf-figure.visible .pf-pop { opacity: 1; transform: scale(1); }
+.pf-figure.visible .pf-pop:nth-of-type(2){ transition-delay:.1s } .pf-figure.visible .pf-pop:nth-of-type(3){ transition-delay:.18s }
+.pf-figure.visible .pf-pop:nth-of-type(4){ transition-delay:.26s } .pf-figure.visible .pf-pop:nth-of-type(5){ transition-delay:.34s }
+.pf-figure.visible .pf-pop:nth-of-type(6){ transition-delay:.42s }
+
+/* Udemy 訴求バンド */
+.pf-udemy { position: relative; overflow: hidden; border: 1px solid rgba(255,93,106,0.32); border-radius: 20px; padding: clamp(2rem, 5vw, 3.4rem) clamp(1.4rem, 4vw, 3rem); margin-bottom: clamp(2.4rem, 6vh, 3.8rem); text-align: center; background: radial-gradient(120% 140% at 50% 0%, rgba(226,55,68,0.16) 0%, rgba(31,56,100,0.15) 46%, rgba(20,29,53,0.1) 100%); }
+.pf-udemy::before { content: ""; position: absolute; inset: 0; background: radial-gradient(60% 80% at 50% 40%, rgba(255,93,106,0.18), transparent 70%); pointer-events: none; }
+.pf-udemy-eyebrow { position: relative; font-family: var(--font-en); font-size: clamp(11px, 1.4vw, 14px); font-weight: 700; letter-spacing: 0.34em; color: var(--red-bright); margin-bottom: 0.7rem; }
+.pf-udemy-num { position: relative; font-family: var(--font-en); font-weight: 700; font-size: clamp(3.4rem, 12vw, 7rem); line-height: 0.95; background: linear-gradient(180deg, #fff 0%, #ffd0d4 55%, var(--red-bright) 100%); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: 0 10px 60px rgba(255,93,106,0.35); }
+.pf-udemy-num small { -webkit-text-fill-color: var(--red-bright); font-size: 0.36em; margin-left: 0.1em; }
+.pf-udemy-cap { position: relative; font-family: var(--font-ja-serif); color: #fff; font-size: clamp(1rem, 2.2vw, 1.5rem); margin-top: 0.5rem; }
+.pf-udemy-sub { position: relative; font-size: clamp(0.82rem, 1.5vw, 1rem); color: rgba(216,228,240,0.85); margin-top: 0.8rem; line-height: 1.7; }
+.pf-udemy-badge { position: relative; display: inline-block; margin-top: 1.2rem; font-family: var(--font-en); font-size: clamp(0.72rem, 1.2vw, 0.85rem); font-weight: 700; letter-spacing: 0.1em; color: var(--navy-deep); background: linear-gradient(90deg, #ffd0d4, var(--red-bright)); border-radius: 999px; padding: 0.5em 1.3em; }
+
+/* 書影 */
+.pf-books { display: flex; gap: 0.8rem; margin: 0.2rem 0 1rem; }
+.pf-books img { width: clamp(70px, 15vw, 90px); height: auto; border-radius: 5px; box-shadow: 0 12px 28px -10px rgba(0,0,0,0.7); transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.pf-books img:hover { transform: translateY(-5px) rotate(-1.5deg); box-shadow: 0 18px 40px -12px rgba(0,0,0,0.8); }
+
+/* 社名非公開クライアント */
+.pf-clients { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: clamp(0.8rem, 1.8vw, 1.2rem); }
+.pf-client { position: relative; overflow: hidden; background: rgba(255,255,255,0.05); border: 1px solid rgba(216,228,240,0.14); border-radius: 14px; padding: clamp(1.1rem, 2.2vw, 1.5rem); transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease; }
+.pf-client:hover { transform: translateY(-4px); border-color: rgba(255,93,106,0.45); background: rgba(255,255,255,0.08); }
+.pf-client-ico { width: 30px; height: 30px; margin-bottom: 0.7rem; color: var(--azure-pale); }
+.pf-client-ind { font-family: var(--font-en); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; color: var(--azure-pale); text-transform: uppercase; }
+.pf-client-mask { display: block; margin: 0.55rem 0 0.65rem; font-family: var(--font-ja-serif); font-size: clamp(1.05rem, 2.2vw, 1.4rem); color: #fff; filter: blur(6.5px); letter-spacing: 0.06em; user-select: none; opacity: 0.9; }
+.pf-client-note { display: block; font-size: clamp(0.85rem, 1.6vw, 1.02rem); color: #fff; font-weight: 700; }
+.pf-client-badge { position: absolute; top: 0.75rem; right: 0.75rem; display: inline-flex; align-items: center; gap: 0.25rem; font-family: var(--font-en); font-size: 0.6rem; font-weight: 700; letter-spacing: 0.06em; color: var(--red-bright); border: 1px solid rgba(255,93,106,0.4); border-radius: 999px; padding: 0.2em 0.6em; background: rgba(226,55,68,0.08); }
+.pf-clients-note { margin-top: 1rem; font-size: clamp(0.74rem, 1.3vw, 0.86rem); color: rgba(216,228,240,0.6); }
+
+@media (max-width: 720px) {
+  .pf-figure .fig-cap { flex-direction: column; gap: 0.8rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pf-portrait img { animation: none; }
+  .pf-portrait::after { animation: none; }
+  .pf-stag > *, .pf-pop { opacity: 1; transform: none; transition: none; }
+  .pf-draw { stroke-dashoffset: 0; }
+  .pf-timeline::before { transform: scaleY(1); }
+}
 </style>
 </head>
 <body>
@@ -1252,7 +1336,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
 
   <div class="pf-doc">
     <!-- ヒーロー -->
-    <div class="pf-hero" data-reveal>
+    <div class="pf-hero pf-stag" data-reveal>
       <div class="pf-portrait">
         <img src="99_assets/ozaken-portrait.jpg" alt="小澤健祐（おざけん）のポートレート" loading="lazy">
       </div>
@@ -1261,15 +1345,75 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
         <h2 class="pf-name">小澤健祐<span class="en">KENSUKE OZAWA ／ おざけん</span></h2>
         <p class="pf-role"><b>一般社団法人AICX協会 代表理事</b></p>
         <p class="pf-role" style="font-size:clamp(0.85rem,1.5vw,1.05rem);margin-top:0.2rem;">Cynthialy 取締役CCO ／ Cinematorico 創業者COO ／ 経済産業省WG委員</p>
-        <p class="pf-vision">「人間とAIが共存する社会をつくる」</p>
+        <p class="pf-vision">「人間とAIが<span class="pf-hot">共存</span>する社会をつくる」</p>
+      </div>
+    </div>
+
+    <!-- ビジョン／ミッション図版 -->
+    <div class="pf-figure" data-reveal>
+      <p class="fig-t">掲げるのは、<span class="accent">分断を超え</span>、人間とAIが共存する社会。</p>
+      <div class="pf-figscroll">
+        <svg viewBox="0 0 700 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="分断された社会（人間とAIが分かれている状態）から、ミッション『分断を超える』を経て、人間とAIが相互につながり共存する社会へ移行する構造図">
+          <defs>
+            <marker id="pfBr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="#ff5d6a"/></marker>
+          </defs>
+          <text x="40" y="46" font-size="13.5" font-family="'Shippori Mincho B1',serif" fill="#d8e4f0">分断された、いまの社会</text>
+          <rect x="34" y="60" width="266" height="250" rx="14" fill="rgba(255,255,255,0.05)" stroke="rgba(216,228,240,0.16)"/>
+          <circle class="pf-pop" cx="95" cy="115" r="11" fill="#d8e4f0"/>
+          <circle class="pf-pop" cx="162" cy="100" r="11" fill="#d8e4f0"/>
+          <circle class="pf-pop" cx="135" cy="153" r="11" fill="#d8e4f0"/>
+          <text x="196" y="106" font-size="12" fill="rgba(216,228,240,0.75)">人間</text>
+          <rect class="pf-pop" x="92" y="228" width="20" height="20" rx="3" fill="#ffffff"/>
+          <rect class="pf-pop" x="156" y="240" width="20" height="20" rx="3" fill="#ffffff"/>
+          <rect class="pf-pop" x="126" y="196" width="20" height="20" rx="3" fill="#ffffff"/>
+          <text x="196" y="240" font-size="12" fill="rgba(216,228,240,0.75)">AI</text>
+          <line x1="50" y1="180" x2="284" y2="180" stroke="#ff5d6a" stroke-width="1.6" stroke-dasharray="6 5" opacity="0.9"/>
+          <text x="167" y="176" text-anchor="middle" font-size="12.5" font-family="'Shippori Mincho B1',serif" fill="#ff5d6a">分断</text>
+          <text x="350" y="106" text-anchor="middle" font-size="10.5" font-family="'Hanken Grotesk',sans-serif" letter-spacing="3" fill="#ff5d6a">MISSION</text>
+          <text x="350" y="132" text-anchor="middle" font-size="16" font-family="'Shippori Mincho B1',serif" fill="#ff5d6a">分断を超える</text>
+          <path class="pf-draw" d="M306 190 L392 190" stroke="#ff5d6a" stroke-width="3.4" fill="none" marker-end="url(#pfBr)"/>
+          <text x="350" y="224" text-anchor="middle" font-size="11.5" fill="rgba(216,228,240,0.7)">つなぎ直す</text>
+          <text x="415" y="46" font-size="13.5" font-family="'Shippori Mincho B1',serif" fill="#d8e4f0">人間とAIが共存する社会</text>
+          <rect x="400" y="60" width="266" height="250" rx="14" fill="rgba(255,255,255,0.05)" stroke="rgba(216,228,240,0.16)"/>
+          <g stroke="#8fb0e0" stroke-width="1.4" opacity="0.85">
+            <line class="pf-draw" x1="460" y1="115" x2="527" y2="100"/>
+            <line class="pf-draw" x1="527" y1="100" x2="500" y2="153"/>
+            <line class="pf-draw" x1="460" y1="115" x2="500" y2="153"/>
+            <line class="pf-draw" x1="457" y1="238" x2="521" y2="250"/>
+            <line class="pf-draw" x1="521" y1="250" x2="491" y2="206"/>
+            <line class="pf-draw" x1="457" y1="238" x2="491" y2="206"/>
+            <line class="pf-draw" x1="500" y1="153" x2="491" y2="206"/>
+            <line class="pf-draw" x1="460" y1="115" x2="457" y2="238"/>
+            <line class="pf-draw" x1="527" y1="100" x2="521" y2="250"/>
+          </g>
+          <circle class="pf-pop" cx="460" cy="115" r="11" fill="#d8e4f0"/>
+          <circle class="pf-pop" cx="527" cy="100" r="11" fill="#d8e4f0"/>
+          <circle class="pf-pop" cx="500" cy="153" r="11" fill="#d8e4f0"/>
+          <rect class="pf-pop" x="447" y="228" width="20" height="20" rx="3" fill="#ffffff"/>
+          <rect class="pf-pop" x="511" y="240" width="20" height="20" rx="3" fill="#ffffff"/>
+          <rect class="pf-pop" x="481" y="196" width="20" height="20" rx="3" fill="#ffffff"/>
+        </svg>
+      </div>
+      <div class="fig-cap">
+        <span class="vm vision"><b>VISION</b><span class="lead">人間とAIが共存する社会をつくる</span></span>
+        <span class="vm mission"><b>MISSION</b><span class="lead">分断を超える</span></span>
       </div>
     </div>
 
     <!-- スタッツ -->
-    <div class="pf-stats" data-reveal>
-      <div class="pf-stat"><div class="num">2<small>冊</small></div><div class="lbl">書籍刊行</div></div>
-      <div class="pf-stat"><div class="num">1500<small>本+</small></div><div class="lbl">AI関連記事の執筆</div></div>
-      <div class="pf-stat"><div class="num">300<small>回+</small></div><div class="lbl">年間登壇回数</div></div>
+    <div class="pf-stats pf-stag" data-reveal>
+      <div class="pf-stat"><div class="num"><span class="cval" data-to="2">2</span><small>冊</small></div><div class="lbl">書籍刊行</div></div>
+      <div class="pf-stat"><div class="num"><span class="cval" data-to="1500">1,500</span><small>本+</small></div><div class="lbl">AI関連記事の執筆</div></div>
+      <div class="pf-stat"><div class="num"><span class="cval" data-to="300">300</span><small>回+</small></div><div class="lbl">年間登壇回数</div></div>
+    </div>
+
+    <!-- Udemy 訴求バンド -->
+    <div class="pf-udemy" data-reveal>
+      <div class="pf-udemy-eyebrow">UDEMY ─ ベストセラー講師</div>
+      <div class="pf-udemy-num"><span class="cval" data-to="50000">50,000</span><small>人+</small></div>
+      <p class="pf-udemy-cap">Udemy講座で、<span class="pf-hot">約5万人</span>が学んでいる。</p>
+      <p class="pf-udemy-sub">生成AI・AI活用のオンライン講座がベストセラーに。累計 約50,000人以上の受講者へ、実践的なAIの使い方を届けています。</p>
+      <span class="pf-udemy-badge">Udemy Bestseller Instructor</span>
     </div>
 
     <!-- プロフィール本文 -->
@@ -1283,7 +1427,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     <!-- 現職・役割 -->
     <section class="pf-sec" data-reveal>
       <div class="pf-sec-head"><span class="pf-sec-no">02</span><h3 class="pf-sec-title">現在の役割</h3></div>
-      <div class="pf-timeline">
+      <div class="pf-timeline pf-stag">
         <div class="pf-tl-item"><h5>一般社団法人AICX協会　代表理事 / Founder</h5><p>国内初のAIエージェント特化型の業界団体。AI Agent Day（5,600名超）やAICX Forumの開催、認定資格制度の運営を通じ、企業のAIエージェント実装の土台をつくる。</p></div>
         <div class="pf-tl-item"><h5>株式会社Cynthialy　取締役CCO</h5><p>生成AI人材育成・組織変革支援の事業を推進。</p></div>
         <div class="pf-tl-item"><h5>株式会社Cinematorico　創業者 / COO</h5><p>2022年創業。映像・PR・クリエイティブを軸に事業を展開。</p></div>
@@ -1295,7 +1439,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     <section class="pf-sec" data-reveal>
       <div class="pf-sec-head"><span class="pf-sec-no">03</span><h3 class="pf-sec-title">顧問・アドバイザー・委員</h3></div>
       <p class="pf-lead">企業・行政の実装現場に、顧問／アドバイザーとして伴走している。</p>
-      <div class="pf-chips">
+      <div class="pf-chips pf-stag">
         <span class="pf-chip"><span class="em">日本HP</span> 顧問</span>
         <span class="pf-chip"><span class="em">NTTデータグループ</span> アドバイザー</span>
         <span class="pf-chip"><span class="em">Lightblue</span> 顧問</span>
@@ -1312,7 +1456,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     <!-- 実績 -->
     <section class="pf-sec" data-reveal>
       <div class="pf-sec-head"><span class="pf-sec-no">04</span><h3 class="pf-sec-title">実績</h3></div>
-      <div class="pf-cards">
+      <div class="pf-cards pf-stag">
         <div class="pf-card">
           <h4><span class="tag">01</span>メディア出演・取材</h4>
           <p><b>テレビ・映像：</b>ABEMA Prime（レギュラー）、BS-TBS「報道1930」、テレビ東京「AIアカデミー」、日本テレビ「午前0時の森」ほか</p>
@@ -1328,6 +1472,10 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
         </div>
         <div class="pf-card">
           <h4><span class="tag">03</span>著書・執筆</h4>
+          <div class="pf-books">
+            <img src="99_assets/book-ai-agent.jpg" alt="『AIエージェントの教科書』書影" loading="lazy">
+            <img src="99_assets/book-seisei-ai.jpg" alt="『生成AI導入の教科書』書影" loading="lazy">
+          </div>
           <p><b>著書：</b>『AIエージェントの教科書』（2025年8月・ワン・パブリッシング）／『生成AI導入の教科書』（2023年9月）</p>
           <p><b>編集長：</b>日本最大のAI専門メディア「AINOW」編集長として1,000本以上を制作。「SDGs CONNECT」「ライフシフトラボ・ジャーナル」編集長も歴任</p>
         </div>
@@ -1340,10 +1488,47 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
       </div>
     </section>
 
+    <!-- 主要支援先（社名非公開） -->
+    <section class="pf-sec" data-reveal>
+      <div class="pf-sec-head"><span class="pf-sec-no">05</span><h3 class="pf-sec-title">主要支援先（社名非公開）</h3></div>
+      <p class="pf-lead">守秘義務により社名は伏せていますが、各業界を代表する<span class="pf-hot">日本有数のリーディングカンパニー</span>の現場に入り、AI活用・実装を支援してきました。</p>
+      <div class="pf-clients pf-stag">
+        <div class="pf-client">
+          <span class="pf-client-badge">🔒 NDA</span>
+          <svg class="pf-client-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 13l2-5.5A2 2 0 0 1 6.9 6h10.2a2 2 0 0 1 1.9 1.5L21 13v5h-2.5M3 13v5h2.5M3 13h18"/><circle cx="7" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg>
+          <span class="pf-client-ind">Automotive</span>
+          <span class="pf-client-mask">██████ 自動車</span>
+          <span class="pf-client-note">大手自動車メーカー</span>
+        </div>
+        <div class="pf-client">
+          <span class="pf-client-badge">🔒 NDA</span>
+          <svg class="pf-client-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="1"/><path d="M10 3v3M14 3v3M10 18v3M14 18v3M3 10h3M3 14h3M18 10h3M18 14h3"/></svg>
+          <span class="pf-client-ind">Semiconductor</span>
+          <span class="pf-client-mask">████ 製造装置</span>
+          <span class="pf-client-note">大手半導体製造装置メーカー</span>
+        </div>
+        <div class="pf-client">
+          <span class="pf-client-badge">🔒 NDA</span>
+          <svg class="pf-client-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L4 14h6l-1 8 9-12h-6z"/></svg>
+          <span class="pf-client-ind">Energy</span>
+          <span class="pf-client-mask">████████ 電力</span>
+          <span class="pf-client-note">大手電力会社</span>
+        </div>
+        <div class="pf-client">
+          <span class="pf-client-badge">🔒 NDA</span>
+          <svg class="pf-client-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M4 21V10l6 4V10l6 4V7l4 3v11"/></svg>
+          <span class="pf-client-ind">Manufacturing</span>
+          <span class="pf-client-mask">██████ 製作所</span>
+          <span class="pf-client-note">大手製造業</span>
+        </div>
+      </div>
+      <p class="pf-clients-note">※ 契約上、具体的な社名は非公開としています。いずれも各業界を代表する企業での社内講演・AI実装支援の実績です。</p>
+    </section>
+
     <!-- 講演テーマ -->
     <section class="pf-sec" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">05</span><h3 class="pf-sec-title">主な講演テーマ</h3></div>
-      <div class="pf-themes">
+      <div class="pf-sec-head"><span class="pf-sec-no">06</span><h3 class="pf-sec-title">主な講演テーマ</h3></div>
+      <div class="pf-themes pf-stag">
         <span class="pf-theme">AIエージェントが変えるビジネスの未来</span>
         <span class="pf-theme">生成AI活用術</span>
         <span class="pf-theme">AI時代のリスキリング戦略</span>
@@ -1407,9 +1592,21 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     var btnClose=pf.querySelector('.pf-close'), btnFs=pf.querySelector('.pf-fs');
     if(btnClose) btnClose.addEventListener('click',function(){ if(bySecret['pr']) bySecret['pr'].hide(); });
     if(btnFs) btnFs.addEventListener('click',function(){ var r=pf.requestFullscreen||pf.webkitRequestFullscreen; if(!document.fullscreenElement){ if(r) r.call(pf).catch(function(){}); } else if(document.exitFullscreen){ document.exitFullscreen().catch(function(){}); } });
+    var prm=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function countUp(el){
+      if(el.dataset.counted) return; el.dataset.counted='1';
+      var to=parseInt(el.getAttribute('data-to'),10); if(isNaN(to)) return;
+      if(prm){ el.textContent=to.toLocaleString('en-US'); return; }
+      var dur=1200, t0=null;
+      function step(ts){ if(t0===null) t0=ts; var p=Math.min(1,(ts-t0)/dur), e=1-Math.pow(1-p,3);
+        el.textContent=Math.round(to*e).toLocaleString('en-US'); if(p<1) requestAnimationFrame(step); }
+      requestAnimationFrame(step);
+    }
     function revealVisible(){
       var els=pf.querySelectorAll('.pf-doc [data-reveal]:not(.visible)');
       for(var i=0;i<els.length;i++){ var r=els[i].getBoundingClientRect(); if(r.top < window.innerHeight*0.88) els[i].classList.add('visible'); }
+      var nums=pf.querySelectorAll('.cval[data-to]:not([data-counted])');
+      for(var k=0;k<nums.length;k++){ var rb=nums[k].getBoundingClientRect(); if(rb.top < window.innerHeight*0.92 && rb.bottom>0) countUp(nums[k]); }
     }
     pf.addEventListener('scroll',function(){
       var max=pf.scrollHeight-pf.clientHeight, p=max>0?(pf.scrollTop/max):0;
