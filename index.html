@@ -522,33 +522,90 @@ footer {
   .thanks.show, .thanks.show .thanks-title, .thanks.show .thanks-sub { animation: none; }
 }
 
-/* ── 秘密コマンド：プロフィール紹介（投影用フルスクリーン） ── */
-.profile-fs .thanks-inner { max-width: 1180px; width: 100%; }
-.profile-fs-grid { display: grid; grid-template-columns: minmax(0,320px) minmax(0,1fr); gap: clamp(2rem, 5vw, 4.4rem); align-items: center; text-align: left; }
-.profile-fs-portrait { position: relative; width: clamp(200px, 26vw, 320px); justify-self: center; }
-.profile-fs-portrait::before { content: ""; position: absolute; left: -16px; top: 16px; width: 100%; height: 100%; border: 2px solid var(--azure-pale); border-radius: 50%; opacity: 0.55; z-index: 0; }
-.profile-fs-portrait img { position: relative; z-index: 1; width: 100%; aspect-ratio: 1/1; object-fit: cover; object-position: center 12%; border-radius: 50%; box-shadow: 0 26px 60px -22px rgba(0,0,0,0.7); }
-.profile-fs-body { min-width: 0; }
-.profile-fs-eyebrow { display: inline-block; font-family: var(--font-en); font-size: clamp(10px, 1.2vw, 14px); font-weight: 700; letter-spacing: 0.4em; color: var(--azure-pale); opacity: 0.85; margin-bottom: 1rem; }
-.profile-fs-name { font-family: var(--font-ja-serif); font-weight: 600; color: #fff; font-size: clamp(2.1rem, 5.4vw, 4.4rem); line-height: 1.2; margin-bottom: 0.3rem; text-shadow: 0 6px 44px rgba(0,0,0,0.45); }
-.profile-fs-name .en { display: block; font-family: var(--font-en); font-weight: 600; font-size: clamp(0.8rem, 1.6vw, 1.15rem); letter-spacing: 0.22em; color: rgba(216,228,240,0.7); margin-top: 0.55rem; }
-.profile-fs-role { font-size: clamp(0.95rem, 1.9vw, 1.35rem); color: #fff; line-height: 1.7; margin: 1.5rem 0 0.5rem; }
-.profile-fs-role b { color: var(--azure-pale); font-weight: 700; }
-.profile-fs-desc { font-size: clamp(0.85rem, 1.5vw, 1.05rem); color: rgba(216,228,240,0.82); line-height: 1.85; margin-bottom: 1.7rem; }
-.profile-fs-stats { display: flex; flex-wrap: wrap; gap: clamp(0.7rem, 1.8vw, 1.4rem); }
-.profile-fs-stat { background: rgba(255,255,255,0.06); border: 1px solid rgba(216,228,240,0.16); border-radius: 14px; padding: clamp(0.7rem, 1.4vw, 1.05rem) clamp(1rem, 2vw, 1.5rem); backdrop-filter: blur(3px); }
-.profile-fs-stat .num { font-family: var(--font-en); font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.4rem); color: #fff; line-height: 1; }
-.profile-fs-stat .num small { font-size: 0.5em; margin-left: 0.15em; color: var(--azure-pale); }
-.profile-fs-stat .lbl { font-size: clamp(0.68rem, 1.1vw, 0.82rem); color: rgba(216,228,240,0.75); margin-top: 0.4rem; letter-spacing: 0.02em; }
-.profile-fs.show .profile-fs-portrait { animation: thanksRise 0.85s 0.1s both cubic-bezier(.2,.7,.2,1); }
-.profile-fs.show .profile-fs-body { animation: thanksRise 0.85s 0.28s both cubic-bezier(.2,.7,.2,1); }
-@media (max-width: 780px) {
-  .profile-fs-grid { grid-template-columns: 1fr; text-align: center; gap: 1.8rem; }
-  .profile-fs-portrait::before { left: -10px; top: 10px; }
-  .profile-fs-stats { justify-content: center; }
+/* ── 秘密コマンド：プロフィール紹介（スクロール型・投影用） ── */
+.profile-fs { overflow-y: auto; overflow-x: hidden; align-items: flex-start; justify-content: center; cursor: default; padding: 0; -webkit-overflow-scrolling: touch; scroll-behavior: smooth; }
+.profile-fs .thanks-net { position: fixed; }
+/* スクロール進捗バー */
+.pf-progress { position: fixed; top: 0; left: 0; height: 3px; width: 0; z-index: 6; background: linear-gradient(90deg, var(--azure), var(--azure-pale)); box-shadow: 0 0 12px rgba(216,228,240,0.6); transition: width 0.08s linear; }
+/* 閉じる・全画面ボタン */
+.pf-tools { position: fixed; top: 1.1rem; right: 1.1rem; z-index: 7; display: flex; gap: 0.55rem; }
+.pf-btn { width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(20,29,53,0.55); border: 1px solid rgba(216,228,240,0.28); color: #fff; cursor: pointer; font-size: 18px; line-height: 1; backdrop-filter: blur(6px); transition: background 0.2s ease, transform 0.2s ease; }
+.pf-btn:hover { background: rgba(46,84,150,0.8); transform: translateY(-2px); }
+.pf-doc { position: relative; z-index: 1; width: 100%; max-width: 960px; margin: 0 auto; padding: clamp(3.4rem, 8vh, 6rem) clamp(1.3rem, 5vw, 3rem) clamp(4rem, 12vh, 7rem); text-align: left; }
+.pf-doc [data-reveal] { opacity: 0; transform: translateY(26px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.pf-doc [data-reveal].visible { opacity: 1; transform: none; }
+
+/* ヒーロー */
+.pf-hero { display: grid; grid-template-columns: minmax(0,240px) minmax(0,1fr); gap: clamp(1.8rem, 4vw, 3.4rem); align-items: center; margin-bottom: clamp(2.6rem, 6vh, 4.2rem); }
+.pf-portrait { position: relative; width: clamp(170px, 22vw, 240px); justify-self: center; }
+.pf-portrait::before { content: ""; position: absolute; left: -14px; top: 14px; width: 100%; height: 100%; border: 2px solid var(--azure-pale); border-radius: 50%; opacity: 0.5; }
+.pf-portrait img { position: relative; z-index: 1; width: 100%; aspect-ratio: 1/1; object-fit: cover; object-position: center 12%; border-radius: 50%; box-shadow: 0 26px 60px -22px rgba(0,0,0,0.7); }
+.pf-eyebrow { display: inline-block; font-family: var(--font-en); font-size: clamp(10px, 1.2vw, 13px); font-weight: 700; letter-spacing: 0.4em; color: var(--azure-pale); opacity: 0.85; margin-bottom: 0.9rem; }
+.pf-name { font-family: var(--font-ja-serif); font-weight: 600; color: #fff; font-size: clamp(2.2rem, 5.6vw, 4.2rem); line-height: 1.16; margin-bottom: 0.35rem; text-shadow: 0 6px 44px rgba(0,0,0,0.45); }
+.pf-name .en { display: block; font-family: var(--font-en); font-weight: 600; font-size: clamp(0.78rem, 1.5vw, 1.1rem); letter-spacing: 0.22em; color: rgba(216,228,240,0.7); margin-top: 0.5rem; }
+.pf-role { font-size: clamp(0.92rem, 1.7vw, 1.25rem); color: #fff; line-height: 1.7; margin: 1.2rem 0 0.4rem; }
+.pf-role b { color: var(--azure-pale); font-weight: 700; }
+.pf-vision { font-family: var(--font-ja-serif); font-size: clamp(0.9rem, 1.5vw, 1.1rem); color: rgba(216,228,240,0.9); margin-top: 0.8rem; padding-left: 0.9rem; border-left: 2px solid var(--azure-pale); }
+
+/* スタッツ */
+.pf-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(0.7rem, 1.8vw, 1.3rem); margin-bottom: clamp(2.4rem, 6vh, 4rem); }
+.pf-stat { background: rgba(255,255,255,0.06); border: 1px solid rgba(216,228,240,0.16); border-radius: 14px; padding: clamp(1rem, 2vw, 1.5rem); text-align: center; backdrop-filter: blur(3px); }
+.pf-stat .num { font-family: var(--font-en); font-weight: 700; font-size: clamp(1.7rem, 4vw, 2.8rem); color: #fff; line-height: 1; }
+.pf-stat .num small { font-size: 0.42em; margin-left: 0.12em; color: var(--azure-pale); }
+.pf-stat .lbl { font-size: clamp(0.68rem, 1.1vw, 0.84rem); color: rgba(216,228,240,0.75); margin-top: 0.5rem; }
+
+/* セクション */
+.pf-sec { margin-bottom: clamp(2.4rem, 6vh, 3.8rem); }
+.pf-sec-head { display: flex; align-items: baseline; gap: 0.8rem; margin-bottom: 1.3rem; padding-bottom: 0.7rem; border-bottom: 1px solid rgba(216,228,240,0.18); }
+.pf-sec-no { font-family: var(--font-en); font-weight: 700; font-size: clamp(0.8rem, 1.3vw, 1rem); color: var(--azure-pale); letter-spacing: 0.1em; }
+.pf-sec-title { font-family: var(--font-ja-serif); font-weight: 600; color: #fff; font-size: clamp(1.25rem, 2.6vw, 1.9rem); }
+.pf-lead { font-size: clamp(0.86rem, 1.5vw, 1.02rem); color: rgba(216,228,240,0.85); line-height: 1.9; margin-bottom: 1.4rem; }
+.pf-lead + .pf-lead { margin-top: -0.6rem; }
+
+/* 情報カード（実績・顧問先など） */
+.pf-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: clamp(0.9rem, 2vw, 1.4rem); }
+.pf-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(216,228,240,0.14); border-radius: 16px; padding: clamp(1.2rem, 2.4vw, 1.7rem); transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease; }
+.pf-card:hover { transform: translateY(-4px); border-color: rgba(216,228,240,0.4); background: rgba(255,255,255,0.08); }
+.pf-card h4 { font-family: var(--font-ja-serif); color: #fff; font-size: clamp(1rem, 1.9vw, 1.2rem); margin-bottom: 0.9rem; display: flex; align-items: center; gap: 0.6rem; }
+.pf-card h4 .tag { font-family: var(--font-en); font-size: 0.72rem; font-weight: 700; color: var(--navy-deep); background: var(--azure-pale); border-radius: 6px; padding: 0.12em 0.5em; }
+.pf-card p { font-size: clamp(0.8rem, 1.4vw, 0.94rem); color: rgba(216,228,240,0.82); line-height: 1.75; margin-bottom: 0.55rem; }
+.pf-card p:last-child { margin-bottom: 0; }
+.pf-card p b { color: var(--azure-pale); font-weight: 700; }
+
+/* 顧問先・肩書きチップ */
+.pf-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.pf-chip { font-size: clamp(0.75rem, 1.3vw, 0.9rem); color: #fff; background: rgba(46,84,150,0.32); border: 1px solid rgba(216,228,240,0.22); border-radius: 999px; padding: 0.4em 0.95em; transition: background 0.25s ease, transform 0.25s ease; }
+.pf-chip:hover { background: rgba(46,84,150,0.65); transform: translateY(-2px); }
+.pf-chip .em { color: var(--azure-pale); font-weight: 700; }
+
+/* タイムライン（現職・役割） */
+.pf-timeline { position: relative; margin-left: 0.4rem; padding-left: 1.7rem; }
+.pf-timeline::before { content: ""; position: absolute; left: 5px; top: 6px; bottom: 6px; width: 2px; background: linear-gradient(180deg, var(--azure-pale), rgba(216,228,240,0.1)); }
+.pf-tl-item { position: relative; margin-bottom: 1.3rem; }
+.pf-tl-item::before { content: ""; position: absolute; left: -1.7rem; top: 5px; width: 12px; height: 12px; border-radius: 50%; background: var(--azure-pale); box-shadow: 0 0 0 4px rgba(216,228,240,0.15); }
+.pf-tl-item h5 { color: #fff; font-size: clamp(0.92rem, 1.6vw, 1.1rem); font-family: var(--font-ja-serif); margin-bottom: 0.25rem; }
+.pf-tl-item p { font-size: clamp(0.78rem, 1.3vw, 0.9rem); color: rgba(216,228,240,0.78); line-height: 1.7; }
+
+.pf-themes { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.pf-theme { font-size: clamp(0.75rem, 1.3vw, 0.88rem); color: rgba(216,228,240,0.9); background: rgba(255,255,255,0.05); border: 1px solid rgba(216,228,240,0.14); border-radius: 8px; padding: 0.45em 0.85em; }
+
+.pf-cta { text-align: center; margin-top: clamp(2rem, 5vh, 3.4rem); }
+.pf-cta a { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-en); font-weight: 600; letter-spacing: 0.06em; color: var(--navy-deep); background: var(--azure-pale); border-radius: 999px; padding: 0.85em 1.8em; text-decoration: none; transition: transform 0.25s ease, box-shadow 0.25s ease; }
+.pf-cta a:hover { transform: translateY(-3px); box-shadow: 0 16px 40px -14px rgba(216,228,240,0.5); }
+.pf-scrollhint { position: fixed; bottom: 1.4rem; left: 0; right: 0; text-align: center; font-family: var(--font-en); font-size: 11px; letter-spacing: 0.18em; color: rgba(216,228,240,0.45); z-index: 5; pointer-events: none; transition: opacity 0.4s ease; }
+.pf-scrollhint .arw { display: block; margin: 0.3rem auto 0; width: 16px; height: 16px; border-right: 2px solid rgba(216,228,240,0.5); border-bottom: 2px solid rgba(216,228,240,0.5); transform: rotate(45deg); animation: pfBounce 1.6s infinite ease-in-out; }
+@keyframes pfBounce { 0%,100% { transform: rotate(45deg) translate(0,0); } 50% { transform: rotate(45deg) translate(4px,4px); } }
+
+@media (max-width: 720px) {
+  .pf-hero { grid-template-columns: 1fr; text-align: center; gap: 1.6rem; }
+  .pf-portrait::before { left: -8px; top: 8px; }
+  .pf-vision { text-align: left; }
+  .pf-stats { grid-template-columns: 1fr; }
+  .pf-sec-head { flex-wrap: wrap; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .profile-fs.show .profile-fs-portrait, .profile-fs.show .profile-fs-body { animation: none; }
+  .profile-fs { scroll-behavior: auto; }
+  .pf-scrollhint .arw { animation: none; }
 }
 </style>
 </head>
@@ -1187,25 +1244,123 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
 <!-- 秘密コマンド：プロフィール紹介（投影用フルスクリーン） -->
 <div id="profile-fs" class="thanks profile-fs" aria-hidden="true" role="dialog" aria-label="プロフィール紹介">
   <canvas class="thanks-net" aria-hidden="true"></canvas>
-  <div class="thanks-inner">
-    <span class="thanks-eyebrow">SPEAKER PROFILE</span>
-    <div class="profile-fs-grid">
-      <div class="profile-fs-portrait">
+  <div class="pf-progress" aria-hidden="true"></div>
+  <div class="pf-tools">
+    <button type="button" class="pf-btn pf-fs" aria-label="全画面表示" title="全画面">⛶</button>
+    <button type="button" class="pf-btn pf-close" aria-label="閉じる" title="閉じる（Esc）">✕</button>
+  </div>
+
+  <div class="pf-doc">
+    <!-- ヒーロー -->
+    <div class="pf-hero" data-reveal>
+      <div class="pf-portrait">
         <img src="99_assets/ozaken-portrait.jpg" alt="小澤健祐（おざけん）のポートレート" loading="lazy">
       </div>
-      <div class="profile-fs-body">
-        <h2 class="profile-fs-name">小澤健祐<span class="en">KENSUKE OZAWA ／ おざけん</span></h2>
-        <p class="profile-fs-role"><b>一般社団法人AICX協会 代表理事</b>／ Cynthialy 取締役CCO ／ Cinematorico 創業者COO</p>
-        <p class="profile-fs-desc">「人間とAIが共存する社会をつくる」をビジョンに、書籍2冊・AI関連記事1,500本以上・年間300回超の登壇を通じて、AIエージェント時代の実装知を発信。日本HP・NTTデータグループなど大手の実装現場に伴走し、経済産業省WG委員も務める。</p>
-        <div class="profile-fs-stats">
-          <div class="profile-fs-stat"><div class="num">2<small>冊</small></div><div class="lbl">書籍刊行</div></div>
-          <div class="profile-fs-stat"><div class="num">1500<small>本+</small></div><div class="lbl">AI関連記事の執筆</div></div>
-          <div class="profile-fs-stat"><div class="num">300<small>回+</small></div><div class="lbl">年間登壇回数</div></div>
-        </div>
+      <div>
+        <span class="pf-eyebrow">SPEAKER PROFILE</span>
+        <h2 class="pf-name">小澤健祐<span class="en">KENSUKE OZAWA ／ おざけん</span></h2>
+        <p class="pf-role"><b>一般社団法人AICX協会 代表理事</b></p>
+        <p class="pf-role" style="font-size:clamp(0.85rem,1.5vw,1.05rem);margin-top:0.2rem;">Cynthialy 取締役CCO ／ Cinematorico 創業者COO ／ 経済産業省WG委員</p>
+        <p class="pf-vision">「人間とAIが共存する社会をつくる」</p>
       </div>
     </div>
+
+    <!-- スタッツ -->
+    <div class="pf-stats" data-reveal>
+      <div class="pf-stat"><div class="num">2<small>冊</small></div><div class="lbl">書籍刊行</div></div>
+      <div class="pf-stat"><div class="num">1500<small>本+</small></div><div class="lbl">AI関連記事の執筆</div></div>
+      <div class="pf-stat"><div class="num">300<small>回+</small></div><div class="lbl">年間登壇回数</div></div>
+    </div>
+
+    <!-- プロフィール本文 -->
+    <section class="pf-sec" data-reveal>
+      <div class="pf-sec-head"><span class="pf-sec-no">01</span><h3 class="pf-sec-title">プロフィール</h3></div>
+      <p class="pf-lead">一般社団法人AICX協会 代表理事として、企業のAIエージェント実装を業界横断で牽引。あわせて複数のAI企業の経営・アドバイザーに参画し、日本HP・NTTデータグループなど大手の実装現場に伴走している。</p>
+      <p class="pf-lead">NewsPicksのAI番組「AI DIVE」メインMC、千葉県船橋市 生成AIアドバイザーとして行政のDX推進にも携わる。NewsPicksプロピッカー、Udemyベストセラー講師、SHIFT AI公式モデレーターとしても活動中。</p>
+      <p class="pf-lead">AI領域以外では、2022年にCinematoricoを創業しCOOに就任。PRやフリーカメラマン、日本大学文理学部次世代社会研究センターのプロボノなど、多彩な経験を活かして活動している。</p>
+    </section>
+
+    <!-- 現職・役割 -->
+    <section class="pf-sec" data-reveal>
+      <div class="pf-sec-head"><span class="pf-sec-no">02</span><h3 class="pf-sec-title">現在の役割</h3></div>
+      <div class="pf-timeline">
+        <div class="pf-tl-item"><h5>一般社団法人AICX協会　代表理事 / Founder</h5><p>国内初のAIエージェント特化型の業界団体。AI Agent Day（5,600名超）やAICX Forumの開催、認定資格制度の運営を通じ、企業のAIエージェント実装の土台をつくる。</p></div>
+        <div class="pf-tl-item"><h5>株式会社Cynthialy　取締役CCO</h5><p>生成AI人材育成・組織変革支援の事業を推進。</p></div>
+        <div class="pf-tl-item"><h5>株式会社Cinematorico　創業者 / COO</h5><p>2022年創業。映像・PR・クリエイティブを軸に事業を展開。</p></div>
+        <div class="pf-tl-item"><h5>経済産業省「AX時代におけるスキルのあり方検討WG」委員</h5><p>2026年4月〜。AI時代の人材・スキル政策づくりに参画。</p></div>
+      </div>
+    </section>
+
+    <!-- 顧問・アドバイザー -->
+    <section class="pf-sec" data-reveal>
+      <div class="pf-sec-head"><span class="pf-sec-no">03</span><h3 class="pf-sec-title">顧問・アドバイザー・委員</h3></div>
+      <p class="pf-lead">企業・行政の実装現場に、顧問／アドバイザーとして伴走している。</p>
+      <div class="pf-chips">
+        <span class="pf-chip"><span class="em">日本HP</span> 顧問</span>
+        <span class="pf-chip"><span class="em">NTTデータグループ</span> アドバイザー</span>
+        <span class="pf-chip"><span class="em">Lightblue</span> 顧問</span>
+        <span class="pf-chip"><span class="em">THA</span> 顧問</span>
+        <span class="pf-chip"><span class="em">Google Gemini</span> アドバイザー（旧）</span>
+        <span class="pf-chip"><span class="em">千葉県船橋市</span> 生成AIアドバイザー</span>
+        <span class="pf-chip"><span class="em">経済産業省</span> スキル検討WG 委員</span>
+        <span class="pf-chip">NewsPicks プロピッカー</span>
+        <span class="pf-chip">Udemy ベストセラー講師</span>
+        <span class="pf-chip">SHIFT AI 公式モデレーター</span>
+      </div>
+    </section>
+
+    <!-- 実績 -->
+    <section class="pf-sec" data-reveal>
+      <div class="pf-sec-head"><span class="pf-sec-no">04</span><h3 class="pf-sec-title">実績</h3></div>
+      <div class="pf-cards">
+        <div class="pf-card">
+          <h4><span class="tag">01</span>メディア出演・取材</h4>
+          <p><b>テレビ・映像：</b>ABEMA Prime（レギュラー）、BS-TBS「報道1930」、テレビ東京「AIアカデミー」、日本テレビ「午前0時の森」ほか</p>
+          <p><b>ネット番組：</b>NewsPicks「AI DIVE」メインMC、「The UPDATE」、RehacQ、ホリエモンチャンネル、Schoo ほか</p>
+          <p><b>ラジオ・音声：</b>J-WAVE、ニッポン放送、Voicy「ながら日経」</p>
+          <p><b>新聞・雑誌・Web：</b>日経・読売新聞、東洋経済／ダイヤモンド／プレジデント各オンライン、ITmedia、DIME、宣伝会議 ほか</p>
+        </div>
+        <div class="pf-card">
+          <h4><span class="tag">02</span>登壇・講演（年間300回超）</h4>
+          <p><b>主要カンファレンス：</b>AI Agent Day（主催・登壇）、IVS 2024／2025、AI・人工知能EXPO（特別講演）、Dell Technologies 基調講演、HP Future of Work、Startup JAPAN 2025、慶應「生成AIラボ」ほか</p>
+          <p><b>企業・自治体：</b>ソフトバンク社内講演、船橋市役所、鹿児島県商工会議所、電通インターンシップ（基調講演・審査員）</p>
+          <p><b>大手企業の社内講演（社名非公開）：</b>大手電力会社／大手自動車メーカー／大手半導体製造装置メーカー ほか</p>
+        </div>
+        <div class="pf-card">
+          <h4><span class="tag">03</span>著書・執筆</h4>
+          <p><b>著書：</b>『AIエージェントの教科書』（2025年8月・ワン・パブリッシング）／『生成AI導入の教科書』（2023年9月）</p>
+          <p><b>編集長：</b>日本最大のAI専門メディア「AINOW」編集長として1,000本以上を制作。「SDGs CONNECT」「ライフシフトラボ・ジャーナル」編集長も歴任</p>
+        </div>
+        <div class="pf-card">
+          <h4><span class="tag">04</span>委員・アドバイザー</h4>
+          <p><b>経済産業省：</b>「AX時代におけるスキルのあり方検討ワーキンググループ」委員（2026年4月〜）</p>
+          <p><b>自治体：</b>千葉県船橋市 生成AIアドバイザー</p>
+          <p><b>企業顧問：</b>日本HP、NTTデータグループ、Lightblue、THA、Google Gemini（旧）ほか</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 講演テーマ -->
+    <section class="pf-sec" data-reveal>
+      <div class="pf-sec-head"><span class="pf-sec-no">05</span><h3 class="pf-sec-title">主な講演テーマ</h3></div>
+      <div class="pf-themes">
+        <span class="pf-theme">AIエージェントが変えるビジネスの未来</span>
+        <span class="pf-theme">生成AI活用術</span>
+        <span class="pf-theme">AI時代のリスキリング戦略</span>
+        <span class="pf-theme">AIがもたらすCX革命</span>
+        <span class="pf-theme">経営者が知るべきAIの本質</span>
+        <span class="pf-theme">AI×地方創生</span>
+        <span class="pf-theme">メディア業界のAI活用</span>
+        <span class="pf-theme">AIエージェント時代の働き方改革</span>
+      </div>
+    </section>
+
+    <div class="pf-cta" data-reveal>
+      <a href="https://ozaken-ai.studio.site/" target="_blank" rel="noopener">ポートフォリオサイトを見る →</a>
+    </div>
   </div>
-  <p class="thanks-hint">CLICK：全画面 ／ ESC：戻る</p>
+
+  <p class="pf-scrollhint">SCROLL<span class="arw"></span></p>
 </div>
 <script>
 /* 秘密コマンド：start=開演前(待機)＋QR / thanks=終演お礼＋QR / profile=プロフィール紹介。#standby / #thanks / #profile でも表示。クリックで全画面、Escで戻る */
@@ -1231,16 +1386,44 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
       raf=requestAnimationFrame(frame);
     }
     var o={ el:el,
-      show:function(){ if(el.classList.contains('show'))return; el.classList.add('show'); el.setAttribute('aria-hidden','false'); if(!reduce){ size(); ready=true; cancelAnimationFrame(raf); raf=requestAnimationFrame(frame); } },
+      show:function(){ if(el.classList.contains('show'))return; el.classList.add('show'); el.setAttribute('aria-hidden','false'); el.scrollTop=0; if(!reduce){ size(); ready=true; cancelAnimationFrame(raf); raf=requestAnimationFrame(frame); } },
       hide:function(){ el.classList.remove('show'); el.setAttribute('aria-hidden','true'); cancelAnimationFrame(raf); if(document.fullscreenElement&&document.exitFullscreen) document.exitFullscreen().catch(function(){}); },
       resize:function(){ if(ready&&el.classList.contains('show')&&!reduce) size(); } };
-    el.addEventListener('click',function(){ var r=el.requestFullscreen||el.webkitRequestFullscreen; if(!document.fullscreenElement){ if(r) r.call(el).catch(function(){}); } else if(document.exitFullscreen){ document.exitFullscreen().catch(function(){}); } });
+    /* 通常画面（お礼/待機）はクリックで全画面トグル。スクロール型プロフィールは除外 */
+    if(!el.classList.contains('profile-fs')){
+      el.addEventListener('click',function(){ var r=el.requestFullscreen||el.webkitRequestFullscreen; if(!document.fullscreenElement){ if(r) r.call(el).catch(function(){}); } else if(document.exitFullscreen){ document.exitFullscreen().catch(function(){}); } });
+    }
     return o;
   }
   var defs=[['thanks','th'],['standby','st'],['profile-fs','pr']], all=[], bySecret={};
   defs.forEach(function(p){ var el=document.getElementById(p[0]); if(!el) return; var o=make(el); all.push(o); bySecret[p[1]]=o; });
   if(!all.length) return;
   window.addEventListener('resize',function(){ all.forEach(function(o){ o.resize(); }); });
+
+  /* プロフィール（スクロール型）：閉じる/全画面ボタン・スクロール進捗・ヒント */
+  (function(){
+    var pf=document.getElementById('profile-fs'); if(!pf) return;
+    var bar=pf.querySelector('.pf-progress'), hint=pf.querySelector('.pf-scrollhint');
+    var btnClose=pf.querySelector('.pf-close'), btnFs=pf.querySelector('.pf-fs');
+    if(btnClose) btnClose.addEventListener('click',function(){ if(bySecret['pr']) bySecret['pr'].hide(); });
+    if(btnFs) btnFs.addEventListener('click',function(){ var r=pf.requestFullscreen||pf.webkitRequestFullscreen; if(!document.fullscreenElement){ if(r) r.call(pf).catch(function(){}); } else if(document.exitFullscreen){ document.exitFullscreen().catch(function(){}); } });
+    function revealVisible(){
+      var els=pf.querySelectorAll('.pf-doc [data-reveal]:not(.visible)');
+      for(var i=0;i<els.length;i++){ var r=els[i].getBoundingClientRect(); if(r.top < window.innerHeight*0.88) els[i].classList.add('visible'); }
+    }
+    pf.addEventListener('scroll',function(){
+      var max=pf.scrollHeight-pf.clientHeight, p=max>0?(pf.scrollTop/max):0;
+      if(bar) bar.style.width=(p*100).toFixed(1)+'%';
+      if(hint) hint.style.opacity=pf.scrollTop>40?'0':'';
+      revealVisible();
+    },{passive:true});
+    /* 表示状態(.show)になったら先頭の要素を確実にリビール（内部スクロールコンテナ対応） */
+    if('MutationObserver' in window){
+      new MutationObserver(function(){
+        if(pf.classList.contains('show')){ if(bar) bar.style.width='0%'; if(hint) hint.style.opacity=''; requestAnimationFrame(revealVisible); setTimeout(revealVisible,60); }
+      }).observe(pf,{attributes:true,attributeFilter:['class']});
+    }
+  })();
   var buf='';
   document.addEventListener('keydown',function(e){
     var t=e.target; if(t&&/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)) return;
