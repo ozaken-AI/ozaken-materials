@@ -1012,7 +1012,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
 /* パーティクル・ネットワーク背景：点が漂い、近い点同士が線でつながる */
 (function(){
   if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var secs = document.querySelectorAll('.sec-light, .sec-navy, .sec-download');
+  var secs = document.querySelectorAll('.sec-light, .sec-navy, .sec-download, [data-net]');
   if (!secs.length) return;
   var DPR = Math.min(2, window.devicePixelRatio || 1);
   var LINK = 122;               // つながる距離(px)
@@ -1023,7 +1023,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     c.className = 'net-canvas';
     sec.insertBefore(c, sec.firstChild);
     items.push({ sec:sec, c:c, ctx:c.getContext('2d'),
-                 navy:sec.classList.contains('sec-navy'), parts:[], w:0, h:0, vis:false });
+                 navy:(sec.classList.contains('sec-navy')||sec.getAttribute('data-net')==='dark'), parts:[], w:0, h:0, vis:false });
   });
   function resize(it){
     var w = it.sec.clientWidth, h = it.sec.offsetHeight;
