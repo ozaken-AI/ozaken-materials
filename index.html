@@ -1184,7 +1184,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     el.addEventListener('click',function(){ var r=el.requestFullscreen||el.webkitRequestFullscreen; if(!document.fullscreenElement){ if(r) r.call(el).catch(function(){}); } else if(document.exitFullscreen){ document.exitFullscreen().catch(function(){}); } });
     return o;
   }
-  var defs=[['thanks','thanks'],['standby','start']], all=[], bySecret={};
+  var defs=[['thanks','th'],['standby','st']], all=[], bySecret={};
   defs.forEach(function(p){ var el=document.getElementById(p[0]); if(!el) return; var o=make(el); all.push(o); bySecret[p[1]]=o; });
   if(!all.length) return;
   window.addEventListener('resize',function(){ all.forEach(function(o){ o.resize(); }); });
@@ -1195,8 +1195,8 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     if(e.key&&e.key.length===1){ buf=(buf+e.key.toLowerCase()).slice(-8);
       for(var s in bySecret){ if(buf.slice(-s.length)===s){ buf=''; all.forEach(function(o){ if(o!==bySecret[s]&&o.el.classList.contains('show')) o.hide(); }); bySecret[s].show(); break; } } }
   });
-  if(location.hash==='#thanks'&&bySecret['thanks']) bySecret['thanks'].show();
-  if(location.hash==='#standby'&&bySecret['start']) bySecret['start'].show();
+  if(location.hash==='#thanks'&&bySecret['th']) bySecret['th'].show();
+  if(location.hash==='#standby'&&bySecret['st']) bySecret['st'].show();
 })();
 </script>
 </body>
