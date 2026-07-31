@@ -1046,6 +1046,35 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
   .sf-edge i{display:none}
   .sf-c{animation:none;opacity:.5}
 }
+
+/* ══ 待機画面：長時間の投影に耐えるよう、中身が入れ替わり続ける ══ */
+.sb-ticker{margin-top:clamp(1.4rem,3vh,2.4rem);text-align:center;min-height:4.6em}
+.sb-label{display:block;font-family:var(--font-en);font-size:.6rem;font-weight:700;
+  letter-spacing:.28em;color:rgba(159,198,245,.55);margin-bottom:.85rem}
+.sb-item{display:block;font-family:var(--font-ja-serif);font-weight:500;
+  font-size:clamp(.95rem,2.2vw,1.35rem);line-height:1.7;color:rgba(216,228,240,.92);
+  max-width:min(760px,88vw);margin:0 auto;min-height:2.6em}
+.sb-item.swap{animation:sbSwap .55s ease both}
+@keyframes sbSwap{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.sb-status{position:absolute;right:76px;bottom:30px;z-index:5;display:flex;align-items:center;gap:.55rem;
+  font-family:var(--font-en);font-size:.6rem;font-weight:700;letter-spacing:.24em;
+  color:rgba(159,198,245,.6);pointer-events:none}
+.sb-dot{width:7px;height:7px;border-radius:50%;background:#46c98a;box-shadow:0 0 8px #46c98a;
+  animation:sbPulse 2.4s ease-in-out infinite}
+@keyframes sbPulse{0%,100%{opacity:1}50%{opacity:.25}}
+/* 9秒ごとに走査線が一度だけ抜ける */
+.sb-sweep{position:absolute;left:0;right:0;top:0;height:2px;z-index:4;opacity:0;pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(159,198,245,.85),transparent);
+  box-shadow:0 0 16px rgba(159,198,245,.6);animation:sbSweep 9s linear infinite}
+@keyframes sbSweep{0%{top:0;opacity:0}2%{opacity:.9}22%{opacity:.9}24%{top:100%;opacity:0}100%{top:100%;opacity:0}}
+@media(max-width:640px){
+  .sb-status{right:auto;left:52px;bottom:52px}
+  .sb-ticker{min-height:5.4em}}
+@media (prefers-reduced-motion: reduce){
+  .sb-sweep{display:none}
+  .sb-dot{animation:none}
+  .sb-item.swap{animation:none}
+}
 </style>
 </head>
 <body>
@@ -1701,8 +1730,14 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
         <p class="qr-note">スマホのカメラでスキャン</p>
       </div>
     </div>
+    <div class="sb-ticker" aria-hidden="true">
+      <span class="sb-label">ARCHIVE ／ 本日お持ち帰りいただける資料より</span>
+      <span class="sb-item" id="sbItem"></span>
+    </div>
     <p class="thanks-sub">小澤健祐（おざけん）／ 一般社団法人AICX協会 代表理事</p>
   </div>
+  <div class="sb-status" aria-hidden="true"><span class="sb-dot"></span><span id="sbStat">SYSTEM IDLE</span></div>
+  <div class="sb-sweep" aria-hidden="true"></div>
 </div>
 
 <!-- 起動シークエンス：秘密コマンド pr で再生し、終わるとプロフィールを開く -->
@@ -2301,6 +2336,35 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     if(e < 1) requestAnimationFrame(step);
   }
   requestAnimationFrame(step);
+})();
+</script>
+
+<script>
+/* 待機画面：掲載中の資料タイトルを順に見せ、状態表示も入れ替える。
+   投影しっぱなしでも画面が固まらないようにするのが狙い。 */
+(function(){
+  var el = document.getElementById('sbItem'), st = document.getElementById('sbStat'),
+      panel = document.getElementById('standby');
+  if(!el || !panel) return;
+  var titles = [].map.call(document.querySelectorAll('.doc-list a'), function(a){
+    return a.textContent.replace(/\s+/g,' ').trim();
+  }).filter(Boolean);
+  if(!titles.length){ titles = ['資料アーカイブをご用意しています']; }
+  /* 毎回同じ順で始まらないよう、開始位置だけずらす */
+  var i = Math.floor(Math.random()*titles.length);
+  var stats = ['SYSTEM IDLE','ARCHIVE SYNCED',titles.length+' DOCUMENTS READY','AWAITING SESSION START'];
+  var si = 0;
+  function visible(){ return panel.classList.contains('show'); }
+  function show(){
+    el.textContent = titles[i % titles.length];
+    el.classList.remove('swap');
+    void el.offsetWidth;   /* アニメーションを確実に再生させる */
+    el.classList.add('swap');
+    i++;
+  }
+  show();
+  setInterval(function(){ if(visible()) show(); }, 5200);
+  setInterval(function(){ if(visible() && st){ si=(si+1)%stats.length; st.textContent=stats[si]; } }, 3400);
 })();
 </script>
 </body>
