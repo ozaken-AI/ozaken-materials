@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>小澤健祐（おざけん）| Profile & AI資料アーカイブ</title>
+<link rel="icon" type="image/png" sizes="32x32" href="99_assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="512x512" href="99_assets/favicon-512.png">
+<link rel="apple-touch-icon" sizes="180x180" href="99_assets/apple-touch-icon.png">
 <meta name="description" content="小澤健祐（おざけん）のプロフィールと、AIエージェント・生成AI活用に関する解説資料アーカイブ。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Shippori+Mincho+B1:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
@@ -114,6 +117,28 @@ a { color: inherit; text-decoration: none; }
 .bare p { font-size: 0.95rem; line-height: 1.95; }
 .sec-navy .bare p { color: rgba(255,255,255,0.8); }
 .bare p + p { margin-top: 1rem; }
+
+/* システム表記バッジ（ファーストビュー左上） */
+.sys-badge {
+  position: absolute; top: 1.6rem; left: 1.6rem; z-index: 3;
+  display: inline-flex; align-items: center; gap: 0.55rem;
+  padding: 0.5em 0.95em; border-radius: 999px;
+  background: rgba(20,29,53,0.5); border: 1px solid rgba(216,228,240,0.22);
+  backdrop-filter: blur(6px);
+  font-family: var(--font-en); font-size: 0.66rem; font-weight: 600; letter-spacing: 0.16em;
+  color: rgba(216,228,240,0.9); text-transform: uppercase; white-space: nowrap;
+}
+.sys-badge .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--red-bright); box-shadow: 0 0 8px var(--red-bright); animation: sysPulse 2.2s ease-in-out infinite; }
+.sys-badge .ja { font-family: var(--font-ja-sans); letter-spacing: 0.06em; font-size: 0.7rem; color: #fff; }
+.sys-badge .sep { color: rgba(216,228,240,0.35); }
+.sys-badge .ver { color: rgba(216,228,240,0.55); }
+@keyframes sysPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+@media (max-width: 640px) {
+  .sys-badge { top: 1rem; left: 1rem; font-size: 0.58rem; padding: 0.42em 0.8em; gap: 0.4rem; }
+  .sys-badge .ja { font-size: 0.62rem; }
+  .sys-badge .ver { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .sys-badge .dot { animation: none; } }
 
 .hero {
   min-height: 100vh; padding: 7rem 1.5rem 5rem;
@@ -753,6 +778,13 @@ footer {
 
 <!-- HERO -->
 <section class="hero">
+  <div class="sys-badge" aria-label="おざけんコンテンツ管理システム">
+    <span class="dot" aria-hidden="true"></span>
+    <span class="ja">おざけん コンテンツ管理システム</span>
+    <span class="sep">/</span>
+    <span>OZAKEN CMS</span>
+    <span class="ver">v2.0</span>
+  </div>
   <div class="texture" aria-hidden="true">
     <svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
       <defs>
@@ -830,7 +862,7 @@ footer {
   <div class="inner" data-reveal>
     <span class="eyebrow">Section 01</span>
     <h2 class="sec-title">資料アーカイブ ── AIエージェント・生成AI活用の解説資料</h2>
-    <p class="sec-sub">「知る → 選ぶ → 動かす」の流れで、登壇・執筆用の解説資料をテーマ別に整理しています。<br><span class="fw-bold text-azure">🔒 過去の資料のアーカイブは、顧問先など一部の方に限定公開しています（閲覧にはパスワードが必要です）。</span></p>
+    <p class="sec-sub">「知る → 選ぶ → 動かす」の流れで、登壇・執筆用の解説資料をテーマ別に整理しています。<br><span class="fw-bold text-azure">🔒 過去の資料のアーカイブは、顧問先など一部の方に限定公開しています（閲覧にはパスワードが必要です）。</span><br><span class="fw-bold" style="color:var(--red)">個別の資料のパスワードは、おざけんまでお問い合わせください。</span><a href="https://x.com/ozaken_AI" target="_blank" rel="noopener" style="color:var(--azure);font-weight:600;text-decoration:none;margin-left:.4em">X（@ozaken_AI）のDMへ →</a></p>
 
     <div class="cards">
       <div class="card">
