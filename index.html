@@ -1764,7 +1764,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
   </div>
   <div class="boot-final">
     <span class="bf-mod">SESSION START</span>
-    <span class="bf-lead">講演を開始します</span>
+    <span class="bf-lead">セッションを開始します</span>
     <span class="bf-name">小澤健祐（おざけん）</span>
     <span class="bf-sub">AIをすべての人に届けるために、書き、話し、つくり続けている。</span>
   </div>
@@ -2301,19 +2301,20 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
       }).observe(pf,{attributes:true,attributeFilter:['class']});
     }
   })();
-  /* me は pr と同じプロフィールを開く別名。pr だけ起動演出を挟む */
-  if(bySecret['pr']) bySecret['me']=bySecret['pr'];
   var buf='';
   document.addEventListener('keydown',function(e){
     var t=e.target; if(t&&/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)) return;
     if(t&&t.isContentEditable) return;
     if(e.key==='Escape'){ if(window.ozBootSkip) window.ozBootSkip(); all.forEach(function(o){ if(o.el.classList.contains('show')) o.hide(); }); return; }
     if(e.key&&e.key.length===1&&!e.metaKey&&!e.ctrlKey&&!e.altKey){ buf=(buf+e.key.toLowerCase()).slice(-8);
+      /* go は開演の演出だけを再生する。どこにも遷移せず、終わったら元の画面に戻る */
+      if(buf.slice(-2)==='go'&&window.ozBoot){ buf='';
+        all.forEach(function(o){ if(o.el.classList.contains('show')) o.hide(); });
+        window.ozBoot(null,'start'); return; }
       for(var s in bySecret){ if(buf.slice(-s.length)===s){ buf='';
         var target=bySecret[s];
         all.forEach(function(o){ if(o!==target&&o.el.classList.contains('show')) o.hide(); });
-        if(s==='pr'&&window.ozBoot){ window.ozBoot(function(){ target.show(); },'start'); }
-        else if(s==='th'&&window.ozBoot){ window.ozBoot(function(){ target.show(); },'end'); }
+        if(s==='th'&&window.ozBoot){ window.ozBoot(function(){ target.show(); },'end'); }
         else { target.show(); }
         break; } } }
   });
