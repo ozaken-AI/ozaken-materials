@@ -816,38 +816,45 @@ footer {
 .boot-term .dots{flex:1;border-bottom:1px dotted rgba(159,198,245,.35);transform:translateY(-.22em)}
 .boot-term .ok{color:#46c98a;font-weight:700}
 .boot-term .arrow{color:#2e5496;font-weight:700}
-.boot.is-on .boot-term p{animation:bootLine .3s ease both}
-.boot.is-on .boot-term p:nth-child(1){animation-delay:.45s}
-.boot.is-on .boot-term p:nth-child(2){animation-delay:.75s}
-.boot.is-on .boot-term p:nth-child(3){animation-delay:1.05s}
-.boot.is-on .boot-term p:nth-child(4){animation-delay:1.35s}
-.boot.is-on .boot-term p:nth-child(5){animation-delay:1.65s}
-.boot.is-on .boot-term p:nth-child(6){animation-delay:1.95s}
+.boot.is-on .boot-term p{animation:bootLine .3s ease var(--d,0s) both}
+.boot-term .lbl{flex:none}
+.boot-term .g{flex:none;width:96px;height:3px;border-radius:2px;background:rgba(159,198,245,.18);overflow:hidden}
+.boot-term .g i{display:block;height:100%;width:0;background:#9fc6f5;box-shadow:0 0 8px rgba(159,198,245,.65)}
+.boot.is-on .boot-term p .g i{animation:bootGauge .62s cubic-bezier(.35,0,.25,1) calc(var(--d,0s) + .06s) both}
+.boot-term .ok{opacity:0}
+.boot.is-on .boot-term p .ok{animation:bootFadeIn .22s ease calc(var(--d,0s) + .64s) both}
+.boot-term .ok.run{color:#f0b429}
+@keyframes bootGauge{from{width:0}to{width:100%}}
 @keyframes bootLine{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
-.boot.is-on .boot-term{animation:bootPanelOut .45s ease 3.6s both}
+.boot.is-on .boot-term{animation:bootPanelOut .45s ease 7.35s both}
 @keyframes bootPanelOut{from{opacity:1}to{opacity:0}}
 .boot-bar{position:absolute;left:50%;top:calc(50% + 128px);transform:translateX(-50%);
   width:min(560px,88vw);opacity:0}
-.boot.is-on .boot-bar{animation:bootBarBox 1.85s ease 2.25s both}
-@keyframes bootBarBox{0%{opacity:0}12%{opacity:1}78%{opacity:1}100%{opacity:0}}
+.boot.is-on .boot-bar{animation:bootBarBox 3.25s ease 4.55s both}
+@keyframes bootBarBox{0%{opacity:0}8%{opacity:1}86%{opacity:1}100%{opacity:0}}
 .boot-bar-head{display:flex;justify-content:space-between;font-family:var(--font-en);
   font-size:.62rem;font-weight:700;letter-spacing:.2em;color:rgba(159,198,245,.8);margin-bottom:.5rem;
   font-variant-numeric:tabular-nums}
 .boot-bar-track{height:4px;background:rgba(159,198,245,.16);border-radius:2px;overflow:hidden}
 .boot-bar-fill{height:100%;width:0;background:linear-gradient(90deg,#2e5496,#9fc6f5);
   box-shadow:0 0 12px rgba(159,198,245,.7)}
-.boot.is-on .boot-bar-fill{animation:bootBar 1.5s cubic-bezier(.5,0,.3,1) 2.4s both}
+.boot.is-on .boot-bar-fill{animation:bootBar 2.5s cubic-bezier(.45,0,.25,1) 4.7s both}
 @keyframes bootBar{from{width:0}to{width:100%}}
 .boot-final{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
   width:min(760px,92vw);text-align:center;opacity:0}
-.boot.is-on .boot-final{animation:bootFinal .5s ease 4.15s both}
+.boot.is-on .boot-final{animation:bootFinal .5s ease 7.85s both}
 @keyframes bootFinal{from{opacity:0;transform:translate(-50%,-46%)}to{opacity:1;transform:translate(-50%,-50%)}}
 .boot-final .bf-mod{display:block;font-family:var(--font-en);font-size:.64rem;font-weight:700;
   letter-spacing:.42em;color:#46c98a;margin-bottom:1rem}
-.boot-final .bf-name{display:block;font-family:var(--font-ja-serif);font-weight:600;
-  font-size:clamp(1.5rem,5vw,2.4rem);letter-spacing:.08em;color:#fff;
-  text-shadow:0 0 22px rgba(120,180,255,.5)}
-.boot.is-on .boot-final .bf-name{animation:bootGlitch .28s steps(2) 4.15s 3 both}
+.boot-final .bf-lead{display:block;font-family:var(--font-ja-serif);font-weight:600;
+  font-size:clamp(2rem,7vw,3.6rem);line-height:1.3;letter-spacing:.14em;color:#fff;
+  text-shadow:0 0 28px rgba(120,180,255,.6),0 0 70px rgba(46,84,150,.55)}
+.boot.is-on .boot-final .bf-lead{animation:bootGlitch .28s steps(2) 7.85s 3 both}
+.boot-final .bf-lead::before,.boot-final .bf-lead::after{content:"";display:inline-block;
+  width:clamp(28px,6vw,64px);height:1px;background:rgba(159,198,245,.7);vertical-align:middle;
+  margin:0 clamp(.7rem,2vw,1.4rem)}
+.boot-final .bf-name{display:block;margin-top:1.1rem;font-family:var(--font-ja-serif);font-weight:600;
+  font-size:clamp(1.05rem,3vw,1.5rem);letter-spacing:.1em;color:rgba(255,255,255,.9)}
 @keyframes bootGlitch{0%{opacity:.25;transform:translateX(-3px)}50%{opacity:1;transform:translateX(2px)}100%{opacity:1;transform:none}}
 .boot-final .bf-sub{display:block;margin-top:.9rem;font-family:var(--font-ja-sans);
   font-size:clamp(.76rem,2vw,.9rem);color:rgba(216,228,240,.7);letter-spacing:.06em}
@@ -866,6 +873,51 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
   .boot-tag{left:60px;top:20px}
   .boot-bar{top:calc(50% + 108px)}
   .boot-skip{right:1rem;bottom:1rem}}
+
+/* ══ プロフィール画面：起動シークエンスと世界観を合わせるスキン ══
+   構造やコンポーネントはそのままに、面の色・枠・ラベルの質感だけを寄せる。 */
+.profile-fs{background:#04060d}
+/* 方眼グリッドと走査線を全面に敷く（内容の下、背景の上） */
+.profile-fs::before{content:"";position:fixed;inset:-10%;z-index:0;pointer-events:none;opacity:.42;
+  background-image:linear-gradient(rgba(46,84,150,.3) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(46,84,150,.3) 1px,transparent 1px);
+  background-size:52px 52px;animation:bootGridDrift 9s linear infinite}
+.profile-fs::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.45;
+  background:repeating-linear-gradient(to bottom,rgba(255,255,255,.04) 0 1px,transparent 1px 3px)}
+/* 四隅のHUDブラケットと通し表示 */
+.pf-hud i{position:fixed;z-index:5;width:40px;height:40px;border:1px solid rgba(159,198,245,.55);pointer-events:none}
+.pf-hud i:nth-child(1){top:22px;left:22px;border-right:0;border-bottom:0}
+.pf-hud i:nth-child(2){top:22px;right:22px;border-left:0;border-bottom:0}
+.pf-hud i:nth-child(3){bottom:22px;left:22px;border-right:0;border-top:0}
+.pf-hud i:nth-child(4){bottom:22px;right:22px;border-left:0;border-top:0}
+.pf-hud b{position:fixed;left:76px;bottom:30px;z-index:5;font-family:var(--font-en);font-size:.6rem;
+  font-weight:700;letter-spacing:.28em;color:rgba(159,198,245,.6);pointer-events:none}
+/* 見出し・ラベルを端末表示の質感に */
+.profile-fs .pf-eyebrow{font-family:var(--font-en);letter-spacing:.3em;color:#9fc6f5}
+.profile-fs .pf-sec-no{font-family:var(--font-en);color:#46c98a;letter-spacing:.16em}
+.profile-fs .pf-sec-no::before{content:"[";margin-right:.15em}
+.profile-fs .pf-sec-no::after{content:"]";margin-left:.15em}
+.profile-fs .pf-sec-title::before{content:"> ";color:#2e5496;font-family:var(--font-en);font-weight:700}
+.profile-fs .pf-sec-head::after{background:linear-gradient(90deg,#9fc6f5,transparent)}
+/* 面：角を落とし、細い青の枠で囲む */
+.profile-fs .pf-card,.profile-fs .pf-figure,.profile-fs .pf-metric,.profile-fs .pf-pillar,
+.profile-fs .pf-bookcard,.profile-fs .pf-client,.profile-fs .pf-chip{
+  background:rgba(12,20,38,.72);border:1px solid rgba(159,198,245,.22);border-radius:4px;
+  box-shadow:none;backdrop-filter:blur(2px)}
+.profile-fs .pf-chip{border-radius:3px;font-family:var(--font-en);letter-spacing:.1em}
+.profile-fs .pf-metric{border-left:2px solid #9fc6f5}
+/* 進捗バーとポートレートのリングも同系に */
+.profile-fs .pf-progress{background:linear-gradient(90deg,#2e5496,#9fc6f5);box-shadow:0 0 12px rgba(159,198,245,.6)}
+.profile-fs .pf-portrait::after{border-color:rgba(159,198,245,.45);border-radius:4px}
+.profile-fs .pf-portrait img{border-radius:4px}
+.profile-fs .pf-btn{border-radius:4px;background:rgba(12,20,38,.85);border:1px solid rgba(159,198,245,.3)}
+.profile-fs .pf-btn:hover{background:rgba(46,84,150,.7)}
+@media(max-width:640px){
+  .pf-hud i{width:26px;height:26px;top:14px;left:14px}
+  .pf-hud i:nth-child(2){right:14px;left:auto}
+  .pf-hud i:nth-child(3){bottom:14px;top:auto}
+  .pf-hud i:nth-child(4){bottom:14px;right:14px;top:auto;left:auto}
+  .pf-hud b{left:52px;bottom:20px}}
 </style>
 </head>
 <body>
@@ -1515,21 +1567,22 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
   <div class="boot-grid"></div>
   <div class="boot-sweep"></div>
   <div class="boot-hud"><i></i><i></i><i></i><i></i></div>
-  <div class="boot-tag">OZAKEN CMS ／ BOOT SEQUENCE</div>
+  <div class="boot-tag">OZAKEN CMS ／ LECTURE BOOT SEQUENCE</div>
   <div class="boot-term">
-    <p><span class="arrow">&gt;</span>INITIALIZING OZAKEN CMS<span class="dots"></span><span class="ok">OK</span></p>
-    <p><span class="arrow">&gt;</span>MOUNTING ARCHIVE VOLUME<span class="dots"></span><span class="ok">OK</span></p>
-    <p><span class="arrow">&gt;</span>CONTEXT ASSET LEDGER<span class="dots"></span><span class="ok">OK</span></p>
-    <p><span class="arrow">&gt;</span>MASTER DATA / 正本<span class="dots"></span><span class="ok">OK</span></p>
-    <p><span class="arrow">&gt;</span>HARNESS RUNTIME<span class="dots"></span><span class="ok">OK</span></p>
-    <p><span class="arrow">&gt;</span>LOADING PROFILE MODULE<span class="dots"></span><span class="ok">RUN</span></p>
+    <p style="--d:.45s"><span class="arrow">&gt;</span><span class="lbl">INITIALIZING OZAKEN CMS</span><span class="dots"></span><span class="g"><i></i></span><span class="ok">OK</span></p>
+    <p style="--d:1.2s"><span class="arrow">&gt;</span><span class="lbl">MOUNTING ARCHIVE VOLUME</span><span class="dots"></span><span class="g"><i></i></span><span class="ok">OK</span></p>
+    <p style="--d:1.95s"><span class="arrow">&gt;</span><span class="lbl">CONTEXT ASSET LEDGER</span><span class="dots"></span><span class="g"><i></i></span><span class="ok">OK</span></p>
+    <p style="--d:2.7s"><span class="arrow">&gt;</span><span class="lbl">MASTER DATA / 正本</span><span class="dots"></span><span class="g"><i></i></span><span class="ok">OK</span></p>
+    <p style="--d:3.45s"><span class="arrow">&gt;</span><span class="lbl">HARNESS RUNTIME</span><span class="dots"></span><span class="g"><i></i></span><span class="ok">OK</span></p>
+    <p style="--d:4.3s"><span class="arrow">&gt;</span><span class="lbl">STARTING LECTURE SESSION</span><span class="dots"></span><span class="ok run">RUN</span></p>
   </div>
   <div class="boot-bar">
-    <div class="boot-bar-head"><span>LOADING PROFILE MODULE</span><span id="bootPct">0%</span></div>
+    <div class="boot-bar-head"><span>STARTING LECTURE SESSION</span><span id="bootPct">0%</span></div>
     <div class="boot-bar-track"><div class="boot-bar-fill"></div></div>
   </div>
   <div class="boot-final">
-    <span class="bf-mod">PROFILE MODULE READY</span>
+    <span class="bf-mod">SESSION START</span>
+    <span class="bf-lead">講演を開始します</span>
     <span class="bf-name">小澤健祐（おざけん）</span>
     <span class="bf-sub">AIをすべての人に届けるために、書き、話し、つくり続けている。</span>
   </div>
@@ -1565,15 +1618,17 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
   function sounds(){
     try{ actx=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ return; }
     sweepTone(120,480,0,0.45,0.05);
-    for(var i=0;i<6;i++) tone(1245,0.45+i*0.30,0.05,0.042);
-    for(var j=0;j<5;j++) tone(660,2.5+j*0.28,0.035,0.022);
-    tone(1046,4.15,0.10,0.045,'triangle');
-    tone(1568,4.30,0.26,0.040,'triangle');
+    /* 各行のゲージが伸びきってOKが入る瞬間に鳴らす */
+    for(var i=0;i<5;i++) tone(1245,1.09+i*0.75,0.05,0.042);
+    tone(880,4.94,0.08,0.045);                       /* RUN 行 */
+    for(var j=0;j<7;j++) tone(660,5.0+j*0.32,0.035,0.020);  /* 読み込み中の刻み */
+    tone(1046,7.85,0.10,0.045,'triangle');
+    tone(1568,8.00,0.26,0.040,'triangle');
   }
   function stopSounds(){ if(actx&&actx.close){ try{ actx.close(); }catch(e){} actx=null; } }
   var going=false,timer=0,raf=0,done=null;
   function counter(){
-    var t0=performance.now(),delay=2400,dur=1500;
+    var t0=performance.now(),delay=4700,dur=2500;
     function step(now){
       var e=Math.min(1,Math.max(0,(now-t0-delay)/dur));
       if(pct) pct.textContent=Math.round((e<1?(e*e*(3-2*e)):1)*100)+'%';
@@ -1598,7 +1653,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     boot.classList.remove('is-done'); boot.classList.add('is-on');
     root.classList.add('boot-locked');
     counter(); sounds();
-    timer=setTimeout(finish,5600);
+    timer=setTimeout(finish,9400);
   };
   window.ozBootSkip=function(){ if(going) finish(); };
 })();
@@ -1606,6 +1661,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
 
 <!-- 秘密コマンド：プロフィール紹介（投影用フルスクリーン） -->
 <div id="profile-fs" class="thanks profile-fs" aria-hidden="true" role="dialog" aria-label="プロフィール紹介">
+  <div class="pf-hud" aria-hidden="true"><i></i><i></i><i></i><i></i><b>OZAKEN CMS ／ LECTURE SESSION</b></div>
   <canvas class="thanks-net" aria-hidden="true"></canvas>
   <div class="pf-progress" aria-hidden="true"></div>
   <div class="pf-tools">
