@@ -772,6 +772,100 @@ footer {
   .pf-draw { stroke-dashoffset: 0; }
   .pf-timeline::before { transform: scaleY(1); }
 }
+
+/* ══ 起動シークエンス（秘密コマンド pr で再生）══
+   走査線 → HUDフレーム → 起動ログ → プログレスバー → モジュール名 → プロフィール表示。
+   me は演出なしで直接プロフィールを開く。
+   ピープ音はWeb Audioで合成（キー操作が起点なので自動再生制限に当たらない）。
+   prefers-reduced-motion では演出を出さず、そのままプロフィールを開く。 */
+.boot{position:fixed;inset:0;z-index:9999;background:#04060d;overflow:hidden;display:none;
+  opacity:0;transition:opacity .4s ease;color:var(--azure-pale)}
+.boot.is-on{display:block;opacity:1}
+.boot.is-done{opacity:0;pointer-events:none}
+.boot-grid{position:absolute;inset:-10%;opacity:0;
+  background-image:linear-gradient(rgba(46,84,150,.32) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(46,84,150,.32) 1px,transparent 1px);
+  background-size:52px 52px}
+.boot.is-on .boot-grid{animation:bootGridIn .8s ease .1s both,bootGridDrift 9s linear infinite}
+@keyframes bootGridIn{from{opacity:0}to{opacity:.5}}
+@keyframes bootGridDrift{from{background-position:0 0}to{background-position:0 52px}}
+.boot-sweep{position:absolute;left:0;right:0;height:2px;top:0;opacity:0;
+  background:linear-gradient(90deg,transparent,#9fc6f5,transparent);
+  box-shadow:0 0 18px rgba(159,198,245,.8)}
+.boot.is-on .boot-sweep{animation:bootSweep 1.1s cubic-bezier(.4,0,.2,1) 0s 2 both}
+@keyframes bootSweep{0%{top:0;opacity:0}8%{opacity:1}92%{opacity:1}100%{top:100%;opacity:0}}
+.boot-scanlines{position:absolute;inset:0;pointer-events:none;opacity:.5;
+  background:repeating-linear-gradient(to bottom,rgba(255,255,255,.045) 0 1px,transparent 1px 3px)}
+.boot-vignette{position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 50%,transparent 42%,rgba(0,0,0,.9) 100%)}
+.boot-hud i{position:absolute;width:44px;height:44px;border:1px solid rgba(159,198,245,.7);opacity:0}
+.boot-hud i:nth-child(1){top:26px;left:26px;border-right:0;border-bottom:0}
+.boot-hud i:nth-child(2){top:26px;right:26px;border-left:0;border-bottom:0}
+.boot-hud i:nth-child(3){bottom:26px;left:26px;border-right:0;border-top:0}
+.boot-hud i:nth-child(4){bottom:26px;right:26px;border-left:0;border-top:0}
+.boot.is-on .boot-hud i{animation:bootHud .5s ease .15s both}
+@keyframes bootHud{from{opacity:0;transform:scale(1.5)}to{opacity:1;transform:none}}
+.boot-tag{position:absolute;top:30px;left:84px;font-family:var(--font-en);font-size:.62rem;
+  font-weight:700;letter-spacing:.28em;color:rgba(159,198,245,.75);opacity:0}
+.boot.is-on .boot-tag{animation:bootFadeIn .5s ease .3s both}
+@keyframes bootFadeIn{from{opacity:0}to{opacity:1}}
+.boot-term{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:min(560px,88vw);font-family:var(--font-en);font-size:clamp(.62rem,1.7vw,.76rem);
+  letter-spacing:.1em;font-variant-numeric:tabular-nums}
+.boot-term p{display:flex;align-items:baseline;gap:.5rem;padding:.3rem 0;opacity:0;white-space:nowrap;margin:0}
+.boot-term .dots{flex:1;border-bottom:1px dotted rgba(159,198,245,.35);transform:translateY(-.22em)}
+.boot-term .ok{color:#46c98a;font-weight:700}
+.boot-term .arrow{color:#2e5496;font-weight:700}
+.boot.is-on .boot-term p{animation:bootLine .3s ease both}
+.boot.is-on .boot-term p:nth-child(1){animation-delay:.45s}
+.boot.is-on .boot-term p:nth-child(2){animation-delay:.75s}
+.boot.is-on .boot-term p:nth-child(3){animation-delay:1.05s}
+.boot.is-on .boot-term p:nth-child(4){animation-delay:1.35s}
+.boot.is-on .boot-term p:nth-child(5){animation-delay:1.65s}
+.boot.is-on .boot-term p:nth-child(6){animation-delay:1.95s}
+@keyframes bootLine{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
+.boot.is-on .boot-term{animation:bootPanelOut .45s ease 3.6s both}
+@keyframes bootPanelOut{from{opacity:1}to{opacity:0}}
+.boot-bar{position:absolute;left:50%;top:calc(50% + 128px);transform:translateX(-50%);
+  width:min(560px,88vw);opacity:0}
+.boot.is-on .boot-bar{animation:bootBarBox 1.85s ease 2.25s both}
+@keyframes bootBarBox{0%{opacity:0}12%{opacity:1}78%{opacity:1}100%{opacity:0}}
+.boot-bar-head{display:flex;justify-content:space-between;font-family:var(--font-en);
+  font-size:.62rem;font-weight:700;letter-spacing:.2em;color:rgba(159,198,245,.8);margin-bottom:.5rem;
+  font-variant-numeric:tabular-nums}
+.boot-bar-track{height:4px;background:rgba(159,198,245,.16);border-radius:2px;overflow:hidden}
+.boot-bar-fill{height:100%;width:0;background:linear-gradient(90deg,#2e5496,#9fc6f5);
+  box-shadow:0 0 12px rgba(159,198,245,.7)}
+.boot.is-on .boot-bar-fill{animation:bootBar 1.5s cubic-bezier(.5,0,.3,1) 2.4s both}
+@keyframes bootBar{from{width:0}to{width:100%}}
+.boot-final{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:min(760px,92vw);text-align:center;opacity:0}
+.boot.is-on .boot-final{animation:bootFinal .5s ease 4.15s both}
+@keyframes bootFinal{from{opacity:0;transform:translate(-50%,-46%)}to{opacity:1;transform:translate(-50%,-50%)}}
+.boot-final .bf-mod{display:block;font-family:var(--font-en);font-size:.64rem;font-weight:700;
+  letter-spacing:.42em;color:#46c98a;margin-bottom:1rem}
+.boot-final .bf-name{display:block;font-family:var(--font-ja-serif);font-weight:600;
+  font-size:clamp(1.5rem,5vw,2.4rem);letter-spacing:.08em;color:#fff;
+  text-shadow:0 0 22px rgba(120,180,255,.5)}
+.boot.is-on .boot-final .bf-name{animation:bootGlitch .28s steps(2) 4.15s 3 both}
+@keyframes bootGlitch{0%{opacity:.25;transform:translateX(-3px)}50%{opacity:1;transform:translateX(2px)}100%{opacity:1;transform:none}}
+.boot-final .bf-sub{display:block;margin-top:.9rem;font-family:var(--font-ja-sans);
+  font-size:clamp(.76rem,2vw,.9rem);color:rgba(216,228,240,.7);letter-spacing:.06em}
+.boot-skip{position:absolute;right:1.4rem;bottom:1.4rem;z-index:2;
+  font-family:var(--font-en);font-size:.68rem;font-weight:700;letter-spacing:.2em;
+  color:rgba(216,228,240,.6);background:rgba(255,255,255,.06);
+  border:1px solid rgba(216,228,240,.22);border-radius:999px;padding:.5rem 1.05rem;
+  cursor:pointer;transition:color .2s,border-color .2s,background .2s}
+.boot-skip:hover{color:#fff;border-color:rgba(216,228,240,.6);background:rgba(255,255,255,.12)}
+html.boot-locked,html.boot-locked body{overflow:hidden}
+@media(max-width:640px){
+  .boot-hud i{width:30px;height:30px;top:16px;left:16px}
+  .boot-hud i:nth-child(2){right:16px;left:auto}
+  .boot-hud i:nth-child(3){bottom:16px;top:auto}
+  .boot-hud i:nth-child(4){bottom:16px;right:16px;top:auto;left:auto}
+  .boot-tag{left:60px;top:20px}
+  .boot-bar{top:calc(50% + 108px)}
+  .boot-skip{right:1rem;bottom:1rem}}
 </style>
 </head>
 <body>
@@ -1416,6 +1510,100 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
   </div>
 </div>
 
+<!-- 起動シークエンス：秘密コマンド pr で再生し、終わるとプロフィールを開く -->
+<div class="boot" id="boot" role="presentation" aria-hidden="true">
+  <div class="boot-grid"></div>
+  <div class="boot-sweep"></div>
+  <div class="boot-hud"><i></i><i></i><i></i><i></i></div>
+  <div class="boot-tag">OZAKEN CMS ／ BOOT SEQUENCE</div>
+  <div class="boot-term">
+    <p><span class="arrow">&gt;</span>INITIALIZING OZAKEN CMS<span class="dots"></span><span class="ok">OK</span></p>
+    <p><span class="arrow">&gt;</span>MOUNTING ARCHIVE VOLUME<span class="dots"></span><span class="ok">OK</span></p>
+    <p><span class="arrow">&gt;</span>CONTEXT ASSET LEDGER<span class="dots"></span><span class="ok">OK</span></p>
+    <p><span class="arrow">&gt;</span>MASTER DATA / 正本<span class="dots"></span><span class="ok">OK</span></p>
+    <p><span class="arrow">&gt;</span>HARNESS RUNTIME<span class="dots"></span><span class="ok">OK</span></p>
+    <p><span class="arrow">&gt;</span>LOADING PROFILE MODULE<span class="dots"></span><span class="ok">RUN</span></p>
+  </div>
+  <div class="boot-bar">
+    <div class="boot-bar-head"><span>LOADING PROFILE MODULE</span><span id="bootPct">0%</span></div>
+    <div class="boot-bar-track"><div class="boot-bar-fill"></div></div>
+  </div>
+  <div class="boot-final">
+    <span class="bf-mod">PROFILE MODULE READY</span>
+    <span class="bf-name">小澤健祐（おざけん）</span>
+    <span class="bf-sub">AIをすべての人に届けるために、書き、話し、つくり続けている。</span>
+  </div>
+  <div class="boot-scanlines"></div>
+  <div class="boot-vignette"></div>
+  <button class="boot-skip" type="button" id="bootSkip">SKIP &#9654;</button>
+</div>
+<script>
+/* 起動シークエンス：再生し終えたらコールバックを呼ぶ。window.ozBoot(done) で使う */
+(function(){
+  var boot=document.getElementById('boot'); if(!boot) return;
+  var root=document.documentElement, pct=document.getElementById('bootPct');
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var actx=null;
+  function tone(f,at,dur,vol,type){
+    if(!actx) return;
+    var o=actx.createOscillator(),g=actx.createGain(),t=actx.currentTime+at;
+    o.type=type||'square'; o.frequency.setValueAtTime(f,t);
+    g.gain.setValueAtTime(0.0001,t);
+    g.gain.exponentialRampToValueAtTime(vol,t+0.01);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+    o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t+dur+0.02);
+  }
+  function sweepTone(a,b,at,dur,vol){
+    if(!actx) return;
+    var o=actx.createOscillator(),g=actx.createGain(),t=actx.currentTime+at;
+    o.type='sawtooth'; o.frequency.setValueAtTime(a,t); o.frequency.exponentialRampToValueAtTime(b,t+dur);
+    g.gain.setValueAtTime(0.0001,t);
+    g.gain.exponentialRampToValueAtTime(vol,t+0.06);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+    o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t+dur+0.02);
+  }
+  function sounds(){
+    try{ actx=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ return; }
+    sweepTone(120,480,0,0.45,0.05);
+    for(var i=0;i<6;i++) tone(1245,0.45+i*0.30,0.05,0.042);
+    for(var j=0;j<5;j++) tone(660,2.5+j*0.28,0.035,0.022);
+    tone(1046,4.15,0.10,0.045,'triangle');
+    tone(1568,4.30,0.26,0.040,'triangle');
+  }
+  function stopSounds(){ if(actx&&actx.close){ try{ actx.close(); }catch(e){} actx=null; } }
+  var going=false,timer=0,raf=0,done=null;
+  function counter(){
+    var t0=performance.now(),delay=2400,dur=1500;
+    function step(now){
+      var e=Math.min(1,Math.max(0,(now-t0-delay)/dur));
+      if(pct) pct.textContent=Math.round((e<1?(e*e*(3-2*e)):1)*100)+'%';
+      if(e<1&&going) raf=requestAnimationFrame(step);
+    }
+    raf=requestAnimationFrame(step);
+  }
+  function finish(){
+    if(!going) return;
+    going=false; clearTimeout(timer); cancelAnimationFrame(raf); stopSounds();
+    boot.classList.add('is-done'); root.classList.remove('boot-locked');
+    setTimeout(function(){ boot.classList.remove('is-on','is-done'); },450);
+    if(done){ var cb=done; done=null; cb(); }
+  }
+  document.getElementById('bootSkip').addEventListener('click',function(ev){ ev.stopPropagation(); finish(); });
+  boot.addEventListener('click',finish);
+  window.ozBoot=function(cb){
+    if(reduce){ if(cb) cb(); return; }
+    if(going) return;
+    going=true; done=cb||null;
+    if(pct) pct.textContent='0%';
+    boot.classList.remove('is-done'); boot.classList.add('is-on');
+    root.classList.add('boot-locked');
+    counter(); sounds();
+    timer=setTimeout(finish,5600);
+  };
+  window.ozBootSkip=function(){ if(going) finish(); };
+})();
+</script>
+
 <!-- 秘密コマンド：プロフィール紹介（投影用フルスクリーン） -->
 <div id="profile-fs" class="thanks profile-fs" aria-hidden="true" role="dialog" aria-label="プロフィール紹介">
   <canvas class="thanks-net" aria-hidden="true"></canvas>
@@ -1854,12 +2042,20 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
       }).observe(pf,{attributes:true,attributeFilter:['class']});
     }
   })();
+  /* me は pr と同じプロフィールを開く別名。pr だけ起動演出を挟む */
+  if(bySecret['pr']) bySecret['me']=bySecret['pr'];
   var buf='';
   document.addEventListener('keydown',function(e){
     var t=e.target; if(t&&/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)) return;
-    if(e.key==='Escape'){ all.forEach(function(o){ if(o.el.classList.contains('show')) o.hide(); }); return; }
-    if(e.key&&e.key.length===1){ buf=(buf+e.key.toLowerCase()).slice(-8);
-      for(var s in bySecret){ if(buf.slice(-s.length)===s){ buf=''; all.forEach(function(o){ if(o!==bySecret[s]&&o.el.classList.contains('show')) o.hide(); }); bySecret[s].show(); break; } } }
+    if(t&&t.isContentEditable) return;
+    if(e.key==='Escape'){ if(window.ozBootSkip) window.ozBootSkip(); all.forEach(function(o){ if(o.el.classList.contains('show')) o.hide(); }); return; }
+    if(e.key&&e.key.length===1&&!e.metaKey&&!e.ctrlKey&&!e.altKey){ buf=(buf+e.key.toLowerCase()).slice(-8);
+      for(var s in bySecret){ if(buf.slice(-s.length)===s){ buf='';
+        var target=bySecret[s];
+        all.forEach(function(o){ if(o!==target&&o.el.classList.contains('show')) o.hide(); });
+        if(s==='pr'&&window.ozBoot){ window.ozBoot(function(){ target.show(); }); }
+        else { target.show(); }
+        break; } } }
   });
   if(location.hash==='#thanks'&&bySecret['th']) bySecret['th'].show();
   if(location.hash==='#standby'&&bySecret['st']) bySecret['st'].show();
