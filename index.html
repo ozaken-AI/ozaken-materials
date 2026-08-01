@@ -969,12 +969,12 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
 }
 
 /* ══ お礼・待機画面：起動シークエンスと同じ質感に寄せる ══ */
-#thanks,#standby{background:#04060d}
-#thanks::before,#standby::before{content:"";position:fixed;inset:-10%;z-index:0;pointer-events:none;opacity:.42;
+#thanks,#standby,#titlecard{background:#04060d}
+#thanks::before,#standby::before,#titlecard::before{content:"";position:fixed;inset:-10%;z-index:0;pointer-events:none;opacity:.42;
   background-image:linear-gradient(rgba(46,84,150,.3) 1px,transparent 1px),
                    linear-gradient(90deg,rgba(46,84,150,.3) 1px,transparent 1px);
   background-size:52px 52px;animation:bootGridDrift 9s linear infinite}
-#thanks::after,#standby::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.45;
+#thanks::after,#standby::after,#titlecard::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.45;
   background:repeating-linear-gradient(to bottom,rgba(255,255,255,.04) 0 1px,transparent 1px 3px)}
 .tk-hud i{position:fixed;z-index:5;width:40px;height:40px;border:1px solid rgba(159,198,245,.55);pointer-events:none}
 .tk-hud i:nth-child(1){top:22px;left:22px;border-right:0;border-bottom:0}
@@ -1087,6 +1087,45 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
 /* 日本語は語中でも折り返されるため、意味のまとまりを inline-block で囲って割れないようにする。
    改行はまとまりとまとまりの境目だけで起きる。text-wrap:balance で行長も均す（対応環境のみ）。 */
 .kbr{display:inline-block}
+
+/* ══ 講演タイトルカード（秘密コマンド ti）══
+   タイトルと日付は contenteditable で、その場で書き換えられる。
+   入力内容は localStorage に残すので、次に開いたときも同じ文言が出る。 */
+.tc-inner{text-align:center;padding:0 clamp(1.2rem,5vw,3rem)}
+.tc-meta{display:flex;align-items:center;justify-content:center;gap:clamp(.7rem,2vw,1.2rem);
+  margin-bottom:clamp(1.6rem,4vh,2.8rem);flex-wrap:wrap}
+.tc-eyebrow{font-family:var(--font-en);font-size:.62rem;font-weight:700;letter-spacing:.42em;color:#46c98a}
+.tc-date{font-family:var(--font-en);font-size:clamp(.72rem,1.8vw,.88rem);font-weight:700;
+  letter-spacing:.16em;color:rgba(159,198,245,.85);border-bottom:1px dashed rgba(159,198,245,.25);
+  padding:.2rem .5rem;min-width:6em;outline:none;transition:border-color .2s,background .2s}
+.tc-title{font-family:var(--font-ja-serif);font-weight:600;
+  font-size:clamp(1.7rem,6vw,4rem);line-height:1.4;letter-spacing:.06em;color:#fff;
+  text-shadow:0 0 30px rgba(120,180,255,.45);outline:none;
+  max-width:min(1000px,92vw);margin:0 auto;padding:.2rem .6rem;border-radius:4px;
+  transition:background .2s,box-shadow .2s}
+.tc-date:hover,.tc-title:hover{background:rgba(159,198,245,.06)}
+.tc-date:focus{border-color:#9fc6f5;background:rgba(159,198,245,.08)}
+.tc-title:focus{background:rgba(159,198,245,.07);box-shadow:inset 0 0 0 1px rgba(159,198,245,.35)}
+/* 未入力のときだけ、うっすら案内を出す */
+[contenteditable][data-ph]:empty::before{content:attr(data-ph);color:rgba(216,228,240,.3);pointer-events:none}
+.tc-rule{display:flex;justify-content:center;margin:clamp(1.6rem,4vh,2.6rem) 0 clamp(1.2rem,3vh,1.8rem)}
+.tc-rule i{display:block;height:1px;width:0;background:linear-gradient(90deg,transparent,#9fc6f5,transparent)}
+#titlecard.show .tc-rule i{animation:tcRule 1.1s cubic-bezier(.2,.7,.2,1) .35s both}
+@keyframes tcRule{from{width:0}to{width:min(520px,72vw)}}
+.tc-sub{font-family:var(--font-ja-sans);font-size:clamp(.8rem,2vw,1rem);
+  color:rgba(216,228,240,.72);letter-spacing:.06em}
+#titlecard.show .tc-meta{animation:tcIn .6s ease .1s both}
+#titlecard.show .tc-title{animation:tcIn .7s cubic-bezier(.2,.7,.2,1) .2s both}
+#titlecard.show .tc-sub{animation:tcIn .6s ease .6s both}
+@keyframes tcIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.tc-hint{position:absolute;left:0;right:0;bottom:clamp(1.4rem,4vh,2.6rem);text-align:center;
+  font-family:var(--font-en);font-size:.6rem;font-weight:700;letter-spacing:.2em;
+  color:rgba(159,198,245,.5);pointer-events:none;transition:opacity .6s ease}
+.tc-hint.dim{opacity:0}
+@media (prefers-reduced-motion: reduce){
+  #titlecard.show .tc-meta,#titlecard.show .tc-title,#titlecard.show .tc-sub{animation:none}
+  #titlecard.show .tc-rule i{animation:none;width:min(520px,72vw)}
+}
 </style>
 </head>
 <body>
@@ -1878,6 +1917,24 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
 })();
 </script>
 
+<!-- 秘密コマンド ti：講演タイトルカード（その場で入力できる投影用フルスクリーン） -->
+<div id="titlecard" class="thanks tc" aria-hidden="true" role="dialog" aria-label="講演タイトル">
+  <canvas class="thanks-net" aria-hidden="true"></canvas>
+  <div class="tk-hud" aria-hidden="true"><i></i><i></i><i></i><i></i><b>OZAKEN CMS ／ SESSION TITLE</b></div>
+  <div class="thanks-inner tc-inner">
+    <div class="tc-meta">
+      <span class="tc-eyebrow">SESSION</span>
+      <span class="tc-date" id="tcDate" contenteditable="plaintext-only" spellcheck="false"
+            data-ph="2026.08.01 ／ 会場・イベント名"></span>
+    </div>
+    <h2 class="tc-title" id="tcTitle" contenteditable="plaintext-only" spellcheck="false"
+        data-ph="ここに講演タイトルを入力"></h2>
+    <div class="tc-rule"><i></i></div>
+    <p class="tc-sub">小澤健祐（おざけん）／ 一般社団法人AICX協会 代表理事</p>
+  </div>
+  <div class="tc-hint" id="tcHint">クリックして入力 ／ Enter で確定 ／ Esc で閉じる</div>
+</div>
+
 <!-- 秘密コマンド：プロフィール紹介（投影用フルスクリーン） -->
 <div id="profile-fs" class="thanks profile-fs" aria-hidden="true" role="dialog" aria-label="プロフィール紹介">
   <div class="pf-hud" aria-hidden="true"><i></i><i></i><i></i><i></i><b>OZAKEN CMS ／ LECTURE SESSION</b></div>
@@ -2268,7 +2325,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     }
     return o;
   }
-  var defs=[['thanks','th'],['standby','st'],['profile-fs','pr']], all=[], bySecret={};
+  var defs=[['thanks','th'],['standby','st'],['profile-fs','pr'],['titlecard','ti']], all=[], bySecret={};
   defs.forEach(function(p){ var el=document.getElementById(p[0]); if(!el) return; var o=make(el); all.push(o); bySecret[p[1]]=o; });
   if(!all.length) return;
   window.addEventListener('resize',function(){ all.forEach(function(o){ o.resize(); }); });
@@ -2311,9 +2368,16 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
   })();
   var buf='';
   document.addEventListener('keydown',function(e){
-    var t=e.target; if(t&&/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)) return;
-    if(t&&t.isContentEditable) return;
-    if(e.key==='Escape'){ if(window.ozBootSkip) window.ozBootSkip(); all.forEach(function(o){ if(o.el.classList.contains('show')) o.hide(); }); return; }
+    var t=e.target;
+    var editing = !!(t && (/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) || t.isContentEditable));
+    /* 入力中でもEscapeだけは通す。まず編集を抜けてから閉じる */
+    if(e.key==='Escape'){
+      if(editing && t.blur) t.blur();
+      if(window.ozBootSkip) window.ozBootSkip();
+      all.forEach(function(o){ if(o.el.classList.contains('show')) o.hide(); });
+      return;
+    }
+    if(editing) return;
     if(e.key&&e.key.length===1&&!e.metaKey&&!e.ctrlKey&&!e.altKey){ buf=(buf+e.key.toLowerCase()).slice(-8);
       /* go は開演の演出だけを再生する。どこにも遷移せず、終わったら元の画面に戻る */
       if(buf.slice(-2)==='go'&&window.ozBoot){ buf='';
@@ -2378,6 +2442,49 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
   show();
   setInterval(function(){ if(visible()) show(); }, 5200);
   setInterval(function(){ if(visible() && st){ si=(si+1)%stats.length; st.textContent=stats[si]; } }, 3400);
+})();
+</script>
+
+<script>
+/* 講演タイトルカード：その場で書き換えられ、内容はブラウザに残る */
+(function(){
+  var card=document.getElementById('titlecard');
+  if(!card) return;
+  var title=document.getElementById('tcTitle'), date=document.getElementById('tcDate'),
+      hint=document.getElementById('tcHint');
+  var KEYS={tcTitle:'ozaken_session_title', tcDate:'ozaken_session_meta'};
+  function load(el){
+    try{ var v=localStorage.getItem(KEYS[el.id]); if(v) el.textContent=v; }catch(e){}
+  }
+  function save(el){
+    /* 消しきったあとに <br> が残ると未入力の案内が出なくなるので、空なら中身ごと消す */
+    if(!el.textContent.replace(/\s+/g,'')) el.innerHTML='';
+    try{ localStorage.setItem(KEYS[el.id], el.textContent); }catch(e){}
+  }
+  [title,date].forEach(function(el){
+    if(!el) return;
+    load(el);
+    el.addEventListener('input', function(){ save(el); });
+    el.addEventListener('blur', function(){ save(el); });
+    /* 貼り付けは書式を落として素のテキストだけ入れる */
+    el.addEventListener('paste', function(ev){
+      ev.preventDefault();
+      var txt=(ev.clipboardData||window.clipboardData).getData('text').replace(/\r?\n/g,' ');
+      document.execCommand('insertText', false, txt);
+    });
+    el.addEventListener('keydown', function(ev){
+      if(ev.key==='Enter'){ ev.preventDefault(); el.blur(); }
+    });
+    el.addEventListener('focus', function(){ if(hint) hint.classList.remove('dim'); });
+  });
+  /* 開いてしばらくしたら案内を薄くする。投影中に文字が残らないように */
+  var timer=0;
+  new MutationObserver(function(){
+    if(card.classList.contains('show')){
+      if(hint){ hint.classList.remove('dim'); clearTimeout(timer);
+        timer=setTimeout(function(){ hint.classList.add('dim'); }, 6000); }
+    }
+  }).observe(card,{attributes:true,attributeFilter:['class']});
 })();
 </script>
 </body>
