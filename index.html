@@ -2482,11 +2482,14 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
       if(buf.slice(-2)==='go'&&window.ozBoot){ buf='';
         all.forEach(function(o){ if(o.el.classList.contains('show')) o.hide(); });
         window.ozBoot(null,'start'); return; }
+      /* en は終了の演出を再生し、そのままお礼＋QRへ着地する */
+      if(buf.slice(-2)==='en'&&window.ozBoot&&bySecret['th']){ buf='';
+        all.forEach(function(o){ if(o.el.classList.contains('show')) o.hide(); });
+        window.ozBoot(function(){ bySecret['th'].show(); },'end'); return; }
       for(var s in bySecret){ if(buf.slice(-s.length)===s){ buf='';
         var target=bySecret[s];
         all.forEach(function(o){ if(o!==target&&o.el.classList.contains('show')) o.hide(); });
-        if(s==='th'&&window.ozBoot){ window.ozBoot(function(){ target.show(); },'end'); }
-        else { target.show(); }
+        target.show();
         break; } } }
   });
   if(location.hash==='#thanks'&&bySecret['th']) bySecret['th'].show();
