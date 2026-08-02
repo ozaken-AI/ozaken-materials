@@ -1187,6 +1187,35 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
 @keyframes bpDot{0%,100%{opacity:.25}50%{opacity:1}}
 @media(max-width:640px){.boot-proc{top:calc(50% - 128px)}}
 @media (prefers-reduced-motion: reduce){.bp-ell i{animation:none;opacity:.7}}
+
+/* ══ プロフィール：投影して使うため、全体に余白を広く取る ══
+   会場のスクリーンは離れて見るので、詰めるより空ける方が読みやすい。
+   .profile-fs 配下だけに効かせ、通常のページには影響させない。 */
+.profile-fs .pf-doc{max-width:1120px;
+  padding:clamp(5rem,12vh,8.5rem) clamp(2rem,7vw,4.5rem) clamp(6rem,16vh,10rem)}
+.profile-fs .pf-sec{margin-bottom:clamp(4.2rem,10vh,6.5rem)}
+.profile-fs .pf-sec-head{margin-bottom:2rem;padding-bottom:1rem;gap:1.1rem}
+.profile-fs .pf-sec-title{font-size:clamp(1.25rem,2.9vw,1.85rem)}
+.profile-fs .pf-lead{font-size:clamp(0.95rem,1.7vw,1.14rem);line-height:2.05;margin-bottom:2rem}
+.profile-fs .pf-cards{gap:clamp(1.2rem,2.6vw,1.9rem)}
+.profile-fs .pf-card{padding:1.5rem 1.6rem}
+.profile-fs .pf-chips{gap:0.7rem}
+.profile-fs .pf-chip{padding:0.55rem 1rem;font-size:clamp(0.78rem,1.5vw,0.92rem)}
+.profile-fs .pf-metrics{gap:clamp(1.2rem,2.6vw,1.9rem)}
+.profile-fs .pf-metric{padding:1.6rem 1.7rem}
+.profile-fs .pf-bookrow{gap:clamp(1.4rem,3vw,2.2rem)}
+.profile-fs .pf-glance{margin-bottom:clamp(4rem,10vh,6.5rem)}
+.profile-fs .pf-glance-grid{gap:clamp(1rem,2.2vw,1.5rem)}
+.profile-fs .pf-g{padding:1.25rem 1.4rem}
+.profile-fs .pf-g b{font-size:clamp(0.92rem,1.8vw,1.06rem)}
+.profile-fs .pf-g span{font-size:clamp(0.78rem,1.5vw,0.88rem)}
+.profile-fs .pf-timeline{margin-top:0.5rem}
+.profile-fs .pf-tl-item{margin-bottom:1.7rem}
+.profile-fs .pf-hero{margin-bottom:clamp(3.5rem,9vh,5.5rem)}
+@media(max-width:900px){
+  .profile-fs .pf-doc{padding:clamp(3.2rem,8vh,5rem) clamp(1.3rem,5vw,2.4rem) clamp(4rem,12vh,6rem)}
+  .profile-fs .pf-sec{margin-bottom:clamp(3rem,7vh,4.2rem)}
+}
 </style>
 </head>
 <body>
