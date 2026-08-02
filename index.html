@@ -1216,6 +1216,49 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
   .profile-fs .pf-doc{padding:clamp(3.2rem,8vh,5rem) clamp(1.3rem,5vw,2.4rem) clamp(4rem,12vh,6rem)}
   .profile-fs .pf-sec{margin-bottom:clamp(3rem,7vh,4.2rem)}
 }
+
+/* ══ 裏資料置き場の解錠ゲート（秘密コマンド ur）══ */
+.bkgate{position:fixed;inset:0;z-index:9998;display:none;place-items:center;padding:1.5rem;
+  background:#04060d;color:var(--azure-pale)}
+.bkgate.show{display:grid;animation:bkIn .45s ease both}
+@keyframes bkIn{from{opacity:0}to{opacity:1}}
+.bkgate::before{content:"";position:absolute;inset:-10%;pointer-events:none;opacity:.42;
+  background-image:linear-gradient(rgba(46,84,150,.3) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(46,84,150,.3) 1px,transparent 1px);
+  background-size:52px 52px;animation:bootGridDrift 9s linear infinite}
+.bkgate::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.45;
+  background:repeating-linear-gradient(to bottom,rgba(255,255,255,.04) 0 1px,transparent 1px 3px)}
+.bkgate-hud i{position:absolute;width:40px;height:40px;border:1px solid rgba(159,198,245,.55);pointer-events:none}
+.bkgate-hud i:nth-child(1){top:22px;left:22px;border-right:0;border-bottom:0}
+.bkgate-hud i:nth-child(2){top:22px;right:22px;border-left:0;border-bottom:0}
+.bkgate-hud i:nth-child(3){bottom:22px;left:22px;border-right:0;border-top:0}
+.bkgate-hud i:nth-child(4){bottom:22px;right:22px;border-left:0;border-top:0}
+.bkgate-hud b{position:absolute;left:76px;bottom:30px;font-family:var(--font-en);font-size:.6rem;
+  font-weight:700;letter-spacing:.28em;color:rgba(159,198,245,.6);pointer-events:none}
+.bkgate-box{position:relative;z-index:1;width:min(460px,92vw);text-align:center;
+  display:flex;flex-direction:column;gap:.9rem}
+.bkgate-eyebrow{font-family:var(--font-en);font-size:.62rem;font-weight:700;letter-spacing:.42em;color:#f0b429}
+.bkgate-title{font-family:var(--font-ja-serif);font-weight:600;
+  font-size:clamp(1.4rem,4vw,2.1rem);color:#fff;letter-spacing:.08em;
+  text-shadow:0 0 26px rgba(120,180,255,.45)}
+.bkgate-lead{font-size:.85rem;line-height:1.9;color:rgba(216,228,240,.7);margin-bottom:.4rem}
+.bkgate input{width:100%;padding:.85rem .95rem;border:1px solid rgba(159,198,245,.35);border-radius:4px;
+  background:rgba(159,198,245,.07);color:#fff;font-size:1rem;text-align:center;letter-spacing:.06em;
+  font-family:var(--font-en)}
+.bkgate input:focus{outline:none;border-color:#9fc6f5;box-shadow:0 0 0 3px rgba(159,198,245,.18)}
+.bkgate button{padding:.85rem;border:none;border-radius:4px;background:#2e5496;color:#fff;
+  font-family:var(--font-ja-sans);font-weight:700;font-size:.95rem;cursor:pointer;
+  letter-spacing:.08em;transition:background .2s,transform .2s}
+.bkgate button:hover{background:#3a67b0;transform:translateY(-1px)}
+.bkgate-note{font-family:var(--font-en);font-size:.6rem;font-weight:700;letter-spacing:.2em;
+  color:rgba(159,198,245,.45);margin-top:.3rem}
+@media(max-width:640px){
+  .bkgate-hud i{width:26px;height:26px;top:14px;left:14px}
+  .bkgate-hud i:nth-child(2){right:14px;left:auto}
+  .bkgate-hud i:nth-child(3){bottom:14px;top:auto}
+  .bkgate-hud i:nth-child(4){bottom:14px;right:14px;top:auto;left:auto}
+  .bkgate-hud b{left:52px;bottom:20px}}
+@media (prefers-reduced-motion: reduce){.bkgate::before{animation:none}.bkgate.show{animation:none}}
 </style>
 </head>
 <body>
@@ -2012,6 +2055,22 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
 })();
 </script>
 
+<!-- 秘密コマンド ur：裏資料置き場への解錠ゲート。
+     index.html は公開ページなので、パスワードもハッシュもここには持たせない。
+     入力値は既存のロック画面が読む sessionStorage に預けるだけで、
+     正否の判定は遷移先の暗号化ページ自身が行う。 -->
+<div id="bkgate" class="bkgate" role="dialog" aria-label="裏資料置き場の解錠" aria-hidden="true">
+  <div class="bkgate-hud" aria-hidden="true"><i></i><i></i><i></i><i></i><b>OZAKEN CMS ／ RESTRICTED</b></div>
+  <form class="bkgate-box" id="bkForm" autocomplete="off">
+    <span class="bkgate-eyebrow">RESTRICTED AREA</span>
+    <h2 class="bkgate-title">裏資料置き場</h2>
+    <p class="bkgate-lead">スポット講演・パネルディスカッションの資料置き場です。<br>マスターパスワードを入力してください。</p>
+    <input id="bkPw" type="password" placeholder="パスワード" autocomplete="off" spellcheck="false">
+    <button type="submit">解錠して開く</button>
+    <p class="bkgate-note">Esc で閉じる</p>
+  </form>
+</div>
+
 <!-- 秘密コマンド ti：講演タイトルカード（その場で入力できる投影用フルスクリーン） -->
 <div id="titlecard" class="thanks tc" aria-hidden="true" role="dialog" aria-label="講演タイトル">
   <canvas class="thanks-net" aria-hidden="true"></canvas>
@@ -2502,12 +2561,17 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     if(e.key==='Escape'){
       if(editing && t.blur) t.blur();
       if(window.ozBootSkip) window.ozBootSkip();
+      if(window.ozGateClose) window.ozGateClose();
       all.forEach(function(o){ if(o.el.classList.contains('show')) o.hide(); });
       return;
     }
     if(editing) return;
     if(e.key&&e.key.length===1&&!e.metaKey&&!e.ctrlKey&&!e.altKey){ buf=(buf+e.key.toLowerCase()).slice(-8);
       /* go は開演の演出だけを再生する。どこにも遷移せず、終わったら元の画面に戻る */
+      /* ur は裏資料置き場のゲートを開く。判定は遷移先の暗号化ページに任せる */
+      if(buf.slice(-2)==='ur'){ buf='';
+        all.forEach(function(o){ if(o.el.classList.contains('show')) o.hide(); });
+        if(window.ozGate) window.ozGate(); return; }
       if(buf.slice(-2)==='go'&&window.ozBoot){ buf='';
         all.forEach(function(o){ if(o.el.classList.contains('show')) o.hide(); });
         window.ozBoot(null,'start'); return; }
@@ -2616,6 +2680,40 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
         timer=setTimeout(function(){ hint.classList.add('dim'); }, 6000); }
     }
   }).observe(card,{attributes:true,attributeFilter:['class']});
+})();
+</script>
+
+<script>
+/* 裏資料置き場の解錠ゲート。
+   パスワードの正否はここでは判定しない。入力値を既存のロック画面が読む
+   sessionStorage キーに預け、遷移先の暗号化ページに解錠させる。
+   こうすることで、公開されている index.html にパスワードもハッシュも残さずに済む。 */
+(function(){
+  var gate=document.getElementById('bkgate'), form=document.getElementById('bkForm'),
+      pw=document.getElementById('bkPw');
+  if(!gate||!form||!pw) return;
+  var DEST='裏資料置き場.html', SESSION_KEY='ozaken_archive_pw';
+  window.ozGate=function(){
+    gate.classList.add('show');
+    gate.setAttribute('aria-hidden','false');
+    document.documentElement.classList.add('boot-locked');
+    setTimeout(function(){ pw.focus(); }, 60);
+  };
+  window.ozGateClose=function(){
+    if(!gate.classList.contains('show')) return;
+    gate.classList.remove('show');
+    gate.setAttribute('aria-hidden','true');
+    document.documentElement.classList.remove('boot-locked');
+    pw.value='';
+  };
+  form.addEventListener('submit', function(ev){
+    ev.preventDefault();
+    var v=pw.value;
+    if(!v) return;
+    try{ sessionStorage.setItem(SESSION_KEY, v); }catch(e){}
+    pw.value='';
+    window.location.href=encodeURI(DEST);
+  });
 })();
 </script>
 </body>
