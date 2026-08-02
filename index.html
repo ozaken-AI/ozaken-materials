@@ -1172,6 +1172,21 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
 .profile-fs .pf-bookcard.no-cover::before{width:clamp(120px,24vw,158px)}
 /* 3列だと1列あたりが細くなりすぎるので、最小幅を上げて自然に2列へ落とす */
 .profile-fs .pf-bookrow{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+
+/* 起動シークエンス：いま何をしているかを日本語で示す進行表示 */
+.boot-proc{position:absolute;left:50%;top:calc(50% - 152px);transform:translateX(-50%);
+  display:flex;align-items:center;gap:.5rem;white-space:nowrap;opacity:0;
+  font-family:var(--font-ja-sans);font-weight:700;letter-spacing:.14em;
+  font-size:clamp(.78rem,1.9vw,.98rem);color:#9fc6f5;
+  text-shadow:0 0 18px rgba(120,180,255,.4)}
+.boot.is-on .boot-proc{animation:bootFadeIn .5s ease .25s both,bootPanelOut .4s ease 4.95s both}
+.bp-ell i{display:inline-block;width:4px;height:4px;border-radius:50%;background:#9fc6f5;
+  margin-left:3px;opacity:.25;animation:bpDot 1.2s ease-in-out infinite}
+.bp-ell i:nth-child(2){animation-delay:.2s}
+.bp-ell i:nth-child(3){animation-delay:.4s}
+@keyframes bpDot{0%,100%{opacity:.25}50%{opacity:1}}
+@media(max-width:640px){.boot-proc{top:calc(50% - 128px)}}
+@media (prefers-reduced-motion: reduce){.bp-ell i{animation:none;opacity:.7}}
 </style>
 </head>
 <body>
@@ -1843,6 +1858,10 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
   <div class="boot-sweep"></div>
   <div class="boot-hud"><i></i><i></i><i></i><i></i></div>
   <div class="boot-tag">OZAKEN CMS ／ LECTURE BOOT SEQUENCE</div>
+  <div class="boot-proc">
+    <span id="bootProc">セッション開始プロセス進行中</span>
+    <span class="bp-ell" aria-hidden="true"><i></i><i></i><i></i></span>
+  </div>
   <div class="boot-term">
     <p style="--d:.35s"><span class="arrow">&gt;</span><span class="lbl">INITIALIZING OZAKEN CMS</span><span class="dots"></span><span class="g"><i></i></span><span class="ok">OK</span></p>
     <p style="--d:.87s"><span class="arrow">&gt;</span><span class="lbl">MOUNTING ARCHIVE VOLUME</span><span class="dots"></span><span class="g"><i></i></span><span class="ok">OK</span></p>
@@ -1925,13 +1944,13 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     start:{tag:'OZAKEN CMS ／ LECTURE BOOT SEQUENCE',
       lines:['INITIALIZING OZAKEN CMS','MOUNTING ARCHIVE VOLUME','CONTEXT ASSET LEDGER',
              'MASTER DATA / 正本','HARNESS RUNTIME','STARTING LECTURE SESSION'],
-      bar:'STARTING LECTURE SESSION',
+      bar:'STARTING LECTURE SESSION',proc:'セッション開始プロセス進行中',
       mod:'SESSION START',lead:'セッションを開始します',
       name:'小澤健祐（おざけん）',sub:'AIをすべての人に届けるために、書き、話し、つくり続けている。'},
     end:{tag:'OZAKEN CMS ／ SESSION END SEQUENCE',
       lines:['CLOSING LECTURE SESSION','SAVING SESSION LOG','ARCHIVING SLIDES',
              'INDEXING MATERIALS','PUBLISHING ARCHIVE URL','GENERATING ACCESS CODE'],
-      bar:'GENERATING ACCESS CODE',
+      bar:'GENERATING ACCESS CODE',proc:'セッション終了プロセス進行中',
       mod:'SESSION COMPLETE',lead:'Thank You',
       name:'資料アーカイブをご用意しました',sub:'続きは、QRコードからお持ち帰りください。'}
   };
@@ -1942,6 +1961,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     var lbls=boot.querySelectorAll('.boot-term .lbl');
     for(var i=0;i<lbls.length;i++) if(c.lines[i]) lbls[i].textContent=c.lines[i];
     var bh=boot.querySelector('.boot-bar-head span'); if(bh) bh.textContent=c.bar;
+    var pr=boot.querySelector('#bootProc'); if(pr) pr.textContent=c.proc;
     var q=function(sel){ return boot.querySelector(sel); };
     if(q('.bf-mod')) q('.bf-mod').textContent=c.mod;
     if(q('.bf-lead')) q('.bf-lead').textContent=c.lead;
