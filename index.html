@@ -1259,6 +1259,22 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
   .bkgate-hud i:nth-child(4){bottom:14px;right:14px;top:auto;left:auto}
   .bkgate-hud b{left:52px;bottom:20px}}
 @media (prefers-reduced-motion: reduce){.bkgate::before{animation:none}.bkgate.show{animation:none}}
+
+/* YouTubeチャンネルの見出し。アイコンが無い間は枠だけの仮置きで並びを保つ */
+.pf-ytch{display:flex;align-items:center;gap:clamp(1rem,2.4vw,1.5rem);margin:0 0 1.8rem;flex-wrap:wrap}
+.pf-ytav{flex:0 0 auto;width:clamp(72px,11vw,104px);height:clamp(72px,11vw,104px);
+  border-radius:50%;overflow:hidden;display:block;
+  box-shadow:0 0 0 1px rgba(159,198,245,.35),0 14px 34px -12px rgba(0,0,0,.75)}
+.pf-ytav img{width:100%;height:100%;object-fit:cover;display:block}
+.pf-ytav.no-logo{display:flex;align-items:center;justify-content:center;
+  border:1px dashed rgba(159,198,245,.45);background:rgba(159,198,245,.07)}
+.pf-ytav.no-logo::before{content:"AI\A現場\A報告";white-space:pre;text-align:center;
+  font-family:var(--font-ja-serif);font-weight:600;line-height:1.35;
+  font-size:clamp(.66rem,1.5vw,.82rem);color:rgba(216,228,240,.75)}
+.pf-ytmeta{display:flex;flex-direction:column;gap:.35rem}
+.pf-ytlabel{font-family:var(--font-en);font-size:.6rem;font-weight:700;letter-spacing:.32em;color:#ff5d6a}
+.pf-ytname{font-family:var(--font-ja-serif);font-weight:600;letter-spacing:.1em;
+  font-size:clamp(1.25rem,3.2vw,1.85rem);color:#fff;text-shadow:0 0 22px rgba(120,180,255,.4)}
 </style>
 </head>
 <body>
@@ -2196,6 +2212,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
         <div class="pf-g"><span class="pf-g-k">政策</span><p><b>経済産業省 委員</b><span>ワーキンググループに参画</span></p></div>
         <div class="pf-g"><span class="pf-g-k">顧問</span><p><b>日本HP／NTTデータグループ ほか</b><span>企業のAI活用を伴走</span></p></div>
         <div class="pf-g"><span class="pf-g-k">自治体</span><p><b>大分県フェロー／千葉県船橋市アドバイザー</b><span>地域のAI実装を支える</span></p></div>
+        <div class="pf-g"><span class="pf-g-k">YouTube</span><p><b>「AI現場報告」運営</b><span>最前線と最先端の2軸で発信</span></p></div>
         <div class="pf-g"><span class="pf-g-k">執筆</span><p><b>AI関連記事 1,500本以上</b><span>専門メディアの編集長として</span></p></div>
         <div class="pf-g"><span class="pf-g-k">メディア</span><p><b>テレビ・ネット媒体に多数出演</b><span>ABEMA Prime、NewsPicks ほか</span></p></div>
       </div>
@@ -2257,7 +2274,25 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     </section>
 
     <section class="pf-sec" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">03</span><h3 class="pf-sec-title">AICX協会 ── 代表理事として</h3></div>
+      <div class="pf-sec-head"><span class="pf-sec-no">03</span><h3 class="pf-sec-title">YouTube ── AI現場報告 運営中</h3></div>
+      <div class="pf-ytch">
+        <span class="pf-ytav"><img src="99_assets/logo-ai-genba-icon.png" alt="" loading="lazy"
+              onerror="var w=this.closest('.pf-ytav');this.remove();if(w)w.classList.add('no-logo')"></span>
+        <span class="pf-ytmeta">
+          <span class="pf-ytlabel">YOUTUBE CHANNEL</span>
+          <span class="pf-ytname">AI現場報告</span>
+        </span>
+      </div>
+      <p class="pf-lead">AIの現場でいま何が起きているのかを伝えるYouTubeチャンネル<span class="pf-hot">「AI現場報告」</span>を運営しています。取材と実装の両方に足を置いている立場から、机上の整理ではなく現場の実像を話す場にしています。</p>
+      <div class="pf-cards pf-stag">
+        <div class="pf-card"><h4><span class="tag">01</span>最前線</h4><p>企業の現場でいま実際に起きていること。導入がどこでつまずき、何がうまくいったのか。数字と手触りの両方で、AI活用のリアルを扱います。</p></div>
+        <div class="pf-card"><h4><span class="tag">02</span>最先端</h4><p>新しいモデルや技術の動向。何が変わったのかを噛み砕き、それが現場にいつ、どう効いてくるのかまで踏み込んで解説します。</p></div>
+      </div>
+      <p class="pf-lead" style="margin-top:1rem">どちらか一方だけでは、AIの実像は見えません。<span class="pf-hot">最先端の動きと、最前線の現実を行き来する</span>こと。それがこのチャンネルの立ち位置です。</p>
+    </section>
+
+    <section class="pf-sec" data-reveal>
+      <div class="pf-sec-head"><span class="pf-sec-no">04</span><h3 class="pf-sec-title">AICX協会 ── 代表理事として</h3></div>
       <p class="pf-lead">国内初のAIエージェント特化型の業界団体として設立し、<span class="pf-hot">代表理事</span>を務めています。企業ごとに閉じた取り組みでは、業界全体の実装は進みません。共通の基準と、集まれる場をつくることが役割です。</p>
       <div class="pf-logos">
         <span class="lg"><img src="99_assets/logo-aicx-white.png" alt="一般社団法人AICX協会 ロゴ" loading="lazy"><span>AICX ASSOCIATION</span></span>
@@ -2278,7 +2313,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     </section>
 
     <section class="pf-sec" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">04</span><h3 class="pf-sec-title">カンファレンス主催 ── AI Agent Day</h3></div>
+      <div class="pf-sec-head"><span class="pf-sec-no">05</span><h3 class="pf-sec-title">カンファレンス主催 ── AI Agent Day</h3></div>
       <p class="pf-lead">AIエージェントに特化した<span class="pf-hot">国内最大級</span>のカンファレンスを、企画・主催・登壇まで一貫して担っています。</p>
       <div class="pf-metrics pf-stag">
         <div class="pf-metric accent">
@@ -2296,7 +2331,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     </section>
 
     <section class="pf-sec" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">05</span><h3 class="pf-sec-title">認定資格 ── 日本初のAIエージェント資格</h3></div>
+      <div class="pf-sec-head"><span class="pf-sec-no">06</span><h3 class="pf-sec-title">認定資格 ── 日本初のAIエージェント資格</h3></div>
       <p class="pf-lead">AI実装を担う人材の“格”を定義する認定資格を、<span class="pf-hot">日本で初めて</span>プロデュースしました。</p>
       <div class="pf-logos">
         <span class="lg plate"><img src="99_assets/logo-strategist.png" alt="AIエージェント・ストラテジスト 認定資格 ロゴ" loading="lazy"><span>AI AGENT STRATEGIST</span></span>
@@ -2318,7 +2353,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     </section>
 
     <section class="pf-sec" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">06</span><h3 class="pf-sec-title">経済産業省 ── 委員</h3></div>
+      <div class="pf-sec-head"><span class="pf-sec-no">07</span><h3 class="pf-sec-title">経済産業省 ── 委員</h3></div>
       <p class="pf-lead">AIの社会実装を進める立場から、<span class="pf-hot">国の人材・スキル政策</span>の議論に参画しています。</p>
       <div class="pf-cards pf-stag">
         <div class="pf-card"><h4><span class="tag">01</span>経済産業省</h4><p>「AX時代におけるスキルのあり方検討ワーキンググループ」<b>委員</b><br>2026年4月〜</p></div>
@@ -2327,7 +2362,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     </section>
 
     <section class="pf-sec" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">07</span><h3 class="pf-sec-title">企業顧問・アドバイザー</h3></div>
+      <div class="pf-sec-head"><span class="pf-sec-no">08</span><h3 class="pf-sec-title">企業顧問・アドバイザー</h3></div>
       <p class="pf-lead">大手企業の実装現場に、顧問／アドバイザーとして<span class="pf-hot">継続的に伴走</span>しています。</p>
       <div class="pf-chips pf-stag">
         <span class="pf-chip"><span class="em">日本HP</span> 顧問</span>
@@ -2340,7 +2375,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     </section>
 
     <section class="pf-sec" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">08</span><h3 class="pf-sec-title">自治体 ── フェロー・アドバイザー</h3></div>
+      <div class="pf-sec-head"><span class="pf-sec-no">09</span><h3 class="pf-sec-title">自治体 ── フェロー・アドバイザー</h3></div>
       <p class="pf-lead">自治体の<span class="pf-hot">行政DXと地域課題への実装</span>を、フェロー／アドバイザーとして支えています。</p>
       <div class="pf-cards pf-stag">
         <div class="pf-card"><h4><span class="tag">01</span>大分県</h4><p><b>フェロー</b><br>県のAI活用・地域課題への実装を後押しする立場で就任。</p></div>
@@ -2350,7 +2385,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     </section>
 
     <section class="pf-sec" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">09</span><h3 class="pf-sec-title">メディア出演・取材</h3></div>
+      <div class="pf-sec-head"><span class="pf-sec-no">10</span><h3 class="pf-sec-title">メディア出演・取材</h3></div>
       <p class="pf-lead">テレビ・ラジオ・ネット番組で、AIの最新トレンドとビジネス応用を解説。NewsPicks「AI DIVE」では<span class="pf-hot">メインMC</span>を務めるなど、レギュラー出演も多数。</p>
       <p class="pf-subhead">TV / VIDEO ─ テレビ・映像</p>
       <div class="pf-wall pf-stag">
@@ -2398,7 +2433,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     </section>
 
     <section class="pf-sec" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">10</span><h3 class="pf-sec-title">現在の役割 ── 法人</h3></div>
+      <div class="pf-sec-head"><span class="pf-sec-no">11</span><h3 class="pf-sec-title">現在の役割 ── 法人</h3></div>
       <p class="pf-lead">経営として関わっている法人です。委員・顧問・自治体の役割は、それぞれ前のセクションに分けています。</p>
       <div class="pf-timeline pf-stag">
         <div class="pf-tl-item"><h5>一般社団法人AICX協会　代表理事 / Founder</h5><p>国内初のAIエージェント特化型の業界団体。AI Agent Day（累計約2万名）やAICX Forumの開催、認定資格制度の運営を通じ、企業のAIエージェント実装の土台をつくる。</p></div>
@@ -2408,7 +2443,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     </section>
 
     <section class="pf-sec" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">11</span><h3 class="pf-sec-title">主要支援先（社名非公開）</h3></div>
+      <div class="pf-sec-head"><span class="pf-sec-no">12</span><h3 class="pf-sec-title">主要支援先（社名非公開）</h3></div>
       <p class="pf-lead">守秘義務により社名は伏せていますが、各業界を代表する<span class="pf-hot">日本有数のリーディングカンパニー</span>の現場に入り、AI活用・実装を支援してきました。</p>
       <div class="pf-clients pf-stag">
         <div class="pf-client">
@@ -2444,7 +2479,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     </section>
 
     <section class="pf-sec" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">12</span><h3 class="pf-sec-title">主な講演テーマ</h3></div>
+      <div class="pf-sec-head"><span class="pf-sec-no">13</span><h3 class="pf-sec-title">主な講演テーマ</h3></div>
       <p class="pf-lead">経営層向けから現場の実践まで、目的に合わせてテーマを設計しています。</p>
       <div class="pf-cards pf-stag">
         <div class="pf-card"><h4><span class="tag">01</span>AIエージェントが変えるビジネスの未来</h4><p>生成AI時代の「AIエージェント」が変えるビジネスの未来 〜導入戦略と実践事例〜</p></div>
@@ -2459,7 +2494,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     </section>
 
     <section class="pf-sec" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">13</span><h3 class="pf-sec-title">プロフィール ── その他の活動</h3></div>
+      <div class="pf-sec-head"><span class="pf-sec-no">14</span><h3 class="pf-sec-title">プロフィール ── その他の活動</h3></div>
       <p class="pf-lead">一般社団法人AICX協会 代表理事として、企業のAIエージェント実装を業界横断で牽引。あわせて複数のAI企業の経営・アドバイザーに参画し、日本HP・NTTデータグループなど大手の実装現場に伴走している。</p>
       <p class="pf-lead">NewsPicksのAI番組「AI DIVE」メインMC、千葉県船橋市 生成AIアドバイザーとして行政のDX推進にも携わる。NewsPicksプロピッカー、Udemyベストセラー講師、SHIFT AI公式モデレーターとしても活動中。</p>
       <p class="pf-lead">AI領域以外では、2022年にCinematoricoを創業しCOOに就任。PRやフリーカメラマン、日本大学文理学部次世代社会研究センターのプロボノなど、多彩な経験を活かして活動している。</p>
