@@ -1364,26 +1364,49 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
 #amSvg{width:100%;height:100%;display:block;overflow:visible}
 .am-sky{animation:amDrift 46s ease-in-out infinite alternate}
 @keyframes amDrift{from{transform:translate(-9px,-6px)}to{transform:translate(9px,6px)}}
-.am-bg circle{fill:#d8e4f0;opacity:.16;animation:amTw 6.5s ease-in-out infinite}
+.am-stage{cursor:grab;touch-action:none}
+.am-stage.am-drag{cursor:grabbing}
+.am-view{transform-origin:0 0}
+.am-zoom{position:absolute;z-index:3;right:clamp(.9rem,2.6vw,1.8rem);
+  bottom:clamp(3.4rem,8vh,4.6rem);display:flex;align-items:center;gap:.4rem;
+  background:rgba(6,10,20,.72);border:1px solid rgba(216,228,240,.18);
+  border-radius:999px;padding:.35rem .5rem;backdrop-filter:blur(6px)}
+.am-zoom button{width:30px;height:30px;border-radius:50%;cursor:pointer;
+  background:rgba(255,255,255,.06);border:1px solid rgba(216,228,240,.2);
+  color:rgba(216,228,240,.85);font-size:.9rem;line-height:1;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .2s ease,color .2s ease}
+.am-zoom button:hover{background:rgba(159,198,245,.24);color:#fff}
+.am-zoom .am-reset{width:auto;padding:0 .8rem;border-radius:999px;
+  font-family:var(--font-en);font-size:.58rem;font-weight:700;letter-spacing:.16em}
+.am-lvl{min-width:52px;text-align:center;font-family:var(--font-en);
+  font-size:.66rem;font-weight:700;letter-spacing:.1em;color:#9fc6f5}
+.am-bg circle{fill:#d8e4f0;opacity:.16;r:calc(1.1px * var(--iz,1));animation:amTw 6.5s ease-in-out infinite}
 @keyframes amTw{0%,100%{opacity:.09}50%{opacity:.34}}
-.am-link{stroke:#4d7fc4;stroke-width:1;fill:none;opacity:.42;
+.am-link{stroke:#4d7fc4;stroke-width:1;fill:none;opacity:.42;vector-effect:non-scaling-stroke;
   transition:opacity .3s ease,stroke .3s ease}
 .arcmap.show .am-link{animation:amDraw 1.5s ease forwards}
 @keyframes amDraw{from{stroke-dashoffset:var(--len)}to{stroke-dashoffset:0}}
 .am-g.on .am-link{opacity:.95;stroke:#9fc6f5}
-.am-name{font-family:var(--font-ja-serif);font-size:15px;fill:rgba(216,228,240,.6);
+.am-name{font-family:var(--font-ja-serif);font-size:calc(15px * var(--iz,1));fill:rgba(216,228,240,.6);
   transition:fill .3s ease}
 .am-g.on .am-name{fill:#fff}
-.am-num{font-family:'Hanken Grotesk',sans-serif;font-size:10.5px;font-weight:700;
+.am-num{font-family:'Hanken Grotesk',sans-serif;font-size:calc(10.5px * var(--iz,1));font-weight:700;
   letter-spacing:2.4px;fill:rgba(159,198,245,.55)}
 .am-s{cursor:pointer;opacity:0;transform:scale(.25);
   transform-box:fill-box;transform-origin:center;
   transition:opacity .5s ease,transform .6s cubic-bezier(.2,.9,.3,1.6)}
 .arcmap.show .am-s{opacity:1;transform:none}
-.am-dot{fill:#d8e4f0;transition:fill .18s ease,r .18s ease}
-.am-halo{fill:#9fc6f5;opacity:.14;transition:opacity .22s ease,r .22s ease}
-.am-s:hover .am-dot,.am-s:focus-visible .am-dot{fill:#fff;r:7.5}
-.am-s:hover .am-halo,.am-s:focus-visible .am-halo{opacity:.42;r:17}
+.am-dot{fill:#d8e4f0;r:calc(4.2px * var(--iz,1));transition:fill .18s ease,r .18s ease}
+.am-halo{fill:#9fc6f5;opacity:.14;r:calc(13px * var(--iz,1));transition:opacity .22s ease,r .22s ease}
+.am-s:hover .am-dot,.am-s:focus-visible .am-dot{fill:#fff;r:calc(7.5px * var(--iz,1))}
+.am-s:hover .am-halo,.am-s:focus-visible .am-halo{opacity:.42;r:calc(19px * var(--iz,1))}
+/* 拡大したときだけ、星のそばに資料名を出す */
+.am-lab{font-family:var(--font-ja-sans);font-size:calc(11.5px * var(--iz,1));
+  fill:rgba(216,228,240,.9);opacity:0;pointer-events:none;
+  transition:opacity .3s ease;paint-order:stroke;
+  stroke:rgba(4,6,13,.85);stroke-width:calc(3px * var(--iz,1));stroke-linejoin:round}
+.am-view.am-zoomed .am-lab{opacity:1}
 .am-tip{position:fixed;z-index:9700;pointer-events:none;opacity:0;
   max-width:min(360px,72vw);padding:.6rem .85rem;border-radius:9px;
   background:rgba(6,10,20,.94);border:1px solid rgba(159,198,245,.35);
@@ -2779,6 +2802,8 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
       return;
     }
     if(editing) return;
+    var map=document.getElementById('arcmap');
+    if(map&&map.classList.contains('show')) return;   /* 星座マップ表示中は他のコマンドを拾わない */
     if(e.key&&e.key.length===1&&!e.metaKey&&!e.ctrlKey&&!e.altKey){ buf=(buf+e.key.toLowerCase()).slice(-8);
       /* go は開演の演出だけを再生する。どこにも遷移せず、終わったら元の画面に戻る */
       /* ur は裏資料置き場のゲートを開く。判定は遷移先の暗号化ページに任せる */
@@ -2940,8 +2965,14 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     <span class="am-meta"><b id="amN">0</b> DOCUMENTS<span class="am-sep">／</span><b id="amC">0</b> CONSTELLATIONS</span>
   </div>
   <div class="am-stage"><svg id="amSvg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg></div>
+  <div class="am-zoom">
+    <button type="button" data-z="out" aria-label="縮小">−</button>
+    <span class="am-lvl" id="amLvl">100%</span>
+    <button type="button" data-z="in" aria-label="拡大">＋</button>
+    <button type="button" data-z="reset" class="am-reset">RESET</button>
+  </div>
   <div class="am-tip" id="amTip" aria-hidden="true"></div>
-  <div class="am-foot">星にふれると資料名が出ます　／　クリックで開く　／　<b>ESC</b> で閉じる</div>
+  <div class="am-foot">ホイールで拡大縮小　／　ドラッグで移動　／　クリックで資料を開く　／　<b>0</b> で戻す　／　<b>ESC</b> で閉じる</div>
   <button class="am-close" id="amClose" type="button" aria-label="閉じる">✕</button>
 </div>
 
@@ -2968,7 +2999,8 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     var cards=[].slice.call(document.querySelectorAll('.card'))
                 .filter(function(c){ return c.querySelector('.doc-list a'); });
     if(!cards.length) return;
-    var sky=el('g',{'class':'am-sky'}), n=0, delay=0;
+    var sky=el('g',{'class':'am-sky'}), view=el('g',{'class':'am-view'});
+    var n=0, delay=0;
     var br=rng(20260802), bg=el('g',{'class':'am-bg'});
     for(var b=0;b<130;b++){
       var st=el('circle',{cx:(br()*1660-30).toFixed(1),cy:(br()*960-30).toFixed(1),
@@ -2976,7 +3008,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
       st.style.animationDelay=(br()*7).toFixed(2)+'s';
       bg.appendChild(st);
     }
-    sky.appendChild(bg);
+    view.appendChild(bg);
 
     cards.forEach(function(card,ci){
       var links=[].slice.call(card.querySelectorAll('.doc-list a'));
@@ -3024,17 +3056,24 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
         s.addEventListener('click',function(){ location.href=a.getAttribute('href'); });
         s.addEventListener('keydown',function(ev){
           if(ev.key==='Enter'||ev.key===' '){ ev.preventDefault(); location.href=a.getAttribute('href'); } });
-        g.appendChild(s); n++;
+        g.appendChild(s);
+        /* 星座の中心より左の星は、名前を左側に出す。重なりが減る */
+        var left=p[0]<cx;
+        var lb=el('text',{'class':'am-lab',x:p[0]+(left?-11:11),y:p[1]+4.5,
+                          'text-anchor':left?'end':'start'});
+        lb.textContent=label.length>24?label.slice(0,24)+'…':label;
+        g.appendChild(lb);
+        n++;
       });
 
       g.appendChild(el('text',{'class':'am-num',x:cx-rad-6,y:cy-rad-30},no));
       g.lastChild.textContent=no;
       var t=el('text',{'class':'am-name',x:cx-rad-6,y:cy-rad-10});
       t.textContent=name; g.appendChild(t);
-      sky.appendChild(g);
+      view.appendChild(g);
     });
 
-    svg.appendChild(sky);
+    sky.appendChild(view); svg.appendChild(sky);
     /* 線を引く演出のため、実長をCSS変数として渡す */
     [].forEach.call(svg.querySelectorAll('.am-link'),function(pth){
       var L=pth.getTotalLength();
@@ -3048,12 +3087,110 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
   }
 
   function open(){ if(!built) build();
+    reset();
     ov.style.display='flex'; ov.setAttribute('aria-hidden','false');
-    requestAnimationFrame(function(){ ov.classList.add('show'); }); }
+    ov.tabIndex=-1;
+    requestAnimationFrame(function(){ ov.classList.add('show'); ov.focus(); }); }
   function close(){ if(!ov.classList.contains('show')) return;
     ov.classList.remove('show'); tip.classList.remove('on');
     ov.setAttribute('aria-hidden','true');
     setTimeout(function(){ if(!ov.classList.contains('show')) ov.style.display='none'; },520); }
+
+
+  /* ---- ズームとパン ---------------------------------------------- */
+  var stage=document.querySelector('.am-stage'), lvl=document.getElementById('amLvl');
+  var view=null, k=1, tx=0, ty=0, MIN=0.55, MAX=6;
+
+  function apply(){
+    if(!view) view=svg.querySelector('.am-view');
+    if(!view) return;
+    view.setAttribute('transform','translate('+tx.toFixed(2)+' '+ty.toFixed(2)+') scale('+k.toFixed(4)+')');
+    /* 拡大しても線や星の太さが変わらないよう、逆数を配る */
+    view.style.setProperty('--iz',(1/k).toFixed(4));
+    view.classList.toggle('am-zoomed',k>=1.7);
+    if(lvl) lvl.textContent=Math.round(k*100)+'%';
+  }
+  /* 画面上の座標を、viewBox の座標に直す */
+  function toSvg(ev){
+    var m=svg.getScreenCTM(); if(!m) return null;
+    var pt=svg.createSVGPoint(); pt.x=ev.clientX; pt.y=ev.clientY;
+    return pt.matrixTransform(m.inverse());
+  }
+  /* 指した点を動かさずに、その場で拡大縮小する */
+  function zoomAt(sx,sy,f){
+    var nk=Math.max(MIN,Math.min(MAX,k*f));
+    if(nk===k) return;
+    tx=sx-(sx-tx)*(nk/k); ty=sy-(sy-ty)*(nk/k); k=nk; apply();
+  }
+  function zoomCenter(f){
+    var r=svg.getBoundingClientRect();
+    var pt=toSvg({clientX:r.left+r.width/2,clientY:r.top+r.height/2});
+    if(pt) zoomAt(pt.x,pt.y,f);
+  }
+  function reset(){ k=1; tx=0; ty=0; apply(); }
+
+  if(stage){
+    stage.addEventListener('wheel',function(ev){
+      ev.preventDefault();
+      var pt=toSvg(ev); if(!pt) return;
+      zoomAt(pt.x,pt.y,Math.pow(0.9985,ev.deltaY));
+    },{passive:false});
+
+    /* ドラッグで移動。2本指ならピンチ */
+    var pts={}, last=null, pinch=null, moved=0;
+    stage.addEventListener('pointerdown',function(ev){
+      pts[ev.pointerId]={x:ev.clientX,y:ev.clientY};
+      stage.setPointerCapture(ev.pointerId);
+      var ids=Object.keys(pts);
+      if(ids.length===1){ last=toSvg(ev); moved=0; stage.classList.add('am-drag'); }
+      else if(ids.length===2){
+        var a=pts[ids[0]], b=pts[ids[1]];
+        pinch={d:Math.hypot(a.x-b.x,a.y-b.y)};
+      }
+    });
+    stage.addEventListener('pointermove',function(ev){
+      if(!pts[ev.pointerId]) return;
+      var prev=pts[ev.pointerId];
+      moved+=Math.hypot(ev.clientX-prev.x,ev.clientY-prev.y);
+      pts[ev.pointerId]={x:ev.clientX,y:ev.clientY};
+      var ids=Object.keys(pts);
+      if(ids.length===2&&pinch){
+        var a=pts[ids[0]], b=pts[ids[1]];
+        var d=Math.hypot(a.x-b.x,a.y-b.y);
+        var mid=toSvg({clientX:(a.x+b.x)/2,clientY:(a.y+b.y)/2});
+        if(mid&&pinch.d>0) zoomAt(mid.x,mid.y,d/pinch.d);
+        pinch.d=d; return;
+      }
+      if(ids.length===1&&last){
+        var cur=toSvg(ev); if(!cur) return;
+        tx+=cur.x-last.x; ty+=cur.y-last.y; last=cur; apply();
+      }
+    });
+    function up(ev){
+      delete pts[ev.pointerId];
+      if(!Object.keys(pts).length){ last=null; pinch=null; stage.classList.remove('am-drag'); }
+    }
+    stage.addEventListener('pointerup',up);
+    stage.addEventListener('pointercancel',up);
+    /* 掴んで動かしただけのときは、資料を開かない */
+    stage.addEventListener('click',function(ev){
+      if(moved>5){ ev.stopPropagation(); ev.preventDefault(); moved=0; }
+    },true);
+    stage.addEventListener('dblclick',function(ev){
+      var pt=toSvg(ev); if(pt) zoomAt(pt.x,pt.y,1.9);
+    });
+  }
+  [].forEach.call(ov.querySelectorAll('.am-zoom button'),function(b){
+    b.addEventListener('click',function(){
+      var z=b.getAttribute('data-z');
+      if(z==='in') zoomCenter(1.35); else if(z==='out') zoomCenter(1/1.35); else reset();
+    });
+  });
+  ov.addEventListener('keydown',function(ev){
+    if(ev.key==='0'){ reset(); }
+    else if(ev.key==='+'||ev.key==='='){ zoomCenter(1.35); }
+    else if(ev.key==='-'||ev.key==='_'){ zoomCenter(1/1.35); }
+  });
 
   document.getElementById('amClose').addEventListener('click',close);
   window.ozMap=open; window.ozMapClose=close;
