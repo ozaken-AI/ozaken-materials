@@ -1153,6 +1153,13 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
   margin-bottom:.5rem}
 .pf-bookcard-new{border-color:rgba(70,201,138,.45)}
 @media(max-width:640px){.pf-g{padding:.8rem .9rem}.pf-g-k{min-width:4em}}
+
+/* 書影のファイルがまだ無い間だけ、枠だけの仮置きを出して3枚の並びを崩さない */
+.pf-bookcard.no-cover::before{content:"書影\A準備中";white-space:pre;text-align:center;
+  flex:0 0 auto;width:clamp(74px,13vw,96px);aspect-ratio:1/1.42;border-radius:4px;
+  display:flex;align-items:center;justify-content:center;
+  border:1px dashed rgba(159,198,245,.4);background:rgba(159,198,245,.06);
+  font-family:var(--font-ja-sans);font-size:.62rem;line-height:1.7;color:rgba(216,228,240,.5)}
 </style>
 </head>
 <body>
@@ -2069,6 +2076,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
         <div class="pf-g"><span class="pf-g-k">政策</span><p><b>経済産業省 委員</b><span>ワーキンググループに参画</span></p></div>
         <div class="pf-g"><span class="pf-g-k">顧問</span><p><b>日本HP／NTTデータグループ ほか</b><span>企業のAI活用を伴走</span></p></div>
         <div class="pf-g"><span class="pf-g-k">自治体</span><p><b>大分県フェロー／千葉県船橋市アドバイザー</b><span>地域のAI実装を支える</span></p></div>
+        <div class="pf-g"><span class="pf-g-k">執筆</span><p><b>AI関連記事 1,500本以上</b><span>専門メディアの編集長として</span></p></div>
         <div class="pf-g"><span class="pf-g-k">メディア</span><p><b>テレビ・ネット媒体に多数出演</b><span>ABEMA Prime、NewsPicks ほか</span></p></div>
       </div>
       <p class="pf-glance-note">詳細はこの下に。数字・実績・沿革の順に並んでいます。</p>
@@ -2076,45 +2084,90 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
 
     <!-- 発信の規模（独立セクション） -->
     <section class="pf-sec" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">01</span><h3 class="pf-sec-title">発信の規模</h3></div>
-      <p class="pf-lead">書籍・記事・登壇。<span class="pf-hot">発信し続けること</span>そのものを、現場で何が起きているかを掴む手段にしてきました。</p>
-      <div class="pf-stats pf-stag">
-        <div class="pf-stat"><div class="num"><span class="cval" data-to="3">3</span><small>冊</small></div><div class="lbl">書籍刊行<br>『宇宙一やさしいAIの教科書』『AIエージェントの教科書』『生成AI導入の教科書』</div></div>
-        <div class="pf-stat"><div class="num"><span class="cval" data-to="1500">1,500</span><small>本+</small></div><div class="lbl">AI関連記事の執筆</div></div>
-        <div class="pf-stat"><div class="num"><span class="cval" data-to="300">300</span><small>回+</small></div><div class="lbl">年間登壇回数<br>カンファレンス・企業・自治体</div></div>
+      <div class="pf-sec-head"><span class="pf-sec-no">01</span><h3 class="pf-sec-title">登壇・講演 ── 年間300回超</h3></div>
+      <p class="pf-lead">大規模カンファレンスの基調講演から企業内研修、自治体向け講演まで。代表理事を務めるAICX協会主催の<span class="pf-hot">AI Agent Day</span>など、業界を牽引するイベントも主催・登壇しています。</p>
+      <p class="pf-subhead">CONFERENCE ─ 主要カンファレンス</p>
+      <div class="pf-wall pf-stag">
+        <span class="pf-mark en lead">AI Agent Day<small>2025 Summer 主催・登壇</small></span>
+        <span class="pf-mark en">IVS 2024 KYOTO<small>／ IVS 2025</small></span>
+        <span class="pf-mark mincho">AI・人工知能EXPO<small>特別講演</small></span>
+        <span class="pf-mark en">Dell Technologies<small>基調講演</small></span>
+        <span class="pf-mark en">HP Future of Work<small>AI Conference 2025</small></span>
+        <span class="pf-mark en">AI &amp; DX Leaders'<small>Conference 2026</small></span>
+        <span class="pf-mark en">Startup JAPAN 2025</span>
+        <span class="pf-mark en">UpdataNOW25</span>
+        <span class="pf-mark en">World Forum Tokyo</span>
+        <span class="pf-mark en">Google オフィス<small>大手企業向け</small></span>
+        <span class="pf-mark mincho">慶應義塾<small>生成AIラボ</small></span>
+        <span class="pf-mark mincho">コンテンツ東京 2024</span>
+        <span class="pf-mark en">Generative AI<small>Business Day</small></span>
+        <span class="pf-mark mincho">AI博覧会</span>
+        <span class="pf-mark en">Karakuri Tech<small>Conference 2025</small></span>
+        <span class="pf-mark mincho">オートモーティブワールド<small>特別講演</small></span>
+        <span class="pf-mark mincho">コールセンター/CRM<small>デモ＆コンファレンス</small></span>
+        <span class="pf-mark mincho">東北AI維新<small>CONFERENCE 2026</small></span>
+        <span class="pf-mark en">LIVENT EXPO 2026</span>
+      </div>
+      <p class="pf-subhead">CORPORATE / GOV ─ 企業・自治体向け</p>
+      <div class="pf-wall pf-stag">
+        <span class="pf-mark mincho">ソフトバンク<small>社内講演</small></span>
+        <span class="pf-mark mincho">船橋市役所</span>
+        <span class="pf-mark mincho">鹿児島県商工会議所</span>
+        <span class="pf-mark mincho">電通<small>基調講演・審査員</small></span>
       </div>
     </section>
 
-    <!-- Udemy 訴求バンド -->
-    <div class="pf-udemy" data-reveal>
-      <div class="pf-udemy-eyebrow">UDEMY ─ ベストセラー講師</div>
-      <div class="pf-udemy-num"><span class="cval" data-to="50000">50,000</span><small>人+</small></div>
-      <p class="pf-udemy-cap">Udemy講座で、<span class="pf-hot">約5万人</span>が学んでいる。</p>
-      <p class="pf-udemy-sub">生成AI・AI活用のオンライン講座がベストセラーに。累計 約50,000人以上の受講者へ、実践的なAIの使い方を届けています。</p>
-      <span class="pf-udemy-badge">Udemy Bestseller Instructor</span>
-    </div>
-
-    <!-- AICX協会（独立セクション） -->
     <section class="pf-sec" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">02</span><h3 class="pf-sec-title">AICX協会 ── 代表理事として</h3></div>
-      <p class="pf-lead">国内初のAIエージェント特化型の業界団体として、<span class="pf-hot">日本最大級</span>のカンファレンスと、人材の“格”を定義する資格制度を企画・運営しています。</p>
-      <div class="pf-logos">
-        <span class="lg"><img src="99_assets/logo-aicx-white.png" alt="一般社団法人AICX協会 ロゴ" loading="lazy"><span>AICX ASSOCIATION</span></span>
-        <span class="lg plate"><img src="99_assets/logo-strategist.png" alt="AIエージェント・ストラテジスト 認定資格 ロゴ" loading="lazy"><span>AI AGENT STRATEGIST</span></span>
+      <div class="pf-sec-head"><span class="pf-sec-no">02</span><h3 class="pf-sec-title">著書・執筆 ── 3冊</h3></div>
+      <p class="pf-lead">AI専門メディアの編集長としての経験を活かし、書籍・記事を執筆。『生成AI導入の教科書』は企業・自治体の活用ガイドとして大きな反響を呼びました。</p>
+      <div class="pf-bookrow pf-stag">
+        <div class="pf-bookcard pf-bookcard-new">
+          <img src="99_assets/book-uchuichi-ai.jpg" alt="『40代・50代でもよくわかる 宇宙一やさしいAIの教科書』書影" loading="lazy" onerror="var c=this.closest('.pf-bookcard');this.remove();if(c)c.classList.add('no-cover')">
+          <div><span class="pf-newbadge">NEW</span><h5>『40代・50代でもよくわかる<br>宇宙一やさしいAIの教科書』</h5><p>2026年9月17日 発売<br>マンガ・専門用語辞典・指示文つき</p></div>
+        </div>
+        <div class="pf-bookcard">
+          <img src="99_assets/book-ai-agent.jpg" alt="『AIエージェントの教科書』書影" loading="lazy">
+          <div><h5>『AIエージェントの教科書』</h5><p>2025年8月21日 刊行<br>ワン・パブリッシング</p></div>
+        </div>
+        <div class="pf-bookcard">
+          <img src="99_assets/book-seisei-ai.jpg" alt="『生成AI導入の教科書』書影" loading="lazy">
+          <div><h5>『生成AI導入の教科書』</h5><p>2023年9月 刊行<br>ワン・パブリッシング</p></div>
+        </div>
       </div>
+    </section>
+
+    <section class="pf-sec" data-reveal>
+      <div class="pf-sec-head"><span class="pf-sec-no">03</span><h3 class="pf-sec-title">カンファレンス主催 ── AI Agent Day</h3></div>
+      <p class="pf-lead">AIエージェントに特化した<span class="pf-hot">国内最大級</span>のカンファレンスを、企画・主催・登壇まで一貫して担っています。</p>
       <div class="pf-metrics pf-stag">
         <div class="pf-metric accent">
           <div class="mnum"><span class="cval" data-to="4000">4,000</span><small>人</small></div>
           <div class="mttl">AI Agent Day 2026 Summer</div>
           <p class="msub">主催・企画・登壇。AIエージェントをテーマにした国内最大級のカンファレンスに、約4,000人が参加。</p>
         </div>
+        <div class="pf-metric">
+          <div class="mnum"><span class="cval" data-to="5600">5,600</span><small>人+</small></div>
+          <div class="mttl">AI Agent Day 累計</div>
+          <p class="msub">開催を重ねるごとに規模が拡大。業界の結節点として、実装者が集まる場になっている。</p>
+        </div>
+      </div>
+      <p class="pf-lead" style="margin-top:0.6rem">技術者だけの場でも、経営層だけの場でもない。<span class="pf-hot">実装する人が交わる場</span>をつくることを設計思想にしています。</p>
+    </section>
+
+    <section class="pf-sec" data-reveal>
+      <div class="pf-sec-head"><span class="pf-sec-no">04</span><h3 class="pf-sec-title">認定資格 ── 日本初のAIエージェント資格</h3></div>
+      <p class="pf-lead">AI実装を担う人材の“格”を定義する認定資格を、<span class="pf-hot">日本で初めて</span>プロデュースしました。</p>
+      <div class="pf-logos">
+        <span class="lg plate"><img src="99_assets/logo-strategist.png" alt="AIエージェント・ストラテジスト 認定資格 ロゴ" loading="lazy"><span>AI AGENT STRATEGIST</span></span>
+      </div>
+      <div class="pf-metrics pf-stag">
         <div class="pf-metric accent">
           <div class="mnum"><span class="cval" data-to="1300">1,300</span><small>人</small></div>
           <div class="mttl">AIエージェント・ストラテジスト</div>
           <p class="msub">AICX協会の認定資格制度。これまでに約1,300名の申し込みがあり、AI実装を担う人材の基準になりつつある。</p>
         </div>
       </div>
-      <p class="pf-lead" style="margin-top:0.6rem">技術だけでも、掛け声だけでも実装は進まない。<span class="pf-hot">3本柱</span>を貫いて設計できる人材を育てることが、協会の役割です。</p>
+      <p class="pf-lead" style="margin-top:0.6rem">技術だけでも、掛け声だけでも実装は進まない。<span class="pf-hot">3本柱</span>を貫いて設計できることを、資格の要件に置いています。</p>
       <div class="pf-pillars pf-stag">
         <div class="pf-pillar"><div class="pno">1</div><span class="pen">AI AGENT</span><h5>AIエージェント</h5><p>自律的に動く、実装の基盤をつくる。</p></div>
         <div class="pf-pillar"><div class="pno">2</div><span class="pen">WORKFLOW</span><h5>業務変革</h5><p>プロセスをAI前提に組み替える。</p></div>
@@ -2123,48 +2176,40 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
       <p class="pf-pillar-goal">3本柱を貫いて設計する人材 ＝ <span class="pf-hot">AIエージェント・ストラテジスト</span></p>
     </section>
 
-    <!-- プロフィール本文 -->
     <section class="pf-sec" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">03</span><h3 class="pf-sec-title">プロフィール</h3></div>
-      <p class="pf-lead">一般社団法人AICX協会 代表理事として、企業のAIエージェント実装を業界横断で牽引。あわせて複数のAI企業の経営・アドバイザーに参画し、日本HP・NTTデータグループなど大手の実装現場に伴走している。</p>
-      <p class="pf-lead">NewsPicksのAI番組「AI DIVE」メインMC、千葉県船橋市 生成AIアドバイザーとして行政のDX推進にも携わる。NewsPicksプロピッカー、Udemyベストセラー講師、SHIFT AI公式モデレーターとしても活動中。</p>
-      <p class="pf-lead">AI領域以外では、2022年にCinematoricoを創業しCOOに就任。PRやフリーカメラマン、日本大学文理学部次世代社会研究センターのプロボノなど、多彩な経験を活かして活動している。</p>
-    </section>
-
-    <!-- 現職・役割 -->
-    <section class="pf-sec" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">04</span><h3 class="pf-sec-title">現在の役割</h3></div>
-      <div class="pf-timeline pf-stag">
-        <div class="pf-tl-item"><h5>一般社団法人AICX協会　代表理事 / Founder</h5><p>国内初のAIエージェント特化型の業界団体。AI Agent Day（5,600名超）やAICX Forumの開催、認定資格制度の運営を通じ、企業のAIエージェント実装の土台をつくる。</p></div>
-        <div class="pf-tl-item"><h5>株式会社Cynthialy　取締役CCO</h5><p>生成AI人材育成・組織変革支援の事業を推進。</p></div>
-        <div class="pf-tl-item"><h5>株式会社Cinematorico　創業者 / COO</h5><p>2022年創業。映像・PR・クリエイティブを軸に事業を展開。</p></div>
-        <div class="pf-tl-item"><h5>経済産業省「AX時代におけるスキルのあり方検討WG」委員</h5><p>2026年4月〜。AI時代の人材・スキル政策づくりに参画。</p></div>
-        <div class="pf-tl-item"><h5>大分県　フェロー</h5><p>県のAI活用・地域課題への実装を後押しする立場で就任。行政DXと地方創生の現場に伴走する。</p></div>
+      <div class="pf-sec-head"><span class="pf-sec-no">05</span><h3 class="pf-sec-title">経済産業省 ── 委員</h3></div>
+      <p class="pf-lead">AIの社会実装を進める立場から、<span class="pf-hot">国の人材・スキル政策</span>の議論に参画しています。</p>
+      <div class="pf-cards pf-stag">
+        <div class="pf-card"><h4><span class="tag">01</span>経済産業省</h4><p>「AX時代におけるスキルのあり方検討ワーキンググループ」<b>委員</b><br>2026年4月〜</p></div>
       </div>
+      <p class="pf-lead" style="margin-top:0.6rem">現場で企業のAI実装に伴走しているからこそ、制度側の議論に持ち込める論点があると考えています。</p>
     </section>
 
-    <!-- 顧問・アドバイザー -->
     <section class="pf-sec" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">05</span><h3 class="pf-sec-title">顧問・アドバイザー・委員</h3></div>
-      <p class="pf-lead">企業・行政の実装現場に、顧問／アドバイザーとして伴走している。</p>
+      <div class="pf-sec-head"><span class="pf-sec-no">06</span><h3 class="pf-sec-title">企業顧問・アドバイザー</h3></div>
+      <p class="pf-lead">大手企業の実装現場に、顧問／アドバイザーとして<span class="pf-hot">継続的に伴走</span>しています。</p>
       <div class="pf-chips pf-stag">
         <span class="pf-chip"><span class="em">日本HP</span> 顧問</span>
         <span class="pf-chip"><span class="em">NTTデータグループ</span> アドバイザー</span>
         <span class="pf-chip"><span class="em">Lightblue</span> 顧問</span>
         <span class="pf-chip"><span class="em">THA</span> 顧問</span>
         <span class="pf-chip"><span class="em">Google Gemini</span> アドバイザー（旧）</span>
-        <span class="pf-chip"><span class="em">大分県</span> フェロー</span>
-        <span class="pf-chip"><span class="em">千葉県船橋市</span> 生成AIアドバイザー</span>
-        <span class="pf-chip"><span class="em">経済産業省</span> スキル検討WG 委員</span>
-        <span class="pf-chip">NewsPicks プロピッカー</span>
-        <span class="pf-chip">Udemy ベストセラー講師</span>
-        <span class="pf-chip">SHIFT AI 公式モデレーター</span>
       </div>
+      <p class="pf-lead" style="margin-top:0.6rem">単発の講演ではなく、社内の推進体制づくりから評価制度の設計まで、腰を据えて関わる形をとっています。</p>
     </section>
 
-    <!-- メディア出演・取材 -->
     <section class="pf-sec" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">06</span><h3 class="pf-sec-title">メディア出演・取材</h3></div>
+      <div class="pf-sec-head"><span class="pf-sec-no">07</span><h3 class="pf-sec-title">自治体 ── フェロー・アドバイザー</h3></div>
+      <p class="pf-lead">自治体の<span class="pf-hot">行政DXと地域課題への実装</span>を、フェロー／アドバイザーとして支えています。</p>
+      <div class="pf-cards pf-stag">
+        <div class="pf-card"><h4><span class="tag">01</span>大分県</h4><p><b>フェロー</b><br>県のAI活用・地域課題への実装を後押しする立場で就任。</p></div>
+        <div class="pf-card"><h4><span class="tag">02</span>千葉県船橋市</h4><p><b>生成AIアドバイザー</b><br>市役所の生成AI活用を、現場に入って推進。</p></div>
+      </div>
+      <p class="pf-lead" style="margin-top:0.6rem">地方こそ人手の制約が厳しく、AIの効きが大きい。ここは実装の最前線だと考えています。</p>
+    </section>
+
+    <section class="pf-sec" data-reveal>
+      <div class="pf-sec-head"><span class="pf-sec-no">08</span><h3 class="pf-sec-title">メディア出演・取材</h3></div>
       <p class="pf-lead">テレビ・ラジオ・ネット番組で、AIの最新トレンドとビジネス応用を解説。NewsPicks「AI DIVE」では<span class="pf-hot">メインMC</span>を務めるなど、レギュラー出演も多数。</p>
       <p class="pf-subhead">TV / VIDEO ─ テレビ・映像</p>
       <div class="pf-wall pf-stag">
@@ -2211,75 +2256,27 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
       </div>
     </section>
 
-    <!-- 登壇・講演 -->
     <section class="pf-sec" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">07</span><h3 class="pf-sec-title">登壇・講演（年間300回超）</h3></div>
-      <p class="pf-lead">大規模カンファレンスの基調講演から企業内研修、自治体向け講演まで。代表理事を務めるAICX協会主催の<span class="pf-hot">AI Agent Day</span>など、業界を牽引するイベントも主催・登壇しています。</p>
-      <p class="pf-subhead">CONFERENCE ─ 主要カンファレンス</p>
-      <div class="pf-wall pf-stag">
-        <span class="pf-mark en lead">AI Agent Day<small>2025 Summer 主催・登壇</small></span>
-        <span class="pf-mark en">IVS 2024 KYOTO<small>／ IVS 2025</small></span>
-        <span class="pf-mark mincho">AI・人工知能EXPO<small>特別講演</small></span>
-        <span class="pf-mark en">Dell Technologies<small>基調講演</small></span>
-        <span class="pf-mark en">HP Future of Work<small>AI Conference 2025</small></span>
-        <span class="pf-mark en">AI &amp; DX Leaders'<small>Conference 2026</small></span>
-        <span class="pf-mark en">Startup JAPAN 2025</span>
-        <span class="pf-mark en">UpdataNOW25</span>
-        <span class="pf-mark en">World Forum Tokyo</span>
-        <span class="pf-mark en">Google オフィス<small>大手企業向け</small></span>
-        <span class="pf-mark mincho">慶應義塾<small>生成AIラボ</small></span>
-        <span class="pf-mark mincho">コンテンツ東京 2024</span>
-        <span class="pf-mark en">Generative AI<small>Business Day</small></span>
-        <span class="pf-mark mincho">AI博覧会</span>
-        <span class="pf-mark en">Karakuri Tech<small>Conference 2025</small></span>
-        <span class="pf-mark mincho">オートモーティブワールド<small>特別講演</small></span>
-        <span class="pf-mark mincho">コールセンター/CRM<small>デモ＆コンファレンス</small></span>
-        <span class="pf-mark mincho">東北AI維新<small>CONFERENCE 2026</small></span>
-        <span class="pf-mark en">LIVENT EXPO 2026</span>
+      <div class="pf-sec-head"><span class="pf-sec-no">09</span><h3 class="pf-sec-title">AICX協会 ── 代表理事として</h3></div>
+      <p class="pf-lead">国内初のAIエージェント特化型の業界団体を立ち上げ、<span class="pf-hot">代表理事</span>として運営しています。カンファレンスと認定資格は、この協会の事業です。</p>
+      <div class="pf-logos">
+        <span class="lg"><img src="99_assets/logo-aicx-white.png" alt="一般社団法人AICX協会 ロゴ" loading="lazy"><span>AICX ASSOCIATION</span></span>
       </div>
-      <p class="pf-subhead">CORPORATE / GOV ─ 企業・自治体向け</p>
-      <div class="pf-wall pf-stag">
-        <span class="pf-mark mincho">ソフトバンク<small>社内講演</small></span>
-        <span class="pf-mark mincho">船橋市役所</span>
-        <span class="pf-mark mincho">鹿児島県商工会議所</span>
-        <span class="pf-mark mincho">電通<small>基調講演・審査員</small></span>
+      <p class="pf-lead" style="margin-top:0.6rem">企業ごとに閉じた取り組みでは、業界全体の実装は進みません。共通の基準と、集まれる場をつくることが協会の役割です。</p>
+    </section>
+
+    <section class="pf-sec" data-reveal>
+      <div class="pf-sec-head"><span class="pf-sec-no">10</span><h3 class="pf-sec-title">現在の役割 ── 法人</h3></div>
+      <p class="pf-lead">経営として関わっている法人です。委員・顧問・自治体の役割は、それぞれ前のセクションに分けています。</p>
+      <div class="pf-timeline pf-stag">
+        <div class="pf-tl-item"><h5>一般社団法人AICX協会　代表理事 / Founder</h5><p>国内初のAIエージェント特化型の業界団体。AI Agent Day（5,600名超）やAICX Forumの開催、認定資格制度の運営を通じ、企業のAIエージェント実装の土台をつくる。</p></div>
+        <div class="pf-tl-item"><h5>株式会社Cynthialy　取締役CCO</h5><p>生成AI人材育成・組織変革支援の事業を推進。</p></div>
+        <div class="pf-tl-item"><h5>株式会社Cinematorico　創業者 / COO</h5><p>2022年創業。映像・PR・クリエイティブを軸に事業を展開。</p></div>
       </div>
     </section>
 
-    <!-- 著書・執筆 -->
     <section class="pf-sec" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">08</span><h3 class="pf-sec-title">著書・執筆</h3></div>
-      <p class="pf-lead">AI専門メディアの編集長としての経験を活かし、書籍・記事を執筆。『生成AI導入の教科書』は企業・自治体の活用ガイドとして大きな反響を呼びました。</p>
-      <div class="pf-bookrow pf-stag">
-        <div class="pf-bookcard pf-bookcard-new">
-          <img src="99_assets/book-uchuichi-ai.jpg" alt="『40代・50代でもよくわかる 宇宙一やさしいAIの教科書』書影" loading="lazy" onerror="this.style.display='none'">
-          <div><span class="pf-newbadge">NEW</span><h5>『40代・50代でもよくわかる<br>宇宙一やさしいAIの教科書』</h5><p>2026年9月17日 発売<br>マンガ・専門用語辞典・指示文つき</p></div>
-        </div>
-        <div class="pf-bookcard">
-          <img src="99_assets/book-ai-agent.jpg" alt="『AIエージェントの教科書』書影" loading="lazy">
-          <div><h5>『AIエージェントの教科書』</h5><p>2025年8月21日 刊行<br>ワン・パブリッシング</p></div>
-        </div>
-        <div class="pf-bookcard">
-          <img src="99_assets/book-seisei-ai.jpg" alt="『生成AI導入の教科書』書影" loading="lazy">
-          <div><h5>『生成AI導入の教科書』</h5><p>2023年9月 刊行<br>ワン・パブリッシング</p></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 委員・アドバイザー -->
-    <section class="pf-sec" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">09</span><h3 class="pf-sec-title">委員・アドバイザー就任</h3></div>
-      <p class="pf-lead">AIの社会実装を推進する立場から、国の政策立案に関わるワーキンググループの委員や、自治体のアドバイザー・フェローを務めています。</p>
-      <div class="pf-cards pf-stag">
-        <div class="pf-card"><h4><span class="tag">01</span>経済産業省</h4><p>「AX時代におけるスキルのあり方検討ワーキンググループ」<b>委員</b>（2026年4月〜）</p></div>
-        <div class="pf-card"><h4><span class="tag">02</span>自治体</h4><p><b>大分県</b> フェロー</p><p><b>千葉県船橋市</b> 生成AIアドバイザー</p></div>
-        <div class="pf-card"><h4><span class="tag">03</span>その他</h4><p><b>NewsPicks</b> プロピッカー</p><p><b>Udemy</b> ベストセラー講師</p><p><b>SHIFT AI</b> 公式モデレーター</p></div>
-      </div>
-    </section>
-
-    <!-- 主要支援先（社名非公開） -->
-    <section class="pf-sec" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">10</span><h3 class="pf-sec-title">主要支援先（社名非公開）</h3></div>
+      <div class="pf-sec-head"><span class="pf-sec-no">11</span><h3 class="pf-sec-title">主要支援先（社名非公開）</h3></div>
       <p class="pf-lead">守秘義務により社名は伏せていますが、各業界を代表する<span class="pf-hot">日本有数のリーディングカンパニー</span>の現場に入り、AI活用・実装を支援してきました。</p>
       <div class="pf-clients pf-stag">
         <div class="pf-client">
@@ -2314,9 +2311,8 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
       <p class="pf-clients-note">※ 契約上、具体的な社名は非公開としています。いずれも各業界を代表する企業での社内講演・AI実装支援の実績です。</p>
     </section>
 
-    <!-- 講演テーマ -->
     <section class="pf-sec" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">11</span><h3 class="pf-sec-title">主な講演テーマ</h3></div>
+      <div class="pf-sec-head"><span class="pf-sec-no">12</span><h3 class="pf-sec-title">主な講演テーマ</h3></div>
       <p class="pf-lead">経営層向けから現場の実践まで、目的に合わせてテーマを設計しています。</p>
       <div class="pf-cards pf-stag">
         <div class="pf-card"><h4><span class="tag">01</span>AIエージェントが変えるビジネスの未来</h4><p>生成AI時代の「AIエージェント」が変えるビジネスの未来 〜導入戦略と実践事例〜</p></div>
@@ -2327,6 +2323,19 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
         <div class="pf-card"><h4><span class="tag">06</span>AI×地方創生</h4><p>行政DXの最前線と、地域活性化の新しいかたち</p></div>
         <div class="pf-card"><h4><span class="tag">07</span>メディア・コンテンツ業界のAI活用最前線</h4><p>クリエイティブとテクノロジーの融合がもたらす新潮流</p></div>
         <div class="pf-card"><h4><span class="tag">08</span>AIエージェント時代の働き方改革</h4><p>「人間にしかできない仕事」に集中するための組織デザイン</p></div>
+      </div>
+    </section>
+
+    <section class="pf-sec" data-reveal>
+      <div class="pf-sec-head"><span class="pf-sec-no">13</span><h3 class="pf-sec-title">プロフィール ── その他の活動</h3></div>
+      <p class="pf-lead">一般社団法人AICX協会 代表理事として、企業のAIエージェント実装を業界横断で牽引。あわせて複数のAI企業の経営・アドバイザーに参画し、日本HP・NTTデータグループなど大手の実装現場に伴走している。</p>
+      <p class="pf-lead">NewsPicksのAI番組「AI DIVE」メインMC、千葉県船橋市 生成AIアドバイザーとして行政のDX推進にも携わる。NewsPicksプロピッカー、Udemyベストセラー講師、SHIFT AI公式モデレーターとしても活動中。</p>
+      <p class="pf-lead">AI領域以外では、2022年にCinematoricoを創業しCOOに就任。PRやフリーカメラマン、日本大学文理学部次世代社会研究センターのプロボノなど、多彩な経験を活かして活動している。</p>
+      <div class="pf-chips pf-stag" style="margin-top:1.2rem">
+        <span class="pf-chip"><span class="em">NewsPicks</span> プロピッカー</span>
+        <span class="pf-chip"><span class="em">Udemy</span> ベストセラー講師</span>
+        <span class="pf-chip"><span class="em">SHIFT AI</span> 公式モデレーター</span>
+        <span class="pf-chip"><span class="em">NewsPicks「AI DIVE」</span> メインMC</span>
       </div>
     </section>
 
