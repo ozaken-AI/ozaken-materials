@@ -1126,6 +1126,33 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
   #titlecard.show .tc-meta,#titlecard.show .tc-title,#titlecard.show .tc-sub{animation:none}
   #titlecard.show .tc-rule i{animation:none;width:min(520px,72vw)}
 }
+
+/* ══ プロフィール：実績サマリー（番号なしの一覧ブロック）══ */
+.pf-glance{margin:0 0 clamp(2.4rem,6vh,4rem)}
+.pf-glance-head{margin-bottom:clamp(1.2rem,3vh,1.8rem)}
+.pf-glance-eyebrow{display:block;font-family:var(--font-en);font-size:.62rem;font-weight:700;
+  letter-spacing:.42em;color:#46c98a;margin-bottom:.6rem}
+.pf-glance-title{font-family:var(--font-ja-serif);font-weight:600;
+  font-size:clamp(1.15rem,2.6vw,1.6rem);color:#fff;letter-spacing:.04em}
+.pf-glance-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:clamp(.7rem,1.6vw,1rem)}
+.pf-g{display:flex;gap:.9rem;align-items:flex-start;padding:.95rem 1.1rem;
+  background:rgba(12,20,38,.72);border:1px solid rgba(159,198,245,.22);border-radius:4px}
+.pf-g-k{flex:0 0 auto;min-width:4.6em;font-family:var(--font-en);font-size:.6rem;font-weight:700;
+  letter-spacing:.18em;color:#9fc6f5;padding-top:.3em}
+.pf-g p{margin:0;line-height:1.6}
+.pf-g b{display:block;font-family:var(--font-ja-sans);font-weight:700;
+  font-size:clamp(.85rem,1.7vw,.98rem);color:#fff}
+.pf-g span{display:block;margin-top:.25rem;font-size:clamp(.72rem,1.4vw,.8rem);
+  color:rgba(216,228,240,.65);line-height:1.65}
+.pf-glance-note{margin-top:clamp(1rem,2.4vh,1.5rem);font-family:var(--font-en);font-size:.62rem;
+  font-weight:700;letter-spacing:.16em;color:rgba(159,198,245,.5)}
+/* 新刊バッジ */
+.pf-newbadge{display:inline-block;font-family:var(--font-en);font-size:.56rem;font-weight:700;
+  letter-spacing:.2em;color:#04060d;background:#46c98a;border-radius:3px;padding:.2rem .5rem;
+  margin-bottom:.5rem}
+.pf-bookcard-new{border-color:rgba(70,201,138,.45)}
+@media(max-width:640px){.pf-g{padding:.8rem .9rem}.pf-g-k{min-width:4em}}
 </style>
 </head>
 <body>
@@ -2028,18 +2055,33 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
         <span class="vm mission"><b>MISSION</b><span class="lead">分断を超え、AI業界を再定義する</span></span>
       </div>
 
+    <!-- 実績サマリー（一覧・番号なし） -->
+    <section class="pf-glance" data-reveal>
+      <div class="pf-glance-head">
+        <span class="pf-glance-eyebrow">AT A GLANCE</span>
+        <h3 class="pf-glance-title">いま、やっていること</h3>
+      </div>
+      <div class="pf-glance-grid pf-stag">
+        <div class="pf-g"><span class="pf-g-k">登壇</span><p><b>年間300回以上</b><span>企業・自治体・教育機関へ</span></p></div>
+        <div class="pf-g"><span class="pf-g-k">著書</span><p><b>3冊</b><span>2026年9月17日に新刊『宇宙一やさしいAIの教科書』</span></p></div>
+        <div class="pf-g"><span class="pf-g-k">主催</span><p><b>日本最大のAIエージェントカンファレンス</b><span>業界の結節点をつくる</span></p></div>
+        <div class="pf-g"><span class="pf-g-k">制度</span><p><b>日本初のAIエージェント資格をプロデュース</b><span>人材の“格”を定義する</span></p></div>
+        <div class="pf-g"><span class="pf-g-k">政策</span><p><b>経済産業省 委員</b><span>ワーキンググループに参画</span></p></div>
+        <div class="pf-g"><span class="pf-g-k">顧問</span><p><b>日本HP／NTTデータグループ ほか</b><span>企業のAI活用を伴走</span></p></div>
+        <div class="pf-g"><span class="pf-g-k">自治体</span><p><b>大分県フェロー／千葉県船橋市アドバイザー</b><span>地域のAI実装を支える</span></p></div>
+        <div class="pf-g"><span class="pf-g-k">メディア</span><p><b>テレビ・ネット媒体に多数出演</b><span>ABEMA Prime、NewsPicks ほか</span></p></div>
+      </div>
+      <p class="pf-glance-note">詳細はこの下に。数字・実績・沿革の順に並んでいます。</p>
+    </section>
+
     <!-- 発信の規模（独立セクション） -->
     <section class="pf-sec" data-reveal>
       <div class="pf-sec-head"><span class="pf-sec-no">01</span><h3 class="pf-sec-title">発信の規模</h3></div>
       <p class="pf-lead">書籍・記事・登壇。<span class="pf-hot">発信し続けること</span>そのものを、現場で何が起きているかを掴む手段にしてきました。</p>
       <div class="pf-stats pf-stag">
-        <div class="pf-stat"><div class="num"><span class="cval" data-to="2">2</span><small>冊</small></div><div class="lbl">書籍刊行<br>『AIエージェントの教科書』『生成AI導入の教科書』</div></div>
+        <div class="pf-stat"><div class="num"><span class="cval" data-to="3">3</span><small>冊</small></div><div class="lbl">書籍刊行<br>『宇宙一やさしいAIの教科書』『AIエージェントの教科書』『生成AI導入の教科書』</div></div>
         <div class="pf-stat"><div class="num"><span class="cval" data-to="1500">1,500</span><small>本+</small></div><div class="lbl">AI関連記事の執筆</div></div>
         <div class="pf-stat"><div class="num"><span class="cval" data-to="300">300</span><small>回+</small></div><div class="lbl">年間登壇回数<br>カンファレンス・企業・自治体</div></div>
-      </div>
-      <div class="pf-books" style="justify-content:flex-start;margin-top:1.4rem">
-        <img src="99_assets/book-ai-agent.jpg" alt="『AIエージェントの教科書』書影" loading="lazy">
-        <img src="99_assets/book-seisei-ai.jpg" alt="『生成AI導入の教科書』書影" loading="lazy">
       </div>
     </section>
 
@@ -2209,6 +2251,10 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
       <div class="pf-sec-head"><span class="pf-sec-no">08</span><h3 class="pf-sec-title">著書・執筆</h3></div>
       <p class="pf-lead">AI専門メディアの編集長としての経験を活かし、書籍・記事を執筆。『生成AI導入の教科書』は企業・自治体の活用ガイドとして大きな反響を呼びました。</p>
       <div class="pf-bookrow pf-stag">
+        <div class="pf-bookcard pf-bookcard-new">
+          <img src="99_assets/book-uchuichi-ai.jpg" alt="『40代・50代でもよくわかる 宇宙一やさしいAIの教科書』書影" loading="lazy" onerror="this.style.display='none'">
+          <div><span class="pf-newbadge">NEW</span><h5>『40代・50代でもよくわかる<br>宇宙一やさしいAIの教科書』</h5><p>2026年9月17日 発売<br>マンガ・専門用語辞典・指示文つき</p></div>
+        </div>
         <div class="pf-bookcard">
           <img src="99_assets/book-ai-agent.jpg" alt="『AIエージェントの教科書』書影" loading="lazy">
           <div><h5>『AIエージェントの教科書』</h5><p>2025年8月21日 刊行<br>ワン・パブリッシング</p></div>
