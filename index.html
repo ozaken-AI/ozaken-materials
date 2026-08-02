@@ -1275,6 +1275,20 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
 .pf-ytlabel{font-family:var(--font-en);font-size:.6rem;font-weight:700;letter-spacing:.32em;color:#ff5d6a}
 .pf-ytname{font-family:var(--font-ja-serif);font-weight:600;letter-spacing:.1em;
   font-size:clamp(1.25rem,3.2vw,1.85rem);color:#fff;text-shadow:0 0 22px rgba(120,180,255,.4)}
+/* OZ-SPACING v1 */
+/* ブロック同士が隣り合ったときの余白。デザインシステム側で
+   .figure/.take は margin-bottom を持たず、.cards/.two-col/.stepper/.stats は
+   margin を持たないため、隣接すると必ず詰まる。ここで一括して空ける。 */
+.figure,.take{margin-bottom:0}
+.figure + *,.take + *,.deep + *,.cards + *,.two-col + *,
+.stepper + *,.stats + *,.note + *,.bare + *{margin-top:2.5rem}
+/* 図版の内側も、見出し・キャプションの間を少し広げる */
+.fig-title{margin-bottom:1.2rem}
+.figure-cap{margin-top:1.3rem}
+@media(max-width:640px){
+  .figure + *,.take + *,.deep + *,.cards + *,.two-col + *,
+  .stepper + *,.stats + *,.note + *,.bare + *{margin-top:1.9rem}
+}
 </style>
 </head>
 <body>
