@@ -1044,8 +1044,14 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
   font-variant-numeric:tabular-nums}
 .aq-count::after{content:"件";font-family:var(--font-ja-sans);font-size:.62em;
   margin-left:.18em;color:rgba(159,198,245,.7)}
-.aq-list{list-style:none;margin:0;padding:0;flex:1;min-height:0;overflow:hidden;
-  display:flex;flex-direction:column;gap:clamp(.4rem,1.1vh,.75rem)}
+.aq-list{list-style:none;margin:0;padding:0 .4rem 0 0;flex:1;min-height:0;
+  overflow-y:auto;overscroll-behavior:contain;
+  display:flex;flex-direction:column;gap:clamp(.4rem,1.1vh,.75rem);
+  scrollbar-width:thin;scrollbar-color:rgba(159,198,245,.35) transparent}
+.aq-list::-webkit-scrollbar{width:6px}
+.aq-list::-webkit-scrollbar-track{background:transparent}
+.aq-list::-webkit-scrollbar-thumb{background:rgba(159,198,245,.32);border-radius:3px}
+.aq-list::-webkit-scrollbar-thumb:hover{background:rgba(159,198,245,.55)}
 .aq-list li{flex:none;padding:clamp(.5rem,1.2vh,.8rem) 0;
   border-bottom:1px solid rgba(216,228,240,.09);line-height:1.7;
   font-size:clamp(.78rem,1.95vh,1.06rem);color:rgba(255,255,255,.92)}
@@ -1059,6 +1065,12 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
 .aq-empty{color:rgba(216,228,240,.5)!important;font-style:normal}
 .aq-more{flex:none;padding-top:.5rem;font-family:var(--font-en);font-size:.62rem;
   font-weight:700;letter-spacing:.18em;color:rgba(159,198,245,.55)}
+/* 件数が多いときだけ出る、下端のぼかし。まだ続きがあることを示す */
+.aq-feed{position:relative}
+.aq-feed::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2.4rem;
+  pointer-events:none;opacity:0;transition:opacity .3s ease;
+  background:linear-gradient(to bottom,rgba(20,29,53,0),rgba(20,29,53,.55))}
+.aq-feed.has-more::after{opacity:1}
 
 @media (max-width:900px){
   .aq-grid{grid-template-columns:1fr}
@@ -2240,7 +2252,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     <span class="ja">おざけん Q&amp;A管理システム</span>
     <span class="sep">/</span>
     <span>OZAKEN Q&amp;A</span>
-    <span class="ver">v1.7</span>
+    <span class="ver">v1.8</span>
   </div>
   <div class="thanks-inner">
     <span class="thanks-eyebrow">Q&amp;A Management System</span>
@@ -3417,12 +3429,15 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
 (function(){
   var LIST_URL = "https://script.google.com/macros/s/AKfycbwvf6VRQsjfiXulHOPAQ_Uren7ewTS3LTp9sp7XMf3H4yDsMhQIO1f41NPs1FfaTz1P/exec";
   var EVERY = 9000;                       /* 読みにいく間隔 */
-  var SHOW  = 6;                          /* 画面に出す件数。残りは「ほか N 件」でまとめる */
+  var SPEED = 0.020;                      /* 自動送りの速さ（px/ミリ秒）。約20px/秒 */
+  var HOLD  = 2800;                       /* 上端・下端で止まる時間 */
+  var IDLE  = 9000;                       /* 手で動かしたあと、自動送りを再開するまで */
   var box = document.getElementById('askqr');
   var list = document.getElementById('aqList');
+  var feed = document.querySelector('#askqr .aq-feed');
   var count = document.getElementById('aqCount');
   var rangeBtn = document.getElementById('aqRange');
-  if (!box || !list || !count) return;
+  if (!box || !list || !count || !feed) return;
   var seq = 0, timer = 0, seen = {}, first = true, latest = null;
 
   /* 前の講演の質問まで出てこないよう、既定では直近の分だけを映す。
@@ -3542,35 +3557,50 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
       first = false;
       return;
     }
-    var html = '';
-    for (var i = 0; i < Math.min(SHOW, items.length); i++){
+    var html = '', fresh = false;
+    for (var i = 0; i < items.length; i++){
       var it = items[i];
       var key = it.t + '|' + it.q.slice(0, 24);
       var isNew = !first && !seen[key];
+      if (isNew) fresh = true;
       seen[key] = 1;
       var who = (it.n ? '<span class="ja">' + esc(it.n) + '</span> ／ ' : '') + stamp(it.t);
       html += '<li' + (isNew ? ' class="is-new"' : '') + '>'
             + '<span class="who">' + who + '</span>' + esc(it.q) + '</li>';
     }
+    var wasTop = pos < 4;
     list.innerHTML = html;
-    /* 画面に入りきらない行は落とす。中途半端に切れた質問を出さないため */
-    while (list.scrollHeight > list.clientHeight && list.children.length > 1){
-      list.removeChild(list.children[list.children.length - 1]);
-    }
-    var rest = items.length - list.children.length;
-    if (rest > 0){
-      var more = document.createElement('li');
-      more.className = 'aq-more';
-      more.textContent = 'ほか ' + rest + ' 件';
-      list.appendChild(more);
-      while (list.scrollHeight > list.clientHeight && list.children.length > 2){
-        list.removeChild(list.children[list.children.length - 2]);
-        more.textContent = 'ほか ' + (items.length - (list.children.length - 1)) + ' 件';
-      }
-    }
     count.textContent = items.length;
     first = false;
+    /* 新しい一言が入ったら先頭に戻す。読んでいる途中なら位置を保つ */
+    if (fresh || wasTop) top();
+    autoScroll();
   }
+
+  /* ── 自動送り。件数が画面に入りきらないときだけ、ゆっくり流す ──
+     手で動かしているあいだは止め、しばらく触られなければ再開する */
+  var pos = 0, dir = 1, hold = 0, raf = 0, until = 0, prev = 0;
+  function top(){ pos = 0; dir = 1; hold = HOLD; list.scrollTop = 0; }
+  function autoScroll(){
+    feed.classList.toggle('has-more', list.scrollHeight - list.clientHeight > 4);
+    if (raf) return;
+    prev = 0;
+    raf = requestAnimationFrame(function step(ts){
+      raf = requestAnimationFrame(step);
+      if (!prev) prev = ts;
+      var dt = Math.min(64, ts - prev); prev = ts;
+      var max = list.scrollHeight - list.clientHeight;
+      if (max <= 4 || Date.now() < until) return;
+      if (hold > 0){ hold -= dt; return; }
+      pos += dir * dt * SPEED;
+      if (pos >= max){ pos = max; dir = -1; hold = HOLD; }
+      else if (pos <= 0){ pos = 0; dir = 1; hold = HOLD; }
+      list.scrollTop = pos;
+    });
+  }
+  function touched(){ until = Date.now() + IDLE; pos = list.scrollTop; dir = 1; hold = 0; }
+  list.addEventListener('wheel', touched, { passive:true });
+  list.addEventListener('touchstart', touched, { passive:true });
 
   var misses = 0;
   function pull(){
