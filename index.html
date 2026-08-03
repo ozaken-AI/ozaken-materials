@@ -2253,7 +2253,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     <span class="ja">おざけん Q&amp;A管理システム</span>
     <span class="sep">/</span>
     <span>OZAKEN Q&amp;A</span>
-    <span class="ver">v1.0</span>
+    <span class="ver">v1.1</span>
   </div>
   <div class="thanks-inner">
     <span class="thanks-eyebrow">Q&amp;A Management System</span>
@@ -3469,11 +3469,11 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     function clean(){ if(done) return; done = true; try{ delete window[name]; }catch(e){ window[name] = undefined; }
       if (el.parentNode) el.parentNode.removeChild(el); }
     window[name] = function(d){ clean(); cb(d); };
-    el.onerror = function(){ clean(); cb(null); };
+    el.onerror = function(){ if (!done){ clean(); cb(null); } };
     el.src = url + (url.indexOf('?') < 0 ? '?' : '&') + 'list=1&callback=' + name
           + '&token=' + encodeURIComponent(token()) + '&_=' + Date.now();
     document.head.appendChild(el);
-    setTimeout(clean, 12000);             /* 返ってこないときの後始末 */
+    setTimeout(function(){ if (!done){ clean(); cb(null); } }, 12000);   /* 返ってこないときの後始末 */
   }
 
   function esc(t){ return String(t == null ? '' : t)
@@ -3528,7 +3528,11 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
       if (d && d.auth === false){                  /* 合言葉が違う／未設定 */
         stop(); setToken(''); unlocked(false);
         lockErr.textContent = d.error ? '受信ボックスがまだ有効になっていません。' : '合言葉が違います。';
+        return;
       }
+      /* 応答そのものが返ってこなかったとき。
+         まだ一覧が出ていなければ理由を出す。出ているなら、一時的な失敗として前の表示を残す */
+      if (!d && body.hidden) lockErr.textContent = '受信ボックスに接続できません。通信環境をご確認ください。';
     });
   }
 
