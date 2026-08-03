@@ -1033,6 +1033,12 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
 .aq-en{font-family:var(--font-en);font-size:.58rem;font-weight:700;letter-spacing:.22em;
   color:rgba(159,198,245,.55);padding:.15em .55em;border-radius:999px;
   border:1px solid rgba(159,198,245,.28)}
+.aq-range{margin-left:auto;font-family:var(--font-ja-sans);font-size:.68rem;font-weight:700;
+  letter-spacing:.06em;color:rgba(216,228,240,.8);cursor:pointer;
+  padding:.22em .7em;border-radius:999px;background:rgba(255,255,255,.06);
+  border:1px solid rgba(216,228,240,.22);transition:background .2s ease,color .2s ease}
+.aq-range:hover{background:rgba(255,255,255,.14);color:#fff}
+.aq-range + .aq-count{margin-left:.7rem}
 .aq-count{margin-left:auto;font-family:var(--font-en);font-weight:700;
   font-size:clamp(.9rem,2.4vh,1.4rem);letter-spacing:.04em;color:#9fc6f5;
   font-variant-numeric:tabular-nums}
@@ -2234,7 +2240,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     <span class="ja">おざけん Q&amp;A管理システム</span>
     <span class="sep">/</span>
     <span>OZAKEN Q&amp;A</span>
-    <span class="ver">v1.5</span>
+    <span class="ver">v1.6</span>
   </div>
   <div class="thanks-inner">
     <span class="thanks-eyebrow">Q&amp;A Management System</span>
@@ -2254,6 +2260,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
             <span class="aq-live" aria-hidden="true"></span>
             <span class="aq-ttl">いま届いている質問</span>
             <span class="aq-en">INBOX</span>
+            <button class="aq-range" id="aqRange" type="button" title="表示する範囲を切り替える">直近3時間</button>
             <span class="aq-count" id="aqCount">0</span>
           </div>
           <ul class="aq-list" id="aqList">
@@ -3414,8 +3421,45 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
   var box = document.getElementById('askqr');
   var list = document.getElementById('aqList');
   var count = document.getElementById('aqCount');
+  var rangeBtn = document.getElementById('aqRange');
   if (!box || !list || !count) return;
-  var seq = 0, timer = 0, seen = {}, first = true;
+  var seq = 0, timer = 0, seen = {}, first = true, latest = null;
+
+  /* 前の講演の質問まで出てこないよう、既定では直近の分だけを映す。
+     見出しの表示を押すと範囲が切り替わる */
+  var RANGES = [
+    { label:'直近1時間', ms: 3600000 },
+    { label:'直近3時間', ms: 3 * 3600000 },
+    { label:'今日',      ms: 'today'    },
+    { label:'すべて',    ms: 0          }
+  ];
+  var ri = 1;
+  try { var save = parseInt(localStorage.getItem('ozaken_qa_range'), 10);
+        if (!isNaN(save) && RANGES[save]) ri = save; } catch(e){}
+
+  function cutoff(){
+    var r = RANGES[ri];
+    if (!r.ms) return 0;
+    if (r.ms === 'today'){ var d = new Date(); d.setHours(0,0,0,0); return d.getTime(); }
+    return Date.now() - r.ms;
+  }
+  function inRange(items){
+    var c = cutoff();
+    if (!c) return items;
+    var out = [];
+    for (var i = 0; i < items.length; i++) if (!items[i].t || items[i].t >= c) out.push(items[i]);
+    return out;
+  }
+  if (rangeBtn){
+    rangeBtn.textContent = RANGES[ri].label;
+    rangeBtn.addEventListener('click', function(){
+      ri = (ri + 1) % RANGES.length;
+      rangeBtn.textContent = RANGES[ri].label;
+      try { localStorage.setItem('ozaken_qa_range', String(ri)); } catch(e){}
+      seen = {}; first = true;
+      if (latest) render(latest.items, latest.total); else pull();
+    });
+  }
 
   /* 一覧が出せないときは、黙って空にせず理由を出す */
   function notice(text){
@@ -3479,14 +3523,23 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
 
   function stamp(ms){
     if (!ms) return '';
-    var d = new Date(ms);
-    return ('0'+d.getHours()).slice(-2) + ':' + ('0'+d.getMinutes()).slice(-2);
+    var d = new Date(ms), now = new Date();
+    var hm = ('0'+d.getHours()).slice(-2) + ':' + ('0'+d.getMinutes()).slice(-2);
+    /* 今日以外は日付も出す。範囲を「すべて」にしたとき、前の講演の分と混ざらないように */
+    var sameDay = d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth()
+               && d.getDate() === now.getDate();
+    return sameDay ? hm : ((d.getMonth()+1) + '/' + d.getDate() + ' ' + hm);
   }
 
-  function render(items, total){
+  function render(all, total){
+    latest = { items: all, total: total };
+    var items = inRange(all);
     if (!items.length){
-      list.innerHTML = '<li class="aq-empty">最初の一つを待っています。</li>';
+      list.innerHTML = '<li class="aq-empty">'
+        + (all.length ? 'この範囲に質問はまだありません。' : '最初の一つを待っています。')
+        + '</li>';
       count.textContent = '0';
+      first = false;
       return;
     }
     var html = '';
@@ -3515,7 +3568,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
         more.textContent = 'ほか ' + (items.length - (list.children.length - 1)) + ' 件';
       }
     }
-    count.textContent = (total || items.length);
+    count.textContent = items.length;
     first = false;
   }
 
