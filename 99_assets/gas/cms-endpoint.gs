@@ -27,10 +27,10 @@ var LIST_MAX    = 30;                                   // 投影ページに返
 var HIDE_COL    = 8;                                    // この列（H）に何か書くと、その質問は投影に出ない
 
 /* 一覧を読むための合言葉。
-   このファイルは公開リポジトリに置いてあるので、合言葉はコードに書かない。
-   Apps Script の「プロジェクトの設定 → スクリプト プロパティ」で
-   LIST_TOKEN という名前で登録する（下の setListToken_() を一度実行してもよい）。
-   未設定のあいだは、安全側に倒して一覧を返さない。 */
+   ふだんは未設定でよい（＝質問一覧は誰でも読める。会場に映す前提のため）。
+   登壇者だけに限定したくなったときだけ、
+   「プロジェクトの設定 → スクリプト プロパティ」に LIST_TOKEN を登録する。
+   このファイルは公開リポジトリに置いてあるので、合言葉はコードに書かないこと。 */
 function listToken_(){
   try { return PropertiesService.getScriptProperties().getProperty('LIST_TOKEN') || ''; }
   catch(e){ return ''; }
