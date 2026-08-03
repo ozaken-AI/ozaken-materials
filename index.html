@@ -996,6 +996,14 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
   border:1px solid rgba(159,198,245,.28);border-radius:2px}
 #thanks .qr-url,#standby .qr-url{font-family:var(--font-en);letter-spacing:.06em;color:#9fc6f5}
 #thanks .qr-note,#standby .qr-note{font-family:var(--font-en);letter-spacing:.18em;font-size:.62rem;color:rgba(159,198,245,.6)}
+/* 質問箱のQR：画面が横長で背が低いときも、全部が収まるように縮める */
+@media (max-height:660px){
+  #askqr .thanks-eyebrow{margin-bottom:.7rem}
+  #askqr .thanks-title{font-size:clamp(1.4rem,7.4vh,3.4rem);margin-bottom:1rem}
+  #askqr .thanks-qr{margin:.2rem auto 1.1rem;padding:.7rem;gap:1.3rem}
+  #askqr .qr-card{width:clamp(104px,27vh,200px)}
+  #askqr .thanks-sub{font-size:clamp(.76rem,2.4vh,1.15rem)}
+}
 /* 表示された瞬間に、走査線がQRを撫でて像を結ぶ */
 #thanks.show .qr-card,#standby.show .qr-card{animation:tkMaterialize .9s cubic-bezier(.2,.7,.2,1) .15s both}
 @keyframes tkMaterialize{
@@ -2152,7 +2160,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
 </div>
 <!-- 秘密コマンド qa：質問箱のQR（投影用フルスクリーン） -->
 <div id="askqr" class="thanks aq" aria-hidden="true" role="dialog" aria-label="質問箱のご案内">
-  <div class="tk-hud" aria-hidden="true"><i></i><i></i><i></i><i></i><b>OZAKEN CMS ／ QUESTION BOX</b></div>
+  <div class="tk-hud" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
   <canvas class="thanks-net" aria-hidden="true"></canvas>
   <div class="thanks-inner">
     <span class="thanks-eyebrow">QUESTION BOX</span>
