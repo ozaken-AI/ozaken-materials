@@ -2234,7 +2234,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     <span class="ja">おざけん Q&amp;A管理システム</span>
     <span class="sep">/</span>
     <span>OZAKEN Q&amp;A</span>
-    <span class="ver">v1.2</span>
+    <span class="ver">v1.3</span>
   </div>
   <div class="thanks-inner">
     <span class="thanks-eyebrow">Q&amp;A Management System</span>
@@ -3424,6 +3424,21 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     first = true; seen = {};
   }
 
+  /* まず Cookie を付けずに取りにいく。
+     Googleに複数アカウントでログインしていると、Cookie付きのリクエストは
+     所有者と違うアカウントで解決され「ファイルは存在しません」のHTMLが返る。
+     credentials:'omit' なら匿名扱いになり、この経路を踏まない。
+     CORSで弾かれる環境のために、失敗したら script タグ経由へ落とす。 */
+  function load(cb){
+    var url = LIST_URL + (LIST_URL.indexOf('?') < 0 ? '?' : '&') + 'list=1&_=' + Date.now();
+    if (!window.fetch){ jsonp(LIST_URL, cb); return; }
+    fetch(url, { method:'GET', mode:'cors', credentials:'omit',
+                 redirect:'follow', cache:'no-store' })
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(d){ if (d && typeof d.ok !== 'undefined') cb(d); else jsonp(LIST_URL, cb); })
+      .catch(function(){ jsonp(LIST_URL, cb); });
+  }
+
   function jsonp(url, cb){
     var name = 'ozAq' + (++seq);
     var el = document.createElement('script');
@@ -3484,7 +3499,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
   }
 
   function pull(){
-    jsonp(LIST_URL, function(d){
+    load(function(d){
       if (d && d.ok && d.items){ render(d.items, d.total); return; }
       if (d && d.auth === false){
         notice('受信ボックスがまだ公開設定になっていません。');
