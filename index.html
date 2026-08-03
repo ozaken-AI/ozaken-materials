@@ -2234,7 +2234,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     <span class="ja">おざけん Q&amp;A管理システム</span>
     <span class="sep">/</span>
     <span>OZAKEN Q&amp;A</span>
-    <span class="ver">v1.4</span>
+    <span class="ver">v1.5</span>
   </div>
   <div class="thanks-inner">
     <span class="thanks-eyebrow">Q&amp;A Management System</span>
@@ -3449,25 +3449,29 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
       });
   }
 
+  /* 遅れて届いた応答も捨てない。
+     Apps Script は最初の呼び出しに数秒かかることがあり、
+     待ちきれずに関数を消してしまうと、返ってきた中身を受け取れなくなる。 */
   function jsonp(url, cb){
     var name = 'ozAq' + (++seq);
     var el = document.createElement('script');
-    var done = false;
-    function clean(){ if(done) return; done = true; try{ delete window[name]; }catch(e){ window[name] = undefined; }
-      if (el.parentNode) el.parentNode.removeChild(el); }
-    window[name] = function(d){ clean(); cb(d); };
+    var fired = false;
+    function drop(){
+      if (el.parentNode) el.parentNode.removeChild(el);
+      setTimeout(function(){ try{ delete window[name]; }catch(e){ window[name] = undefined; } }, 60000);
+    }
+    window[name] = function(d){ fired = true; drop(); cb(d); };
     el.onerror = function(e){
-      if (!done){ console.warn('[Q&A] script タグの読み込みに失敗しました', el.src); clean(); cb(null); }
+      if (!fired){ fired = true; console.warn('[Q&A] script タグの読み込みに失敗しました', el.src); drop(); cb(null); }
     };
     el.src = url + (url.indexOf('?') < 0 ? '?' : '&') + 'list=1&callback=' + name
           + '&_=' + Date.now();
     document.head.appendChild(el);
+    /* いったん「まだ返ってこない」とだけ伝える。関数は生かしておき、
+       あとから届いたらその時点で表示する */
     setTimeout(function(){
-      if (!done){
-        console.warn('[Q&A] script タグから応答が返りませんでした（読み込めたが中身がJSではない可能性）');
-        clean(); cb(null);
-      }
-    }, 8000);   /* 返ってこないときの後始末 */
+      if (!fired){ console.warn('[Q&A] script タグの応答がまだ返っていません'); cb(null); }
+    }, 8000);
   }
 
   function esc(t){ return String(t == null ? '' : t)
@@ -3515,20 +3519,24 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     first = false;
   }
 
+  var misses = 0;
   function pull(){
+    if (first) notice('受信中…');
     load(function(d){
-      if (d && d.ok && d.items){ render(d.items, d.total); return; }
+      if (d && d.ok && d.items){ misses = 0; render(d.items, d.total); return; }
       if (d && d.auth === false){
         notice('受信ボックスがまだ公開設定になっていません。');
         return;
       }
-      /* 応答そのものが返ってこなかったとき。
-         すでに一覧が出ているなら、一時的な失敗として前の表示を残す */
-      if (!d && first) notice('受信ボックスに接続できません。通信環境をご確認ください。');
+      /* 応答が返らなかったとき。一覧がすでに出ているならそのまま残す。
+         最初の一回で諦めず、続けて失敗したときだけ理由を出す */
+      if (!d && first && ++misses >= 2){
+        notice('受信ボックスに接続できません。通信環境をご確認ください。');
+      }
     });
   }
 
-  function start(){ if (timer) return; pull(); timer = setInterval(pull, EVERY); }
+  function start(){ if (timer) return; misses = 0; pull(); timer = setInterval(pull, EVERY); }
   function stop(){ clearInterval(timer); timer = 0; }
 
   /* 投影画面が開いているあいだだけ動かす */
