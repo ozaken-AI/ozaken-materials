@@ -1443,6 +1443,80 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
    CTAが無いページでは、その分だけ下に空白が余るので打ち消す。 */
 .hero .inner > .hero-copy:last-child,
 .hero .inner > .hero-title:last-child{margin-bottom:0}
+
+/* ══════════════════════════════════════════════════════════════
+   今月のAIトレンド（Section 02）
+   中身は body 側の START / END マーカーの間だけを月次で差し替える。
+   ══════════════════════════════════════════════════════════════ */
+.tr-head{
+  display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+  padding-bottom:1.1rem; margin-bottom:1.8rem;
+  border-bottom:1px solid rgba(255,255,255,.16);
+}
+.tr-month{
+  font-family:var(--font-en); font-size:clamp(1.7rem,5vw,2.4rem);
+  font-weight:700; letter-spacing:.02em; line-height:1;
+  color:transparent; -webkit-text-stroke:1px rgba(255,255,255,.5);
+}
+.tr-month b{ -webkit-text-stroke:0; color:var(--white); font-weight:700; }
+.tr-lead{
+  flex:1 1 260px; min-width:0;
+  font-family:var(--font-ja-serif); font-size:1.02rem; line-height:1.9;
+  color:rgba(255,255,255,.92);
+}
+
+.tr-groups{ display:flex; flex-direction:column; gap:1.4rem; }
+.tr-group{
+  background:var(--navy-deep); border:1px solid rgba(255,255,255,.12);
+  border-radius:var(--radius); padding:1.5rem 1.4rem;
+}
+.tr-gt{
+  display:flex; align-items:center; gap:.7rem;
+  font-family:var(--font-ja-serif); font-size:1.14rem; font-weight:600;
+  color:var(--white); margin-bottom:.4rem;
+}
+.tr-gn{
+  font-family:var(--font-en); font-size:.72rem; font-weight:700; letter-spacing:.1em;
+  color:var(--azure-pale); background:rgba(255,255,255,.1);
+  padding:3px 8px; border-radius:4px; flex:none;
+}
+.tr-gs{ font-size:.9rem; line-height:1.8; color:rgba(255,255,255,.66); margin-bottom:1.1rem; }
+
+.tr-list{ list-style:none; display:flex; flex-direction:column; gap:.7rem; }
+.tr-list li{
+  display:grid; grid-template-columns:auto 1fr; gap:.2rem .8rem;
+  padding-left:.9rem; border-left:2px solid var(--azure-pale);
+}
+.tr-d{
+  font-family:var(--font-en); font-size:.78rem; font-weight:600; letter-spacing:.04em;
+  color:var(--azure-pale); padding-top:.24rem; white-space:nowrap;
+}
+.tr-t{ font-size:.95rem; font-weight:500; line-height:1.65; color:rgba(255,255,255,.94); }
+.tr-t a{ border-bottom:1px solid rgba(255,255,255,.28); transition:border-color .2s ease; }
+.tr-t a:hover{ border-bottom-color:var(--red-bright); }
+.tr-t a::after{ content:' ↗'; font-size:.78em; color:var(--azure-pale); }
+.tr-n{ grid-column:2; font-size:.86rem; line-height:1.75; color:rgba(255,255,255,.6); }
+.tr-t .hot{ color:var(--red-bright); font-weight:700; }
+
+.tr-foot{
+  display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap;
+  margin-top:1.8rem; padding-top:1.2rem; border-top:1px solid rgba(255,255,255,.16);
+  font-size:.84rem; color:rgba(255,255,255,.55);
+}
+.tr-arch{ display:flex; gap:.5rem; flex-wrap:wrap; }
+.tr-arch a{
+  font-family:var(--font-en); font-size:.78rem; font-weight:600; letter-spacing:.04em;
+  padding:4px 10px; border-radius:4px;
+  background:rgba(255,255,255,.08); color:rgba(255,255,255,.8);
+  transition:background .2s ease;
+}
+.tr-arch a:hover{ background:rgba(255,255,255,.18); }
+
+@media (max-width:560px){
+  .tr-list li{ grid-template-columns:1fr; gap:.15rem; }
+  .tr-n{ grid-column:1; }
+  .tr-d{ padding-top:0; }
+}
 </style>
 </head>
 <body>
@@ -1686,9 +1760,116 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
   </div>
 </section>
 
+<!-- ═══════════════════════════════════════════════════════════════
+     Section 02 ── 今月のAIトレンド
+     下の START / END マーカーに挟まれた範囲だけを、月次ジョブが丸ごと
+     差し替える。マーカーのコメント自体は消さないこと。
+     手順は .claude/skills/ai-news-monthly/SKILL.md
+     ═══════════════════════════════════════════════════════════════ -->
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Section 02 ─ Trends</span>
+    <h2 class="sec-title">今月のAIトレンド</h2>
+    <p class="sec-sub">生成AI・AIエージェント・フィジカルAIのニュースを毎週拾い、月に一度、おざけんの視点で束ね直しています。</p>
+
+<!-- AI-TRENDS:START -->
+    <div class="tr-head">
+      <span class="tr-month">2026.<b>07</b></span>
+      <p class="tr-lead">7月は「新しいモデルが出た月」ではなく、<b>エージェントを本番で回すための土台が揃った月</b>だった。OpenAIのPresence、Google CloudのGemini Enterprise Agent Platform ── 企業がエージェントを配り、繋ぎ、運用するための基盤が同じ月に出そろっている。そしてフィジカルAIは、国内で初の専門展示会と国家目標という形で、話題から産業政策の側へ移った。</p>
+    </div>
+
+    <div class="tr-groups">
+
+      <article class="tr-group">
+        <h3 class="tr-gt"><span class="tr-gn">01</span>生成AI</h3>
+        <p class="tr-gs">モデルの世代交代よりも、計算資源の確保と提供形態の整理が目立った月。</p>
+        <ul class="tr-list">
+          <li>
+            <span class="tr-d">07/06–12</span>
+            <span class="tr-t"><a href="https://tech-noisy.com/2026/07/13/ai-weekly-news-2026-07-06-2026-07-12/" target="_blank" rel="noopener">OpenAIが GPT-5.6（Sol / Terra / Luna）と ChatGPT Work を一般公開</a></span>
+            <span class="tr-n">用途別に3系統へ分かれた。「どのモデルを使うか」より「どの系統に寄せるか」が組織の設計論点になる。</span>
+          </li>
+          <li>
+            <span class="tr-d">07/06–12</span>
+            <span class="tr-t"><a href="https://tech-noisy.com/2026/07/13/ai-weekly-news-2026-07-06-2026-07-12/" target="_blank" rel="noopener">Anthropic が Claude Cowork を Web・iOS・Android へ拡大／xAI が Grok 4.5 を公開</a></span>
+            <span class="tr-n">Cowork がモバイルに出た意味は大きい。デスクに座っていない人の業務がエージェントの射程に入る。</span>
+          </li>
+          <li>
+            <span class="tr-d">07/22</span>
+            <span class="tr-t"><a href="https://tech-noisy.com/2026/07/23/ai-daily-news-2026-07-22/" target="_blank" rel="noopener">AMD と Anthropic が最大50億ドルの戦略提携、2GW規模のAI GPU展開へ</a></span>
+            <span class="tr-n">モデル各社の競争軸が、性能から<span class="hot">電力と調達</span>に移っていることがはっきり出た一件。</span>
+          </li>
+          <li>
+            <span class="tr-d">07/22</span>
+            <span class="tr-t"><a href="https://tech-noisy.com/2026/07/23/ai-daily-news-2026-07-22/" target="_blank" rel="noopener">OpenAI、ジョージア州に200億ドル規模の自社データセンター「Project Camellia」</a></span>
+            <span class="tr-n">自前で建てる方向。API価格が今後どう動くかは、この種の投資の回収設計に引きずられる。</span>
+          </li>
+        </ul>
+      </article>
+
+      <article class="tr-group">
+        <h3 class="tr-gt"><span class="tr-gn">02</span>AIエージェント</h3>
+        <p class="tr-gs">「作れるか」から「本番で配って運用できるか」へ。今月の主役はここ。</p>
+        <ul class="tr-list">
+          <li>
+            <span class="tr-d">07/22</span>
+            <span class="tr-t"><a href="https://tech-noisy.com/2026/07/23/ai-daily-news-2026-07-22/" target="_blank" rel="noopener">OpenAI、企業向けエージェント展開プラットフォーム「Presence」を限定公開</a></span>
+            <span class="tr-n">エージェントを社内に<b>配布する</b>ための層が製品化された。野良エージェント対策の正規ルートになりうる。</span>
+          </li>
+          <li>
+            <span class="tr-d">07/25</span>
+            <span class="tr-t"><a href="https://eguweb.jp/ai/81236/" target="_blank" rel="noopener">Google Cloud が Gemini Enterprise Agent Platform を発表</a></span>
+            <span class="tr-n">論点は「社内データへどう安全に繋ぐか」。基盤フェーズを飛ばした組織から順に詰まる。</span>
+          </li>
+          <li>
+            <span class="tr-d">07/03–10</span>
+            <span class="tr-t"><a href="https://gais.jp/news-2026-07-10/" target="_blank" rel="noopener">OpenAI が Codex の長時間作業支援を発表。レビュー・テスト・修正までAIが一括管理</a></span>
+            <span class="tr-n">人が待てる時間を超えて動くエージェントが増える。Human on the loop の設計が実務課題になる。</span>
+          </li>
+          <li>
+            <span class="tr-d">07/03–10</span>
+            <span class="tr-t"><a href="https://gais.jp/news-2026-07-10/" target="_blank" rel="noopener">ソフトバンクGとSB OAI Japan、AI駆動型セキュリティ「Patching as a Service」</a></span>
+            <span class="tr-n">エージェントを守りに使う国内事例。日本企業のAI投資が、攻めから守りへ広がりはじめた。</span>
+          </li>
+        </ul>
+      </article>
+
+      <article class="tr-group">
+        <h3 class="tr-gt"><span class="tr-gn">03</span>フィジカルAI</h3>
+        <p class="tr-gs">2026年は「フィジカルAI元年」。7月はその言葉に、展示会と国家目標という実体がついた。</p>
+        <ul class="tr-list">
+          <li>
+            <span class="tr-d">07/01–03</span>
+            <span class="tr-t"><a href="https://robotstart.info/article/2026/06/23/382065.html" target="_blank" rel="noopener">東京ビッグサイトで「第1回 フィジカルAI展」を初開催</a></span>
+            <span class="tr-n">AI×ロボット×センサの開発・実装が単独テーマの展示会になった。市場が形になった合図。</span>
+          </li>
+          <li>
+            <span class="tr-d">07/01–03</span>
+            <span class="tr-t"><a href="https://robotstart.info/article/2026/06/23/382065.html" target="_blank" rel="noopener">NVIDIAのロボット基盤モデル GR00T N1.5 を使った自律動作デモが並ぶ</a></span>
+            <span class="tr-n">環境の変化にその場で対応する。ティーチングを書く仕事から、任せ方を決める仕事へ。</span>
+          </li>
+          <li>
+            <span class="tr-d">7月</span>
+            <span class="tr-t"><a href="https://www.mirait-one.com/miraiz/whatsnew/trend-data_0066.html" target="_blank" rel="noopener">経産省、AIロボティクス市場は2040年に世界約60兆円と試算。日本はシェア3割・20兆円を目標に</a></span>
+            <span class="tr-n">数字が国家戦略に乗った。<span class="hot">人手不足</span>を前提にした産業政策として読むのが正しい。</span>
+          </li>
+        </ul>
+      </article>
+
+    </div>
+
+    <div class="tr-foot">
+      <span>出典は各見出しのリンク先。週次で集めた元ニュースは 10_ニュース／weekly に置いています。</span>
+      <span class="tr-arch"><a href="10_ニュース/トレンドアーカイブ.html">過去のトレンド →</a></span>
+    </div>
+<!-- AI-TRENDS:END -->
+
+  </div>
+</section>
+
 <section class="sec-light">
   <div class="inner" data-reveal>
-    <span class="eyebrow">Section 02</span>
+    <span class="eyebrow">Section 03</span>
     <h2 class="sec-title">おざけん プロフィール</h2>
     <p class="sec-sub">発信し続けることが、活動の軸になっている。書籍・記事・登壇という3つの形で、AIの可能性と実践知を届けてきた。</p>
 
@@ -1776,7 +1957,7 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
 
 <section class="sec-navy">
   <div class="inner" data-reveal>
-    <span class="eyebrow">Section 03 ─ AICX</span>
+    <span class="eyebrow">Section 04 ─ AICX</span>
     <h2 class="sec-title">AIを「使う組織」から「設計する組織」へ。AICX協会が、その転換を担う。</h2>
     <p class="sec-sub">軸足を置く業界団体はAICX協会ひとつ。評論ではなく実装で、日本のAIエージェント活用を前に進める。</p>
 
