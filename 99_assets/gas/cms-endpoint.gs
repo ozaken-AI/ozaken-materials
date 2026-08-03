@@ -20,6 +20,9 @@ var SENDER_NAME = '小澤健祐（おざけん）｜AICX協会';        // 差�
 var REPLY_TO = 'kensuke.ozawa@aicx.jp';       // 返信先（受信者の返信がここに届く）
 var SUBJECT     = '資料を手に取っていただき、ありがとうございます ─ 小澤健祐（おざけん）';
 var NOTIFY_ASK  = true;                                 // 質問が届いたら REPLY_TO に知らせる
+var SS_ID       = '';                                   // 通常は空でよい。スクリプトがシートに
+                                                        // 紐づいていない場合だけ、シートのIDを入れる
+var CODE_TAG    = '2026-08-03-ask';                     // 動いているコードの版。/exec を開くと出る
 
 /*** メイン：フォーム受信 → シート記録 → 自動返信メール *********/
 function doPost(e){
@@ -59,9 +62,15 @@ function doPost(e){
   return ok_();
 }
 
-// 動作確認用（ブラウザで /exec を開くと OK が出る）
+/* 動作確認用。ブラウザで /exec を開くと、いま動いているコードの版とシート一覧が出る。
+   ここに questions が出ていなければ、まだ新しいコードがデプロイされていない。 */
 function doGet(){
-  return ContentService.createTextOutput('ok');
+  var info = { ok:true, code:CODE_TAG, sheets:[] };
+  try {
+    book_().getSheets().forEach(function(s){ info.sheets.push(s.getName()); });
+  } catch(err){ info.ok = false; info.error = String(err); }
+  return ContentService.createTextOutput(JSON.stringify(info))
+    .setMimeType(ContentService.MimeType.JSON);
 }
 
 /*** 質問箱 *******************************************************/
@@ -74,8 +83,10 @@ function handleQuestion_(d){
 
   if (!question.replace(/\s/g,'')) return ok_();   // 空の投稿は捨てる
 
+  /* ここは握りつぶさない。失敗したら実行ログに残し、応答にも理由を載せる。
+     黙って何も起きないと、原因が追えなくなるため */
   try {
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var ss = book_();
     var sh = ss.getSheetByName(ASK_SHEET);
     if (!sh) {
       sh = ss.insertSheet(ASK_SHEET);
@@ -87,7 +98,12 @@ function handleQuestion_(d){
     }
     sh.appendRow([new Date(), clip_(name,100), clip_(question,2000), clip_(where,200),
                   clip_(d.page,300), clip_(d.ref,300), clip_(d.ua,300)]);
-  } catch(_){}
+    SpreadsheetApp.flush();
+  } catch(err){
+    Logger.log('質問の記録に失敗: ' + err);
+    return ContentService.createTextOutput(JSON.stringify({ ok:false, error:String(err) }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
 
   // 届いたことに気づけるよう、自分宛に知らせる
   try {
@@ -110,6 +126,16 @@ function handleQuestion_(d){
 function ok_(){
   return ContentService.createTextOutput(JSON.stringify({ ok:true }))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+/* 書き込み先のスプレッドシート。
+   スタンドアロンのスクリプト（シートに紐づいていない）だと
+   getActiveSpreadsheet() が null になるので、その場合は SS_ID を使う。 */
+function book_(){
+  if (SS_ID) return SpreadsheetApp.openById(SS_ID);
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  if (!ss) throw new Error('スプレッドシートに紐づいていません。SS_ID にシートのIDを設定してください。');
+  return ss;
 }
 
 /* 長すぎる入力でシートが壊れないよう、頭から必要な分だけ取る */
@@ -188,11 +214,28 @@ function testSend(){
   });
 }
 
+/*** 診断：どこで詰まっているかを実行ログに出す *******************/
+function diag(){
+  Logger.log('コードの版: ' + CODE_TAG);
+  try {
+    var ss = book_();
+    Logger.log('シート名: ' + ss.getName());
+    Logger.log('シートID: ' + ss.getId());
+    var names = ss.getSheets().map(function(s){ return s.getName(); });
+    Logger.log('タブ一覧: ' + names.join(' / '));
+    Logger.log('questions タブ: ' + (names.indexOf(ASK_SHEET) >= 0 ? 'あり' : 'なし（未作成）'));
+  } catch(err){
+    Logger.log('スプレッドシートに到達できません: ' + err);
+  }
+  Logger.log('通知先: ' + REPLY_TO + ' / 残りメール送信数: ' + MailApp.getRemainingDailyQuota());
+}
+
 /*** テスト：質問箱の記録と通知を確認する *************************/
 function testQuestion(){
-  handleQuestion_({
+  var res = handleQuestion_({
     type:'question', name:'テスト 太郎',
     question:'製造業です。まず現場の日報からAIに任せたいのですが、最初の一歩は何から着手すべきでしょうか。',
     where:'テスト実行', page:'(テスト)', ref:'', ua:'(テスト)'
   });
+  Logger.log('結果: ' + res.getContent());
 }
