@@ -246,7 +246,7 @@ button.send:disabled{opacity:.55;cursor:default;transform:none}
 
 <script>
 /* みんなの声：直近3時間に届いた質問・コメントを流す。
-   多人数が同時に開くので、間隔は長め。画面を見ていないあいだは止める。 */
+   多人数が同時に開くページなので、読みにいく間隔は投影ページより長くとる。 */
 (function(){
   var LIST_URL = "https://script.google.com/macros/s/AKfycbwvf6VRQsjfiXulHOPAQ_Uren7ewTS3LTp9sp7XMf3H4yDsMhQIO1f41NPs1FfaTz1P/exec";
   var EVERY = 30000;                 /* 読みにいく間隔 */
@@ -332,11 +332,8 @@ button.send:disabled{opacity:.55;cursor:default;transform:none}
 
   if (more) more.addEventListener('click', function(){ shown += STEP; render(); });
 
-  /* 画面を見ていないあいだは読みにいかない。人数が多いので無駄打ちを避ける */
-  function tick(){ if (!document.hidden) pull(); }
   pull();
-  timer = setInterval(tick, EVERY);
-  document.addEventListener('visibilitychange', function(){ if (!document.hidden) pull(); });
+  timer = setInterval(pull, EVERY);
 
   /* 送信直後に自分の投稿を拾いにいく */
   window.ozAskSent = function(text){
