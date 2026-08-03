@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>質問箱 | 小澤健祐（おざけん）</title>
+<title>質問・コメント | 小澤健祐（おざけん）</title>
 <link rel="icon" type="image/png" sizes="32x32" href="99_assets/favicon-32.png">
 <link rel="icon" type="image/png" sizes="512x512" href="99_assets/favicon-512.png">
 <link rel="apple-touch-icon" sizes="180x180" href="99_assets/apple-touch-icon.png">
-<meta name="description" content="小澤健祐（おざけん）の講演中の質問箱。いま浮かんだ質問を受け付け、可能であれば講演の中でお答えします。">
+<meta name="description" content="小澤健祐（おざけん）の講演中の質問・コメント受付。聞きたいことも、感じたことも、ひとことからお寄せいただけます。">
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Shippori+Mincho+B1:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
@@ -107,8 +107,8 @@ button.send:disabled{opacity:.55;cursor:default;transform:none}
     <span class="ja">おざけん コンテンツ管理システム</span>
   </div>
 
-  <h1>講演中の質問を<br><span class="hl">受け付けています</span></h1>
-  <p class="lead">いま聞いてみたいこと、その場では手を挙げにくいことを、こちらへお寄せください。いただいた質問には、<b>可能であれば講演の中でお答えします</b>。時間内に触れられなかったものも、すべて目を通し、今後の登壇や資料づくりに活かします。お名前は空欄のままでも構いません。</p>
+  <h1>質問も、感想も<br><span class="hl">お待ちしています</span></h1>
+  <p class="lead">聞いてみたいことも、聞いていて感じたことも、ひとことだけで構いません。いただいた質問には、<b>可能であれば講演の中でお答えします</b>。お寄せいただいた内容は、会場のスクリーンにタイムラインとして流れることがあります。お名前は空欄のままでも構いません。</p>
 
   <form id="askForm" novalidate>
     <div class="f">
@@ -116,8 +116,8 @@ button.send:disabled{opacity:.55;cursor:default;transform:none}
       <input id="qName" type="text" maxlength="60" autocomplete="name" placeholder="小澤 健祐">
     </div>
     <div class="f">
-      <label for="qBody">質問・相談したいこと</label>
-      <textarea id="qBody" maxlength="1000" placeholder="例：製造業です。まず現場の日報からAIに任せたいのですが、最初の一歩は何から着手すべきでしょうか。"></textarea>
+      <label for="qBody">質問・コメント</label>
+      <textarea id="qBody" maxlength="1000" placeholder="例：製造業です。現場の日報からAIに任せたいのですが、最初の一歩は何から着手すべきでしょうか。&#10;例：80点で動かして現場で磨く、という話が刺さりました。"></textarea>
       <div class="count" id="qCount">0 / 1000</div>
     </div>
     <div class="hp" aria-hidden="true">
@@ -125,15 +125,15 @@ button.send:disabled{opacity:.55;cursor:default;transform:none}
       <input id="qFax" type="text" tabindex="-1" autocomplete="off">
     </div>
     <p class="err" id="qErr"></p>
-    <button class="send" type="submit" id="qSend">質問を送る</button>
-    <p class="note">講演の進行によっては、その場でお答えできない場合があります。ご記入いただいた内容は、質問への対応と今後のコンテンツ制作の参考にのみ利用します。</p>
+    <button class="send" type="submit" id="qSend">送信する</button>
+    <p class="note">講演の進行によっては、その場でお答えできない場合があります。いただいた内容は会場のスクリーンに表示されることがあります。ご記入いただいた内容は、質問への対応と今後のコンテンツ制作の参考にのみ利用します。</p>
   </form>
 
   <div class="done" id="qDone">
     <p class="mark">RECEIVED</p>
-    <p class="ttl">質問をお預かりしました</p>
-    <p class="sub">ありがとうございます。<br>可能であれば、この講演の中でお答えします。</p>
-    <button class="again" type="button" id="qAgain">もう一つ質問する</button>
+    <p class="ttl">お預かりしました</p>
+    <p class="sub">ありがとうございます。<br>会場のタイムラインに流れます。<br>質問は、可能であればこの講演の中でお答えします。</p>
+    <button class="again" type="button" id="qAgain">もうひとこと送る</button>
   </div>
 
   <p class="foot">
@@ -172,7 +172,7 @@ button.send:disabled{opacity:.55;cursor:default;transform:none}
     err.textContent='';
     if(fax.value) return;                                   /* 自動投稿よけ */
     var text=body.value.trim();
-    if(text.length<8){ err.textContent='質問の内容をもう少し詳しく書いてください。'; body.focus(); return; }
+    if(text.length<5){ err.textContent='もう少しだけ書き足してください。'; body.focus(); return; }
     if(text.length>MAX){ err.textContent='文字数を'+MAX+'字以内にしてください。'; return; }
     if(Date.now()-last<8000){ err.textContent='送信の間隔を少し空けてください。'; return; }
     last=Date.now();
@@ -185,7 +185,7 @@ button.send:disabled{opacity:.55;cursor:default;transform:none}
       .catch(function(){})
       .finally(function(){
         try{ localStorage.setItem('ozaken_ask_name', nameEl.value.trim()); }catch(e){}
-        send.disabled=false; send.textContent='質問を送る';
+        send.disabled=false; send.textContent='送信する';
         body.value=''; count();
         form.style.display='none'; done.classList.add('on');
         window.scrollTo({ top:0, behavior:'smooth' });

@@ -150,7 +150,7 @@ function reply_(obj, callback){
 }
 
 /*** 質問箱 *******************************************************/
-/* ask.html は「お名前（任意）」と「質問」だけを送ってくる。
+/* ask.html は「お名前（任意）」と「質問・コメント」だけを送ってくる。
    ?s=… が付いたURLから開かれた場合は、どの登壇からの質問かも一緒に届く。 */
 function handleQuestion_(d){
   var name     = (d.name||'')+'';
@@ -166,7 +166,7 @@ function handleQuestion_(d){
     var sh = ss.getSheetByName(ASK_SHEET);
     if (!sh) {
       sh = ss.insertSheet(ASK_SHEET);
-      sh.appendRow(['日時','お名前','質問','聞いた場','ページ','参照元','UA','非表示']);
+      sh.appendRow(['日時','お名前','質問・コメント','聞いた場','ページ','参照元','UA','非表示']);
       sh.getRange(1,1,1,8).setFontWeight('bold');
       sh.setFrozenRows(1);
       sh.setColumnWidth(3, 520);
@@ -187,7 +187,7 @@ function handleQuestion_(d){
       MailApp.sendEmail({
         to: REPLY_TO,
         name: SENDER_NAME,
-        subject: '【質問箱】' + (name ? name + ' さんから' : '匿名で') + '質問が届きました',
+        subject: '【質問・コメント】' + (name ? name + ' さんから' : '匿名で') + '届きました',
         body: (name ? 'お名前：' + name + '\n' : 'お名前：（未記入）\n')
             + (where ? '聞いた場：' + where + '\n' : '')
             + '\n' + question + '\n\n'
