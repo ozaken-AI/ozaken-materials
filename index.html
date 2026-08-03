@@ -1435,6 +1435,11 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
   .arcmap.show .am-link{animation:none;stroke-dashoffset:0}
   .am-s{opacity:1;transform:none;transition:none}
 }
+/* OZ-SPACING v2 */
+/* ヒーローの .hero-copy は、後ろにCTAが来る前提で下マージンを持っている。
+   CTAが無いページでは、その分だけ下に空白が余るので打ち消す。 */
+.hero .inner > .hero-copy:last-child,
+.hero .inner > .hero-title:last-child{margin-bottom:0}
 </style>
 </head>
 <body>
@@ -1603,6 +1608,7 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
           <li><a href="04_活用・実践/prompt-engineering.html">プロンプトエンジニアリング ─ AIから答えを引き出す「絞り込み」の技術</a></li>
           <li><a href="04_活用・実践/context-harness-engineering.html">コンテキスト＆ハーネスエンジニアリング ─ プロンプトの、その先へ</a></li>
           <li><a href="04_活用・実践/資料作成.html">資料作成の基礎理論 ─ 組織で資料を「資産化」する設計ガイド</a></li>
+          <li><a href="04_活用・実践/gyomu-bunkai.html">業務分解大全 ─ 「任せられる単位」まで、仕事をほどく</a></li>
         </ul>
       </div>
       <div class="card">
