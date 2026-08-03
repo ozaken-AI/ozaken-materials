@@ -1021,6 +1021,27 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
   background:rgba(255,255,255,.05);border:1px solid rgba(216,228,240,.16);
   border-radius:18px;padding:clamp(.9rem,2.2vh,1.4rem) clamp(1rem,1.8vw,1.6rem);
   backdrop-filter:blur(3px);overflow:hidden}
+.aq-body{display:flex;flex-direction:column;flex:1;min-height:0}
+.aq-body[hidden]{display:none}
+/* 合言葉の入力 */
+.aq-lock{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;text-align:center;gap:.55rem;padding:clamp(.8rem,2vh,1.6rem) .5rem}
+.aq-lock[hidden]{display:none}
+.al-mark{font-family:var(--font-en);font-size:.6rem;font-weight:700;letter-spacing:.32em;
+  color:#f0b429}
+.al-title{font-family:var(--font-ja-sans);font-weight:700;color:#fff;
+  font-size:clamp(.82rem,2vh,1.05rem);margin:0}
+.al-form{display:flex;gap:.5rem;margin-top:.3rem}
+.al-form input{width:min(240px,52vw);padding:.6rem .85rem;border-radius:8px;color:#fff;
+  background:rgba(255,255,255,.08);border:1px solid rgba(216,228,240,.28);
+  font-family:inherit;font-size:.92rem;text-align:center;letter-spacing:.05em}
+.al-form input:focus{outline:none;border-color:#9fc6f5;box-shadow:0 0 0 3px rgba(46,84,150,.4)}
+.al-form button{padding:.6rem 1.2rem;border:none;border-radius:8px;background:var(--red);
+  color:#fff;font-family:inherit;font-weight:700;font-size:.88rem;cursor:pointer;
+  transition:background .2s ease}
+.al-form button:hover{background:var(--red-bright)}
+.al-err{min-height:1.1em;font-size:.76rem;color:var(--red-bright);margin:0}
+.al-note{font-size:.72rem;color:rgba(216,228,240,.5);margin:0}
 .aq-head{display:flex;align-items:center;gap:.6rem;flex:none;
   padding-bottom:.7rem;margin-bottom:.7rem;border-bottom:1px solid rgba(216,228,240,.14)}
 .aq-live{width:8px;height:8px;border-radius:50%;background:#46c98a;
@@ -2247,15 +2268,30 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
       </div>
     </div>
       <div class="aq-feed">
-        <div class="aq-head">
-          <span class="aq-live" aria-hidden="true"></span>
-          <span class="aq-ttl">いま届いている質問</span>
-          <span class="aq-en">INBOX</span>
-          <span class="aq-count" id="aqCount">0</span>
+        <div class="aq-body" id="aqBody" hidden>
+          <div class="aq-head">
+            <span class="aq-live" aria-hidden="true"></span>
+            <span class="aq-ttl">いま届いている質問</span>
+            <span class="aq-en">INBOX</span>
+            <span class="aq-count" id="aqCount">0</span>
+          </div>
+          <ul class="aq-list" id="aqList">
+            <li class="aq-empty">最初の一つを待っています。</li>
+          </ul>
         </div>
-        <ul class="aq-list" id="aqList">
-          <li class="aq-empty">最初の一つを待っています。</li>
-        </ul>
+        <!-- 受信ボックスは合言葉で開く。index.html は公開ページなので、
+             合言葉もハッシュもここには持たせない。入力値はそのまま
+             Apps Script へ渡し、正否の判定は向こう側で行う。 -->
+        <div class="aq-lock" id="aqLock">
+          <span class="al-mark">RESTRICTED</span>
+          <p class="al-title">受信ボックスは合言葉で保護されています</p>
+          <form class="al-form" id="aqLockForm">
+            <input id="aqPw" type="password" placeholder="合言葉" autocomplete="off" spellcheck="false">
+            <button type="submit">解錠</button>
+          </form>
+          <p class="al-err" id="aqLockErr" role="status"></p>
+          <p class="al-note">QRとご案内は、合言葉なしでも表示されています。</p>
+        </div>
       </div>
     </div>
     <p class="thanks-sub">お名前と質問だけ。いただいた質問は、可能であれば講演の中でお答えします。</p>
@@ -3407,11 +3443,24 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
   var LIST_URL = "https://script.google.com/macros/s/AKfycbwvf6VRQsjfiXulHOPAQ_Uren7ewTS3LTp9sp7XMf3H4yDsMhQIO1f41NPs1FfaTz1P/exec";
   var EVERY = 9000;                       /* 読みにいく間隔 */
   var SHOW  = 6;                          /* 画面に出す件数。残りは「ほか N 件」でまとめる */
+  var KEY   = 'ozaken_qa_token';          /* 合言葉の預け先。タブを閉じるまで有効 */
   var box = document.getElementById('askqr');
   var list = document.getElementById('aqList');
   var count = document.getElementById('aqCount');
-  if (!box || !list || !count) return;
+  var body = document.getElementById('aqBody');
+  var lock = document.getElementById('aqLock');
+  var lockForm = document.getElementById('aqLockForm');
+  var pw = document.getElementById('aqPw');
+  var lockErr = document.getElementById('aqLockErr');
+  if (!box || !list || !count || !body || !lock) return;
   var seq = 0, timer = 0, seen = {}, first = true;
+
+  function token(){ try{ return sessionStorage.getItem(KEY) || ''; }catch(e){ return ''; } }
+  function setToken(v){ try{ v ? sessionStorage.setItem(KEY,v) : sessionStorage.removeItem(KEY); }catch(e){} }
+  function unlocked(on){
+    body.hidden = !on; lock.hidden = !!on;
+    if (!on){ first = true; seen = {}; }
+  }
 
   function jsonp(url, cb){
     var name = 'ozAq' + (++seq);
@@ -3421,7 +3470,8 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
       if (el.parentNode) el.parentNode.removeChild(el); }
     window[name] = function(d){ clean(); cb(d); };
     el.onerror = function(){ clean(); cb(null); };
-    el.src = url + (url.indexOf('?') < 0 ? '?' : '&') + 'list=1&callback=' + name + '&_=' + Date.now();
+    el.src = url + (url.indexOf('?') < 0 ? '?' : '&') + 'list=1&callback=' + name
+          + '&token=' + encodeURIComponent(token()) + '&_=' + Date.now();
     document.head.appendChild(el);
     setTimeout(clean, 12000);             /* 返ってこないときの後始末 */
   }
@@ -3472,18 +3522,41 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
   }
 
   function pull(){
+    if (!token()){ stop(); unlocked(false); return; }
     jsonp(LIST_URL, function(d){
-      if (d && d.ok && d.items) render(d.items, d.total);
+      if (d && d.ok && d.items){ unlocked(true); lockErr.textContent = ''; render(d.items, d.total); return; }
+      if (d && d.auth === false){                  /* 合言葉が違う／未設定 */
+        stop(); setToken(''); unlocked(false);
+        lockErr.textContent = d.error ? '受信ボックスがまだ有効になっていません。' : '合言葉が違います。';
+      }
     });
   }
 
-  function start(){ if (timer) return; pull(); timer = setInterval(pull, EVERY); }
+  function start(){
+    if (!token()){ unlocked(false); return; }
+    if (timer) return;
+    pull(); timer = setInterval(pull, EVERY);
+  }
   function stop(){ clearInterval(timer); timer = 0; }
+
+  if (lockForm) lockForm.addEventListener('submit', function(ev){
+    ev.preventDefault();
+    var v = pw.value.trim();
+    if (!v) return;
+    lockErr.textContent = '照合中…';
+    setToken(v); pw.value = '';
+    start();
+    setTimeout(function(){ if (lockErr.textContent === '照合中…') lockErr.textContent = ''; }, 4000);
+  });
 
   /* 投影画面が開いているあいだだけ動かす */
   new MutationObserver(function(){
-    if (box.classList.contains('show')) start(); else stop();
+    if (box.classList.contains('show')){
+      unlocked(!!token()); start();
+      if (!token() && pw) setTimeout(function(){ try{ pw.focus(); }catch(e){} }, 260);
+    } else { stop(); }
   }).observe(box, { attributes:true, attributeFilter:['class'] });
+  unlocked(!!token());
   if (box.classList.contains('show')) start();
 })();
 </script>

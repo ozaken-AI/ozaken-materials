@@ -26,6 +26,25 @@ var CODE_TAG    = '2026-08-03-ask';                     // 動いているコー
 var LIST_MAX    = 30;                                   // 投影ページに返す質問の最大件数（新しい順）
 var HIDE_COL    = 8;                                    // この列（H）に何か書くと、その質問は投影に出ない
 
+/* 一覧を読むための合言葉。
+   このファイルは公開リポジトリに置いてあるので、合言葉はコードに書かない。
+   Apps Script の「プロジェクトの設定 → スクリプト プロパティ」で
+   LIST_TOKEN という名前で登録する（下の setListToken_() を一度実行してもよい）。
+   未設定のあいだは、安全側に倒して一覧を返さない。 */
+function listToken_(){
+  try { return PropertiesService.getScriptProperties().getProperty('LIST_TOKEN') || ''; }
+  catch(e){ return ''; }
+}
+
+/* 合言葉を設定する。実行する前に、下の '' の中を書き換えること。
+   ここに書いた文字はスクリプトに保存されるだけで、リポジトリには入らない。 */
+function setListToken_(){
+  var pw = '';                                          // ← ここに合言葉を入れて一度だけ実行
+  if (!pw) { Logger.log('合言葉が空です。pw に文字を入れてから実行してください。'); return; }
+  PropertiesService.getScriptProperties().setProperty('LIST_TOKEN', pw);
+  Logger.log('合言葉を設定しました。');
+}
+
 /*** メイン：フォーム受信 → シート記録 → 自動返信メール *********/
 function doPost(e){
   var d = {};
@@ -69,7 +88,7 @@ function doPost(e){
    ここに questions が出ていなければ、まだ新しいコードがデプロイされていない。 */
 function doGet(e){
   var p = (e && e.parameter) || {};
-  if (p.list) return listQuestions_(p.callback);
+  if (p.list) return listQuestions_(p.token, p.callback);
 
   var info = { ok:true, code:CODE_TAG, sheets:[] };
   try {
@@ -81,7 +100,16 @@ function doGet(e){
 /* 投影ページへ渡す質問一覧。
    H列（HIDE_COL）に何か書き込むと、その行は返さない。
    登壇中に出したくないものが来たら、シート上でそこに × を打てばすぐ消える。 */
-function listQuestions_(callback){
+function listQuestions_(token, callback){
+  var want = listToken_();
+  if (!want) {
+    return reply_({ ok:false, auth:false, code:CODE_TAG,
+      error:'LIST_TOKEN が未設定です。スクリプト プロパティに登録してください。' }, callback);
+  }
+  if (String(token || '') !== want) {
+    return reply_({ ok:false, auth:false, code:CODE_TAG }, callback);
+  }
+
   var out = { ok:true, code:CODE_TAG, total:0, items:[] };
   try {
     var sh = book_().getSheetByName(ASK_SHEET);
