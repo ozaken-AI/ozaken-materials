@@ -1191,7 +1191,7 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
 @media(max-width:640px){.boot-proc{top:calc(50% - 128px)}}
 @media (prefers-reduced-motion: reduce){.bp-ell i{animation:none;opacity:.7}}
 
-/* 起動シークエンス：音声ナレーションの字幕。声が出ない環境でも、ここは必ず出る */
+/* 起動シークエンス：システムメッセージの読み出し */
 .boot-vo{position:absolute;left:50%;bottom:clamp(2.4rem,8vh,4rem);transform:translateX(-50%);
   z-index:2;display:flex;align-items:center;gap:.62rem;max-width:calc(100% - 3rem);
   padding:.52em 1.05em;border-radius:999px;opacity:0;
@@ -2205,7 +2205,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
   </div>
   <div class="boot-vo" aria-hidden="true">
     <span class="eq"><i></i><i></i><i></i><i></i><i></i></span>
-    <span class="vt">VOICE</span>
+    <span class="vt">SYS MSG</span>
     <span class="cap" id="bootVo"></span>
   </div>
   <div class="boot-scanlines"></div>
@@ -2254,34 +2254,12 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     src.connect(bp); bp.connect(g); g.connect(actx.destination);
     src.start(t); src.stop(t+dur+0.02);
   }
-  /* 読み上げの下に敷く機械の唸り。細かく刻んでボコーダーらしさを足す */
-  function drone(at,dur,vol){
-    if(!actx) return;
-    var t=actx.currentTime+at;
-    var o1=actx.createOscillator(),o2=actx.createOscillator(),lfo=actx.createOscillator();
-    o1.type='square'; o1.frequency.setValueAtTime(58,t);
-    o2.type='square'; o2.frequency.setValueAtTime(87.5,t);
-    lfo.type='square'; lfo.frequency.setValueAtTime(11,t);
-    var lg=actx.createGain(); lg.gain.setValueAtTime(vol*0.55,t);
-    var lp=actx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.setValueAtTime(340,t);
-    var g=actx.createGain();
-    g.gain.setValueAtTime(0.0001,t);
-    g.gain.exponentialRampToValueAtTime(vol,t+0.3);
-    g.gain.setValueAtTime(vol,t+Math.max(0.4,dur-0.5));
-    g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
-    lfo.connect(lg); lg.connect(g.gain);
-    o1.connect(lp); o2.connect(lp); lp.connect(g); g.connect(actx.destination);
-    o1.start(t); o2.start(t); lfo.start(t);
-    o1.stop(t+dur+0.05); o2.stop(t+dur+0.05); lfo.stop(t+dur+0.05);
-  }
   function sounds(){
     try{ actx=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ return; }
     sweepTone(120,480,0,0.45,0.13);
-    /* 音声チャンネルが開く合図 → ナレーションの下に機械の唸り → 閉じる合図 */
-    noise(0.18,0.26,0.075,300,2600);
+    /* システムメッセージが表示される合図 */
+    noise(0.18,0.26,0.06,300,2600);
     tone(1760,0.26,0.05,0.075,'sine'); tone(2349,0.33,0.06,0.06,'sine');
-    drone(0.3,3.5,0.036);
-    noise(3.86,0.2,0.05,2400,420);
     /* 各行のゲージが伸びきってOKが入る瞬間に鳴らす */
     for(var i=0;i<5;i++) tone(1245,0.81+i*0.52,0.05,0.11);
     tone(880,3.41,0.08,0.12);                        /* RUN 行 */
@@ -2290,46 +2268,9 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     tone(1568,5.60,0.26,0.11,'triangle');
   }
   function stopSounds(){ if(actx&&actx.close){ try{ actx.close(); }catch(e){} actx=null; } }
-  /* ── 音声ナレーション。低めのピッチでゆっくり読ませて機械の声に寄せる。
-        日本語の声が入っていない環境では字幕だけを出し、英語で読み上げさせない ── */
-  var voTimer=0,voGap=0,spoken=false;
-  function jaVoice(){
-    var vs=[];
-    try{ vs=window.speechSynthesis.getVoices()||[]; }catch(e){ return null; }
-    var ja=vs.filter(function(v){ return /^ja/i.test(v.lang||''); });
-    if(!ja.length) return null;
-    var pref=ja.filter(function(v){ return /Google|Kyoko|Otoya|Nanami|Ayumi|Haruka/i.test(v.name||''); });
-    return pref[0]||ja[0];
-  }
-  /* 読点・空白で区切って一節ずつ読ませる。節と節のあいだに機械らしい間が空き、
-     ピッチと速度を固定したまま並べると、抑揚のない合成音声に寄る */
-  function speak(text){
-    if(!('speechSynthesis' in window)) return;
-    spoken=false;
-    var go=function(){
-      if(spoken||!going) return;
-      var v=jaVoice(); if(!v) return;
-      spoken=true;
-      try{
-        var parts=text.split(/[、,　\s]+/).filter(Boolean);
-        window.speechSynthesis.cancel();
-        for(var i=0;i<parts.length;i++){
-          var u=new SpeechSynthesisUtterance(parts[i]);
-          u.voice=v; u.lang=v.lang||'ja-JP';
-          u.pitch=0.32; u.rate=0.78; u.volume=1;
-          window.speechSynthesis.speak(u);
-        }
-      }catch(e){}
-    };
-    try{
-      if((window.speechSynthesis.getVoices()||[]).length) go();
-      else{
-        window.speechSynthesis.addEventListener('voiceschanged',go,{once:true});
-        setTimeout(go,400);
-      }
-    }catch(e){}
-  }
-  /* 字幕も一節ずつ。読み上げと同じ間で出すので、声の有無にかかわらず機械の口調に見える */
+  /* ── 起動時のシステムメッセージ。音声は使わず、画面上の表示だけで見せる ── */
+  var voTimer=0,voGap=0;
+  /* 一節ずつ、間を置いて打ち出す。端末が区切って表示している口調にする */
   function caption(text){
     var el=document.getElementById('bootVo'); if(!el) return;
     clearInterval(voTimer); clearTimeout(voGap); el.textContent='';
@@ -2349,15 +2290,11 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     }
     chunk();
   }
-  function narrate(say,cap){
-    if(!say) return;
-    caption(cap||say);
-    setTimeout(function(){ if(going) speak(say); },340);
+  function narrate(cap){
+    if(!cap) return;
+    caption(cap);
   }
-  function stopVoice(){
-    clearInterval(voTimer); clearTimeout(voGap);
-    try{ window.speechSynthesis.cancel(); }catch(e){}
-  }
+  function stopVoice(){ clearInterval(voTimer); clearTimeout(voGap); }
   var going=false,timer=0,raf=0,done=null;
   function counter(){
     var t0=performance.now(),delay=3300,dur=1500;
@@ -2385,14 +2322,14 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
       bar:'STARTING LECTURE SESSION',proc:'セッション開始プロセス進行中',
       mod:'SESSION START',lead:'セッションを開始します',
       name:'小澤健祐（おざけん）',sub:'AIをすべての人に届けるために、書き、話し、つくり続けている。',
-      vo:'おざけん、コンテンツ管理システム、起動。',voCap:'おざけん コンテンツ管理システム　起動'},
+      voCap:'おざけん コンテンツ管理システム　起動'},
     end:{tag:'OZAKEN CMS ／ SESSION END SEQUENCE',
       lines:['CLOSING LECTURE SESSION','SAVING SESSION LOG','ARCHIVING SLIDES',
              'INDEXING MATERIALS','PUBLISHING ARCHIVE URL','GENERATING ACCESS CODE'],
       bar:'GENERATING ACCESS CODE',proc:'セッション終了プロセス進行中',
       mod:'SESSION COMPLETE',lead:'Thank You',
       name:'資料アーカイブをご用意しました',sub:'続きは、QRコードからお持ち帰りください。',
-      vo:'おざけん、コンテンツ管理システム、アーカイブ生成完了。',voCap:'おざけん コンテンツ管理システム　アーカイブ生成完了'}
+      voCap:'おざけん コンテンツ管理システム　アーカイブ生成完了'}
   };
   function applyMode(m){
     var c=MODES[m]||MODES.start;
@@ -2417,7 +2354,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     if(pct) pct.textContent='0%';
     boot.classList.remove('is-done'); boot.classList.add('is-on');
     root.classList.add('boot-locked');
-    counter(); sounds(); narrate(conf.vo,conf.voCap);
+    counter(); sounds(); narrate(conf.voCap);
     timer=setTimeout(finish,6800);
   };
   window.ozBootSkip=function(){ if(going) finish(); };
