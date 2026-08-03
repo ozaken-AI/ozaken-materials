@@ -23,6 +23,8 @@ var NOTIFY_ASK  = true;                                 // 質問が届いたら
 var SS_ID       = '';                                   // 通常は空でよい。スクリプトがシートに
                                                         // 紐づいていない場合だけ、シートのIDを入れる
 var CODE_TAG    = '2026-08-03-ask';                     // 動いているコードの版。/exec を開くと出る
+var LIST_MAX    = 30;                                   // 投影ページに返す質問の最大件数（新しい順）
+var HIDE_COL    = 8;                                    // この列（H）に何か書くと、その質問は投影に出ない
 
 /*** メイン：フォーム受信 → シート記録 → 自動返信メール *********/
 function doPost(e){
@@ -62,14 +64,60 @@ function doPost(e){
   return ok_();
 }
 
-/* 動作確認用。ブラウザで /exec を開くと、いま動いているコードの版とシート一覧が出る。
+/* ?list=1 … 投影ページ用に、新しい順で質問を返す
+   それ以外 … 動作確認用。いま動いているコードの版とシート一覧が出る。
    ここに questions が出ていなければ、まだ新しいコードがデプロイされていない。 */
-function doGet(){
+function doGet(e){
+  var p = (e && e.parameter) || {};
+  if (p.list) return listQuestions_(p.callback);
+
   var info = { ok:true, code:CODE_TAG, sheets:[] };
   try {
     book_().getSheets().forEach(function(s){ info.sheets.push(s.getName()); });
   } catch(err){ info.ok = false; info.error = String(err); }
-  return ContentService.createTextOutput(JSON.stringify(info))
+  return reply_(info, p.callback);
+}
+
+/* 投影ページへ渡す質問一覧。
+   H列（HIDE_COL）に何か書き込むと、その行は返さない。
+   登壇中に出したくないものが来たら、シート上でそこに × を打てばすぐ消える。 */
+function listQuestions_(callback){
+  var out = { ok:true, code:CODE_TAG, total:0, items:[] };
+  try {
+    var sh = book_().getSheetByName(ASK_SHEET);
+    if (sh) {
+      var last = sh.getLastRow();
+      out.total = Math.max(0, last - 1);                 // 見出し行を除く
+      var n = Math.min(LIST_MAX, out.total);
+      if (n > 0) {
+        var rows = sh.getRange(last - n + 1, 1, n, HIDE_COL).getValues();
+        for (var i = rows.length - 1; i >= 0; i--) {     // 新しい順に積む
+          var r = rows[i];
+          if (String(r[HIDE_COL - 1] || '').trim()) continue;
+          var q = String(r[2] || '').trim();
+          if (!q) continue;
+          out.items.push({
+            t: r[0] ? new Date(r[0]).getTime() : 0,
+            n: clip_(r[1], 40),
+            q: clip_(q, 400)
+          });
+        }
+      }
+    }
+  } catch(err){ out.ok = false; out.error = String(err); }
+  return reply_(out, callback);
+}
+
+/* callback が付いていれば JSONP で返す。
+   Apps Script は script.googleusercontent.com へ転送されるため、
+   ブラウザによっては通常の fetch が CORS で弾かれる。script タグ経由なら確実に届く。 */
+function reply_(obj, callback){
+  var body = JSON.stringify(obj);
+  if (callback && /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(callback)) {
+    return ContentService.createTextOutput(callback + '(' + body + ');')
+      .setMimeType(ContentService.MimeType.JAVASCRIPT);
+  }
+  return ContentService.createTextOutput(body)
     .setMimeType(ContentService.MimeType.JSON);
 }
 
@@ -90,8 +138,8 @@ function handleQuestion_(d){
     var sh = ss.getSheetByName(ASK_SHEET);
     if (!sh) {
       sh = ss.insertSheet(ASK_SHEET);
-      sh.appendRow(['日時','お名前','質問','聞いた場','ページ','参照元','UA']);
-      sh.getRange(1,1,1,7).setFontWeight('bold');
+      sh.appendRow(['日時','お名前','質問','聞いた場','ページ','参照元','UA','非表示']);
+      sh.getRange(1,1,1,8).setFontWeight('bold');
       sh.setFrozenRows(1);
       sh.setColumnWidth(3, 520);
       sh.getRange('C:C').setWrap(true);
