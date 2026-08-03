@@ -188,6 +188,21 @@ Slack DM（`channel_id: U078WMGJFRR`）:
 → PRのURL
 ```
 
+### PR作成やSlack送信の手段が無いとき
+
+定期実行のセッションには、`mcp__github__*` や `mcp__Slack__*` が渡っていないことがある。
+**その場合でも、途中で投げ出さない。**
+
+1. **ブランチのpushは必ず完了させる**（gitコマンドだけでできる）
+2. PRが作れないときは、pushの出力に出る PR作成URL
+   （`https://github.com/ozaken-AI/ozaken-materials/pull/new/<ブランチ名>`）を控える
+3. Slackが使えないときは、**セッションの最終出力に通知内容をそのまま書く**。
+   このRoutineはプッシュ通知が有効なので、完了時におざけんの端末に要約が届く
+4. 最終出力の冒頭に「Slack／GitHubのツールが無かった」「ブランチ名」「PR作成URL」を必ず書く
+
+恒久的に直したいときは、claude.ai の Routine 設定画面から Slack / GitHub のコネクタを
+このRoutineに紐づけ直す（コマンドラインからは付与できない）。
+
 ## Phase 5 ── 修正依頼に応じる
 
 PRコメントが届いたら、その指示どおりに直してブランチへpush。1回だけ返信する。
