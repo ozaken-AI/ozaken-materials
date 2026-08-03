@@ -1210,6 +1210,7 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
 .boot-vo .eq i:nth-child(5){animation-delay:.45s}
 @keyframes bootEq{0%,100%{height:3px;opacity:.45}50%{height:13px;opacity:1}}
 .boot-vo .cap::after{content:"_";margin-left:.1em;animation:bpDot .9s steps(1) infinite}
+.boot-vo .cap.is-live{text-shadow:0 0 14px rgba(159,198,245,.85)}
 @media(max-width:640px){.boot-vo{font-size:.66rem;letter-spacing:.04em;padding:.45em .8em}
   .boot-vo .vt{display:none}}
 @media (prefers-reduced-motion: reduce){.boot-vo .eq i,.boot-vo .cap::after{animation:none}}
@@ -2236,11 +2237,51 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
     o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t+dur+0.02);
   }
+  /* 帯域を絞ったノイズ。無線がつながる／切れるときの「ザッ」 */
+  function noise(at,dur,vol,f0,f1){
+    if(!actx) return;
+    var t=actx.currentTime+at,len=Math.max(1,Math.floor(actx.sampleRate*dur));
+    var buf=actx.createBuffer(1,len,actx.sampleRate),d=buf.getChannelData(0);
+    for(var i=0;i<len;i++) d[i]=(Math.random()*2-1)*(1-i/len);
+    var src=actx.createBufferSource(); src.buffer=buf;
+    var bp=actx.createBiquadFilter(); bp.type='bandpass'; bp.Q.value=1.1;
+    bp.frequency.setValueAtTime(f0||1200,t);
+    if(f1) bp.frequency.exponentialRampToValueAtTime(f1,t+dur);
+    var g=actx.createGain();
+    g.gain.setValueAtTime(0.0001,t);
+    g.gain.exponentialRampToValueAtTime(vol,t+0.012);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+    src.connect(bp); bp.connect(g); g.connect(actx.destination);
+    src.start(t); src.stop(t+dur+0.02);
+  }
+  /* 読み上げの下に敷く機械の唸り。細かく刻んでボコーダーらしさを足す */
+  function drone(at,dur,vol){
+    if(!actx) return;
+    var t=actx.currentTime+at;
+    var o1=actx.createOscillator(),o2=actx.createOscillator(),lfo=actx.createOscillator();
+    o1.type='square'; o1.frequency.setValueAtTime(58,t);
+    o2.type='square'; o2.frequency.setValueAtTime(87.5,t);
+    lfo.type='square'; lfo.frequency.setValueAtTime(11,t);
+    var lg=actx.createGain(); lg.gain.setValueAtTime(vol*0.55,t);
+    var lp=actx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.setValueAtTime(340,t);
+    var g=actx.createGain();
+    g.gain.setValueAtTime(0.0001,t);
+    g.gain.exponentialRampToValueAtTime(vol,t+0.3);
+    g.gain.setValueAtTime(vol,t+Math.max(0.4,dur-0.5));
+    g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+    lfo.connect(lg); lg.connect(g.gain);
+    o1.connect(lp); o2.connect(lp); lp.connect(g); g.connect(actx.destination);
+    o1.start(t); o2.start(t); lfo.start(t);
+    o1.stop(t+dur+0.05); o2.stop(t+dur+0.05); lfo.stop(t+dur+0.05);
+  }
   function sounds(){
     try{ actx=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ return; }
     sweepTone(120,480,0,0.45,0.13);
-    /* 音声チャンネルが開く合図 */
+    /* 音声チャンネルが開く合図 → ナレーションの下に機械の唸り → 閉じる合図 */
+    noise(0.18,0.26,0.075,300,2600);
     tone(1760,0.26,0.05,0.075,'sine'); tone(2349,0.33,0.06,0.06,'sine');
+    drone(0.3,3.5,0.036);
+    noise(3.86,0.2,0.05,2400,420);
     /* 各行のゲージが伸びきってOKが入る瞬間に鳴らす */
     for(var i=0;i<5;i++) tone(1245,0.81+i*0.52,0.05,0.11);
     tone(880,3.41,0.08,0.12);                        /* RUN 行 */
@@ -2251,7 +2292,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
   function stopSounds(){ if(actx&&actx.close){ try{ actx.close(); }catch(e){} actx=null; } }
   /* ── 音声ナレーション。低めのピッチでゆっくり読ませて機械の声に寄せる。
         日本語の声が入っていない環境では字幕だけを出し、英語で読み上げさせない ── */
-  var voTimer=0,spoken=false;
+  var voTimer=0,voGap=0,spoken=false;
   function jaVoice(){
     var vs=[];
     try{ vs=window.speechSynthesis.getVoices()||[]; }catch(e){ return null; }
@@ -2260,6 +2301,8 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     var pref=ja.filter(function(v){ return /Google|Kyoko|Otoya|Nanami|Ayumi|Haruka/i.test(v.name||''); });
     return pref[0]||ja[0];
   }
+  /* 読点・空白で区切って一節ずつ読ませる。節と節のあいだに機械らしい間が空き、
+     ピッチと速度を固定したまま並べると、抑揚のない合成音声に寄る */
   function speak(text){
     if(!('speechSynthesis' in window)) return;
     spoken=false;
@@ -2268,11 +2311,14 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
       var v=jaVoice(); if(!v) return;
       spoken=true;
       try{
-        var u=new SpeechSynthesisUtterance(text);
-        u.voice=v; u.lang=v.lang||'ja-JP';
-        u.pitch=0.6; u.rate=0.86; u.volume=0.95;
+        var parts=text.split(/[、,　\s]+/).filter(Boolean);
         window.speechSynthesis.cancel();
-        window.speechSynthesis.speak(u);
+        for(var i=0;i<parts.length;i++){
+          var u=new SpeechSynthesisUtterance(parts[i]);
+          u.voice=v; u.lang=v.lang||'ja-JP';
+          u.pitch=0.32; u.rate=0.78; u.volume=1;
+          window.speechSynthesis.speak(u);
+        }
       }catch(e){}
     };
     try{
@@ -2283,14 +2329,25 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
       }
     }catch(e){}
   }
+  /* 字幕も一節ずつ。読み上げと同じ間で出すので、声の有無にかかわらず機械の口調に見える */
   function caption(text){
     var el=document.getElementById('bootVo'); if(!el) return;
-    clearInterval(voTimer); el.textContent='';
-    var i=0;
-    voTimer=setInterval(function(){
-      el.textContent=text.slice(0,++i);
-      if(i>=text.length) clearInterval(voTimer);
-    },55);
+    clearInterval(voTimer); clearTimeout(voGap); el.textContent='';
+    var chunks=text.split(/[　\s]+/).filter(Boolean),ci=0,out='';
+    function chunk(){
+      if(ci>=chunks.length){ el.classList.remove('is-live'); return; }
+      var s=chunks[ci++],head=out,i=0;
+      el.classList.add('is-live');
+      voTimer=setInterval(function(){
+        el.textContent=head+s.slice(0,++i);
+        if(i>=s.length){
+          clearInterval(voTimer); out=head+s+'　';
+          el.classList.remove('is-live');
+          voGap=setTimeout(chunk,470);
+        }
+      },95);
+    }
+    chunk();
   }
   function narrate(say,cap){
     if(!say) return;
@@ -2298,7 +2355,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     setTimeout(function(){ if(going) speak(say); },340);
   }
   function stopVoice(){
-    clearInterval(voTimer);
+    clearInterval(voTimer); clearTimeout(voGap);
     try{ window.speechSynthesis.cancel(); }catch(e){}
   }
   var going=false,timer=0,raf=0,done=null;
