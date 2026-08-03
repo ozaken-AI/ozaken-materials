@@ -1191,6 +1191,29 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
 @media(max-width:640px){.boot-proc{top:calc(50% - 128px)}}
 @media (prefers-reduced-motion: reduce){.bp-ell i{animation:none;opacity:.7}}
 
+/* 起動シークエンス：音声ナレーションの字幕。声が出ない環境でも、ここは必ず出る */
+.boot-vo{position:absolute;left:50%;bottom:clamp(2.4rem,8vh,4rem);transform:translateX(-50%);
+  z-index:2;display:flex;align-items:center;gap:.62rem;max-width:calc(100% - 3rem);
+  padding:.52em 1.05em;border-radius:999px;opacity:0;
+  background:rgba(9,14,28,.6);border:1px solid rgba(159,198,245,.24);backdrop-filter:blur(6px);
+  font-family:var(--font-ja-sans);font-size:.76rem;letter-spacing:.1em;
+  color:#fff;white-space:nowrap;overflow:hidden}
+.boot.is-on .boot-vo{animation:bootFadeIn .5s ease .2s both,bootPanelOut .4s ease 5.6s both}
+.boot-vo .vt{flex:none;font-family:var(--font-en);font-size:.6rem;font-weight:700;
+  letter-spacing:.18em;color:rgba(159,198,245,.72)}
+.boot-vo .eq{flex:none;display:flex;align-items:flex-end;gap:2px;height:13px}
+.boot-vo .eq i{width:2px;height:3px;border-radius:1px;background:#9fc6f5;
+  box-shadow:0 0 6px rgba(159,198,245,.7);animation:bootEq .72s ease-in-out infinite}
+.boot-vo .eq i:nth-child(2){animation-delay:.11s}
+.boot-vo .eq i:nth-child(3){animation-delay:.23s}
+.boot-vo .eq i:nth-child(4){animation-delay:.34s}
+.boot-vo .eq i:nth-child(5){animation-delay:.45s}
+@keyframes bootEq{0%,100%{height:3px;opacity:.45}50%{height:13px;opacity:1}}
+.boot-vo .cap::after{content:"_";margin-left:.1em;animation:bpDot .9s steps(1) infinite}
+@media(max-width:640px){.boot-vo{font-size:.66rem;letter-spacing:.04em;padding:.45em .8em}
+  .boot-vo .vt{display:none}}
+@media (prefers-reduced-motion: reduce){.boot-vo .eq i,.boot-vo .cap::after{animation:none}}
+
 /* ══ プロフィール：投影して使うため、全体に余白を広く取る ══
    会場のスクリーンは離れて見るので、詰めるより空ける方が読みやすい。
    .profile-fs 配下だけに効かせ、通常のページには影響させない。 */
@@ -2179,6 +2202,11 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     <span class="bf-name">小澤健祐（おざけん）</span>
     <span class="bf-sub">AIをすべての人に届けるために、書き、話し、つくり続けている。</span>
   </div>
+  <div class="boot-vo" aria-hidden="true">
+    <span class="eq"><i></i><i></i><i></i><i></i><i></i></span>
+    <span class="vt">VOICE</span>
+    <span class="cap" id="bootVo"></span>
+  </div>
   <div class="boot-scanlines"></div>
   <div class="boot-vignette"></div>
   <button class="boot-skip" type="button" id="bootSkip">SKIP &#9654;</button>
@@ -2211,6 +2239,8 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
   function sounds(){
     try{ actx=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ return; }
     sweepTone(120,480,0,0.45,0.13);
+    /* 音声チャンネルが開く合図 */
+    tone(1760,0.26,0.05,0.075,'sine'); tone(2349,0.33,0.06,0.06,'sine');
     /* 各行のゲージが伸びきってOKが入る瞬間に鳴らす */
     for(var i=0;i<5;i++) tone(1245,0.81+i*0.52,0.05,0.11);
     tone(880,3.41,0.08,0.12);                        /* RUN 行 */
@@ -2219,6 +2249,58 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     tone(1568,5.60,0.26,0.11,'triangle');
   }
   function stopSounds(){ if(actx&&actx.close){ try{ actx.close(); }catch(e){} actx=null; } }
+  /* ── 音声ナレーション。低めのピッチでゆっくり読ませて機械の声に寄せる。
+        日本語の声が入っていない環境では字幕だけを出し、英語で読み上げさせない ── */
+  var voTimer=0,spoken=false;
+  function jaVoice(){
+    var vs=[];
+    try{ vs=window.speechSynthesis.getVoices()||[]; }catch(e){ return null; }
+    var ja=vs.filter(function(v){ return /^ja/i.test(v.lang||''); });
+    if(!ja.length) return null;
+    var pref=ja.filter(function(v){ return /Google|Kyoko|Otoya|Nanami|Ayumi|Haruka/i.test(v.name||''); });
+    return pref[0]||ja[0];
+  }
+  function speak(text){
+    if(!('speechSynthesis' in window)) return;
+    spoken=false;
+    var go=function(){
+      if(spoken||!going) return;
+      var v=jaVoice(); if(!v) return;
+      spoken=true;
+      try{
+        var u=new SpeechSynthesisUtterance(text);
+        u.voice=v; u.lang=v.lang||'ja-JP';
+        u.pitch=0.6; u.rate=0.86; u.volume=0.95;
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(u);
+      }catch(e){}
+    };
+    try{
+      if((window.speechSynthesis.getVoices()||[]).length) go();
+      else{
+        window.speechSynthesis.addEventListener('voiceschanged',go,{once:true});
+        setTimeout(go,400);
+      }
+    }catch(e){}
+  }
+  function caption(text){
+    var el=document.getElementById('bootVo'); if(!el) return;
+    clearInterval(voTimer); el.textContent='';
+    var i=0;
+    voTimer=setInterval(function(){
+      el.textContent=text.slice(0,++i);
+      if(i>=text.length) clearInterval(voTimer);
+    },55);
+  }
+  function narrate(say,cap){
+    if(!say) return;
+    caption(cap||say);
+    setTimeout(function(){ if(going) speak(say); },340);
+  }
+  function stopVoice(){
+    clearInterval(voTimer);
+    try{ window.speechSynthesis.cancel(); }catch(e){}
+  }
   var going=false,timer=0,raf=0,done=null;
   function counter(){
     var t0=performance.now(),delay=3300,dur=1500;
@@ -2231,7 +2313,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
   }
   function finish(){
     if(!going) return;
-    going=false; clearTimeout(timer); cancelAnimationFrame(raf); stopSounds();
+    going=false; clearTimeout(timer); cancelAnimationFrame(raf); stopSounds(); stopVoice();
     boot.classList.add('is-done'); root.classList.remove('boot-locked');
     setTimeout(function(){ boot.classList.remove('is-on','is-done'); },450);
     if(done){ var cb=done; done=null; cb(); }
@@ -2245,13 +2327,15 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
              'MASTER DATA','HARNESS RUNTIME','STARTING LECTURE SESSION'],
       bar:'STARTING LECTURE SESSION',proc:'セッション開始プロセス進行中',
       mod:'SESSION START',lead:'セッションを開始します',
-      name:'小澤健祐（おざけん）',sub:'AIをすべての人に届けるために、書き、話し、つくり続けている。'},
+      name:'小澤健祐（おざけん）',sub:'AIをすべての人に届けるために、書き、話し、つくり続けている。',
+      vo:'おざけん、コンテンツ管理システム、起動。',voCap:'おざけん コンテンツ管理システム　起動'},
     end:{tag:'OZAKEN CMS ／ SESSION END SEQUENCE',
       lines:['CLOSING LECTURE SESSION','SAVING SESSION LOG','ARCHIVING SLIDES',
              'INDEXING MATERIALS','PUBLISHING ARCHIVE URL','GENERATING ACCESS CODE'],
       bar:'GENERATING ACCESS CODE',proc:'セッション終了プロセス進行中',
       mod:'SESSION COMPLETE',lead:'Thank You',
-      name:'資料アーカイブをご用意しました',sub:'続きは、QRコードからお持ち帰りください。'}
+      name:'資料アーカイブをご用意しました',sub:'続きは、QRコードからお持ち帰りください。',
+      vo:'おざけん、コンテンツ管理システム、アーカイブ生成完了。',voCap:'おざけん コンテンツ管理システム　アーカイブ生成完了'}
   };
   function applyMode(m){
     var c=MODES[m]||MODES.start;
@@ -2266,16 +2350,17 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     if(q('.bf-lead')) q('.bf-lead').textContent=c.lead;
     if(q('.bf-name')) q('.bf-name').textContent=c.name;
     if(q('.bf-sub')) q('.bf-sub').textContent=c.sub;
+    return c;
   }
   window.ozBoot=function(cb,mode){
     if(reduce){ if(cb) cb(); return; }
     if(going) return;
     going=true; done=cb||null;
-    applyMode(mode);
+    var conf=applyMode(mode);
     if(pct) pct.textContent='0%';
     boot.classList.remove('is-done'); boot.classList.add('is-on');
     root.classList.add('boot-locked');
-    counter(); sounds();
+    counter(); sounds(); narrate(conf.vo,conf.voCap);
     timer=setTimeout(finish,6800);
   };
   window.ozBootSkip=function(){ if(going) finish(); };
