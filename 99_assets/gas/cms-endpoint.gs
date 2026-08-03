@@ -101,12 +101,12 @@ function doGet(e){
    H列（HIDE_COL）に何か書き込むと、その行は返さない。
    登壇中に出したくないものが来たら、シート上でそこに × を打てばすぐ消える。 */
 function listQuestions_(token, callback){
+  /* 投影ページは会場に映すもので、質問は聴講者にも見える前提。
+     そのため既定では合言葉なしで返す。
+     限定したくなったときだけ、スクリプト プロパティに LIST_TOKEN を登録すれば
+     一致したリクエストにしか返さなくなる。 */
   var want = listToken_();
-  if (!want) {
-    return reply_({ ok:false, auth:false, code:CODE_TAG,
-      error:'LIST_TOKEN が未設定です。スクリプト プロパティに登録してください。' }, callback);
-  }
-  if (String(token || '') !== want) {
+  if (want && String(token || '') !== want) {
     return reply_({ ok:false, auth:false, code:CODE_TAG }, callback);
   }
 
