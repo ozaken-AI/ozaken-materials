@@ -25,6 +25,7 @@ var SS_ID       = '';                                   // 通常は空でよい
 var CODE_TAG    = '2026-08-03-ask';                     // 動いているコードの版。/exec を開くと出る
 var LIST_MAX    = 30;                                   // 投影ページに返す質問の最大件数（新しい順）
 var HIDE_COL    = 8;                                    // この列（H）に何か書くと、その質問は投影に出ない
+var CACHE_SEC   = 8;                                    // 一覧を使い回す秒数。聴講者が多いときの負荷対策
 
 /* 一覧を読むための合言葉。
    ふだんは未設定でよい（＝質問一覧は誰でも読める。会場に映す前提のため）。
@@ -110,6 +111,12 @@ function listQuestions_(token, callback){
     return reply_({ ok:false, auth:false, code:CODE_TAG }, callback);
   }
 
+  /* 聴講者のスマホも同じ一覧を読みにくるので、短いあいだ結果を使い回す。
+     スクリプトの実行時間を節約するための措置で、遅れは最大で CACHE_SEC 秒。 */
+  var cache = null, body = null;
+  try { cache = CacheService.getScriptCache(); body = cache.get('qa_list'); } catch(e){}
+  if (body) return replyBody_(body, callback);
+
   var out = { ok:true, code:CODE_TAG, total:0, items:[] };
   try {
     var sh = book_().getSheetByName(ASK_SHEET);
@@ -133,14 +140,19 @@ function listQuestions_(token, callback){
       }
     }
   } catch(err){ out.ok = false; out.error = String(err); }
-  return reply_(out, callback);
+  body = JSON.stringify(out);
+  if (cache && out.ok){ try { cache.put('qa_list', body, CACHE_SEC); } catch(e){} }
+  return replyBody_(body, callback);
 }
 
 /* callback が付いていれば JSONP で返す。
    Apps Script は script.googleusercontent.com へ転送されるため、
    ブラウザによっては通常の fetch が CORS で弾かれる。script タグ経由なら確実に届く。 */
 function reply_(obj, callback){
-  var body = JSON.stringify(obj);
+  return replyBody_(JSON.stringify(obj), callback);
+}
+
+function replyBody_(body, callback){
   if (callback && /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(callback)) {
     return ContentService.createTextOutput(callback + '(' + body + ');')
       .setMimeType(ContentService.MimeType.JAVASCRIPT);
