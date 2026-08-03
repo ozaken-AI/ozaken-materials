@@ -2234,7 +2234,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     <span class="ja">おざけん Q&amp;A管理システム</span>
     <span class="sep">/</span>
     <span>OZAKEN Q&amp;A</span>
-    <span class="ver">v1.3</span>
+    <span class="ver">v1.4</span>
   </div>
   <div class="thanks-inner">
     <span class="thanks-eyebrow">Q&amp;A Management System</span>
@@ -3434,9 +3434,19 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     if (!window.fetch){ jsonp(LIST_URL, cb); return; }
     fetch(url, { method:'GET', mode:'cors', credentials:'omit',
                  redirect:'follow', cache:'no-store' })
-      .then(function(r){ return r.ok ? r.json() : null; })
-      .then(function(d){ if (d && typeof d.ok !== 'undefined') cb(d); else jsonp(LIST_URL, cb); })
-      .catch(function(){ jsonp(LIST_URL, cb); });
+      .then(function(r){
+        if (!r.ok){ console.warn('[Q&A] fetch の応答が', r.status); return null; }
+        return r.json();
+      })
+      .then(function(d){
+        if (d && typeof d.ok !== 'undefined'){ cb(d); return; }
+        console.warn('[Q&A] fetch の中身が読めないため script タグへ切り替えます');
+        jsonp(LIST_URL, cb);
+      })
+      .catch(function(err){
+        console.warn('[Q&A] fetch に失敗:', err && err.message ? err.message : err);
+        jsonp(LIST_URL, cb);
+      });
   }
 
   function jsonp(url, cb){
@@ -3446,11 +3456,18 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     function clean(){ if(done) return; done = true; try{ delete window[name]; }catch(e){ window[name] = undefined; }
       if (el.parentNode) el.parentNode.removeChild(el); }
     window[name] = function(d){ clean(); cb(d); };
-    el.onerror = function(){ if (!done){ clean(); cb(null); } };
+    el.onerror = function(e){
+      if (!done){ console.warn('[Q&A] script タグの読み込みに失敗しました', el.src); clean(); cb(null); }
+    };
     el.src = url + (url.indexOf('?') < 0 ? '?' : '&') + 'list=1&callback=' + name
           + '&_=' + Date.now();
     document.head.appendChild(el);
-    setTimeout(function(){ if (!done){ clean(); cb(null); } }, 12000);   /* 返ってこないときの後始末 */
+    setTimeout(function(){
+      if (!done){
+        console.warn('[Q&A] script タグから応答が返りませんでした（読み込めたが中身がJSではない可能性）');
+        clean(); cb(null);
+      }
+    }, 8000);   /* 返ってこないときの後始末 */
   }
 
   function esc(t){ return String(t == null ? '' : t)
