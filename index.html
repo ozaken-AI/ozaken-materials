@@ -3069,7 +3069,11 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
         window.ozMap(); return; }
       if(buf.slice(-2)==='ur'){ buf='';
         all.forEach(function(o){ if(o.el.classList.contains('show')) o.hide(); });
-        if(window.ozGate) window.ozGate(); return; }
+        if(window.ozGate) window.ozGate('backstage'); return; }
+      /* pw はパスワード台帳。判定は台帳ページ自身に任せる */
+      if(buf.slice(-2)==='pw'){ buf='';
+        all.forEach(function(o){ if(o.el.classList.contains('show')) o.hide(); });
+        if(window.ozGate) window.ozGate('ledger'); return; }
       if(buf.slice(-2)==='go'&&window.ozBoot){ buf='';
         all.forEach(function(o){ if(o.el.classList.contains('show')) o.hide(); });
         window.ozBoot(null,'start'); return; }
@@ -3095,7 +3099,8 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
       '#title':  function(){ if(bySecret['ti']) bySecret['ti'].show(); },
       '#ask':    function(){ if(bySecret['qa']) bySecret['qa'].show(); },
       '#map':    function(){ if(window.ozMap) window.ozMap(); },
-      '#gate':   function(){ if(window.ozGate) window.ozGate(); },
+      '#gate':   function(){ if(window.ozGate) window.ozGate('backstage'); },
+      '#ledger': function(){ if(window.ozGate) window.ozGate('ledger'); },
       '#boot':   function(){ if(window.ozBoot) window.ozBoot(null,'start'); },
       '#end':    function(){ if(window.ozBoot&&bySecret['th'])
                                window.ozBoot(function(){ bySecret['th'].show(); },'end'); }
@@ -3208,8 +3213,20 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
   var gate=document.getElementById('bkgate'), form=document.getElementById('bkForm'),
       pw=document.getElementById('bkPw');
   if(!gate||!form||!pw) return;
-  var DEST='裏資料置き場.html', SESSION_KEY='ozaken_archive_pw';
-  window.ozGate=function(){
+  var SESSION_KEY='ozaken_archive_pw';
+  var DESTS={
+    backstage:{ dest:'裏資料置き場.html', title:'裏資料置き場',
+      lead:'スポット講演・パネルディスカッションの資料置き場です。<br>マスターパスワードを入力してください。' },
+    ledger:{ dest:'パスワード台帳.html', title:'パスワード台帳',
+      lead:'各資料の個別パスワードの記録です。<br>マスターパスワードを入力してください。' }
+  };
+  var DEST=DESTS.backstage.dest;
+  window.ozGate=function(which){
+    var c=DESTS[which]||DESTS.backstage;
+    DEST=c.dest;
+    var t=gate.querySelector('.bkgate-title'), l=gate.querySelector('.bkgate-lead');
+    if(t) t.textContent=c.title;
+    if(l) l.innerHTML=c.lead;
     gate.classList.add('show');
     gate.setAttribute('aria-hidden','false');
     document.documentElement.classList.add('boot-locked');

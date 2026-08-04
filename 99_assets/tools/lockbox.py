@@ -96,3 +96,42 @@ def create(template_path, plaintext, out_path, passwords):
     new_vars = 'var CT="%s",IVC="%s",W=%s,ITER=%d,KEY="%s";' % (
         b64e(ct), b64e(ivc), json.dumps(W), iters, m.group('key'))
     open(out_path, 'w', encoding='utf-8').write(shell[:m.start()] + new_vars + shell[m.end():])
+
+
+def add_password(path, known_pw, new_pw, out_path=None):
+    """既存の鍵はそのままに、新しいパスワードで開ける鍵を1本足す。
+    本文には触れないので、他のパスワードは今までどおり使える。"""
+    html = open(path, encoding="utf-8").read()
+    m = parse(html)
+    ck = content_key(m, known_pw)
+    W = json.loads(m.group("w"))
+    iters = int(m.group("iter"))
+    salt, iv = os.urandom(16), os.urandom(12)
+    kdf = PBKDF2HMAC(algorithm=SHA256(), length=32, salt=salt, iterations=iters)
+    wrapped = AESGCM(kdf.derive(new_pw.encode())).encrypt(iv, ck, None)
+    W.append({"s": b64e(salt), "iv": b64e(iv), "ct": b64e(wrapped)})
+    new_vars = 'var CT="%s",IVC="%s",W=%s,ITER=%s,KEY="%s";' % (
+        m.group("ct"), m.group("ivc"), json.dumps(W), m.group("iter"), m.group("key"))
+    open(out_path or path, "w", encoding="utf-8").write(
+        html[: m.start()] + new_vars + html[m.end():])
+
+
+def remove_password(path, known_pw, drop_pw, out_path=None):
+    """指定のパスワードで開く鍵だけを外す。他の鍵はそのまま。"""
+    html = open(path, encoding="utf-8").read()
+    m = parse(html)
+    iters = int(m.group("iter"))
+    keep = []
+    for w in json.loads(m.group("w")):
+        kdf = PBKDF2HMAC(algorithm=SHA256(), length=32, salt=b64d(w["s"]), iterations=iters)
+        try:
+            AESGCM(kdf.derive(drop_pw.encode())).decrypt(b64d(w["iv"]), b64d(w["ct"]), None)
+            continue                      # これが外す対象
+        except Exception:
+            keep.append(w)
+    assert keep, "鍵が1本も残りません"
+    content_key(parse(html), known_pw)    # 手元の鍵がまだ効くことを確かめる
+    new_vars = 'var CT="%s",IVC="%s",W=%s,ITER=%s,KEY="%s";' % (
+        m.group("ct"), m.group("ivc"), json.dumps(keep), m.group("iter"), m.group("key"))
+    open(out_path or path, "w", encoding="utf-8").write(
+        html[: m.start()] + new_vars + html[m.end():])

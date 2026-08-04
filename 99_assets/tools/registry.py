@@ -111,8 +111,9 @@ def save(pw, data):
 
 
 def render(data):
+    meta = data.get('_meta', {})
     rows = []
-    for rel in sorted(data):
+    for rel in sorted(k for k in data if k != '_meta'):
         e = data[rel]
         pwv = e.get('pw') or ''
         keys = e.get('keys', 1)
@@ -131,15 +132,22 @@ def render(data):
             % (cls, html.escape(e.get('title', '') or rel), html.escape(rel),
                cell, html.escape(e.get('to', '') or '—'), html.escape(e.get('at', '') or '—')))
 
-    n_pw = sum(1 for e in data.values() if e.get('pw'))
-    n_ng = sum(1 for e in data.values() if not e.get('pw') and e.get('keys', 1) > 1)
-    n_na = sum(1 for e in data.values() if e.get('keys', 1) == 1)
+    ent = [v for k, v in data.items() if k != '_meta']
+    n_pw = sum(1 for e in ent if e.get('pw'))
+    n_ng = sum(1 for e in ent if not e.get('pw') and e.get('keys', 1) > 1)
+    n_na = sum(1 for e in ent if e.get('keys', 1) == 1)
     stamp = datetime.date.today().isoformat()
 
+    common = meta.get('common') or ''
+    shared = ('<div class="shared"><span class="lbl">全資料に共通するパスワード</span>'
+              '<span class="val">%s</span>'
+              '<span class="hint">この台帳だけは、このパスワードでは開きません</span></div>'
+              % html.escape(common)) if common else ''
+
     out = TEMPLATE
-    for k, v in (('__ROWS__', '\n'.join(rows)), ('__NPW__', str(n_pw)),
+    for k, v in (('__SHARED__', shared), ('__ROWS__', '\n'.join(rows)), ('__NPW__', str(n_pw)),
                  ('__NNG__', str(n_ng)), ('__NNA__', str(n_na)),
-                 ('__TOTAL__', str(len(data))), ('__STAMP__', stamp),
+                 ('__TOTAL__', str(len(ent))), ('__STAMP__', stamp),
                  ('__JSON__', json.dumps(data, ensure_ascii=False, indent=1))):
         out = out.replace(k, v)
     return out
@@ -173,6 +181,12 @@ body{font-family:var(--fs);color:#fff;line-height:1.8;
 .badge .ja{font-family:var(--fs);letter-spacing:.06em;font-size:.66rem;color:#fff}
 h1{font-family:var(--fm);font-weight:600;font-size:clamp(1.6rem,4.6vw,2.2rem);margin-bottom:.6rem}
 .lead{font-size:.88rem;color:rgba(216,228,240,.75);margin-bottom:1.8rem}
+.shared{display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem 1rem;margin-bottom:1.4rem;
+  padding:1rem 1.2rem;border-radius:14px;background:rgba(255,93,106,.1);
+  border:1px solid rgba(255,93,106,.36)}
+.shared .lbl{font-size:.76rem;font-weight:700;color:#ffb3b9}
+.shared .val{font-family:var(--fe);font-size:1.5rem;font-weight:700;letter-spacing:.04em;color:#fff}
+.shared .hint{font-size:.72rem;color:rgba(216,228,240,.6)}
 .stats{display:flex;flex-wrap:wrap;gap:.7rem;margin-bottom:1.6rem}
 .stat{flex:1;min-width:150px;padding:.9rem 1.1rem;border-radius:12px;
   background:rgba(255,255,255,.06);border:1px solid rgba(216,228,240,.16)}
@@ -202,6 +216,8 @@ td.s,td.w{color:rgba(216,228,240,.7);font-size:.78rem;white-space:nowrap}
   <div class="badge"><span class="dot"></span><span class="ja">おざけん コンテンツ管理システム</span></div>
   <h1>パスワード台帳</h1>
   <p class="lead">個別パスワードの記録。マスターパスワードでのみ開きます。最終更新 __STAMP__</p>
+
+  __SHARED__
 
   <div class="stats">
     <div class="stat ok"><b>__NPW__</b><span>記録済み</span></div>
@@ -242,7 +258,7 @@ def cmd_sync(pw, args):
         if not e.get('title'):
             e['title'] = title_of(f, pw)
     for rel in list(data):
-        if not os.path.exists(os.path.join(ROOT, rel)):
+        if rel != '_meta' and not os.path.exists(os.path.join(ROOT, rel)):
             del data[rel]           # 消えた資料は台帳からも外す
     save(pw, data)
     print('台帳を更新しました（%d 本）' % len(data))
@@ -275,7 +291,9 @@ def cmd_list(pw, args):
     if not data:
         print('台帳がまだありません。sync から始めてください。')
         return
-    for rel in sorted(data):
+    if data.get('_meta', {}).get('common'):
+        print('共通パスワード: %s\n' % data['_meta']['common'])
+    for rel in sorted(k for k in data if k != '_meta'):
         e = data[rel]
         v = e.get('pw') or ('未記録' if e.get('keys', 1) > 1 else '－')
         print('%-46s %-16s %s' % (rel[:46], v, e.get('to', '')))
