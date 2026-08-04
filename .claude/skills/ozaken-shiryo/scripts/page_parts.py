@@ -79,3 +79,27 @@ def close(title, copy):
             '    <span class="eyebrow">Summary</span>\n'
             '    <h2 class="sec-title">%s</h2>\n'
             '    <p class="kicker">%s</p>\n  </div>\n</section>\n' % (title, copy))
+
+
+def replace_figure(html, fig_no, new_html):
+    """既存の図版を差し替える。fig_no は 'Fig.3' のような見出しの先頭。
+
+    `<div class="figure">` から `</div>` までを正規表現で取ろうとすると、
+    中の `<div class="figure-scroll">` を数え損ねて、
+    **後ろにあるカードまで巻き込んで消す**。実際に2本の資料でカードが消えた。
+    開きタグと閉じタグを数えて、対応する `</div>` を見つける。
+    """
+    import re
+    m = re.search(r'<div class="figure">\s*<p class="fig-title">%s' % re.escape(fig_no), html)
+    if not m:
+        raise ValueError('%s が見つかりません' % fig_no)
+    i = m.start()
+    depth, j = 0, i
+    for tag in re.finditer(r'<div\b|</div>', html[i:]):
+        depth += 1 if tag.group(0).startswith('<div') else -1
+        if depth == 0:
+            j = i + tag.end()
+            break
+    else:
+        raise ValueError('%s の閉じタグが見つかりません' % fig_no)
+    return html[:i] + new_html + html[j:]
