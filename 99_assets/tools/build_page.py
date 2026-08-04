@@ -49,6 +49,45 @@ def build(body_path, out_path):
     return page
 
 
+
+# ── 色とフォントの規定 ────────────────────────────────
+# 資料ごとに見た目がバラつく最大の原因は、その場の思いつきで色を足すこと。
+# ここに無い色を使ったら公開させない。役割は references/tokens.md に書いてある。
+PALETTE = {
+    # 地
+    '#f8f7f4', '#1f3864', '#141d35', '#ffffff', '#fff',
+    # 面ごとの循環（apply_bgcycle が割り当てる）
+    '#eef3fa', '#e7eef8', '#f6f2ea', '#f1eade', '#24446f', '#182c55', '#182a52', '#131c33',
+    # 文字
+    '#1a1a2e', '#6b7a99', '#d8e4f0',
+    # 意味を持つ色
+    '#2e5496', '#e23744', '#ff5d6a', '#c9762f', '#2f8f8a',
+    # 補助
+    '#9fc6f5', '#46c98a', '#eef1f6', '#fde8ea', '#fff8f8',
+    # 写真ヒーローの地（AX Table）
+    '#0a0f1c', '#8fb0e0',
+}
+FONT_VARS = {'var(--font-ja-sans)', 'var(--font-ja-serif)', 'var(--font-en)', 'inherit'}
+
+
+def check_tokens(page):
+    """規定外の色・書体を拾う。ここを機械で見ないとレギュレーションは守られない"""
+    errs = []
+    # HTML実体参照（&#8964; など）は色ではないので、先に落とす
+    src = re.sub(r'&#[0-9a-fA-F]+;', '', page)        # 実体参照
+    src = re.sub(r'url\(#[^)]*\)', '', src)             # SVGの参照（url(#grad1) など）
+    src = re.sub(r'\sid="[^"]*"', '', src)              # id属性
+    used = {c.lower() for c in re.findall(r'(?<![&\w])#[0-9a-fA-F]{3,6}\b', src)}
+    stray = sorted(c for c in used if c not in PALETTE)
+    if stray:
+        errs.append('規定外の色: %s（references/tokens.md を参照）' % ' '.join(stray))
+    fonts = {f.strip().rstrip(';') for f in re.findall(r'font-family:\s*([^;{}"\']+)', page)}
+    bad = sorted(f for f in fonts if f not in FONT_VARS)
+    if bad:
+        errs.append('規定外の書体: %s（3書体の変数だけを使う）' % ' / '.join(bad))
+    return errs
+
+
 def check(page):
     import xml.etree.ElementTree as ET
     errs = []
@@ -78,6 +117,7 @@ def check(page):
     ids = re.findall(r'<marker id="([^"]+)"', page)
     if len(ids) != len(set(ids)):
         errs.append('marker id重複: %s' % ids)
+    errs += check_tokens(page)
     figs = page.count('class="figure"')
     return errs, '本文%d本 / 図版%d点 / SVG%d個' % (len(body), figs, len(svgs))
 

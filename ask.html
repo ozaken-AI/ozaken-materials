@@ -140,16 +140,25 @@ button.send:disabled{opacity:.55;cursor:default;transform:none}
   .figure + *,.take + *,.deep + *,.cards + *,.two-col + *,
   .stepper + *,.stats + *,.note + *,.bare + *{margin-top:1.9rem}
 }
-/* OZ-HEROFX v3 */
+/* OZ-HEROFX v5 */
 /* ══ ファーストビューの演出（index.html と同じ語彙） ══ */
 /* ヒーロー内は reveal を使わず、この演出で出す */
 .hero [data-reveal]{opacity:1;transform:none;transition:none}
 .hero .inner{position:relative;z-index:3}
-/* 画面いっぱいのファーストビューにする。下端はスクロール誘導のぶんを空ける。
+/* ファーストビューは画面を占有する。投影したときに1枚目として成立させるため、
+   高さの上限を設けない。svh はスマホのアドレスバーで高さが変わるのを避けるため。
    AX Tableの写真ヒーローは自前の組みを持っているので触らない */
-.hero:not([data-kabe]){min-height:min(84vh,760px);
+.hero:not([data-kabe]){min-height:100vh;min-height:100svh;
   display:flex;flex-direction:column;justify-content:center;
-  padding-bottom:clamp(5rem,10vh,7rem)}
+  padding-top:clamp(4rem,9vh,7rem);padding-bottom:clamp(5rem,10vh,7rem)}
+/* 写真ヒーローも同じ高さに揃える。組み（左寄せ・覆い）は自前のものを残す */
+.hero[data-kabe]{min-height:100vh;min-height:100svh;
+  display:flex;flex-direction:column;justify-content:center}
+/* 背の低い画面では、詰めてでも1画面に収める */
+@media(max-height:560px){
+  .hero:not([data-kabe]){padding-top:3.2rem;padding-bottom:3.6rem}
+  .hero-title{font-size:clamp(1.5rem,4.4vh,2.4rem)}
+  .hero-copy{font-size:.92rem}}
 /* 背景がゆっくり流れる */
 .hero .texture{animation:ozPan 30s ease-in-out infinite alternate}
 @keyframes ozPan{
@@ -542,6 +551,10 @@ button.send:disabled{opacity:.55;cursor:default;transform:none}
   requestAnimationFrame(frame);
 })();
 </script>
+
+
+
+
 
 <script>
 /* ファーストビューの演出パーツを組み立てる。

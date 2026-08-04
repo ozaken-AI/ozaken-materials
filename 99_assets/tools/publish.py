@@ -119,8 +119,8 @@ def main():
 
     # 3) 演出を注入する。平文をリポジトリに書き出さずに済むよう、
     #    ファイル経由ではなくメモリ上で当てる
-    import apply_spacing, apply_herofx, apply_keynav
-    for mod in (apply_spacing, apply_herofx, apply_keynav):
+    import apply_spacing, apply_herofx, apply_keynav, apply_bgcycle
+    for mod in (apply_spacing, apply_bgcycle, apply_herofx, apply_keynav):
         got = mod.patch(page)
         if got is None:
             sys.exit('%s の注入に失敗しました' % mod.__name__)
