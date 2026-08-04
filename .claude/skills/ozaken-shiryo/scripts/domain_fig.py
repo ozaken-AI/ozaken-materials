@@ -552,7 +552,9 @@ def fig_pyramid(layers, title, cap, dark=False, left_label='', right_label=''):
         parts.append('<path d="M%.1f %d L%.1f %d L%.1f %d L%.1f %d Z" fill="%s" '
                      'fill-opacity="%.2f" stroke="%s" stroke-width="1.5"/>'
                      % (CX - wt / 2, y, CX + wt / 2, y, CX + wb / 2, y + H - 10,
-                        CX - wb / 2, y + H - 10, c, .22 + i * .06, c))
+                        CX - wb / 2, y + H - 10, c,
+                        # 暗い面では薄い塗りが地に沈んで濁って見えるので、少し濃くする
+                        (.34 if dark else .22) + i * .06, c))
         parts.append(lines(name, CX, y + H / 2 - 2, 12, 20, fill=fg, font_size='14',
                            font_weight='700', text_anchor='middle'))
         parts.append('<line x1="%.1f" y1="%.1f" x2="596" y2="%.1f" stroke="%s" '
