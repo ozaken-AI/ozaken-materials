@@ -74,18 +74,45 @@ def add_to_index(rel, label):
     return True
 
 
+SPOT_HEAD = 'スポット講演・セミナー'
+
+
 def add_to_backstage(rel, label, pw):
-    """裏資料置き場のリンク一覧に足す。個別パスワードも併記する"""
+    """裏資料置き場に足す。
+
+    このページは箇条書きではなくカードで並んでいる。
+    AX Table の一覧に混ぜると別物が同居してしまうので、
+    スポット講演用のセクションを持たせ、無ければ作る。
+    """
     m = master()
     inner = lockbox.decrypt(BACKSTAGE, m)
-    hook = '</ul>'
-    if hook not in inner:
-        return False
-    item = ('<li><a href="%s">%s</a><span class="bk-pw">%s</span></li>\n'
-            % ('../' + rel if not rel.startswith('..') else rel, label, pw))
-    i = inner.rfind(hook)
-    inner = inner[:i] + item + inner[i:]
+    href = rel if rel.startswith('..') else rel
+    n = inner.count('<div class="card">') + 1
+    card = ('      <div class="card"><span class="card-tag">%d</span>'
+            '<h3><a href="%s">%s</a></h3>'
+            '<p>個別パスワード <b>%s</b></p></div>\n'
+            % (n, href, label, pw))
+
+    if SPOT_HEAD in inner:
+        i = inner.find(SPOT_HEAD)
+        j = inner.find('</div>', inner.find('<div class="cards">', i))
+        if j < 0:
+            return False
+        inner = inner[:j] + card + inner[j:]
+    else:
+        sec = ('<section class="sec-navy" data-bg="1">\n  <div class="inner" data-reveal>\n'
+               '    <span class="eyebrow">Spot Sessions</span>\n'
+               '    <h2 class="sec-title">%s</h2>\n'
+               '    <p class="sec-sub">単発の講演・セミナー用に組んだ資料です。'
+               '個別パスワードを併記しています。</p>\n'
+               '    <div class="cards">\n%s    </div>\n  </div>\n</section>\n'
+               % (SPOT_HEAD, card))
+        k = inner.rfind('<footer>')
+        if k < 0:
+            return False
+        inner = inner[:k] + sec + inner[k:]
     lockbox.encrypt(BACKSTAGE, m, inner)
+    assert lockbox.decrypt(BACKSTAGE, m) == inner
     return True
 
 
