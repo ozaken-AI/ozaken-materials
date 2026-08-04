@@ -18,11 +18,22 @@ import lockbox
 
 ROOT = oz_root.root(HERE)
 PW = os.environ.get('OZAKEN_PW') or sys.exit('OZAKEN_PW を設定してください')
-MARK = '/* OZ-HEROFX v5 */'
+MARK = '/* OZ-HEROFX v6 */'
 MARK_END = '/* /OZ-HEROFX */'
 
 CSS = MARK + """
 /* ══ ファーストビューの演出（index.html と同じ語彙） ══ */
+/* 地の色は index.html とまったく同じ組み合わせにする。
+   単色の紺だと平坦に見えるが、上からの光・右下の赤み・斜めの三段グラデを
+   重ねると奥行きが出る。資料ごとに違う紺だと、並べたとき「別のサイト」に見える。
+   写真を敷いた AX Table のヒーローだけは、その写真が主役なので触らない */
+.hero:not([data-kabe]){
+  background:
+    radial-gradient(ellipse 60% 46% at 50% 40%, rgba(46,84,150,.35) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 55% at 50% -5%, rgba(46,84,150,.60), transparent 62%),
+    radial-gradient(ellipse 55% 45% at 88% 94%, rgba(255,93,106,.16), transparent 60%),
+    linear-gradient(165deg,#1f3864 0%,#182a52 42%,#141d35 100%);
+}
 /* ヒーロー内は reveal を使わず、この演出で出す */
 .hero [data-reveal]{opacity:1;transform:none;transition:none}
 .hero .inner{position:relative;z-index:3}
