@@ -2275,7 +2275,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     <span class="ja">おざけん Q&amp;A管理システム</span>
     <span class="sep">/</span>
     <span>OZAKEN Q&amp;A</span>
-    <span class="ver">v1.9</span>
+    <span class="ver">v2.0</span>
   </div>
   <div class="thanks-inner">
     <span class="thanks-eyebrow">Q&amp;A Management System</span>
@@ -3656,11 +3656,16 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     window.ozQrZoomClose = close;
   })();
 
-  var misses = 0;
+  var misses = 0, since = 0;
   function pull(){
-    if (first) notice('受信中…');
+    if (first){
+      if (!since) since = Date.now();
+      /* Apps Script は最初の呼び出しに時間がかかることがある。
+         黙って待たせず、待っている理由が分かるようにしておく */
+      notice(Date.now() - since > 6000 ? '受信中…（初回は少し時間がかかります）' : '受信中…');
+    }
     load(function(d){
-      if (d && d.ok && d.items){ misses = 0; render(d.items, d.total); return; }
+      if (d && d.ok && d.items){ misses = 0; since = 0; render(d.items, d.total); return; }
       if (d && d.auth === false){
         notice('受信ボックスがまだ公開設定になっていません。');
         return;
