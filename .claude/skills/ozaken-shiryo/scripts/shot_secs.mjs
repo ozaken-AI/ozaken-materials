@@ -57,7 +57,8 @@ const secs = await p.$$('section.sec-light, section.sec-navy');
 const meta = [];
 for (let i = 0; i < secs.length; i++) {
   await secs[i].scrollIntoViewIfNeeded();
-  await p.waitForTimeout(350);
+  // 図版は描画順に時間差で現れる。落ち着くまで待たないと、薄いまま写る
+  await p.waitForTimeout(1500);
   const box = await secs[i].boundingBox();
   await secs[i].screenshot({ path: `${outDir}/${String(i + 1).padStart(2, '0')}.png` });
   const info = await secs[i].evaluate(el => ({

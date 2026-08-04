@@ -57,7 +57,8 @@ if (info.escaped) console.log('⚠ タグが文字として出ています。SVG
 const figs = await p.$$('.figure');
 for (let i = 0; i < figs.length; i++) {
   await figs[i].scrollIntoViewIfNeeded();
-  await p.waitForTimeout(300);
+  // 要素は描画順に時間差で現れる。落ち着く前に撮ると、後ろのほうが薄いまま写る
+  await p.waitForTimeout(1500);
   await figs[i].screenshot({ path: `${outDir}/fig_${String(i).padStart(2, '0')}.png` });
 }
 console.log(`図版 ${figs.length} 点を ${outDir}/ に出力しました。Readツールで1枚ずつ見てください`);
