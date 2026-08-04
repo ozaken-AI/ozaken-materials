@@ -94,8 +94,12 @@ CSS = MARK + """
 .sys-badge .ver{color:rgba(216,228,240,.55)}
 @keyframes ozSysPulse{0%,100%{opacity:1}50%{opacity:.35}}
 @keyframes ozFadeIn{from{opacity:0}to{opacity:1}}
-/* ページ全体を囲む枠。光が12秒で一周し、四隅は明滅し続ける */
-.site-frame{position:fixed;inset:0;z-index:60;pointer-events:none}
+/* 画面を囲む枠。光が12秒で一周し、四隅は明滅し続ける。
+   これはファーストビューの演出なので、本文に入ったら引っ込める。
+   本文を読んでいる間じゅう縁が動いていると、図版の動きと喧嘩する */
+.site-frame{position:fixed;inset:0;z-index:60;pointer-events:none;
+  opacity:1;transition:opacity .55s ease}
+html.past-hero .site-frame{opacity:0}
 .sf-edge{position:absolute;overflow:hidden;background:rgba(159,198,245,.13)}
 .sf-t{top:18px;left:18px;right:18px;height:1px}
 .sf-b{bottom:18px;left:18px;right:18px;height:1px}
@@ -186,6 +190,13 @@ JS = """
       + '<span class="sf-c sf-c1"></span><span class="sf-c sf-c2"></span>'
       + '<span class="sf-c sf-c3"></span><span class="sf-c sf-c4"></span>';
     document.body.insertBefore(fr, document.body.firstChild);
+  }
+
+  /* ファーストビューを抜けたら、縁の演出を引っ込める */
+  if ('IntersectionObserver' in window){
+    new IntersectionObserver(function(es){
+      document.documentElement.classList.toggle('past-hero', !es[0].isIntersecting);
+    }, { threshold: 0.02 }).observe(hero);
   }
 
   /* ── 左上のシステム表記（index と同じ） ── */
