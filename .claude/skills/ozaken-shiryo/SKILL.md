@@ -94,6 +94,12 @@ fitz.open(path)[6].get_pixmap(dpi=170).save('/tmp/p7.png')   # Readツールで�
 上限を超えた文字は箱からはみ出し、隣の行に重なる。
 実際に何度もこれで壊れている。
 
+**図版は自分で動く。** 画面に入ると要素が描画順に立ち上がり、
+そのあとも矢印や破線は流れ続け、色帯や点はゆっくり呼吸する。
+投影しっぱなしにしても「止まった絵」に見えないための仕掛けで、
+`_fig()` が自動で振るので本文を書くときに意識する必要はない。
+規則は `references/figures.md` の「動きは自動で付く」に書いてある。
+
 ### 5. 組んで、検査する
 
 本文フラグメントを書き、`publish.py` に渡す。組版・検査・演出・暗号化・台帳登録・掲載まで一括で通る。
@@ -190,6 +196,7 @@ Copilot Credits 完全ガイド<br>「使った分だけ」が始まった
 |---|---|
 | `apply_spacing.py` | ブロックが隣り合ったときの余白を一括で整える |
 | `apply_figanim.py` | 既存資料の図版に動きを与える（新規は `_fig()` が自動で振る） |
+| `crossref.py` | 資料の末尾に「関連する資料」を張り、概念の正典へつなぐ |
 | `apply_bgcycle.py` | 面ごとに背景色を替える。明るい面・暗い面それぞれで3段を循環 |
 | `apply_herofx.py` | ファーストビューの演出（赤の強調・四隅の枠・システムバッジ・動く星座線・SYSTEM ONLINE表示） |
 | `apply_keynav.py` | 資料上で2文字打つと投影画面へ飛ぶショートカット |
@@ -223,6 +230,36 @@ Copilot Credits 完全ガイド<br>「使った分だけ」が始まった
 ```bash
 OZAKEN_PW=マスター python3 99_assets/tools/reapply.py herofx   # herofx / keynav / spacing / bg / all
 ```
+
+## 資料どうしをつなぐ
+
+同じ概念が何本もの資料に出てくる。放っておくと、資料ごとに少しずつ違う説明が
+書かれて、どれが正しいのか分からなくなる。
+
+そこで**概念ごとに「正典となる資料」を1本決めて**（`99_assets/tools/crossref_data.py`）、
+他の資料からはそこへリンクを張る。資料が点ではなくグラフとしてつながり、
+説明を直すときも「どこを直せば全体の整合が取れるか」が分かる。
+
+**新しい資料を作ったら、`crossref_data.py` に足す。**
+その資料が正典になる概念があるなら、そこに登録する。
+
+```python
+'Copilot Credits': ('03_ツール・製品/copilot-credits.html',
+    ['Copilot Credit', 'クレジット'], '使った分だけ課金される仕組み'),
+```
+
+```bash
+cd 99_assets/tools
+OZAKEN_PW=マスター python3 crossref.py map     # どの資料がどの概念に触れているか
+OZAKEN_PW=マスター python3 crossref.py check   # 説明や数字が食い違っていそうな箇所
+OZAKEN_PW=マスター python3 crossref.py apply   # 末尾に「関連する資料」を挿入
+```
+
+`apply` は一度入れた資料には二度入れない。規則を変えて張り直すときは
+`strip` してから `apply` する。
+
+この付録は `sec-light` / `sec-navy` を名乗らない独立したセクションにしてある。
+本文の面として数えると、**奇数本・交互・末尾navy** という並びの規約が壊れるため。
 
 ## 参照
 

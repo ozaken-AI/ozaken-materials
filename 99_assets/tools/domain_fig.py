@@ -83,6 +83,16 @@ def _animate(svg, window=1.05):
         idx[0] += 1
         if '--d' in attrs:
             return m.group(0)
+        # 出たあとも動き続けるものを、形から判断して振り分ける。
+        # 投影中に気が散らないよう、動きはどれもゆっくり・小さくしてある
+        if 'class="a-' not in attrs:
+            if 'marker-end' in attrs or 'stroke-dasharray' in attrs:
+                attrs += ' class="a-flow"'          # 矢印・破線は流れ続ける
+            elif tag == 'rect' and _re.search(r'height="([2-6])"', attrs) and 'rx=' in attrs:
+                attrs += ' class="a-breathe"'       # カード上端の細い色帯は呼吸する
+            elif tag == 'circle' and _re.search(r'\br="(?:1[0-9]|[2-9])(?:\.\d+)?"', attrs) \
+                    and 'fill="none"' not in attrs:
+                attrs += ' class="a-breathe"'       # 番号の丸や点も呼吸する
         if 'class="a-' in attrs:               # 個別に指定済み。遅延だけ足す
             if 'style="' in attrs:
                 attrs = attrs.replace('style="', 'style="--d:%s;' % d, 1)

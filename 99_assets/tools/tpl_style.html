@@ -396,7 +396,28 @@ footer {
 @keyframes figPop  { from { opacity: 0; transform: scale(0.62); } to { opacity: 1; transform: scale(1); } }
 /* figGrowは伏せた初期状態(opacity:0)を自分で解除する。transformだけ動かすと透明のまま残るため */
 @keyframes figGrow { from { opacity: 1; transform: scaleX(0); } to { opacity: 1; transform: scaleX(1); } }
+
+/* ── 出たあとも動き続けるもの ──
+   投影中に気が散らないよう、どれもゆっくり・小さく。
+   .a-flow は矢印と破線が流れる。.a-breathe は色帯や点がゆっくり息をする */
+.figanim .figure svg .a-flow, .figanim .hero-glyph svg .a-flow,
+.figanim .figure svg .a-breathe, .figanim .hero-glyph svg .a-breathe { opacity: 0; }
+.figanim .figure.anim-on svg .a-flow,
+.figanim .hero-glyph.anim-on svg .a-flow {
+  stroke-dasharray: 9 5;
+  animation: figFade 0.55s ease var(--d,0s) both,
+             figFlow 0.9s linear var(--d,0s) infinite;
+}
+.figanim .figure.anim-on svg .a-breathe,
+.figanim .hero-glyph.anim-on svg .a-breathe {
+  animation: figFade 0.55s ease var(--d,0s) both,
+             figBreathe 4.2s ease-in-out calc(var(--d,0s) + 0.6s) infinite;
+}
+@keyframes figFlow { to { stroke-dashoffset: -14; } }
+@keyframes figBreathe { 0%,100% { opacity: 1; } 50% { opacity: 0.62; } }
 @media (prefers-reduced-motion: reduce) {
+  .figanim .figure svg .a-flow, .figanim .hero-glyph svg .a-flow,
+  .figanim .figure svg .a-breathe, .figanim .hero-glyph svg .a-breathe,
   .figanim .figure svg .a-fade, .figanim .figure svg .a-pop,
   .figanim .figure svg .a-grow, .figanim .figure svg .a-draw,
   .figanim .hero-glyph svg .a-fade, .figanim .hero-glyph svg .a-pop,
