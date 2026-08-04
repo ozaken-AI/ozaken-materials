@@ -289,6 +289,8 @@ Copilot Credits 完全ガイド<br>「使った分だけ」が始まった
 | `apply_bgcycle.py` | 面ごとに背景色を替える。明るい面・暗い面それぞれで3段を循環 |
 | `apply_herofx.py` | ファーストビューの演出（赤の強調・四隅の枠・システムバッジ・動く星座線・SYSTEM ONLINE表示） |
 | `apply_keynav.py` | 資料上で2文字打つと投影画面へ飛ぶショートカット |
+| `apply_ogp.py` | SNSに貼ったときの題・概要・共有カードを、鍵のかかった外側に入れる |
+| `make_ogp.mjs` | 共有カードの画像（1200×630）を資料ごとに刷る。`apply_ogp.py cards` から呼ばれる |
 | `registry.py` | パスワード台帳の読み書き |
 | `reapply.py` | 演出を直したとき、既存の全資料に当て直す（`reapply.py herofx` など） |
 
@@ -319,6 +321,27 @@ Copilot Credits 完全ガイド<br>「使った分だけ」が始まった
 ```bash
 OZAKEN_PW=マスター python3 .claude/skills/ozaken-shiryo/scripts/reapply.py herofx   # herofx / keynav / spacing / bg / all
 ```
+
+## SNSに貼られたときの見え方
+
+資料は暗号化されているので、**SNSのクローラーが読むのは鍵のかかった外側だけ**。
+何もしないと、どの資料を貼っても「🔒 資料アーカイブ ─ おざけん」しか出ない。
+
+`apply_ogp.py` が、暗号の内側から題と概要を取り出して、外側の `<head>` に
+OGP と `description` を入れる。**中身は触らないので、配布済みのパスワードは無事。**
+
+```bash
+OZAKEN_PW=マスター python3 .claude/skills/ozaken-shiryo/scripts/apply_ogp.py plan   # 何が入るか見る
+OZAKEN_PW=マスター python3 .claude/skills/ozaken-shiryo/scripts/apply_ogp.py apply  # 入れる（冪等）
+OZAKEN_PW=マスター python3 .claude/skills/ozaken-shiryo/scripts/apply_ogp.py cards  # 共有カードの画像を刷り直す
+```
+
+新規公開は `publish.py` が `apply` まで自動で通す。**画像だけは `cards` を手で回す**
+（Playwrightと書体の取得が要るため）。題を書き換えたときも `apply` と `cards` の両方。
+
+概要は、内側の `<meta name="description">`。無ければ表紙のひとことで代える。
+**新しい資料には description を書く。** 表紙のひとことは詩的なことが多く、
+一覧で並べたときに何の資料か分からないことがある。
 
 ## 資料どうしをつなぐ
 

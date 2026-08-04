@@ -176,8 +176,14 @@ def main():
         else:
             where = 'index の資料一覧' if add_to_index(rel, a.label) else 'index（分類が見つからず失敗）'
 
+    # 7) SNSに貼ったときの題と概要。ここを忘れると「🔒 資料アーカイブ」だけが出る
+    import apply_ogp
+    apply_ogp.manifest(m)
+    apply_ogp.patch(rel, m)
+
     os.path.exists(tmp) and os.remove(tmp)
     print('公開: %s\n個別パスワード: %s\n掲載先: %s' % (rel, pw, where))
+    print('共有カードの画像はまだです: OZAKEN_PW=… python3 apply_ogp.py cards')
 
 
 if __name__ == '__main__':
