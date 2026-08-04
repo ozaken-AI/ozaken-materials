@@ -18,7 +18,7 @@ import lockbox
 import registry
 
 ROOT = registry.ROOT
-MASTER = os.environ['OZAKEN_PW']
+MASTER = os.environ.get('OZAKEN_PW', '')   # 実行時のみ必要。読み込みでは落とさない
 COMMON = os.environ.get('OZAKEN_COMMON', 'O29daisuki')
 
 WORDS = """
@@ -48,6 +48,8 @@ def gen(used):
 
 
 def main():
+    if not MASTER:
+        sys.exit('OZAKEN_PW を設定してください')
     print('語彙 %d 語 → 組み合わせ %s 通り' % (len(WORDS), format(len(WORDS) ** 3, ',')))
     files = registry.docs()
     data = registry.load(MASTER)
