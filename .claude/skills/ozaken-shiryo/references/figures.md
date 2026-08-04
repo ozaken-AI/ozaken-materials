@@ -1,6 +1,6 @@
 # 作図関数カタログ
 
-`99_assets/tools/domain_fig.py` に25種類。すべて同じ形で使う。
+`.claude/skills/ozaken-shiryo/scripts/domain_fig.py` に25種類。すべて同じ形で使う。
 
 ```python
 from domain_fig import fig_cols
@@ -58,7 +58,7 @@ html = fig_cols(items, 'タイトル', 'キャプション', dark=True)
 新規は `_fig()` が自動で振るが、昔作った資料には印が無い。
 
 ```bash
-OZAKEN_PW=マスター python3 99_assets/tools/apply_figanim.py
+OZAKEN_PW=マスター python3 .claude/skills/ozaken-shiryo/scripts/apply_figanim.py
 ```
 
 古い印を剥がして今の規則で振り直し、CSSと起動スクリプトを補う。

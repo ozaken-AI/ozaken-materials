@@ -32,6 +32,8 @@ from crossref_data import CONCEPTS, NOT_DOCS, STOP
 PW = os.environ.get('OZAKEN_PW') or sys.exit('OZAKEN_PW を設定してください')
 ROOT = registry.ROOT
 MARK = '<!-- OZ-XREF v2 -->'
+CSS_HEAD = '/* ══ 関連資料チップ'
+CSS_END = '/* /OZ-XREFCSS */'
 
 
 def text_of(html):
@@ -208,6 +210,7 @@ CSS = """
 .sec-navy .xr-chips a{color:var(--azure-pale);background:rgba(255,255,255,.07);
   border-color:rgba(216,228,240,.24)}
 .sec-navy .xr-chips a:hover{background:#fff;border-color:#fff;color:var(--navy)}
+/* /OZ-XREFCSS */
 """
 
 

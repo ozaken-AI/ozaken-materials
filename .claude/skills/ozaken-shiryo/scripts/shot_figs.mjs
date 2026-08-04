@@ -1,6 +1,7 @@
 // 資料の図版を1点ずつPNGに撮る。文字のはみ出しは目で見ないと分からない。
 //   OZAKEN_PW=マスター node shot_figs.mjs 03_ツール・製品/foo.html [出力先ディレクトリ]
 import path from 'path';
+import fs from 'fs';
 
 // playwright-core は入っていないことがある。無ければ導入の仕方を伝えて止まる
 let chromium;
@@ -14,7 +15,18 @@ try {
 
 const rel = process.argv[2];
 const outDir = process.argv[3] || '/tmp/figs';
-const root = process.env.OZAKEN_ROOT || path.resolve(path.dirname(new URL(import.meta.url).pathname), '../..');
+/* 資料の置き場所は、目印のファイル（index.html と ask.html）を見つけるまで上へ辿る。
+   道具の置き場所が変わっても壊れないように */
+function findRoot(start){
+  let d = start;
+  for(;;){
+    if (fs.existsSync(path.join(d, 'index.html')) && fs.existsSync(path.join(d, 'ask.html'))) return d;
+    const up = path.dirname(d);
+    if (up === d) throw new Error('アーカイブの置き場所が見つかりません。OZAKEN_ROOT を設定してください');
+    d = up;
+  }
+}
+const root = process.env.OZAKEN_ROOT || findRoot(path.dirname(new URL(import.meta.url).pathname));
 const pw = process.env.OZAKEN_PW;
 if (!rel || !pw) {
   console.error('使い方: OZAKEN_PW=マスター node shot_figs.mjs <資料のパス> [出力先]');

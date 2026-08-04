@@ -16,11 +16,13 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
+import oz_root
 import lockbox
 
-ROOT = os.environ.get('OZAKEN_ROOT') or os.path.dirname(os.path.dirname(HERE))
+ROOT = oz_root.root(HERE)
 PW = os.environ.get('OZAKEN_PW') or sys.exit('OZAKEN_PW を設定してください')
 MARK = '/* OZ-BG v1 */'
+MARK_END = '/* /OZ-BG */'
 
 CSS = MARK + """
 /* ══ 面ごとの背景。明るい面・暗い面それぞれの中で3段を循環させる ══ */
@@ -36,7 +38,7 @@ CSS = MARK + """
 .sec-light[data-bg]+.sec-navy[data-bg]::before,
 .sec-navy[data-bg]+.sec-light[data-bg]::before{content:"";position:absolute;
   top:0;left:0;right:0;height:2px;pointer-events:none;
-  background:linear-gradient(90deg,transparent,rgba(226,55,68,.55),transparent)}
+  background:linear-gradient(90deg,transparent,rgba(226,55,68,.55),transparent)}/* /OZ-BG */
 """
 
 

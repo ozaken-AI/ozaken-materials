@@ -60,7 +60,7 @@ Apps Script は久しぶりに呼ばれると起動に数秒かかる。
 共有先も記録できるので、「誰にどれを渡したか」が後から追える。
 
 ```bash
-OZAKEN_PW=マスター python3 99_assets/tools/registry.py set \
+OZAKEN_PW=マスター python3 .claude/skills/ozaken-shiryo/scripts/registry.py set \
     05_推進/kiban-phase.html 合言葉 --to "みずほFG 8/6"
 ```
 

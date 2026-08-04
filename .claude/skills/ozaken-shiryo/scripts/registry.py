@@ -28,7 +28,10 @@ import re
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-ROOT = os.environ.get('OZAKEN_ROOT') or os.path.dirname(os.path.dirname(HERE))
+sys.path.insert(0, HERE)
+import oz_root
+
+ROOT = oz_root.root(HERE)
 LEDGER = os.path.join(ROOT, 'パスワード台帳.html')
 ITER = 200000
 
@@ -234,7 +237,7 @@ __ROWS__
   </table>
 
   <p class="note">
-    この台帳は <code>99_assets/tools/registry.py</code> が読み書きします。手で書き換えないでください。<br>
+    この台帳は <code>.claude/skills/ozaken-shiryo/scripts/registry.py</code> が読み書きします。手で書き換えないでください。<br>
     記録する：<code>OZAKEN_PW=… python3 registry.py set 05_推進/kiban-phase.html 合言葉 --to "共有先"</code><br>
     資料を足したら：<code>OZAKEN_PW=… python3 registry.py sync</code><br>
     <a href="index.html">← AI資料アーカイブに戻る</a>

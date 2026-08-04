@@ -13,11 +13,13 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
+import oz_root
 import lockbox
 
-ROOT = os.environ.get('OZAKEN_ROOT') or os.path.dirname(os.path.dirname(HERE))
+ROOT = oz_root.root(HERE)
 PW = os.environ.get('OZAKEN_PW') or sys.exit('OZAKEN_PW を設定してください')
 MARK = '/* OZ-HEROFX v5 */'
+MARK_END = '/* /OZ-HEROFX */'
 
 CSS = MARK + """
 /* ══ ファーストビューの演出（index.html と同じ語彙） ══ */
@@ -160,7 +162,7 @@ CSS = MARK + """
   .hero-title .hl,.sys-badge .dot,.sf-c{animation:none}
   .hero .texture > svg > path{stroke-dashoffset:0}
   .oz-sweep,.sf-edge i,.oz-net{display:none}
-  .sf-c{opacity:.5}}
+  .sf-c{opacity:.5}}/* /OZ-HEROFX */
 """
 
 JS = """

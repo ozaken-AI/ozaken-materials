@@ -288,8 +288,8 @@ __BODY__
   </div>
 
   <p class="note">
-    このページは <code>99_assets/tools/crossref.py matrix</code> が生成します。手で書き換えないでください。<br>
-    概念と正典の対応は <code>99_assets/tools/crossref_data.py</code>。資料を足したらここに登録します。<br>
+    このページは <code>.claude/skills/ozaken-shiryo/scripts/crossref.py matrix</code> が生成します。手で書き換えないでください。<br>
+    概念と正典の対応は <code>.claude/skills/ozaken-shiryo/scripts/crossref_data.py</code>。資料を足したらここに登録します。<br>
     <a href="index.html">← AI資料アーカイブに戻る</a>
   </p>
 </div>

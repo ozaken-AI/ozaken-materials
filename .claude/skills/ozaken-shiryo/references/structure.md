@@ -7,7 +7,7 @@ Pythonで組み立てて、HTMLフラグメントを吐く。手書きしない�
 
 ```python
 import os, sys
-sys.path.insert(0, '/home/user/ozaken-materials/99_assets/tools')
+sys.path.insert(0, '/home/user/ozaken-materials/.claude/skills/ozaken-shiryo/scripts')
 from domain_fig import fig_cols, fig_bars, fig_sheet, fig_ladder, fig_gap, fig_quad
 
 BODY = []

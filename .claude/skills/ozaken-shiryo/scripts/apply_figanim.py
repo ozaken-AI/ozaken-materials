@@ -19,16 +19,19 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
+import oz_root
 import lockbox
 from domain_fig import _animate
 
-ROOT = os.environ.get('OZAKEN_ROOT') or os.path.dirname(os.path.dirname(HERE))
+ROOT = oz_root.root(HERE)
 PW = os.environ.get('OZAKEN_PW') or sys.exit('OZAKEN_PW を設定してください')
 MARK = '<!-- OZ-FIGANIM v3 -->'
 
 # キーフレームの名前は oz- で始める。資料ごとに定義が違う figFade などを
 # 借りると、その定義を持たない古い資料で「opacity:0 のまま」になり、
 # 矢印が丸ごと消える。実際に17本でそれが起きた
+CSS_END = '/* /OZ-FIGFLOW */'
+
 CSS = """
 /* OZ-FIGFLOW v2 */
 /* 出たあとも動き続けるもの。投影中に気が散らないよう、ゆっくり・小さく */
@@ -66,6 +69,7 @@ CSS = """
     opacity: 1; animation: none !important; stroke-dasharray: none !important;
   }
 }
+/* /OZ-FIGFLOW */
 """
 
 TRIGGER = """

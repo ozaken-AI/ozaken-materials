@@ -64,7 +64,7 @@ fitz.open(path)[6].get_pixmap(dpi=170).save('/tmp/p7.png')   # Readツールで�
 書き始める前に、必ず調べる。資料は暗号化されているので `grep` では読めない。
 
 ```bash
-cd 99_assets/tools
+cd .claude/skills/ozaken-shiryo/scripts
 OZAKEN_PW=マスター python3 find.py 暗黙知              # 全資料の本文からさがす
 OZAKEN_PW=マスター python3 find.py 1クレジット --full   # 前後を長めに出す
 OZAKEN_PW=マスター python3 find.py --heads --in 05_推進 # 見出しだけ一望する
@@ -123,7 +123,7 @@ OZAKEN_PW=マスター python3 crossref.py map            # 概念と正典の�
 
 ### 5. 図版を選ぶ
 
-25種類の作図関数が `99_assets/tools/domain_fig.py` にある。
+25種類の作図関数が `.claude/skills/ozaken-shiryo/scripts/domain_fig.py` にある。
 **同じ形式を3回以上続けない**。飽きるし、内容の違いが見えなくなる。
 
 選び方と、それぞれの文字数上限は `references/figures.md` を読むこと。
@@ -142,7 +142,7 @@ OZAKEN_PW=マスター python3 crossref.py map            # 概念と正典の�
 本文フラグメントを書き、`publish.py` に渡す。組版・検査・演出・暗号化・台帳登録・掲載まで一括で通る。
 
 ```bash
-cd 99_assets/tools
+cd .claude/skills/ozaken-shiryo/scripts
 OZAKEN_PW=マスター python3 publish.py \
     /tmp/body_foo.html 03_ツール・製品/foo.html \
     --list "Foo入門 ─ 現場で効く3つの型"
@@ -164,7 +164,7 @@ OZAKEN_PW=マスター python3 publish.py \
 
 ```bash
 npm i playwright-core          # リポジトリ直下で一度だけ。ブラウザ本体は導入済み
-OZAKEN_PW=マスター node 99_assets/tools/shot_figs.mjs 03_ツール・製品/foo.html /tmp/figs
+OZAKEN_PW=マスター node .claude/skills/ozaken-shiryo/scripts/shot_figs.mjs 03_ツール・製品/foo.html /tmp/figs
 ```
 
 各図版のPNGが出るので、Readツールで1枚ずつ見る。見るべきは4点。
@@ -180,7 +180,7 @@ OZAKEN_PW=マスター node 99_assets/tools/shot_figs.mjs 03_ツール・製品/
 出来た資料は、まだアーカイブから孤立している。最後に必ずつなぐ。
 
 ```bash
-cd 99_assets/tools
+cd .claude/skills/ozaken-shiryo/scripts
 OZAKEN_PW=マスター python3 crossref.py preview 新しい資料   # 何が並ぶか確かめる
 OZAKEN_PW=マスター python3 crossref.py apply               # チップを挿入
 OZAKEN_PW=マスター python3 crossref.py check               # 数字の食い違いを洗う
@@ -287,7 +287,7 @@ Copilot Credits 完全ガイド<br>「使った分だけ」が始まった
 演出やCSSを直したときは、既存の全資料にも当て直さないと見た目が揃わない。
 
 ```bash
-OZAKEN_PW=マスター python3 99_assets/tools/reapply.py herofx   # herofx / keynav / spacing / bg / all
+OZAKEN_PW=マスター python3 .claude/skills/ozaken-shiryo/scripts/reapply.py herofx   # herofx / keynav / spacing / bg / all
 ```
 
 ## 資料どうしをつなぐ
@@ -295,7 +295,7 @@ OZAKEN_PW=マスター python3 99_assets/tools/reapply.py herofx   # herofx / ke
 同じ概念が何本もの資料に出てくる。放っておくと、資料ごとに少しずつ違う説明が
 書かれて、どれが正しいのか分からなくなる。
 
-そこで**概念ごとに「正典となる資料」を1本決めて**（`99_assets/tools/crossref_data.py`）、
+そこで**概念ごとに「正典となる資料」を1本決めて**（`.claude/skills/ozaken-shiryo/scripts/crossref_data.py`）、
 他の資料からはそこへリンクを張る。資料が点ではなくグラフとしてつながり、
 説明を直すときも「どこを直せば全体の整合が取れるか」が分かる。
 
@@ -312,7 +312,7 @@ OZAKEN_PW=マスター python3 99_assets/tools/reapply.py herofx   # herofx / ke
 「この話は、あの資料でも扱っている」をその話をしている場所に出す。
 
 ```bash
-cd 99_assets/tools
+cd .claude/skills/ozaken-shiryo/scripts
 OZAKEN_PW=マスター python3 crossref.py map      # どの資料がどの概念に触れているか
 OZAKEN_PW=マスター python3 crossref.py check    # 説明や数字が食い違っていそうな箇所
 OZAKEN_PW=マスター python3 crossref.py preview  # どのセクションに何が並ぶかを見る
@@ -343,5 +343,5 @@ OZAKEN_PW=マスター python3 crossref.py matrix   # 資料×概念の一覧ペ
 既存資料が規定に合っているかは `lint_all.py` で確かめられる。
 
 ```bash
-OZAKEN_PW=マスター python3 99_assets/tools/lint_all.py --detail
+OZAKEN_PW=マスター python3 .claude/skills/ozaken-shiryo/scripts/lint_all.py --detail
 ```

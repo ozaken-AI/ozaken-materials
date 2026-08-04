@@ -13,9 +13,10 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
+import oz_root
 import lockbox
 
-ROOT = os.environ.get('OZAKEN_ROOT') or os.path.dirname(os.path.dirname(HERE))
+ROOT = oz_root.root(HERE)
 PW = os.environ.get('OZAKEN_PW') or sys.exit('OZAKEN_PW を設定してください')
 MARK = '/* OZ-KEYNAV v3 */'
 

@@ -26,8 +26,10 @@ import re
 import sys
 from concurrent.futures import ProcessPoolExecutor
 
-ROOT = os.environ.get('OZAKEN_ROOT') or os.path.dirname(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import oz_root
+
+ROOT = oz_root.root()
 MASTER = os.environ.get('OZAKEN_PW', '')      # 環境変数で渡す。ここには書かない
 ITER = 200000
 

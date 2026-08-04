@@ -12,11 +12,13 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
+import oz_root
 import lockbox
 
-ROOT = os.environ.get('OZAKEN_ROOT') or os.path.dirname(os.path.dirname(HERE))
+ROOT = oz_root.root(HERE)
 PW = os.environ.get('OZAKEN_PW') or sys.exit('OZAKEN_PW を設定してください')
 MARK = '/* OZ-SPACING v1 */'
+MARK_END = '/* /OZ-SPACING */'
 
 CSS = MARK + """
 /* ブロック同士が隣り合ったときの余白。デザインシステム側で
@@ -31,7 +33,7 @@ CSS = MARK + """
 @media(max-width:640px){
   .figure + *,.take + *,.deep + *,.cards + *,.two-col + *,
   .stepper + *,.stats + *,.note + *,.bare + *{margin-top:1.9rem}
-}
+}/* /OZ-SPACING */
 """
 
 

@@ -26,7 +26,8 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-ROOT = os.environ.get('OZAKEN_ROOT') or os.path.dirname(os.path.dirname(HERE))
+import oz_root
+ROOT = oz_root.root(HERE)
 
 import lockbox
 import registry
