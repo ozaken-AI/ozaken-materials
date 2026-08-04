@@ -50,7 +50,63 @@ def lines(text, x, y, n, lh, **kw):
     return '<text x="%s" y="%s" %s>%s</text>' % (x, y, attrs, ts)
 
 
-def _fig(title, cap, svg):
+import re as _re
+
+# 図版に動きを与える。スタイル側に a-fade / a-pop / a-grow / a-draw の仕掛けが
+# すでにあるので、ここでは要素に印と遅延を振るだけでよい。
+# 描画順に少しずつ遅らせると、図が組み上がっていくように見える。
+_TAG = _re.compile(r'<(rect|circle|line|path|text|ellipse|polygon|polyline)([^>]*)>')
+
+
+def _animate(svg, window=1.05):
+    """SVGの各要素に、描画順の遅延つきで a-fade を振る。
+    すでに a-grow などが個別に付いている要素は、その指定を尊重して遅延だけ足す。"""
+    # defs の中（marker や pattern の定義）は動かさないので、いったん退避する
+    defs = []
+
+    def stash(m):
+        defs.append(m.group(0))
+        return '\x00%d\x00' % (len(defs) - 1)
+
+    body = _re.sub(r'<defs>[\s\S]*?</defs>', stash, svg)
+    n = len(_TAG.findall(body)) or 1
+    step = min(0.045, window / n)
+    idx = [0]
+
+    def rewrite(m):
+        tag, attrs = m.group(1), m.group(2)
+        close = ''
+        if attrs.rstrip().endswith('/'):        # 自己終了タグの / は末尾へ戻す
+            attrs = attrs.rstrip()[:-1]
+            close = '/'
+        d = '%.3fs' % (idx[0] * step)
+        idx[0] += 1
+        if '--d' in attrs:
+            return m.group(0)
+        if 'class="a-' in attrs:               # 個別に指定済み。遅延だけ足す
+            if 'style="' in attrs:
+                attrs = attrs.replace('style="', 'style="--d:%s;' % d, 1)
+            else:
+                attrs += ' style="--d:%s"' % d
+        else:
+            # class や style がすでにあるなら、そこに混ぜる。属性を二重に書かない
+            if 'class="' in attrs:
+                attrs = attrs.replace('class="', 'class="a-fade ', 1)
+            else:
+                attrs += ' class="a-fade"'
+            if 'style="' in attrs:
+                attrs = attrs.replace('style="', 'style="--d:%s;' % d, 1)
+            else:
+                attrs += ' style="--d:%s"' % d
+        return '<%s%s%s>' % (tag, attrs, close)
+
+    body = _TAG.sub(rewrite, body)
+    return _re.sub(r'\x00(\d+)\x00', lambda m: defs[int(m.group(1))], body)
+
+
+def _fig(title, cap, svg, anim=True):
+    if anim:
+        svg = _animate(svg)
     return ('<div class="figure">\n  <p class="fig-title">%s</p>\n'
             '  <div class="figure-scroll">%s</div>\n'
             '  <p class="figure-cap">%s</p>\n</div>' % (esc(title), svg, esc(cap)))
@@ -396,8 +452,8 @@ def fig_bars(items, title, cap, dark=False, unit='', note=None):
         parts.append('<rect x="%d" y="%d" width="%d" height="26" rx="5" fill="%s"/>'
                      % (X, y + 4, W, track))
         w = max(6, W * v / mx)
-        parts.append('<rect x="%d" y="%d" width="%.1f" height="26" rx="5" fill="%s" '
-                     'fill-opacity="%.2f"/>' % (X, y + 4, w, tone[lv], .9 if lv else .8))
+        parts.append('<rect class="a-grow" x="%d" y="%d" width="%.1f" height="26" rx="5" '
+                     'fill="%s" fill-opacity="%.2f"/>' % (X, y + 4, w, tone[lv], .9 if lv else .8))
         parts.append('<text x="%.1f" y="%d" fill="%s" font-size="13" '
                      'font-weight="700">%s</text>'
                      % (X + w + 12, y + 23, fg, esc(disp)))
@@ -533,8 +589,8 @@ def fig_ranges(phases, rows, title, cap, dark=False, note=None):
                            font_weight='700'))
         parts.append('<rect x="%d" y="%d" width="%d" height="26" rx="6" fill="%s"/>'
                      % (X, y + 4, W, track))
-        parts.append('<rect x="%.1f" y="%d" width="%.1f" height="26" rx="6" fill="%s" '
-                     'fill-opacity=".85"/>' % (X + cw * a, y + 4, cw * (bmax - a + 1), c))
+        parts.append('<rect class="a-grow" x="%.1f" y="%d" width="%.1f" height="26" rx="6" '
+                     'fill="%s" fill-opacity=".85"/>' % (X + cw * a, y + 4, cw * (bmax - a + 1), c))
         if sup:
             parts.append(lines(sup, X + cw * a + 12, y + 22, 30, 15, fill=WHITE,
                                font_size='11'))
@@ -785,7 +841,7 @@ def fig_donut(items, title, cap, dark=False, center='', note=None):
         large = 1 if sweep > math.pi else 0
         x0, y0 = CX + R * math.cos(a0), CY + R * math.sin(a0)
         x1, y1 = CX + R * math.cos(a1), CY + R * math.sin(a1)
-        parts.append('<path d="M%.1f %.1f A%d %d 0 %d 1 %.1f %.1f" fill="none" '
+        parts.append('<path class="a-draw" d="M%.1f %.1f A%d %d 0 %d 1 %.1f %.1f" fill="none" '
                      'stroke="%s" stroke-width="%d" stroke-opacity=".92"/>'
                      % (x0, y0, R, R, large, x1, y1, ACCENTS[i % len(ACCENTS)], TH))
         a0 = a1
@@ -846,8 +902,8 @@ def fig_stack(rows, keys, title, cap, dark=False, unit='', note=None):
             w = W * v / mx
             if w < 1:
                 continue
-            parts.append('<rect x="%.1f" y="%d" width="%.1f" height="30" fill="%s" '
-                         'fill-opacity=".9"/>' % (cx, y + 4, w, ACCENTS[i % len(ACCENTS)]))
+            parts.append('<rect class="a-grow" x="%.1f" y="%d" width="%.1f" height="30" '
+                         'fill="%s" fill-opacity=".9"/>' % (cx, y + 4, w, ACCENTS[i % len(ACCENTS)]))
             if w > 46:
                 parts.append('<text x="%.1f" y="%d" fill="%s" font-size="11.5" '
                              'font-weight="700" text-anchor="middle">%s</text>'
@@ -1071,8 +1127,8 @@ def fig_map(xlab, ylab, points, title, cap, dark=False, corners=None):
         c = ACCENTS[ai % len(ACCENTS)]
         x = X0 + W * px / 100
         y = Y0 + H * (100 - py) / 100
-        parts.append('<circle cx="%.1f" cy="%.1f" r="9" fill="%s" fill-opacity=".9"/>'
-                     % (x, y, c))
+        parts.append('<circle class="a-pop" style="--o:%.1fpx %.1fpx" cx="%.1f" cy="%.1f" '
+                     'r="9" fill="%s" fill-opacity=".9"/>' % (x, y, x, y, c))
         parts.append('<circle cx="%.1f" cy="%.1f" r="16" fill="%s" fill-opacity=".14"/>'
                      % (x, y, c))
         parts.append(lines(name, x, y - 24, 16, 16, fill=fg, font_size='12.5',
