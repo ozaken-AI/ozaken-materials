@@ -8,6 +8,7 @@ index.html の該当画面へ飛ばす。着地の受け口は index 側に用�
 """
 import glob
 import os
+import re
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -16,7 +17,7 @@ import lockbox
 
 ROOT = os.environ.get('OZAKEN_ROOT') or os.path.dirname(os.path.dirname(HERE))
 PW = os.environ.get('OZAKEN_PW') or sys.exit('OZAKEN_PW を設定してください')
-MARK = '/* OZ-KEYNAV v2 */'
+MARK = '/* OZ-KEYNAV v3 */'
 
 JS = """
 <script>
@@ -26,7 +27,7 @@ JS = """
 (function(){
   var GO = { th:'#thanks', st:'#standby', pr:'#profile', ti:'#title',
              qa:'#ask',    ma:'#map',     ur:'#gate',    go:'#boot', en:'#end',
-             pw:'#ledger' };
+             pw:'#ledger', mx:'#matrix' };
   /* トップへの行き方。フッターのリンクが階層を知っているので、あればそれを借りる。
      無い資料もあるので、その場合は置き場所（01_… / AX_Table）から判断する */
   function home(){
@@ -53,6 +54,9 @@ JS = """
 def patch(html):
     if MARK in html:
         return None
+    # 旧版が入っていたら、そっくり外してから入れ直す。
+    # 二重に置くと同じキーが2回走る
+    html = re.sub(r'\n?<script>\n/\* OZ-KEYNAV v[12] \*/[\s\S]*?</script>\n?', '\n', html)
     i = html.rfind('</body>')
     if i < 0:
         return None

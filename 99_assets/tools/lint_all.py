@@ -17,13 +17,15 @@ sys.path.insert(0, HERE)
 import lockbox
 import registry
 from build_page import check, check_tokens
+from crossref_data import NOT_DOCS
 
 PW = os.environ.get('OZAKEN_PW') or sys.exit('OZAKEN_PW を設定してください')
 DETAIL = '--detail' in sys.argv
 
 
 def main():
-    files = registry.docs()
+    # 置き場・索引・台帳は資料ではない。道具としてのページなので規定の外
+    files = [f for f in registry.docs() if os.path.basename(f) not in NOT_DOCS]
     colors, issues, clean = Counter(), [], 0
     for f in files:
         rel = os.path.relpath(f, registry.ROOT)

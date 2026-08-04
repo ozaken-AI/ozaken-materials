@@ -248,18 +248,30 @@ OZAKEN_PW=マスター python3 99_assets/tools/reapply.py herofx   # herofx / ke
     ['Copilot Credit', 'クレジット'], '使った分だけ課金される仕組み'),
 ```
 
+リンクは**話が重なるセクションの末尾に、小さなチップとして置く**。
+資料の最後にまとめて並べても、そこまで送られることは少ないので、
+「この話は、あの資料でも扱っている」をその話をしている場所に出す。
+
 ```bash
 cd 99_assets/tools
-OZAKEN_PW=マスター python3 crossref.py map     # どの資料がどの概念に触れているか
-OZAKEN_PW=マスター python3 crossref.py check   # 説明や数字が食い違っていそうな箇所
-OZAKEN_PW=マスター python3 crossref.py apply   # 末尾に「関連する資料」を挿入
+OZAKEN_PW=マスター python3 crossref.py map      # どの資料がどの概念に触れているか
+OZAKEN_PW=マスター python3 crossref.py check    # 説明や数字が食い違っていそうな箇所
+OZAKEN_PW=マスター python3 crossref.py preview  # どのセクションに何が並ぶかを見る
+OZAKEN_PW=マスター python3 crossref.py apply    # チップを挿入
+OZAKEN_PW=マスター python3 crossref.py matrix   # 資料×概念の一覧ページを作り直す
 ```
+
+**当てる前に必ず `preview` で見る。** 拾い方は2通りあって、
+`crossref_data.py` に登録した概念は低い敷居で、
+本文の語の重なりだけで見つけたものは高い敷居で通している。
+後者はどうしても外れが混じるので、ひどい組み合わせが出るなら敷居を上げる。
 
 `apply` は一度入れた資料には二度入れない。規則を変えて張り直すときは
 `strip` してから `apply` する。
 
-この付録は `sec-light` / `sec-navy` を名乗らない独立したセクションにしてある。
-本文の面として数えると、**奇数本・交互・末尾navy** という並びの規約が壊れるため。
+**資料マトリクス**（`mx` で開く）は、資料 × 概念の格子。
+どこにもつながっていない資料と、正典の外で厚く扱われていない概念が
+そのまま抜けとして出るので、資料を足したあとに一度見ておく。
 
 ## 参照
 

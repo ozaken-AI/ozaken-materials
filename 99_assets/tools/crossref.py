@@ -10,9 +10,12 @@
 
   OZAKEN_PW=… python3 crossref.py map        # どの資料がどの概念に触れているか
   OZAKEN_PW=… python3 crossref.py check      # 整合を疑うべき箇所を洗い出す
-  OZAKEN_PW=… python3 crossref.py apply      # 各資料の末尾に「関連する資料」を挿入
+  OZAKEN_PW=… python3 crossref.py preview    # どのセクションに何が並ぶかを見る
+  OZAKEN_PW=… python3 crossref.py apply      # 重なるセクションの末尾にチップを挿入
+  OZAKEN_PW=… python3 crossref.py matrix     # 資料×概念の一覧ページを作り直す
   OZAKEN_PW=… python3 crossref.py graph      # 資料間の辺をJSONで出す（マップ用）
 """
+import datetime
 import html as H
 import json
 import os
@@ -24,16 +27,18 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import lockbox
 import registry
-from crossref_data import CONCEPTS, STOP
+from crossref_data import CONCEPTS, NOT_DOCS, STOP
 
 PW = os.environ.get('OZAKEN_PW') or sys.exit('OZAKEN_PW を設定してください')
 ROOT = registry.ROOT
-MARK = '<!-- OZ-XREF v1 -->'
-MAXLINK = 6                      # 1資料に並べる関連資料の上限
+MARK = '<!-- OZ-XREF v2 -->'
 
 
 def text_of(html):
     t = re.sub(r'<script[\s\S]*?</script>|<style[\s\S]*?</style>', '', html)
+    # 自分で入れたチップは数えない。資料名が概念語と重なるので、
+    # 数えると「張ったから関係が強い」という循環になってしまう
+    t = re.sub(r'<p class="xr-chips">[\s\S]*?</p>', '', t)
     return re.sub(r'\s+', ' ', H.unescape(re.sub(r'<[^>]+>', ' ', t)))
 
 
@@ -43,6 +48,8 @@ def scan():
     hits, titles, bodies = {}, {}, {}
     for f in registry.docs():
         rel = os.path.relpath(f, ROOT)
+        if os.path.basename(f) in NOT_DOCS:
+            continue                           # 置き場・索引のページは資料ではない
         html = lockbox.decrypt(f, PW)
         txt = text_of(html)
         bodies[rel] = txt
@@ -108,110 +115,229 @@ def cmd_check(hits, titles, bodies):
                 print('      %-12s %d本の資料に出る' % (num, len(rs)))
 
 
-def block(rel, found, titles):
-    """末尾に差し込む「関連する資料」"""
-    items = []
-    for name, n in found[:MAXLINK]:
-        canon, _, desc = CONCEPTS[name]
-        if not os.path.exists(os.path.join(ROOT, canon)):
+SECTION = re.compile(r'<section class="sec-(?:light|navy)"[^>]*>[\s\S]*?</section>')
+TERM = re.compile(r'[ァ-ヴー]{3,}|[一-龥々]{2,}|[A-Za-z][A-Za-z0-9./+#-]{2,}')
+# 語が広すぎても狭すぎても手がかりにならない。全68本のうち、
+# 2〜14本に出てくる語だけを「その資料らしい語」として扱う
+DF_LO, DF_HI = 2, 14
+CHIP_MIN = 20.0                  # 概念で結びついたとき、これ未満は出さない
+CHIP_LOOSE = 24.0                # 概念に頼らず、語の重なりだけで結ぶときの敷居
+CHIP_MAX = 2                     # 1セクションに並べる上限。多いと本文が負ける
+
+
+def terms_of(txt):
+    c = defaultdict(int)
+    for t in TERM.findall(txt):
+        c[t] += 1
+    return c
+
+
+def relate(bodies):
+    """資料ごとの語と、語の重み（珍しい語ほど重い）を用意する"""
+    import math
+    docs = {rel: terms_of(txt) for rel, txt in bodies.items()}
+    df = defaultdict(int)
+    for c in docs.values():
+        for t in c:
+            df[t] += 1
+    n = len(docs)
+    w = {t: math.log(n / d) for t, d in df.items() if DF_LO <= d <= DF_HI}
+    return docs, w
+
+
+def picks(rel, sec_txt, docs, w, titles):
+    """このセクションと関係の深い資料を返す。
+
+    人が決めた概念（CONCEPTS）は確かな手がかりなので低い敷居で通し、
+    語の重なりだけで拾ったものは高い敷居を課す。
+    後者はどうしても外れが混じるので、確信が持てるものだけを残す。
+    """
+    con, gen = defaultdict(float), defaultdict(float)
+
+    for name, (canon, words, _) in CONCEPTS.items():
+        if canon == rel or canon not in docs:
             continue
-        depth = rel.count('/')
-        href = ('../' * depth) + canon
-        items.append(
-            '      <li><a href="%s"><span class="xr-t">%s</span>'
-            '<span class="xr-d">%s</span></a></li>'
-            % (H.escape(href), H.escape(name), H.escape(desc)))
-    if not items:
+        hit = sum(sec_txt.count(x) for x in words if x not in STOP)
+        if hit:
+            con[canon] += 14.0 + 3.0 * min(hit, 4)
+
+    for t, k in terms_of(sec_txt).items():
+        weight = w.get(t)
+        if not weight:
+            continue
+        for other, c in docs.items():
+            if other == rel or c.get(t, 0) < 3:
+                continue
+            gen[other] += weight * min(k, 4)
+
+    out = []
+    for r in set(con) | set(gen):
+        a, b = con.get(r, 0.0), gen.get(r, 0.0)
+        if (a and a + b >= CHIP_MIN) or b >= CHIP_LOOSE:
+            out.append((r, a + b))
+    out.sort(key=lambda x: -x[1])
+    return [r for r, _ in out[:CHIP_MAX]]
+
+
+def chips(rel, rels, titles):
+    if not rels:
         return ''
-    # 本文セクション（sec-light / sec-navy）としては数えない。
-    # これは講演で話す面ではなく、資料の付録だから。
-    # sec-* を名乗ると、奇数本・交互・末尾navy という並びの規約を壊してしまう
-    return ('\n<section class="xref">\n  <div class="inner" data-reveal>\n'
-            '    <span class="eyebrow">Related</span>\n'
-            '    <h2 class="sec-title">この資料が触れた概念は、こちらで詳しく</h2>\n'
-            '    <p class="sec-sub">同じ概念を別々に説明すると食い違うので、'
-            '深掘りは正典となる資料に寄せている。</p>\n'
-            '    <ul class="xr-list">\n%s\n    </ul>\n  </div>\n</section>\n'
-            % '\n'.join(items))
+    depth = rel.count('/')
+    items = []
+    for r in rels:
+        t = titles.get(r, r).split('─')[0].split('—')[0].strip() or r
+        items.append('<a href="%s%s">%s</a>' % ('../' * depth, H.escape(r), H.escape(t[:26])))
+    return ('\n      <p class="xr-chips"><span class="xr-lb">関連資料</span>%s</p>'
+            % ''.join(items))
 
 
 CSS = """
-/* ══ 関連する資料（付録。本文の面としては数えない） ══ */
-.xref{padding:clamp(3rem,7vh,4.5rem) 1.5rem;
-  background:linear-gradient(178deg,#eef3fa 0%,#e7eef8 100%);color:var(--ink);
-  border-top:2px solid rgba(46,84,150,.16)}
-.xref .eyebrow{color:var(--azure);background:var(--azure-pale)}
-.xref .sec-title{font-family:var(--font-ja-serif);
-  font-size:clamp(1.4rem,3.4vw,1.9rem);font-weight:500;line-height:1.4;margin-bottom:.6rem}
-.xref .sec-sub{font-size:.94rem;color:var(--muted);margin-bottom:2rem;line-height:1.7}
-.xr-list{list-style:none;margin:0;padding:0;display:grid;gap:.7rem;
-  grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
-.xr-list a{display:block;padding:1rem 1.2rem;border-radius:12px;
-  background:var(--white);border:1px solid rgba(46,84,150,.18);
-  transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
-.xr-list a:hover{transform:translateY(-2px);border-color:var(--azure);
-  box-shadow:0 14px 30px -18px rgba(46,84,150,.5)}
-.xr-list .xr-t{display:block;font-weight:700;color:var(--ink);margin-bottom:.2rem}
-.xr-list .xr-t::after{content:" →";color:var(--azure);font-family:var(--font-en)}
-.xr-list .xr-d{display:block;font-size:.8rem;line-height:1.7;color:var(--muted)}
+/* ══ 関連資料チップ（話が重なるセクションの末尾に小さく置く） ══ */
+.xr-chips{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem .5rem;
+  margin-top:1.6rem;padding-top:1rem;border-top:1px solid rgba(46,84,150,.14)}
+.xr-chips .xr-lb{font-family:var(--font-en);font-size:.62rem;font-weight:700;
+  letter-spacing:.14em;color:var(--muted);margin-right:.2rem}
+.xr-chips a{display:inline-block;padding:.24em .8em;border-radius:999px;
+  font-size:.76rem;line-height:1.6;color:var(--azure);text-decoration:none;
+  background:rgba(46,84,150,.07);border:1px solid rgba(46,84,150,.2);
+  transition:background .2s ease,border-color .2s ease,color .2s ease}
+.xr-chips a::after{content:" ↗";font-family:var(--font-en);font-size:.7em;opacity:.6}
+.xr-chips a:hover{background:var(--azure);border-color:var(--azure);color:#fff}
+.sec-navy .xr-chips{border-top-color:rgba(216,228,240,.18)}
+.sec-navy .xr-chips .xr-lb{color:rgba(216,228,240,.6)}
+.sec-navy .xr-chips a{color:var(--azure-pale);background:rgba(255,255,255,.07);
+  border-color:rgba(216,228,240,.24)}
+.sec-navy .xr-chips a:hover{background:#fff;border-color:#fff;color:var(--navy)}
 """
 
 
 def cmd_apply(hits, titles, bodies):
-    done = skip = 0
+    """話が重なるセクションの末尾に、小さな関連資料チップを置く。
+
+    資料の最後にまとめて並べても、そこまで送られることは少ない。
+    「この話は、あの資料でも扱っている」を、その話をしている場所に置く。
+    """
+    docs, w = relate(bodies)
+    done = skip = n_chip = 0
     for f in registry.docs():
         rel = os.path.relpath(f, ROOT)
+        if os.path.basename(f) in NOT_DOCS:
+            skip += 1
+            continue
         html = lockbox.decrypt(f, PW)
         if MARK in html:
             skip += 1
             continue
-        b = block(rel, hits.get(rel, []), titles)
-        if not b:
+
+        got = [0]
+
+        def one(m):
+            sec = m.group(0)
+            if 'xr-chips' in sec:
+                return sec
+            rels = picks(rel, text_of(sec), docs, w, titles)
+            c = chips(rel, rels, titles)
+            if not c:
+                return sec
+            got[0] += len(rels)
+            i = sec.rfind('</div>')          # .inner の閉じ。図版の入れ子より後ろ
+            return sec[:i] + c + '\n    ' + sec[i:] if i > 0 else sec
+
+        out = SECTION.sub(one, html)
+        if not got[0]:
             skip += 1
             continue
-        i = html.rfind('<footer>')
-        if i < 0:
-            skip += 1
-            continue
-        html = html[:i] + b + html[i:]
-        j = html.rfind('</style>')
-        html = html[:j] + CSS + html[j:]
-        k = html.rfind('</body>')
-        html = html[:k] + MARK + '\n' + html[k:]
-        lockbox.encrypt(f, PW, html)
-        assert lockbox.decrypt(f, PW) == html
+        j = out.rfind('</style>')
+        out = out[:j] + CSS + out[j:]
+        k = out.rfind('</body>')
+        out = out[:k] + MARK + '\n' + out[k:]
+        lockbox.encrypt(f, PW, out)
+        assert lockbox.decrypt(f, PW) == out
+        n_chip += got[0]
         done += 1
-    print('関連する資料を挿入 %d 本 / 対象外・適用済み %d 本' % (done, skip))
+    print('関連資料チップを挿入 %d 本 / 対象外・適用済み %d 本 ／ チップ %d 個'
+          % (done, skip, n_chip))
 
 
-def cmd_graph(hits, titles, bodies):
-    """資料どうしの辺を出す。星座マップで使う"""
-    edges = defaultdict(int)
+def cmd_preview(hits, titles, bodies):
+    """当てる前に、どのセクションに何が並ぶかを見る"""
+    docs, w = relate(bodies)
+    want = sys.argv[2] if len(sys.argv) > 2 else ''
+    for f in registry.docs():
+        rel = os.path.relpath(f, ROOT)
+        if os.path.basename(f) in NOT_DOCS or (want and want not in rel):
+            continue
+        html = lockbox.decrypt(f, PW)
+        print('\n■ %s' % titles.get(rel, rel)[:52])
+        for m in SECTION.finditer(html):
+            sec = m.group(0)
+            h = re.search(r'<h2 class="sec-title">([\s\S]*?)</h2>', sec)
+            head = re.sub(r'<[^>]+>', '', h.group(1)) if h else '(見出し無し)'
+            rels = picks(rel, text_of(sec), docs, w, titles)
+            print('   %-34s → %s' % (head[:34],
+                  ' / '.join(titles.get(r, r)[:22] for r in rels) or '—'))
+
+
+def edges_of(hits):
+    """資料どうしの辺。同じ概念を厚く扱っているほど重い"""
+    e = defaultdict(int)
     for rel, found in hits.items():
         for name, n in found:
             canon = CONCEPTS[name][0]
             if canon in hits:
                 a, b = sorted([rel, canon])
-                edges[(a, b)] += n
-    out = [{'a': a, 'b': b, 'w': w, 'concept': ''} for (a, b), w in edges.items() if w >= 3]
+                e[(a, b)] += n
+    return sorted(((a, b, w) for (a, b), w in e.items() if w >= 3),
+                  key=lambda t: -t[2])
+
+
+def cmd_matrix(hits, titles, bodies):
+    """資料マトリクスのページを作り直す。マスターと共通パスワードで開く"""
+    import crossref_page
+    led = registry.load(PW)
+    common = led.get('_meta', {}).get('common') or ''
+
+    rows = [(rel, titles[rel], dict(hits[rel])) for rel in sorted(hits)]
+    ed = [(a, b, w, titles.get(a, a), titles.get(b, b)) for a, b, w in edges_of(hits)]
+    page = crossref_page.build(rows, ed, datetime.date.today().isoformat())
+
+    out = os.path.join(ROOT, '資料マトリクス.html')
+    if os.path.exists(out):
+        # 鍵は作り直さない。配ってあるものが死ぬので
+        lockbox.encrypt(out, PW, page)
+    else:
+        keys = [PW] + ([common] if common else [])
+        lockbox.create(os.path.join(ROOT, '裏資料置き場.html'), page, out, keys)
+    assert lockbox.decrypt(out, PW) == page
+    print('資料マトリクスを更新しました（資料 %d 本 / 概念 %d 個 / つながり %d 本）'
+          % (len(rows), len(CONCEPTS), len(ed)))
+
+
+def cmd_graph(hits, titles, bodies):
+    """資料どうしの辺を出す。星座マップで使う"""
+    out = [{'a': a, 'b': b, 'w': w} for a, b, w in edges_of(hits)]
     print(json.dumps(out, ensure_ascii=False, indent=1))
 
 
 def cmd_strip(hits, titles, bodies):
-    """挿入した付録を全部外す。作り直すとき用"""
+    """挿入したものを全部外す。作り直すとき用"""
     n = 0
     for f in registry.docs():
         html = lockbox.decrypt(f, PW)
-        if MARK not in html:
+        marks = [m for m in ('<!-- OZ-XREF v1 -->', MARK) if m in html]
+        if not marks:
             continue
-        # 旧版（sec-light xref）も含めて外す
+        # 末尾に付録を置いていた頃のもの（sec-light xref を名乗る版も含む）
         html = re.sub(r'\n<section class="(?:sec-light )?xref"[^>]*>[\s\S]*?</section>\n',
                       '', html)
-        i = html.find('/* ══ 関連する資料')
-        if i >= 0:
-            j = html.find('</style>', i)
-            html = html[:i] + html[j:]
-        html = html.replace(MARK + '\n', '').replace(MARK, '')
+        html = re.sub(r'\n\s*<p class="xr-chips">[\s\S]*?</p>', '', html)
+        for head in ('/* ══ 関連する資料', '/* ══ 関連資料チップ'):
+            i = html.find(head)
+            if i >= 0:
+                j = html.find('</style>', i)
+                html = html[:i] + html[j:]
+        for m in marks:
+            html = html.replace(m + '\n', '').replace(m, '')
         lockbox.encrypt(f, PW, html)
         assert lockbox.decrypt(f, PW) == html
         n += 1
@@ -221,6 +347,7 @@ def cmd_strip(hits, titles, bodies):
 if __name__ == '__main__':
     cmd = sys.argv[1] if len(sys.argv) > 1 else 'map'
     fn = {'map': cmd_map, 'check': cmd_check, 'apply': cmd_apply,
+           'preview': cmd_preview, 'matrix': cmd_matrix,
            'graph': cmd_graph, 'strip': cmd_strip}.get(cmd)
     if not fn:
         sys.exit(__doc__)

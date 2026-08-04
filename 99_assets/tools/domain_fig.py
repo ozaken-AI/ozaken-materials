@@ -86,13 +86,16 @@ def _animate(svg, window=1.05):
         # 出たあとも動き続けるものを、形から判断して振り分ける。
         # 投影中に気が散らないよう、動きはどれもゆっくり・小さくしてある
         if 'class="a-' not in attrs:
+            r = _re.search(r'\br="([\d.]+)"', attrs)
+            hollow = 'fill="none"' in attrs or 'fill:none' in attrs
             if 'marker-end' in attrs or 'stroke-dasharray' in attrs:
                 attrs += ' class="a-flow"'          # 矢印・破線は流れ続ける
+            elif tag == 'circle' and r and not hollow:
+                # 大きめの丸（VSの座や見出しの座）はゆっくり脈打つ。
+                # 小さな点は動かすと落ち着かないので、明るさだけ揺らす
+                attrs += ' class="a-pulse"' if float(r.group(1)) >= 13 else ' class="a-breathe"'
             elif tag == 'rect' and _re.search(r'height="([2-6])"', attrs) and 'rx=' in attrs:
                 attrs += ' class="a-breathe"'       # カード上端の細い色帯は呼吸する
-            elif tag == 'circle' and _re.search(r'\br="(?:1[0-9]|[2-9])(?:\.\d+)?"', attrs) \
-                    and 'fill="none"' not in attrs:
-                attrs += ' class="a-breathe"'       # 番号の丸や点も呼吸する
         if 'class="a-' in attrs:               # 個別に指定済み。遅延だけ足す
             if 'style="' in attrs:
                 attrs = attrs.replace('style="', 'style="--d:%s;' % d, 1)

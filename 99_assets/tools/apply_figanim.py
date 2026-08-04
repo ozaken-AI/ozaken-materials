@@ -24,29 +24,45 @@ from domain_fig import _animate
 
 ROOT = os.environ.get('OZAKEN_ROOT') or os.path.dirname(os.path.dirname(HERE))
 PW = os.environ.get('OZAKEN_PW') or sys.exit('OZAKEN_PW を設定してください')
-MARK = '<!-- OZ-FIGANIM v2 -->'
+MARK = '<!-- OZ-FIGANIM v3 -->'
 
+# キーフレームの名前は oz- で始める。資料ごとに定義が違う figFade などを
+# 借りると、その定義を持たない古い資料で「opacity:0 のまま」になり、
+# 矢印が丸ごと消える。実際に17本でそれが起きた
 CSS = """
-/* OZ-FIGFLOW v1 */
+/* OZ-FIGFLOW v2 */
 /* 出たあとも動き続けるもの。投影中に気が散らないよう、ゆっくり・小さく */
 .figanim .figure svg .a-flow, .figanim .hero-glyph svg .a-flow,
-.figanim .figure svg .a-breathe, .figanim .hero-glyph svg .a-breathe { opacity: 0; }
+.figanim .figure svg .a-breathe, .figanim .hero-glyph svg .a-breathe,
+.figanim .figure svg .a-pulse, .figanim .hero-glyph svg .a-pulse { opacity: 0; }
 .figanim .figure.anim-on svg .a-flow,
 .figanim .hero-glyph.anim-on svg .a-flow {
   stroke-dasharray: 9 5;
-  animation: figFade 0.55s ease var(--d,0s) both,
-             figFlow 0.9s linear var(--d,0s) infinite;
+  animation: ozFxIn 0.55s ease var(--d,0s) both,
+             ozFlow 0.9s linear var(--d,0s) infinite;
 }
 .figanim .figure.anim-on svg .a-breathe,
 .figanim .hero-glyph.anim-on svg .a-breathe {
-  animation: figFade 0.55s ease var(--d,0s) both,
-             figBreathe 4.2s ease-in-out calc(var(--d,0s) + 0.6s) infinite;
+  animation: ozFxIn 0.55s ease var(--d,0s) both,
+             ozBreathe 4.2s ease-in-out calc(var(--d,0s) + 0.6s) infinite;
 }
-@keyframes figFlow { to { stroke-dashoffset: -14; } }
-@keyframes figBreathe { 0%,100% { opacity: 1; } 50% { opacity: 0.62; } }
+.figanim .figure.anim-on svg .a-pulse,
+.figanim .hero-glyph.anim-on svg .a-pulse {
+  transform-box: fill-box; transform-origin: center;
+  animation: ozFxIn 0.55s ease var(--d,0s) both,
+             ozPulse 3.4s ease-in-out calc(var(--d,0s) + 0.6s) infinite;
+}
+@keyframes ozFxIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes ozFlow { to { stroke-dashoffset: -14; } }
+@keyframes ozBreathe { 0%,100% { opacity: 1; } 50% { opacity: 0.62; } }
+@keyframes ozPulse {
+  0%,100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.06); opacity: 0.84; }
+}
 @media (prefers-reduced-motion: reduce) {
   .figanim .figure svg .a-flow, .figanim .figure svg .a-breathe,
-  .figanim .hero-glyph svg .a-flow, .figanim .hero-glyph svg .a-breathe {
+  .figanim .figure svg .a-pulse, .figanim .hero-glyph svg .a-flow,
+  .figanim .hero-glyph svg .a-breathe, .figanim .hero-glyph svg .a-pulse {
     opacity: 1; animation: none !important; stroke-dasharray: none !important;
   }
 }
@@ -99,8 +115,10 @@ BLOCK = re.compile(
 
 
 def unmark(svg):
-    """前の版で振った印を外す。規則が変わったら振り直せるように"""
-    svg = re.sub(r'\s?class="a-fade"\s?style="--d:[\d.]+s"', '', svg)
+    """前の版で振った印を外す。規則が変わったら振り直せるように。
+    a-grow / a-draw / a-pop は作図関数が意味を持って付けたものなので残す"""
+    svg = re.sub(r'\s?class="a-(?:fade|flow|breathe|pulse)"\s?style="--d:[\d.]+s"', '', svg)
+    svg = re.sub(r'\s?class="a-(?:flow|breathe|pulse)"', '', svg)
     svg = re.sub(r'class="a-fade ', 'class="', svg)
     svg = re.sub(r'style="--d:[\d.]+s;', 'style="', svg)
     return re.sub(r'\s?style="--d:[\d.]+s"', '', svg)
@@ -110,11 +128,12 @@ def patch(html):
     if MARK in html:
         return None
     # 旧版の印とCSSをいったん外してから、いまの規則で入れ直す
-    html = re.sub(r'<!-- OZ-FIGANIM v1 -->\n?', '', html)
-    i = html.find('/* OZ-FIGFLOW v1 */')
-    if i >= 0:
-        j = html.find('</style>', i)
-        html = html[:i] + html[j:]
+    html = re.sub(r'<!-- OZ-FIGANIM v[12] -->\n?', '', html)
+    for old in ('/* OZ-FIGFLOW v1 */', '/* OZ-FIGFLOW v2 */'):
+        i = html.find(old)
+        if i >= 0:
+            j = html.find('</style>', i)
+            html = html[:i] + html[j:]
 
     n = [0]
 
