@@ -892,14 +892,22 @@ def fig_loop4(items, title, cap, dark=False, uid='', edge_labels=None, note=None
         parts.append('<path d="%s" fill="none" stroke="%s" stroke-width="1.6" '
                      'stroke-dasharray="7 5" marker-end="url(#l4a%s)"/>' % (d, mid, uid))
     if edge_labels:
-        spots = [(X0 + BW + GX / 2, Y0 - M - 10), (W - X0 + M + 4, Y0 + BH + GY / 2),
-                 (X0 + BW + GX / 2, H - 46), (X0 - M - 4, Y0 + BH + GY / 2)]
-        anchors = ['middle', 'start', 'middle', 'end']
+        spots = [(X0 + BW + GX / 2, Y0 - M - 10), (W - X0 + M + 14, Y0 + BH + GY / 2),
+                 (X0 + BW + GX / 2, H - 46), (X0 - M - 10, Y0 + BH + GY / 2)]
         for k, t in enumerate(edge_labels[:4]):
             sx, sy = spots[k]
-            parts.append('<text x="%.1f" y="%.1f" fill="%s" font-size="11.5" '
-                         'font-weight="700" text-anchor="%s">%s</text>'
-                         % (sx, sy, mid, anchors[k], esc(t)))
+            if k % 2:
+                # 左右の辺は横幅がほとんど無い。4文字を超えると画面の外へ出て
+                # 頭が切れる（「一周して、前より深く」が「り深く」になった）。
+                # 縦の辺には縦の余白があるので、90度倒して真ん中に置く
+                parts.append('<text x="0" y="0" fill="%s" font-size="11.5" '
+                             'font-weight="700" text-anchor="middle" '
+                             'transform="translate(%.1f %.1f) rotate(-90)">%s</text>'
+                             % (mid, sx, sy, esc(t)))
+            else:
+                parts.append('<text x="%.1f" y="%.1f" fill="%s" font-size="11.5" '
+                             'font-weight="700" text-anchor="middle">%s</text>'
+                             % (sx, sy, mid, esc(t)))
     if note:
         H += 26
         parts.append('<text x="%d" y="%d" fill="%s" font-size="11">%s</text>'

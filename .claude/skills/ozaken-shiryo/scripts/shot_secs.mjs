@@ -42,7 +42,12 @@ await p.route(u => !u.protocol.startsWith('file'), r => r.abort());
 await p.addInitScript(k => { try { sessionStorage.setItem('ozaken_archive_pw', k); } catch (e) {} }, pw);
 await p.goto('file://' + path.join(root, rel));
 await p.waitForTimeout(2500);
-await p.evaluate(() => document.querySelectorAll('[data-reveal]').forEach(e => e.classList.add('visible')));
+await p.evaluate(() => {
+  document.querySelectorAll('[data-reveal]').forEach(e => e.classList.add('visible'));
+  // 図版は画面に入って初めて anim-on が付く。背の高い面を1枚に撮ると、
+  // 撮影中に付いても間に合わず、**図が丸ごと真っ白に写る**。先に付けておく
+  document.querySelectorAll('.figure').forEach(e => e.classList.add('anim-on'));
+});
 await p.waitForTimeout(600);
 
 // 表紙は画面いっぱいで1枚

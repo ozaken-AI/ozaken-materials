@@ -17,6 +17,14 @@
 
   --backstage を付けると index ではなく裏資料置き場に載せる。
   --list を省くと一覧には載せず、ファイルの生成と台帳登録だけを行う。
+
+  既存資料の本文を作り直すとき:
+    OZAKEN_PW=マスター python3 publish.py body_foo.html 05_推進/foo.html --update
+
+  --update は 1〜3 を通したうえで **lockbox.encrypt** で書き戻す。
+  鍵は作り直さないので、配布済みのパスワードはそのまま使える。
+  ここを通さず build_page.build だけで組み直すと、
+  .lede や .mth のCSSが落ちて、見出しのチップが素の文字になる。
 """
 import argparse
 import os
@@ -32,12 +40,40 @@ ROOT = oz_root.root(HERE)
 import lockbox
 import registry
 from build_page import build, check
+from page_parts import EXTRA_CSS
 from spacing import SPACING_CSS, CARD_COLS_CSS, annotate_cards
 from reissue_words import WORDS
 
 TPL = os.path.join(ROOT, '03_ツール・製品/Cowork.html')   # ロック画面の型として借りる
 INDEX = os.path.join(ROOT, 'index.html')
 BACKSTAGE = os.path.join(ROOT, '裏資料置き場.html')
+
+
+def compose(body_path, extra=''):
+    """本文フラグメントから、演出の注入まで済んだ完成ページを作る。
+
+    新規公開も、既存資料の作り直しも、必ずここを通す。
+    段取りを2か所に書くと、片方だけ直したときに差が出る。
+    実際、作り直しのときに page_parts の EXTRA_CSS を渡し忘れて、
+    カード見出しのチップ（.mth）と導入文（.lede）の体裁が全部落ちた。
+    """
+    tmp = os.path.join(HERE, '_build.html')
+    page = build(body_path, tmp)
+    page = page.replace('</style>', EXTRA_CSS + extra + SPACING_CSS + CARD_COLS_CSS
+                        + '</style>', 1)
+    page = annotate_cards(page)
+    errs, summary = check(page)
+    if errs:
+        sys.exit('スタイル検査で止まりました:\n  - ' + '\n  - '.join(errs))
+
+    import apply_spacing, apply_herofx, apply_keynav, apply_bgcycle, apply_figanim
+    for mod in (apply_spacing, apply_bgcycle, apply_herofx, apply_keynav, apply_figanim):
+        got = mod.patch(page)
+        if got is None:
+            sys.exit('%s の注入に失敗しました' % mod.__name__)
+        page = got
+    os.path.exists(tmp) and os.remove(tmp)
+    return page, summary
 
 
 def master():
@@ -124,6 +160,8 @@ def main():
     ap.add_argument('--backstage', action='store_true')
     ap.add_argument('--to', default='')
     ap.add_argument('--extra-css', default='')
+    ap.add_argument('--update', action='store_true',
+                    help='既存資料の本文を差し替える（鍵は維持）')
     a = ap.parse_args()
 
     m = master()
@@ -131,28 +169,23 @@ def main():
     out = os.path.join(ROOT, rel)
     os.makedirs(os.path.dirname(out), exist_ok=True)
 
-    # 1) 組む
-    tmp = os.path.join(HERE, '_build.html')
-    page = build(a.body, tmp)
+    # 1〜3) 組んで、検査して、演出を注入する
     extra = open(a.extra_css, encoding='utf-8').read() if a.extra_css else ''
-    page = page.replace('</style>', extra + SPACING_CSS + CARD_COLS_CSS + '</style>', 1)
-    page = annotate_cards(page)
-
-    # 2) 検査。ここで落ちたら先へ進めない
-    errs, summary = check(page)
-    if errs:
-        sys.exit('スタイル検査で止まりました:\n  - ' + '\n  - '.join(errs))
+    page, summary = compose(a.body, extra)
     print('検査:', summary)
-    open(tmp, 'w', encoding='utf-8').write(page)
 
-    # 3) 演出を注入する。平文をリポジトリに書き出さずに済むよう、
-    #    ファイル経由ではなくメモリ上で当てる
-    import apply_spacing, apply_herofx, apply_keynav, apply_bgcycle
-    for mod in (apply_spacing, apply_bgcycle, apply_herofx, apply_keynav):
-        got = mod.patch(page)
-        if got is None:
-            sys.exit('%s の注入に失敗しました' % mod.__name__)
-        page = got
+    # --update は本文の差し替えだけ。鍵は作り直さない
+    if a.update:
+        if not os.path.exists(out):
+            sys.exit('%s がありません。新規なら --update を外してください。' % rel)
+        lockbox.encrypt(out, m, page)
+        assert lockbox.decrypt(out, m) == page
+        import apply_ogp
+        apply_ogp.manifest(m)
+        apply_ogp.patch(rel, m)
+        print('更新: %s（鍵はそのまま）' % rel)
+        print('題や概要を変えたなら: OZAKEN_PW=… python3 apply_ogp.py cards')
+        return
 
     # 4) 3本鍵で暗号化
     pw = gen_pw()
@@ -181,7 +214,6 @@ def main():
     apply_ogp.manifest(m)
     apply_ogp.patch(rel, m)
 
-    os.path.exists(tmp) and os.remove(tmp)
     print('公開: %s\n個別パスワード: %s\n掲載先: %s' % (rel, pw, where))
     print('共有カードの画像はまだです: OZAKEN_PW=… python3 apply_ogp.py cards')
 
