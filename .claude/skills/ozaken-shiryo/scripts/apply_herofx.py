@@ -273,7 +273,8 @@ JS = """
   var ctx = cv.getContext('2d');
   if (!ctx) return;
   var DPR = Math.min(2, window.devicePixelRatio || 1);
-  var LINK = 122, parts = [], W = 0, H = 0, vis = true;
+  /* つながる距離。線の本数はこの二乗で効く。index.html と同じ 100 に揃える */
+  var LINK = 100, parts = [], W = 0, H = 0, vis = true;
   function resize(){
     var w = hero.clientWidth, h = hero.offsetHeight;
     if (!w || !h) return;

@@ -132,20 +132,7 @@ button.send:disabled{opacity:.55;cursor:default;transform:none}
 
 
 
-/* OZ-SPACING v1 */
-/* ブロック同士が隣り合ったときの余白。デザインシステム側で
-   .figure/.take は margin-bottom を持たず、.cards/.two-col/.stepper/.stats は
-   margin を持たないため、隣接すると必ず詰まる。ここで一括して空ける。 */
-.figure,.take{margin-bottom:0}
-.figure + *,.take + *,.deep + *,.cards + *,.two-col + *,
-.stepper + *,.stats + *,.note + *,.bare + *{margin-top:2.5rem}
-/* 図版の内側も、見出し・キャプションの間を少し広げる */
-.fig-title{margin-bottom:1.2rem}
-.figure-cap{margin-top:1.3rem}
-@media(max-width:640px){
-  .figure + *,.take + *,.deep + *,.cards + *,.two-col + *,
-  .stepper + *,.stats + *,.note + *,.bare + *{margin-top:1.9rem}
-}/* /OZ-SPACING */
+
 /* OZ-BG v1 */
 /* ══ 面ごとの背景。明るい面・暗い面それぞれの中で3段を循環させる ══ */
 .sec-light[data-bg="1"]{background:var(--paper)}
@@ -161,6 +148,21 @@ button.send:disabled{opacity:.55;cursor:default;transform:none}
 .sec-navy[data-bg]+.sec-light[data-bg]::before{content:"";position:absolute;
   top:0;left:0;right:0;height:2px;pointer-events:none;
   background:linear-gradient(90deg,transparent,rgba(226,55,68,.55),transparent)}/* /OZ-BG */
+
+/* OZ-SPACING v1 */
+/* ブロック同士が隣り合ったときの余白。デザインシステム側で
+   .figure/.take は margin-bottom を持たず、.cards/.two-col/.stepper/.stats は
+   margin を持たないため、隣接すると必ず詰まる。ここで一括して空ける。 */
+.figure,.take{margin-bottom:0}
+.figure + *,.take + *,.deep + *,.cards + *,.two-col + *,
+.stepper + *,.stats + *,.note + *,.bare + *{margin-top:2.5rem}
+/* 図版の内側も、見出し・キャプションの間を少し広げる */
+.fig-title{margin-bottom:1.2rem}
+.figure-cap{margin-top:1.3rem}
+@media(max-width:640px){
+  .figure + *,.take + *,.deep + *,.cards + *,.two-col + *,
+  .stepper + *,.stats + *,.note + *,.bare + *{margin-top:1.9rem}
+}/* /OZ-SPACING */
 /* OZ-HEROFX v6 */
 /* ══ ファーストビューの演出（index.html と同じ語彙） ══ */
 /* 地の色は index.html とまったく同じ組み合わせにする。
@@ -604,6 +606,37 @@ html.past-hero .site-frame{opacity:0}
 
 
 
+
+
+<script>
+/* OZ-KEYNAV v3 */
+/* 資料ページのショートカット。index.html と同じ2文字で、同じ画面が開く。
+   全画面の中身は index が持っているので、ここでは行き先を渡すだけ。 */
+(function(){
+  var GO = { th:'#thanks', st:'#standby', pr:'#profile', ti:'#title',
+             qa:'#ask',    ma:'#map',     ur:'#gate',    go:'#boot', en:'#end',
+             pw:'#ledger', mx:'#matrix' };
+  /* トップへの行き方。フッターのリンクが階層を知っているので、あればそれを借りる。
+     無い資料もあるので、その場合は置き場所（01_… / AX_Table）から判断する */
+  function home(){
+    var a = document.querySelector('a[href$="index.html"]');
+    if (a) return a.getAttribute('href');
+    var seg = location.pathname.split('/');
+    var dir = decodeURIComponent(seg[seg.length - 2] || '');
+    return /^(0\d_|AX_Table)/.test(dir) ? '../index.html' : 'index.html';
+  }
+  var buf = '';
+  document.addEventListener('keydown', function(e){
+    var t = e.target;
+    if (t && (/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) || t.isContentEditable)) return;
+    if (!e.key || e.key.length !== 1 || e.metaKey || e.ctrlKey || e.altKey) return;
+    buf = (buf + e.key.toLowerCase()).slice(-4);
+    var k = buf.slice(-2);
+    if (GO[k]){ buf = ''; location.href = home() + GO[k]; }
+  });
+})();
+</script>
+
 <script>
 /* ファーストビューの演出パーツを組み立てる。
    資料の中身から本数を数えるので、加筆しても読み出しは自動で追従する。 */
@@ -696,7 +729,8 @@ html.past-hero .site-frame{opacity:0}
   var ctx = cv.getContext('2d');
   if (!ctx) return;
   var DPR = Math.min(2, window.devicePixelRatio || 1);
-  var LINK = 122, parts = [], W = 0, H = 0, vis = true;
+  /* つながる距離。線の本数はこの二乗で効く。index.html と同じ 100 に揃える */
+  var LINK = 100, parts = [], W = 0, H = 0, vis = true;
   function resize(){
     var w = hero.clientWidth, h = hero.offsetHeight;
     if (!w || !h) return;
@@ -745,35 +779,6 @@ html.past-hero .site-frame{opacity:0}
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
-})();
-</script>
-
-<script>
-/* OZ-KEYNAV v3 */
-/* 資料ページのショートカット。index.html と同じ2文字で、同じ画面が開く。
-   全画面の中身は index が持っているので、ここでは行き先を渡すだけ。 */
-(function(){
-  var GO = { th:'#thanks', st:'#standby', pr:'#profile', ti:'#title',
-             qa:'#ask',    ma:'#map',     ur:'#gate',    go:'#boot', en:'#end',
-             pw:'#ledger', mx:'#matrix' };
-  /* トップへの行き方。フッターのリンクが階層を知っているので、あればそれを借りる。
-     無い資料もあるので、その場合は置き場所（01_… / AX_Table）から判断する */
-  function home(){
-    var a = document.querySelector('a[href$="index.html"]');
-    if (a) return a.getAttribute('href');
-    var seg = location.pathname.split('/');
-    var dir = decodeURIComponent(seg[seg.length - 2] || '');
-    return /^(0\d_|AX_Table)/.test(dir) ? '../index.html' : 'index.html';
-  }
-  var buf = '';
-  document.addEventListener('keydown', function(e){
-    var t = e.target;
-    if (t && (/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) || t.isContentEditable)) return;
-    if (!e.key || e.key.length !== 1 || e.metaKey || e.ctrlKey || e.altKey) return;
-    buf = (buf + e.key.toLowerCase()).slice(-4);
-    var k = buf.slice(-2);
-    if (GO[k]){ buf = ''; location.href = home() + GO[k]; }
-  });
 })();
 </script>
 </body>

@@ -91,30 +91,40 @@ def patch_one(html, name):
     return mod.patch(html) or html
 
 
-def targets():
-    """全部を入れ直すときの対象。各モジュールの対象の和集合"""
-    seen, out = set(), []
-    for name in ORDER:
+def scope(names):
+    """ジョブごとの対象と、その和集合。
+
+    ここを間違えて「全ジョブを全ファイルに」当てると、
+    index.html のように自前の演出を持つページに二重に注入されてしまう
+    （実際に SYSTEM ONLINE と SCROLL が2つ出た）。
+    ジョブは、自分の対象にだけ当てる。
+    """
+    per, seen, out = {}, set(), []
+    for name in names:
         mod = JOBS[name][0]
-        if not mod:
-            continue
-        for f in __import__(mod).targets():
+        fs = set(__import__(mod).targets()) if mod else None
+        per[name] = fs
+        for f in (fs or ()):
             if f not in seen:
                 seen.add(f)
                 out.append(f)
-    return sorted(out)
+    if 'xref' in per and per['xref'] is None:   # xref は他ジョブの対象に相乗りする
+        per['xref'] = set(out)
+    return per, sorted(out)
 
 
 def run(names, pw):
+    per, files = scope(names)
     n = 0
-    for f in targets():
+    for f in files:
         raw = open(f, encoding='utf-8').read()
         enc = 'OZAKEN-LOCKED2' in raw
         inner = lockbox.decrypt(f, pw) if enc else raw
         out = inner
-        for name in names:
+        mine = [name for name in names if f in (per[name] or ())]
+        for name in mine:
             out = strip_one(out, name)
-        for name in names:
+        for name in mine:
             out = patch_one(out, name)
         if out == inner:
             continue
