@@ -1435,6 +1435,152 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
 
 
 
+
+/* --- ビジョン図版：つなぎ方の具体と、余白の調整 --- */
+.pf-figure{padding:clamp(1.6rem,3.6vw,2.6rem)}
+.pf-figure .fig-t{margin-bottom:clamp(1.4rem,3vh,2rem)}
+.pf-bridge{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));
+  gap:clamp(1rem,2.2vw,1.4rem);margin-top:clamp(1.8rem,4vh,2.8rem)}
+.pf-bridge-i{background:rgba(255,255,255,.045);border:1px solid rgba(216,228,240,.13);
+  border-radius:12px;padding:1.15rem 1.3rem 1.2rem;
+  opacity:0;transform:translateY(16px);
+  transition:opacity .65s ease,transform .65s cubic-bezier(.2,.8,.3,1)}
+.pf-figure.visible .pf-bridge-i{opacity:1;transform:none}
+.pf-figure.visible .pf-bridge-i:nth-child(1){transition-delay:.55s}
+.pf-figure.visible .pf-bridge-i:nth-child(2){transition-delay:.7s}
+.pf-figure.visible .pf-bridge-i:nth-child(3){transition-delay:.85s}
+.pf-figure.visible .pf-bridge-i:nth-child(4){transition-delay:1s}
+.pf-bridge-k{display:block;font-family:var(--font-en);font-size:.62rem;font-weight:700;
+  letter-spacing:.18em;color:var(--azure-pale);margin-bottom:.55rem}
+.pf-bridge-i p{font-size:clamp(.79rem,1.5vw,.92rem);line-height:1.85;
+  color:rgba(216,228,240,.82)}
+.pf-bridge-i b{color:#fff;font-weight:700}
+/* 中央のノードから、静かに波紋を出す */
+.pf-hub-ring{opacity:0;transform-box:fill-box;transform-origin:center}
+.pf-figure.visible .pf-hub-ring{animation:pfPulse 3.2s ease-out 1.6s infinite}
+@keyframes pfPulse{0%{opacity:.5;transform:scale(1)}70%,100%{opacity:0;transform:scale(1.75)}}
+/* ビジョン図版の下端 */
+.pf-figure .fig-cap{margin-top:clamp(1.6rem,3.5vh,2.4rem);
+  padding-top:clamp(1.2rem,2.6vh,1.7rem);
+  border-top:1px solid rgba(216,228,240,.12);gap:1rem 2.6rem}
+.pf-figure .fig-cap .vm b{margin-bottom:.35rem}
+@media (prefers-reduced-motion: reduce){
+  .pf-bridge-i{opacity:1;transform:none;transition:none}
+  .pf-figure.visible .pf-hub-ring{animation:none}
+}
+
+/* --- YouTube「AI現場報告」のアイコン --- */
+.pf-ytav{background:#04060d}
+
+/* --- アーカイブの限定公開ノート --- */
+.arc-lock{display:flex;gap:clamp(.9rem,2vw,1.3rem);align-items:flex-start;
+  background:rgba(46,84,150,.06);border:1px solid rgba(46,84,150,.16);
+  border-radius:12px;padding:clamp(1.1rem,2.6vw,1.5rem) clamp(1.2rem,2.8vw,1.7rem);
+  margin:0 0 clamp(2rem,4.5vh,2.8rem);max-width:720px}
+.arc-lock-i{font-size:1.15rem;line-height:1.4;flex:0 0 auto}
+.arc-lock-t{font-family:var(--font-ja-serif);font-weight:600;
+  font-size:clamp(.98rem,1.9vw,1.14rem);color:var(--navy);margin-bottom:.35rem}
+.arc-lock-d{font-size:clamp(.82rem,1.5vw,.92rem);line-height:1.85;color:var(--muted)}
+.arc-lock-a{display:flex;flex-wrap:wrap;gap:.5rem .9rem;margin-top:.9rem}
+.arc-lock-a a{font-size:clamp(.78rem,1.4vw,.86rem);font-weight:700;color:var(--azure);
+  border:1px solid rgba(46,84,150,.3);border-radius:999px;padding:.35rem .95rem;
+  transition:background .2s ease,color .2s ease}
+.arc-lock-a a:hover{background:var(--azure);color:#fff}
+
+/* ============================================================
+   資料アーカイブ 星座マップ（隠しコマンド ma）
+   掲載中の資料をそのまま星として描く。カテゴリが星座になる。
+   ============================================================ */
+.arcmap{position:fixed;inset:0;z-index:9600;display:none;flex-direction:column;
+  background:#04060d;color:#d8e4f0;opacity:0;transition:opacity .5s ease}
+.arcmap.show{display:flex;opacity:1}
+.arcmap::before{content:"";position:absolute;inset:-10%;pointer-events:none;opacity:.5;
+  background:radial-gradient(ellipse at 30% 20%,rgba(46,84,150,.42) 0%,transparent 58%),
+             radial-gradient(ellipse at 78% 76%,rgba(226,55,68,.16) 0%,transparent 55%)}
+.am-head{position:relative;z-index:2;display:flex;justify-content:space-between;
+  align-items:center;gap:1rem;flex-wrap:wrap;
+  padding:clamp(1rem,2.4vh,1.6rem) clamp(3.6rem,6vw,4.6rem) clamp(1rem,2.4vh,1.6rem) clamp(1.1rem,3vw,2.4rem);
+  border-bottom:1px solid rgba(216,228,240,.1)}
+.am-tag,.am-meta{font-family:var(--font-en);font-size:.64rem;font-weight:700;
+  letter-spacing:.26em;color:rgba(216,228,240,.55)}
+.am-meta b{color:#9fc6f5;font-size:.86rem;letter-spacing:.1em}
+.am-sep{margin:0 .7em;opacity:.45}
+.am-stage{position:relative;z-index:2;flex:1;min-height:0;display:flex;
+  align-items:center;justify-content:center;padding:clamp(.5rem,2vh,1.4rem)}
+#amSvg{width:100%;height:100%;display:block;overflow:visible}
+.am-sky{animation:amDrift 46s ease-in-out infinite alternate}
+@keyframes amDrift{from{transform:translate(-9px,-6px)}to{transform:translate(9px,6px)}}
+.am-stage{cursor:grab;touch-action:none}
+.am-stage.am-drag{cursor:grabbing}
+.am-view{transform-origin:0 0}
+.am-zoom{position:absolute;z-index:3;right:clamp(.9rem,2.6vw,1.8rem);
+  bottom:clamp(3.4rem,8vh,4.6rem);display:flex;align-items:center;gap:.4rem;
+  background:rgba(6,10,20,.72);border:1px solid rgba(216,228,240,.18);
+  border-radius:999px;padding:.35rem .5rem;backdrop-filter:blur(6px)}
+.am-zoom button{width:30px;height:30px;border-radius:50%;cursor:pointer;
+  background:rgba(255,255,255,.06);border:1px solid rgba(216,228,240,.2);
+  color:rgba(216,228,240,.85);font-size:.9rem;line-height:1;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .2s ease,color .2s ease}
+.am-zoom button:hover{background:rgba(159,198,245,.24);color:#fff}
+.am-zoom .am-reset{width:auto;padding:0 .8rem;border-radius:999px;
+  font-family:var(--font-en);font-size:.58rem;font-weight:700;letter-spacing:.16em}
+.am-lvl{min-width:52px;text-align:center;font-family:var(--font-en);
+  font-size:.66rem;font-weight:700;letter-spacing:.1em;color:#9fc6f5}
+.am-bg circle{fill:#d8e4f0;opacity:.16;r:calc(1.1px * var(--iz,1));animation:amTw 6.5s ease-in-out infinite}
+@keyframes amTw{0%,100%{opacity:.09}50%{opacity:.34}}
+.am-link{stroke:#4d7fc4;stroke-width:1;fill:none;opacity:.42;vector-effect:non-scaling-stroke;
+  transition:opacity .3s ease,stroke .3s ease}
+.arcmap.show .am-link{animation:amDraw 1.5s ease forwards}
+@keyframes amDraw{from{stroke-dashoffset:var(--len)}to{stroke-dashoffset:0}}
+.am-g.on .am-link{opacity:.95;stroke:#9fc6f5}
+.am-name{font-family:var(--font-ja-serif);font-size:calc(15px * var(--iz,1));fill:rgba(216,228,240,.6);
+  transition:fill .3s ease}
+.am-g.on .am-name{fill:#fff}
+.am-num{font-family:'Hanken Grotesk',sans-serif;font-size:calc(10.5px * var(--iz,1));font-weight:700;
+  letter-spacing:2.4px;fill:rgba(159,198,245,.55)}
+.am-s{cursor:pointer;opacity:0;transform:scale(.25);
+  transform-box:fill-box;transform-origin:center;
+  transition:opacity .5s ease,transform .6s cubic-bezier(.2,.9,.3,1.6)}
+.arcmap.show .am-s{opacity:1;transform:none}
+.am-dot{fill:#d8e4f0;r:calc(4.2px * var(--iz,1));transition:fill .18s ease,r .18s ease}
+.am-halo{fill:#9fc6f5;opacity:.14;r:calc(13px * var(--iz,1));transition:opacity .22s ease,r .22s ease}
+.am-s:hover .am-dot,.am-s:focus-visible .am-dot{fill:#fff;r:calc(7.5px * var(--iz,1))}
+.am-s:hover .am-halo,.am-s:focus-visible .am-halo{opacity:.42;r:calc(19px * var(--iz,1))}
+/* 拡大したときだけ、星のそばに資料名を出す */
+.am-lab{font-family:var(--font-ja-sans);font-size:calc(11.5px * var(--iz,1));
+  fill:rgba(216,228,240,.9);opacity:0;pointer-events:none;
+  transition:opacity .3s ease;paint-order:stroke;
+  stroke:rgba(4,6,13,.85);stroke-width:calc(3px * var(--iz,1));stroke-linejoin:round}
+.am-view.am-zoomed .am-lab{opacity:1}
+.am-tip{position:fixed;z-index:9700;pointer-events:none;opacity:0;
+  max-width:min(360px,72vw);padding:.6rem .85rem;border-radius:9px;
+  background:rgba(6,10,20,.94);border:1px solid rgba(159,198,245,.35);
+  font-size:.78rem;line-height:1.6;color:#fff;
+  box-shadow:0 8px 28px rgba(0,0,0,.55);transition:opacity .18s ease}
+.am-tip.on{opacity:1}
+.am-tip .k{display:block;font-family:var(--font-en);font-size:.56rem;font-weight:700;
+  letter-spacing:.2em;color:#9fc6f5;margin-bottom:.28rem}
+.am-foot{position:relative;z-index:2;text-align:center;
+  padding:clamp(.7rem,2vh,1.2rem) 1rem;font-size:.7rem;letter-spacing:.06em;
+  color:rgba(216,228,240,.45);border-top:1px solid rgba(216,228,240,.1)}
+.am-foot b{color:#9fc6f5;font-family:var(--font-en);letter-spacing:.12em}
+.am-close{position:absolute;top:clamp(.7rem,2vh,1.2rem);right:clamp(.8rem,2.4vw,1.6rem);
+  z-index:3;width:34px;height:34px;border-radius:50%;cursor:pointer;
+  background:rgba(255,255,255,.07);border:1px solid rgba(216,228,240,.22);
+  color:rgba(216,228,240,.75);font-size:.85rem;line-height:1;
+  transition:background .2s ease,color .2s ease}
+.am-close:hover{background:rgba(255,255,255,.16);color:#fff}
+@media(max-width:720px){
+  .am-name{font-size:19px}.am-num{font-size:13px}
+  .am-tag{display:none}
+}
+@media (prefers-reduced-motion: reduce){
+  .am-sky{animation:none}
+  .am-bg circle{animation:none}
+  .arcmap.show .am-link{animation:none;stroke-dashoffset:0}
+  .am-s{opacity:1;transform:none;transition:none}
+}
 /* OZ-SPACING v1 */
 /* ブロック同士が隣り合ったときの余白。デザインシステム側で
    .figure/.take は margin-bottom を持たず、.cards/.two-col/.stepper/.stats は
