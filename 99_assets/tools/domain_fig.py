@@ -675,3 +675,455 @@ def fig_cols(items, title, cap, dark=False):
     return _fig(title, cap,
         '<svg viewBox="0 0 900 %d" xmlns="http://www.w3.org/2000/svg" role="img">'
         '%s</svg>' % (H + 36, ''.join(parts)))
+
+
+# ==================================================================
+# ここから F16〜F25。既存の15種に無い「形」を埋める。
+# 投影資料では、同じ形が続くと内容の違いが見えなくなる。
+# 形が変わること自体が、聴講者にとっての区切りになる。
+# ==================================================================
+
+# ------------------------------------------------------------------
+# F16  横一列のプロセス（汎用のフロー。fig_issues は「壁」固定なので別に持つ）
+# ------------------------------------------------------------------
+def fig_flow(steps, title, cap, dark=False, uid='', note=None):
+    """steps: [(見出し, 補足)] を矢印でつなぐ。3〜5個が読みやすい"""
+    fg = WHITE if dark else INK
+    sub = 'rgba(255,255,255,.62)' if dark else MUTED
+    box = 'rgba(255,255,255,.06)' if dark else WHITE
+    edge = 'rgba(255,255,255,.16)' if dark else 'rgba(46,84,150,.22)'
+    n = len(steps)
+    gap = 40
+    w = int((884 - 16 - (n - 1) * gap) / n)
+    H = 158
+    parts = []
+    for i, (h, note_) in enumerate(steps):
+        x = 16 + i * (w + gap)
+        parts.append('<rect x="%d" y="34" width="%d" height="%d" rx="10" fill="%s" '
+                     'stroke="%s" stroke-width="1"/>' % (x, w, H, box, edge))
+        parts.append('<circle cx="%d" cy="34" r="15" fill="%s"/>' % (x + w // 2, AZURE))
+        parts.append('<text x="%d" y="39" fill="%s" font-size="13" font-weight="700" '
+                     'text-anchor="middle">%d</text>' % (x + w // 2, WHITE, i + 1))
+        parts.append(lines(h, x + 18, 84, max(6, int((w - 36) / 15.4)), 22,
+                           fill=fg, font_size='15', font_weight='700'))
+        parts.append(lines(note_, x + 18, 128, max(8, int((w - 36) / 11.4)), 17,
+                           fill=sub, font_size='11.5'))
+        if i < n - 1:
+            cx = x + w + 8
+            parts.append('<path d="M%d 112 L%d 112" stroke="%s" stroke-width="2" '
+                         'fill="none" marker-end="url(#flw%s)"/>' % (cx, cx + gap - 18, AZURE, uid))
+    h = H + 54
+    if note:
+        parts.append(lines(note, 16, h - 8, 76, 17, fill=sub, font_size='11'))
+        h += 18
+    return _fig(title, cap,
+        '<svg viewBox="0 0 900 %d" xmlns="http://www.w3.org/2000/svg" role="img">'
+        '<defs><marker id="flw%s" viewBox="0 0 10 10" refX="9" refY="5" '
+        'markerWidth="6" markerHeight="6" orient="auto-start-reverse">'
+        '<path d="M0 0L10 5L0 10z" fill="%s"/></marker></defs>%s</svg>'
+        % (h, uid, AZURE, ''.join(parts)))
+
+
+# ------------------------------------------------------------------
+# F17  円環（PDCA、フィードバックループ。終わりが始まりに戻る話に）
+# ------------------------------------------------------------------
+def fig_cycle(steps, title, cap, dark=False, center='', uid=''):
+    """steps: [(見出し, 補足)] を時計回りに配置する。4〜6個"""
+    import math
+    fg = WHITE if dark else INK
+    sub = 'rgba(255,255,255,.62)' if dark else MUTED
+    box = 'rgba(255,255,255,.06)' if dark else WHITE
+    edge = 'rgba(255,255,255,.16)' if dark else 'rgba(46,84,150,.22)'
+    n = len(steps)
+    CX, CY, R = 450, 250, 168
+    bw, bh = 210, 84
+    parts = []
+    # 外周の輪
+    parts.append('<circle cx="%d" cy="%d" r="%d" fill="none" stroke="%s" '
+                 'stroke-width="2" stroke-dasharray="4 7"/>' % (CX, CY, R - 34, edge))
+    if center:
+        parts.append(lines(center, CX, CY - 4, 9, 22, fill=fg, font_size='15',
+                           font_weight='700', text_anchor='middle'))
+    for i, (h, note) in enumerate(steps):
+        a = -math.pi / 2 + 2 * math.pi * i / n
+        x = CX + R * math.cos(a) * 1.42 - bw / 2
+        y = CY + R * math.sin(a) - bh / 2
+        x = max(8, min(892 - bw, x))
+        c = ACCENTS[i % len(ACCENTS)]
+        parts.append('<rect x="%.1f" y="%.1f" width="%d" height="%d" rx="9" fill="%s" '
+                     'stroke="%s" stroke-width="1"/>' % (x, y, bw, bh, box, edge))
+        parts.append('<rect x="%.1f" y="%.1f" width="4" height="%d" rx="2" fill="%s"/>'
+                     % (x, y, bh, c))
+        parts.append('<text x="%.1f" y="%.1f" fill="%s" font-size="10.5" '
+                     'font-weight="700" letter-spacing="1.4">%02d</text>'
+                     % (x + 16, y + 24, c, i + 1))
+        parts.append(lines(h, x + 44, y + 26, 13, 18, fill=fg, font_size='13.5',
+                           font_weight='700'))
+        parts.append(lines(note, x + 16, y + 52, 17, 15, fill=sub, font_size='11'))
+    return _fig(title, cap,
+        '<svg viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg" role="img">'
+        '%s</svg>' % ''.join(parts))
+
+
+# ------------------------------------------------------------------
+# F18  構成比のドーナツ（1つの全体を分けて見せる）
+# ------------------------------------------------------------------
+def fig_donut(items, title, cap, dark=False, center='', note=None):
+    """items: [(名前, 数値, 補足)]。数値の合計を100%として扱う"""
+    import math
+    fg = WHITE if dark else INK
+    sub = 'rgba(255,255,255,.62)' if dark else MUTED
+    ring = 'rgba(255,255,255,.08)' if dark else 'rgba(46,84,150,.08)'
+    total = sum(v for _, v, _ in items) or 1
+    CX, CY, R, TH = 200, 180, 128, 44
+    parts = ['<circle cx="%d" cy="%d" r="%d" fill="none" stroke="%s" stroke-width="%d"/>'
+             % (CX, CY, R, ring, TH)]
+    a0 = -math.pi / 2
+    for i, (name, v, _) in enumerate(items):
+        sweep = 2 * math.pi * v / total
+        a1 = a0 + sweep
+        large = 1 if sweep > math.pi else 0
+        x0, y0 = CX + R * math.cos(a0), CY + R * math.sin(a0)
+        x1, y1 = CX + R * math.cos(a1), CY + R * math.sin(a1)
+        parts.append('<path d="M%.1f %.1f A%d %d 0 %d 1 %.1f %.1f" fill="none" '
+                     'stroke="%s" stroke-width="%d" stroke-opacity=".92"/>'
+                     % (x0, y0, R, R, large, x1, y1, ACCENTS[i % len(ACCENTS)], TH))
+        a0 = a1
+    if center:
+        parts.append(lines(center, CX, CY + 2, 8, 22, fill=fg, font_size='16',
+                           font_weight='700', text_anchor='middle'))
+    # 凡例は右側に縦積み
+    y = 56
+    for i, (name, v, sup) in enumerate(items):
+        c = ACCENTS[i % len(ACCENTS)]
+        parts.append('<rect x="410" y="%d" width="12" height="12" rx="3" fill="%s"/>'
+                     % (y - 11, c))
+        parts.append('<text x="432" y="%d" fill="%s" font-size="14" '
+                     'font-weight="700">%s</text>' % (y, fg, esc(name)))
+        parts.append('<text x="862" y="%d" fill="%s" font-size="15" font-weight="700" '
+                     'text-anchor="end">%d%%</text>' % (y, c, round(v * 100 / total)))
+        if sup:
+            parts.append(lines(sup, 432, y + 20, 44, 16, fill=sub, font_size='11'))
+            y += 58
+        else:
+            y += 40
+    h = max(340, y + 16)
+    if note:
+        parts.append(lines(note, 16, h - 6, 76, 17, fill=sub, font_size='11'))
+        h += 16
+    return _fig(title, cap,
+        '<svg viewBox="0 0 900 %d" xmlns="http://www.w3.org/2000/svg" role="img">'
+        '%s</svg>' % (h, ''.join(parts)))
+
+
+# ------------------------------------------------------------------
+# F19  積み上げ棒（複数の対象を、内訳ごと比べる）
+# ------------------------------------------------------------------
+def fig_stack(rows, keys, title, cap, dark=False, unit='', note=None):
+    """rows: [(対象名, [各内訳の数値])]、keys: [内訳の名前]"""
+    fg = WHITE if dark else INK
+    sub = 'rgba(255,255,255,.62)' if dark else MUTED
+    track = 'rgba(255,255,255,.06)' if dark else 'rgba(46,84,150,.06)'
+    X, W = 210, 600
+    mx = max(sum(v) for _, v in rows) or 1
+    parts = []
+    # 凡例
+    lx = X
+    for i, k in enumerate(keys):
+        parts.append('<rect x="%d" y="14" width="11" height="11" rx="3" fill="%s"/>'
+                     % (lx, ACCENTS[i % len(ACCENTS)]))
+        parts.append('<text x="%d" y="24" fill="%s" font-size="11.5">%s</text>'
+                     % (lx + 17, sub, esc(k)))
+        lx += 24 + len(k) * 12
+    y = 46
+    for name, vals in rows:
+        parts.append(lines(name, 14, y + 22, 15, 17, fill=fg, font_size='13',
+                           font_weight='700'))
+        parts.append('<rect x="%d" y="%d" width="%d" height="30" rx="6" fill="%s"/>'
+                     % (X, y + 4, W, track))
+        cx = X
+        for i, v in enumerate(vals):
+            w = W * v / mx
+            if w < 1:
+                continue
+            parts.append('<rect x="%.1f" y="%d" width="%.1f" height="30" fill="%s" '
+                         'fill-opacity=".9"/>' % (cx, y + 4, w, ACCENTS[i % len(ACCENTS)]))
+            if w > 46:
+                parts.append('<text x="%.1f" y="%d" fill="%s" font-size="11.5" '
+                             'font-weight="700" text-anchor="middle">%s</text>'
+                             % (cx + w / 2, y + 24, WHITE, esc(str(v))))
+            cx += w
+        parts.append('<text x="%d" y="%d" fill="%s" font-size="12.5" '
+                     'font-weight="700">%s</text>' % (X + W + 12, y + 24, fg, sum(vals)))
+        y += 46
+    if unit:
+        parts.append('<text x="%d" y="24" fill="%s" font-size="10.5" font-weight="700" '
+                     'letter-spacing="1.6" text-anchor="end">%s</text>' % (884, sub, esc(unit)))
+    if note:
+        parts.append(lines(note, 14, y + 14, 76, 17, fill=sub, font_size='11'))
+        y += 26
+    return _fig(title, cap,
+        '<svg viewBox="0 0 900 %d" xmlns="http://www.w3.org/2000/svg" role="img">'
+        '%s</svg>' % (y + 10, ''.join(parts)))
+
+
+# ------------------------------------------------------------------
+# F20  格子（行×列。どこが該当するかを印で示す）
+# ------------------------------------------------------------------
+def fig_matrix(cols, rows, title, cap, dark=False, note=None):
+    """rows: [(行名, [各列の値])]。値は '' / '○' / '△' / '×' か短い文字列"""
+    fg = WHITE if dark else INK
+    sub = 'rgba(255,255,255,.66)' if dark else MUTED
+    grid = 'rgba(255,255,255,.14)' if dark else 'rgba(46,84,150,.18)'
+    zebra = 'rgba(255,255,255,.035)' if dark else 'rgba(46,84,150,.035)'
+    tone = {'○': '#2f8f8a', '◎': AZURE, '△': '#c9762f', '×': RED, '－': sub}
+    X0, LW, W = 14, 250, 872
+    cw = (W - LW) / len(cols)
+    parts = []
+    for i, c in enumerate(cols):
+        parts.append(lines(c, X0 + LW + cw * (i + .5), 26, 9, 15, fill=sub,
+                           font_size='11.5', font_weight='700', text_anchor='middle'))
+    y = 40
+    for r, (name, vals) in enumerate(rows):
+        nl = len(wrap(name, 20))
+        h = 22 + nl * 17
+        if r % 2:
+            parts.append('<rect x="%d" y="%.1f" width="%d" height="%.1f" fill="%s"/>'
+                         % (X0, y, W, h, zebra))
+        parts.append('<line x1="%d" y1="%.1f" x2="%d" y2="%.1f" stroke="%s" '
+                     'stroke-width="1"/>' % (X0, y, X0 + W, y, grid))
+        parts.append(lines(name, X0 + 10, y + 20, 20, 17, fill=fg, font_size='12.5',
+                           font_weight='700'))
+        for i, v in enumerate(vals):
+            if not v:
+                continue
+            col = tone.get(v, fg)
+            size = '17' if v in tone else '11.5'
+            parts.append('<text x="%.1f" y="%.1f" fill="%s" font-size="%s" '
+                         'font-weight="700" text-anchor="middle">%s</text>'
+                         % (X0 + LW + cw * (i + .5), y + 22, col, size, esc(v)))
+        y += h
+    parts.append('<line x1="%d" y1="%.1f" x2="%d" y2="%.1f" stroke="%s" '
+                 'stroke-width="1"/>' % (X0, y, X0 + W, y, grid))
+    for i in range(len(cols) + 1):
+        x = X0 + LW + cw * i
+        parts.append('<line x1="%.1f" y1="32" x2="%.1f" y2="%.1f" stroke="%s" '
+                     'stroke-width="1"/>' % (x, x, y, grid))
+    if note:
+        y += 22
+        parts.append(lines(note, X0, y, 78, 17, fill=sub, font_size='11'))
+        y += 8
+    return _fig(title, cap,
+        '<svg viewBox="0 0 900 %.0f" xmlns="http://www.w3.org/2000/svg" role="img">'
+        '%s</svg>' % (y + 10, ''.join(parts)))
+
+
+# ------------------------------------------------------------------
+# F21  大きな数字（3〜4個。投影でいちばん効く形）
+# ------------------------------------------------------------------
+def fig_stats(items, title, cap, dark=False, note=None):
+    """items: [(数値, 単位, 何の数字か, 出典や補足, 差し色index)]"""
+    fg = WHITE if dark else INK
+    sub = 'rgba(255,255,255,.62)' if dark else MUTED
+    edge = 'rgba(255,255,255,.16)' if dark else 'rgba(46,84,150,.2)'
+    n = len(items)
+    gap = 20
+    w = int((868 - (n - 1) * gap) / n)
+    H = 176
+    parts = []
+    for i, (num, unit, what, sup, ai) in enumerate(items):
+        c = ACCENTS[ai % len(ACCENTS)]
+        x = 16 + i * (w + gap)
+        parts.append('<rect x="%d" y="16" width="%d" height="%d" rx="11" fill="none" '
+                     'stroke="%s" stroke-width="1"/>' % (x, w, H, edge))
+        parts.append('<rect x="%d" y="16" width="%d" height="5" rx="2.5" fill="%s"/>'
+                     % (x, w, c))
+        size = 52 if len(str(num)) <= 4 else (40 if len(str(num)) <= 7 else 30)
+        parts.append('<text x="%d" y="86" fill="%s" font-size="%d" font-weight="700" '
+                     'letter-spacing="-1">%s</text>' % (x + 20, c, size, esc(str(num))))
+        if unit:
+            parts.append('<text x="%d" y="86" fill="%s" font-size="15" '
+                         'font-weight="700">%s</text>'
+                         % (x + 24 + int(len(str(num)) * size * 0.56), sub, esc(unit)))
+        parts.append(lines(what, x + 20, 118, max(8, int((w - 40) / 14.4)), 20,
+                           fill=fg, font_size='14', font_weight='700'))
+        if sup:
+            parts.append(lines(sup, x + 20, 158, max(10, int((w - 40) / 11.4)), 15,
+                               fill=sub, font_size='11'))
+    h = H + 42
+    if note:
+        parts.append(lines(note, 16, h - 6, 76, 17, fill=sub, font_size='11'))
+        h += 16
+    return _fig(title, cap,
+        '<svg viewBox="0 0 900 %d" xmlns="http://www.w3.org/2000/svg" role="img">'
+        '%s</svg>' % (h, ''.join(parts)))
+
+
+# ------------------------------------------------------------------
+# F22  二項対立（どちらを選ぶか、という話の形）
+# ------------------------------------------------------------------
+def fig_versus(left, right, rows, title, cap, dark=False):
+    """left/right: (見出し, ひとこと)、rows: [(観点, 左の内容, 右の内容)]"""
+    fg = WHITE if dark else INK
+    sub = 'rgba(255,255,255,.62)' if dark else MUTED
+    edge = 'rgba(255,255,255,.16)' if dark else 'rgba(46,84,150,.2)'
+    lbg = 'rgba(46,84,150,.10)' if not dark else 'rgba(255,255,255,.06)'
+    rbg = 'rgba(226,55,68,.08)' if not dark else 'rgba(255,93,106,.10)'
+    LX, BW = 200, 330
+    RX = LX + BW + 24                     # 箱が重ならないよう間を空ける
+    MID = LX + BW + 12
+    parts = []
+    for x, (h, one), bg, c in ((LX, left, lbg, AZURE), (RX, right, rbg, RED)):
+        parts.append('<rect x="%d" y="14" width="%d" height="72" rx="10" fill="%s"/>'
+                     % (x, BW, bg))
+        parts.append('<rect x="%d" y="14" width="%d" height="4" rx="2" fill="%s"/>'
+                     % (x, BW, c))
+        parts.append(lines(h, x + 20, 46, 18, 22, fill=fg, font_size='16',
+                           font_weight='700'))
+        parts.append(lines(one, x + 20, 72, 26, 16, fill=c, font_size='11.5',
+                           font_weight='700'))
+    parts.append('<text x="%d" y="55" fill="%s" font-size="11" font-weight="700" '
+                 'letter-spacing="1" text-anchor="middle">VS</text>' % (MID, sub))
+    y = 104
+    for k, a, b in rows:
+        nl = max(len(wrap(a, 25)), len(wrap(b, 25)), len(wrap(k, 14)))
+        h = 16 + nl * 19
+        parts.append('<line x1="14" y1="%.1f" x2="884" y2="%.1f" stroke="%s" '
+                     'stroke-width="1"/>' % (y, y, edge))
+        parts.append(lines(k, 14, y + 24, 14, 18, fill=sub, font_size='12',
+                           font_weight='700'))
+        parts.append(lines(a, LX + 20, y + 24, 25, 19, fill=fg, font_size='12.5'))
+        parts.append(lines(b, RX + 20, y + 24, 25, 19, fill=fg, font_size='12.5'))
+        parts.append('<line x1="%d" y1="%.1f" x2="%d" y2="%.1f" stroke="%s" '
+                     'stroke-width="1"/>' % (MID, y, MID, y + h, edge))
+        y += h
+    parts.append('<line x1="14" y1="%.1f" x2="884" y2="%.1f" stroke="%s" '
+                 'stroke-width="1"/>' % (y, y, edge))
+    return _fig(title, cap,
+        '<svg viewBox="0 0 900 %.0f" xmlns="http://www.w3.org/2000/svg" role="img">'
+        '%s</svg>' % (y + 14, ''.join(parts)))
+
+
+# ------------------------------------------------------------------
+# F23  階層ツリー（分類・組織・構造。2段まで）
+# ------------------------------------------------------------------
+def fig_tree(root, branches, title, cap, dark=False, uid=''):
+    """root: 頂点の名前、branches: [(枝の名前, [葉, ...])] 最大4本"""
+    fg = WHITE if dark else INK
+    sub = 'rgba(255,255,255,.62)' if dark else MUTED
+    box = 'rgba(255,255,255,.06)' if dark else WHITE
+    edge = 'rgba(255,255,255,.16)' if dark else 'rgba(46,84,150,.22)'
+    n = len(branches)
+    gap = 18
+    w = int((868 - (n - 1) * gap) / n)
+    parts = []
+    parts.append('<rect x="300" y="14" width="300" height="52" rx="10" fill="%s"/>' % AZURE)
+    parts.append(lines(root, 450, 46, 20, 20, fill=WHITE, font_size='15',
+                       font_weight='700', text_anchor='middle'))
+    maxleaf = max(len(l) for _, l in branches)
+    for i, (name, leaves) in enumerate(branches):
+        c = ACCENTS[i % len(ACCENTS)]
+        x = 16 + i * (w + gap)
+        cx = x + w // 2
+        parts.append('<path d="M450 66 L450 88 L%d 88 L%d 110" stroke="%s" '
+                     'stroke-width="1.5" fill="none"/>' % (cx, cx, edge))
+        parts.append('<rect x="%d" y="110" width="%d" height="46" rx="9" fill="%s" '
+                     'stroke="%s" stroke-width="1"/>' % (x, w, box, edge))
+        parts.append('<rect x="%d" y="110" width="%d" height="4" rx="2" fill="%s"/>'
+                     % (x, w, c))
+        parts.append(lines(name, cx, 138, max(7, int(w / 15.4)), 18, fill=fg,
+                           font_size='13.5', font_weight='700', text_anchor='middle'))
+        ly = 176
+        for leaf in leaves:
+            parts.append('<rect x="%d" y="%d" width="%d" height="36" rx="7" fill="%s" '
+                         'fill-opacity=".10"/>' % (x + 10, ly, w - 20, c))
+            parts.append(lines(leaf, x + 22, ly + 22, max(8, int((w - 44) / 11.6)), 15,
+                               fill=sub, font_size='11.5'))
+            ly += 44
+    return _fig(title, cap,
+        '<svg viewBox="0 0 900 %d" xmlns="http://www.w3.org/2000/svg" role="img">'
+        '%s</svg>' % (176 + maxleaf * 44 + 12, ''.join(parts)))
+
+
+# ------------------------------------------------------------------
+# F24  2軸の位置づけ（点を置く。4象限より自由度が高い）
+# ------------------------------------------------------------------
+def fig_map(xlab, ylab, points, title, cap, dark=False, corners=None):
+    """points: [(名前, x0-100, y0-100, 差し色index, 補足)]"""
+    fg = WHITE if dark else INK
+    sub = 'rgba(255,255,255,.62)' if dark else MUTED
+    edge = 'rgba(255,255,255,.16)' if dark else 'rgba(46,84,150,.2)'
+    grid = 'rgba(255,255,255,.07)' if dark else 'rgba(46,84,150,.07)'
+    X0, Y0, W, H = 96, 40, 700, 320
+    parts = []
+    for i in range(1, 4):
+        parts.append('<line x1="%d" y1="%.1f" x2="%d" y2="%.1f" stroke="%s" '
+                     'stroke-width="1"/>' % (X0, Y0 + H * i / 4, X0 + W, Y0 + H * i / 4, grid))
+        parts.append('<line x1="%.1f" y1="%d" x2="%.1f" y2="%d" stroke="%s" '
+                     'stroke-width="1"/>' % (X0 + W * i / 4, Y0, X0 + W * i / 4, Y0 + H, grid))
+    parts.append('<path d="M%d %d L%d %d L%d %d" stroke="%s" stroke-width="1.5" '
+                 'fill="none"/>' % (X0, Y0, X0, Y0 + H, X0 + W, Y0 + H, edge))
+    if corners:
+        for (cx, cy, txt) in corners:
+            parts.append(lines(txt, X0 + W * cx / 100, Y0 + H * (100 - cy) / 100, 14, 15,
+                               fill=sub, font_size='10.5', text_anchor='middle'))
+    for name, px, py, ai, sup in points:
+        c = ACCENTS[ai % len(ACCENTS)]
+        x = X0 + W * px / 100
+        y = Y0 + H * (100 - py) / 100
+        parts.append('<circle cx="%.1f" cy="%.1f" r="9" fill="%s" fill-opacity=".9"/>'
+                     % (x, y, c))
+        parts.append('<circle cx="%.1f" cy="%.1f" r="16" fill="%s" fill-opacity=".14"/>'
+                     % (x, y, c))
+        parts.append(lines(name, x, y - 24, 16, 16, fill=fg, font_size='12.5',
+                           font_weight='700', text_anchor='middle'))
+        if sup:
+            parts.append(lines(sup, x, y + 32, 18, 14, fill=sub, font_size='10.5',
+                               text_anchor='middle'))
+    parts.append('<text x="%d" y="%d" fill="%s" font-size="12" font-weight="700" '
+                 'text-anchor="middle">%s</text>' % (X0 + W // 2, Y0 + H + 34, sub, esc(xlab)))
+    ysafe = ''.join(c for c in ylab if c not in '↑↓←→')
+    parts.append('<text x="0" y="0" fill="%s" font-size="12" font-weight="700" '
+                 'text-anchor="middle" transform="translate(30 %d) rotate(-90)">%s</text>'
+                 % (sub, Y0 + H // 2, esc(ysafe)))
+    return _fig(title, cap,
+        '<svg viewBox="0 0 900 %d" xmlns="http://www.w3.org/2000/svg" role="img">'
+        '%s</svg>' % (Y0 + H + 52, ''.join(parts)))
+
+
+# ------------------------------------------------------------------
+# F25  判定リスト（やること・やらないこと、可否の一覧）
+# ------------------------------------------------------------------
+def fig_check(items, title, cap, dark=False, note=None):
+    """items: [(可否 True/False/None, 見出し, 補足)]"""
+    fg = WHITE if dark else INK
+    sub = 'rgba(255,255,255,.62)' if dark else MUTED
+    okbg = 'rgba(47,143,138,.10)'
+    ngbg = 'rgba(226,55,68,.09)'
+    nabg = 'rgba(46,84,150,.07)' if not dark else 'rgba(255,255,255,.05)'
+    parts = []
+    y = 16
+    for ok, h, sup in items:
+        c = TEAL if ok is True else (RED if ok is False else MUTED)
+        bg = okbg if ok is True else (ngbg if ok is False else nabg)
+        mark = '○' if ok is True else ('×' if ok is False else '－')
+        nl = max(len(wrap(h, 34)), 1) + (len(wrap(sup, 62)) if sup else 0)
+        bh = 20 + nl * 20
+        parts.append('<rect x="14" y="%.1f" width="870" height="%.1f" rx="9" fill="%s"/>'
+                     % (y, bh, bg))
+        parts.append('<rect x="14" y="%.1f" width="4" height="%.1f" rx="2" fill="%s"/>'
+                     % (y, bh, c))
+        parts.append('<text x="42" y="%.1f" fill="%s" font-size="18" '
+                     'font-weight="700">%s</text>' % (y + 30, c, mark))
+        parts.append(lines(h, 76, y + 28, 34, 20, fill=fg, font_size='14',
+                           font_weight='700'))
+        if sup:
+            parts.append(lines(sup, 76, y + 28 + len(wrap(h, 34)) * 20, 62, 18,
+                               fill=sub, font_size='11.5'))
+        y += bh + 10
+    if note:
+        parts.append(lines(note, 14, y + 14, 76, 17, fill=sub, font_size='11'))
+        y += 26
+    return _fig(title, cap,
+        '<svg viewBox="0 0 900 %.0f" xmlns="http://www.w3.org/2000/svg" role="img">'
+        '%s</svg>' % (y + 8, ''.join(parts)))

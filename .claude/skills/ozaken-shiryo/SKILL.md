@@ -65,7 +65,7 @@ fitz.open(path)[6].get_pixmap(dpi=170).save('/tmp/p7.png')   # Readツールで�
 
 ### 3. 図版を選ぶ
 
-15種類の作図関数が `99_assets/tools/domain_fig.py` にある。
+25種類の作図関数が `99_assets/tools/domain_fig.py` にある。
 **同じ形式を3回以上続けない**。飽きるし、内容の違いが見えなくなる。
 
 選び方と、それぞれの文字数上限は `references/figures.md` を読むこと。
@@ -191,7 +191,7 @@ Copilot Credits 完全ガイド<br>「使った分だけ」が始まった
 ## 参照
 
 - `references/tokens.md` — 色とフォントの規定。**色を書く前に必ず読む**
-- `references/figures.md` — 15種類の作図関数。選び方と文字数上限。**図を描く前に必ず読む**
+- `references/figures.md` — 25種類の作図関数。選び方と文字数上限。**図を描く前に必ず読む**
 - `references/structure.md` — セクション構成の型と、本文フラグメントの書き方の実例
 
 既存資料が規定に合っているかは `lint_all.py` で確かめられる。
