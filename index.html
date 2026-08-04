@@ -1790,6 +1790,7 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
           <li><a href="02_技術・モデル動向/google-io-2026-v2.html">Google I/O 2026 完全解説 ─ エージェントが主導する未来（Gemini Omni / Spark）</a></li>
           <li><a href="02_技術・モデル動向/Mythos1.html">Claude Mythosの衝撃 ─ AI対AI時代の幕開けと、日本の遅れ</a></li>
           <li><a href="02_技術・モデル動向/Mythos2.html">Claude Mythos〜Fable 5停止 ─ AIが「安全保障案件」になった72日間</a></li>
+          <li><a href="02_技術・モデル動向/three-axes.html">生成AIのトレンドは、3つの軸で読める ─ エージェント化・ドメイン特化・モデルの強化</a></li>
         </ul>
       </div>
       <div class="card">
@@ -3118,6 +3119,11 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
       if(window.ozBootSkip) window.ozBootSkip();
       if(window.ozGateClose) window.ozGateClose();
       if(window.ozMapClose) window.ozMapClose();
+      /* 閉じたらURLも元に戻す。#profile が残ったままだと、
+         同じ画面をもう一度開こうとしてもURLが変わらず、何も起きなくなる */
+      if(location.hash){
+        try{ history.replaceState(null,'',location.pathname+location.search); }catch(err){}
+      }
       var qz=document.getElementById('aqZoom');
       if(qz&&qz.classList.contains('on')){ window.ozQrZoomClose(); return; }
       all.forEach(function(o){ if(o.el.classList.contains('show')) o.hide(); });
@@ -3846,34 +3852,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
 
 
 
-<script>
-/* OZ-KEYNAV v3 */
-/* 資料ページのショートカット。index.html と同じ2文字で、同じ画面が開く。
-   全画面の中身は index が持っているので、ここでは行き先を渡すだけ。 */
-(function(){
-  var GO = { th:'#thanks', st:'#standby', pr:'#profile', ti:'#title',
-             qa:'#ask',    ma:'#map',     ur:'#gate',    go:'#boot', en:'#end',
-             pw:'#ledger', mx:'#matrix' };
-  /* トップへの行き方。フッターのリンクが階層を知っているので、あればそれを借りる。
-     無い資料もあるので、その場合は置き場所（01_… / AX_Table）から判断する */
-  function home(){
-    var a = document.querySelector('a[href$="index.html"]');
-    if (a) return a.getAttribute('href');
-    var seg = location.pathname.split('/');
-    var dir = decodeURIComponent(seg[seg.length - 2] || '');
-    return /^(0\d_|AX_Table)/.test(dir) ? '../index.html' : 'index.html';
-  }
-  var buf = '';
-  document.addEventListener('keydown', function(e){
-    var t = e.target;
-    if (t && (/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) || t.isContentEditable)) return;
-    if (!e.key || e.key.length !== 1 || e.metaKey || e.ctrlKey || e.altKey) return;
-    buf = (buf + e.key.toLowerCase()).slice(-4);
-    var k = buf.slice(-2);
-    if (GO[k]){ buf = ''; location.href = home() + GO[k]; }
-  });
-})();
-</script>
+
 <!-- OZ-FIGANIM v3 -->
 </body>
 </html>
