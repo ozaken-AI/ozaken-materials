@@ -3083,10 +3083,27 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
         target.show();
         break; } } }
   });
-  if(location.hash==='#thanks'&&bySecret['th']) bySecret['th'].show();
-  if(location.hash==='#standby'&&bySecret['st']) bySecret['st'].show();
-  if(location.hash==='#profile'&&bySecret['pr']) bySecret['pr'].show();
-  if(location.hash==='#ask'&&bySecret['qa']) bySecret['qa'].show();
+  /* 資料ページからのショートカットは、この受け口に着地する。
+     開いたらハッシュは消しておく。再読み込みで勝手に開き直さないため */
+  (function(){
+    var h = location.hash;
+    if (!h) return;
+    var open = {
+      '#thanks': function(){ if(bySecret['th']) bySecret['th'].show(); },
+      '#standby':function(){ if(bySecret['st']) bySecret['st'].show(); },
+      '#profile':function(){ if(bySecret['pr']) bySecret['pr'].show(); },
+      '#title':  function(){ if(bySecret['ti']) bySecret['ti'].show(); },
+      '#ask':    function(){ if(bySecret['qa']) bySecret['qa'].show(); },
+      '#map':    function(){ if(window.ozMap) window.ozMap(); },
+      '#gate':   function(){ if(window.ozGate) window.ozGate(); },
+      '#boot':   function(){ if(window.ozBoot) window.ozBoot(null,'start'); },
+      '#end':    function(){ if(window.ozBoot&&bySecret['th'])
+                               window.ozBoot(function(){ bySecret['th'].show(); },'end'); }
+    };
+    if (!open[h]) return;
+    try { history.replaceState(null, '', location.pathname + location.search); } catch(e){}
+    setTimeout(open[h], 60);
+  })();
 })();
 </script>
 
