@@ -837,6 +837,79 @@ def fig_cycle(steps, title, cap, dark=False, center='', uid=''):
 
 
 # ------------------------------------------------------------------
+# F26  2×2の循環（SECI、OODA、PDCAのように4象限を回るもの）
+# ------------------------------------------------------------------
+def fig_loop4(items, title, cap, dark=False, uid='', edge_labels=None, note=None):
+    """items: [(見出し, 英名, 説明, [中の項目, ...])] を左上→右上→右下→左下の順に4つ。
+
+    円環の fig_cycle と違い、4象限に置いて外周を矢印が回る形。
+    「暗黙知 → 形式知 → 暗黙知」のように、辺ごとに状態が変わる循環に向く。
+    edge_labels は上・右・下・左の辺に置く4つのラベル（省略可）。
+    """
+    fg = WHITE if dark else INK
+    sub = 'rgba(255,255,255,.66)' if dark else MUTED
+    box = 'rgba(255,255,255,.055)' if dark else WHITE
+    chip = 'rgba(255,255,255,.08)' if dark else 'rgba(46,84,150,.06)'
+    edge = 'rgba(255,255,255,.18)' if dark else 'rgba(46,84,150,.22)'
+    mid = 'rgba(255,255,255,.5)' if dark else AZURE
+    uid = uid or 'l4'
+    BW, BH, GX, GY = 372, 208, 46, 74
+    X0, Y0 = 62, 64
+    pos = [(X0, Y0), (X0 + BW + GX, Y0),
+           (X0 + BW + GX, Y0 + BH + GY), (X0, Y0 + BH + GY)]
+    parts = ['<defs><marker id="l4a%s" markerWidth="9" markerHeight="9" refX="7" refY="4.5" '
+             'orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="%s"/></marker></defs>'
+             % (uid, mid)]
+    for i, (h, en, desc, chips) in enumerate(items[:4]):
+        x, y = pos[i]
+        c = ACCENTS[i % len(ACCENTS)]
+        parts.append('<rect x="%d" y="%d" width="%d" height="%d" rx="12" fill="%s" '
+                     'stroke="%s" stroke-width="1.4"/>' % (x, y, BW, BH, box, edge))
+        parts.append('<rect x="%d" y="%d" width="%d" height="4" rx="2" fill="%s"/>'
+                     % (x, y, BW, c))
+        parts.append('<text x="%d" y="%d" fill="%s" font-size="16" font-weight="700">%s</text>'
+                     % (x + 20, y + 36, fg, esc(h)))
+        parts.append('<text x="%d" y="%d" fill="%s" font-size="10.5" font-weight="700" '
+                     'letter-spacing="1.2">%s</text>' % (x + 20, y + 54, c, esc(en)))
+        parts.append(lines(desc, x + 20, y + 78, 30, 16, fill=sub, font_size='11.5'))
+        cy = y + 78 + max(1, len(wrap(desc, 30))) * 16 + 12
+        for j, t in enumerate(chips[:4]):
+            cx = x + 20 + (j % 2) * ((BW - 52) / 2 + 12)
+            yy = cy + (j // 2) * 30
+            parts.append('<rect x="%.1f" y="%.1f" width="%.1f" height="23" rx="5" fill="%s"/>'
+                         % (cx, yy, (BW - 52) / 2, chip))
+            parts.append('<text x="%.1f" y="%.1f" fill="%s" font-size="10.5">%s</text>'
+                         % (cx + 10, yy + 15.5, fg, esc(t[:13])))
+    # 外周を回る矢印。上→右→下→左
+    W = X0 * 2 + BW * 2 + GX
+    H = Y0 + BH * 2 + GY + 64
+    M = 26
+    arcs = [('M%d %d H%d' % (X0 + BW + 14, Y0 - M, X0 + BW + GX + BW / 2), 0),
+            ('M%d %d V%d' % (W - X0 + M, Y0 + BH + 14, Y0 + BH + GY + BH / 2), 1),
+            ('M%d %d H%d' % (X0 + BW + GX - 14, H - 38, X0 + BW / 2), 2),
+            ('M%d %d V%d' % (X0 - M, Y0 + BH + GY + BH - 14, Y0 + BH / 2), 3)]
+    for d, _ in arcs:
+        parts.append('<path d="%s" fill="none" stroke="%s" stroke-width="1.6" '
+                     'stroke-dasharray="7 5" marker-end="url(#l4a%s)"/>' % (d, mid, uid))
+    if edge_labels:
+        spots = [(X0 + BW + GX / 2, Y0 - M - 10), (W - X0 + M + 4, Y0 + BH + GY / 2),
+                 (X0 + BW + GX / 2, H - 46), (X0 - M - 4, Y0 + BH + GY / 2)]
+        anchors = ['middle', 'start', 'middle', 'end']
+        for k, t in enumerate(edge_labels[:4]):
+            sx, sy = spots[k]
+            parts.append('<text x="%.1f" y="%.1f" fill="%s" font-size="11.5" '
+                         'font-weight="700" text-anchor="%s">%s</text>'
+                         % (sx, sy, mid, anchors[k], esc(t)))
+    if note:
+        H += 26
+        parts.append('<text x="%d" y="%d" fill="%s" font-size="11">%s</text>'
+                     % (X0, H - 12, sub, esc(note)))
+    return _fig(title, cap,
+        '<svg viewBox="0 0 %d %d" xmlns="http://www.w3.org/2000/svg" role="img">'
+        '%s</svg>' % (W, H, ''.join(parts)))
+
+
+# ------------------------------------------------------------------
 # F18  構成比のドーナツ（1つの全体を分けて見せる）
 # ------------------------------------------------------------------
 def fig_donut(items, title, cap, dark=False, center='', note=None):
