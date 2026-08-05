@@ -42,7 +42,12 @@ await p.goto('file://' + path.join(root, rel));
 await p.waitForTimeout(2500);
 
 // data-reveal は画面に入るまで透明なので、まとめて可視化する
-await p.evaluate(() => document.querySelectorAll('[data-reveal]').forEach(e => e.classList.add('visible')));
+await p.evaluate(() => {
+  document.querySelectorAll('[data-reveal]').forEach(e => e.classList.add('visible'));
+  // 図版は画面に入って初めて anim-on が付く。付いた直後に撮ると、
+  // 時間差の登場アニメーションが終わっておらず、**後半の行が消えて写る**
+  document.querySelectorAll('.figure').forEach(e => e.classList.add('anim-on'));
+});
 await p.waitForTimeout(500);
 
 const info = await p.evaluate(() => ({
