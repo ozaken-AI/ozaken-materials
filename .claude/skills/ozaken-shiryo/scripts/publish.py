@@ -59,7 +59,9 @@ def compose(body_path, extra=''):
     """
     tmp = os.path.join(HERE, '_build.html')
     page = build(body_path, tmp)
-    page = page.replace('</style>', EXTRA_CSS + extra + SPACING_CSS + CARD_COLS_CSS
+    # 資料ごとのCSS（extra）は最後に置く。共通のものより後ろでないと勝てない。
+    # 先に置いたら、AX Table の「持ち帰り3点」が縦積みから3列に戻ってしまった
+    page = page.replace('</style>', EXTRA_CSS + SPACING_CSS + CARD_COLS_CSS + extra
                         + '</style>', 1)
     page = annotate_cards(page)
     errs, summary = check(page)
