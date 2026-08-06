@@ -291,7 +291,7 @@ Copilot Credits 完全ガイド<br>「使った分だけ」が始まった
 | `apply_keynav.py` | 資料上で2文字打つと投影画面へ飛ぶショートカット |
 | `apply_ogp.py` | SNSに貼ったときの題・概要・共有カードを、鍵のかかった外側に入れる |
 | `make_ogp.mjs` | 共有カードの画像（1200×630）を資料ごとに刷る。`apply_ogp.py cards` から呼ばれる |
-| `make_pdf.mjs` | 配布用HTMLをA4横のPDFに焼く（index の無料配布資料はこれで作る） |
+| `make_pdf.mjs` | 配布用HTMLを16:9のPDFに焼く（index の無料配布資料はこれで作る） |
 | `registry.py` | パスワード台帳の読み書き |
 | `reapply.py` | 演出を直したとき、既存の全資料に当て直す（`reapply.py herofx` など） |
 
@@ -349,7 +349,9 @@ node .claude/skills/ozaken-shiryo/scripts/make_pdf.mjs \
      /tmp/ozaken-ogp-fonts/bpt.html 04_活用・実践/業務変革大全.pdf
 ```
 
-A4横・1ページ1テーマ。図版は `domain_fig` の `<svg>` だけを抜いて使う
+**16:9（338.67mm × 190.5mm）**・1ページ1テーマ。投影とスライド共有を前提にした
+配布物なので、A4横より16:9のほうが素直に収まる。`make_pdf.mjs` の第3引数に
+`a4` を渡せばA4横にもできる。図版は `domain_fig` の `<svg>` だけを抜いて使う
 （`.figure` の枠ごと入れると、PDFでは枠が二重に見える）。
 **書体は file:// で読ませるので、HTMLは書体フォルダの中に書き出す。**
 

@@ -7,7 +7,7 @@ AX資料（01_概念・思想/ax-article.html）のプロセス論を土台に�
   本当のAXは②再構築から始まる
 この骨格を、実務に落とす手順として展開したものが本資料。
 
-A4横・1ページ1テーマ。書体は資料と同じものを file:// で読ませるため、
+16:9（338.67mm × 190.5mm）・1ページ1テーマ。書体は資料と同じものを file:// で読ませるため、
 書体フォルダの中にHTMLを書き出す（make_ogp.mjs と同じ理由）。
 """
 import os
@@ -15,8 +15,9 @@ import sys
 
 S = '/home/user/ozaken-materials/.claude/skills/ozaken-shiryo/scripts'
 sys.path.insert(0, S)
-from domain_fig import (fig_map, fig_stairs, fig_gap, fig_tree, fig_cols,
-                        fig_matrix, fig_cycle, fig_issues, fig_check)
+from domain_fig import (fig_map, fig_stairs, fig_gap, fig_ladder, fig_tree,
+                        fig_sheet, fig_flow, fig_cols, fig_matrix, fig_cycle,
+                        fig_issues, fig_check)
 
 FONT_DIR = '/tmp/ozaken-ogp-fonts'
 
@@ -30,13 +31,13 @@ CSS = """
   --azure-pale:#d8e4f0; --ink:#1a1a2e; --muted:#6b7a99; --red:#e23744;
   --red-bright:#ff5d6a; --white:#ffffff; --pale:#eef3fa;
 }
-@page{size:A4 landscape;margin:0}
+@page{size:338.67mm 190.5mm;margin:0}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'OZ Gothic',sans-serif;color:var(--ink);
   -webkit-print-color-adjust:exact;print-color-adjust:exact}
-.page{width:297mm;height:210mm;position:relative;overflow:hidden;
+.page{width:338.67mm;height:190.5mm;position:relative;overflow:hidden;
   page-break-after:always;background:var(--paper);
-  padding:14mm 16mm 12mm;display:flex;flex-direction:column}
+  padding:11mm 18mm 10mm;display:flex;flex-direction:column}
 .page:last-child{page-break-after:auto}
 .page.navy{background:linear-gradient(172deg,#1f3864 0%,#141d35 100%);color:#fff}
 .page.navy .lead{color:rgba(255,255,255,.86)}
@@ -48,17 +49,17 @@ body{font-family:'OZ Gothic',sans-serif;color:var(--ink);
 .eyebrow{display:inline-block;font-family:'OZ En',sans-serif;font-size:8.5pt;
   font-weight:700;letter-spacing:.14em;color:var(--azure);background:var(--azure-pale);
   padding:3px 9px;border-radius:4px;align-self:flex-start}
-h2{font-family:'OZ Mincho',serif;font-size:19pt;font-weight:700;line-height:1.42;
-  margin:6px 0 4px;letter-spacing:.01em}
-.lead{font-size:9.5pt;line-height:1.75;color:var(--muted);max-width:230mm}
+h2{font-family:'OZ Mincho',serif;font-size:19pt;font-weight:700;line-height:1.4;
+  margin:5px 0 3px;letter-spacing:.01em}
+.lead{font-size:9.5pt;line-height:1.72;color:var(--muted);max-width:262mm}
 .page.navy h2{color:#fff}
 .fig{flex:1;display:flex;align-items:center;justify-content:center;
   margin:5px 0 4px;min-height:0}
 .fig svg{max-width:100%;max-height:100%;height:auto}
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:6mm}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:7mm}
 .cards.two{grid-template-columns:repeat(2,1fr)}
 .card{background:#fff;border:1px solid rgba(46,84,150,.18);border-radius:7px;
-  padding:5mm 5.5mm;border-top:2.5px solid var(--azure)}
+  padding:4.4mm 5mm;border-top:2.5px solid var(--azure)}
 .card h3{font-family:'OZ Mincho',serif;font-size:10.5pt;font-weight:700;
   margin-bottom:2.5mm;line-height:1.5}
 .card p{font-size:8.6pt;line-height:1.72;color:var(--muted)}
@@ -68,9 +69,11 @@ h2{font-family:'OZ Mincho',serif;font-size:19pt;font-weight:700;line-height:1.42
   letter-spacing:.1em;color:var(--azure);background:var(--azure-pale);
   padding:1.5px 6px;border-radius:3px;margin-right:5px;vertical-align:2px}
 .page.navy .tag{color:#fff;background:rgba(255,255,255,.18)}
-.pnum{position:absolute;right:16mm;bottom:7mm;font-family:'OZ En',sans-serif;
+
+.pnum{position:absolute;right:18mm;bottom:6mm;font-family:'OZ En',sans-serif;
   font-size:8pt;letter-spacing:.12em;color:var(--muted)}
-.foot{position:absolute;left:16mm;bottom:7mm;font-size:7.6pt;color:var(--muted);
+
+.foot{position:absolute;left:18mm;bottom:6mm;font-size:7.6pt;color:var(--muted);
   letter-spacing:.02em}
 .page.navy .foot{color:rgba(255,255,255,.5)}
 
@@ -80,21 +83,23 @@ h2{font-family:'OZ Mincho',serif;font-size:19pt;font-weight:700;line-height:1.42
   radial-gradient(ellipse 70% 55% at 50% -5%, rgba(46,84,150,.60), transparent 62%),
   radial-gradient(ellipse 55% 45% at 88% 94%, rgba(255,93,106,.16), transparent 60%),
   linear-gradient(165deg,#1f3864 0%,#182a52 42%,#141d35 100%);
-  color:#fff;justify-content:center;align-items:flex-start;padding:0 26mm}
+  color:#fff;justify-content:center;align-items:flex-start;padding:0 28mm}
 .cover .bar{position:absolute;left:0;top:0;bottom:0;width:7mm;background:var(--red)}
 .cover .tex{position:absolute;inset:0;opacity:.13}
-.cover h1{font-family:'OZ Mincho',serif;font-size:34pt;font-weight:700;
+
+.cover h1{font-family:'OZ Mincho',serif;font-size:36pt;font-weight:700;
   line-height:1.4;letter-spacing:.01em;position:relative}
 .cover h1 .hl{color:var(--red-bright)}
 .cover .sub{font-size:12pt;line-height:1.9;color:rgba(216,228,240,.82);
-  margin-top:8mm;max-width:190mm;position:relative}
-.cover .who{position:absolute;left:26mm;bottom:16mm;font-size:9.5pt;
+  margin-top:8mm;max-width:210mm;position:relative}
+
+.cover .who{position:absolute;left:28mm;bottom:14mm;font-size:9.5pt;
   color:rgba(216,228,240,.72)}
 .cover .who b{color:#fff;font-size:11pt;font-weight:700}
 .cover .eyebrow{position:relative;margin-bottom:6mm}
 .close{justify-content:center;align-items:center;text-align:center}
-.close h2{font-size:24pt;line-height:1.55;max-width:220mm}
-.close .lead{font-size:11pt;color:rgba(255,255,255,.8);margin-top:7mm;max-width:200mm}
+.close h2{font-size:25pt;line-height:1.55;max-width:250mm}
+.close .lead{font-size:11pt;color:rgba(255,255,255,.8);margin-top:7mm;max-width:230mm}
 """
 
 TEX = """<svg class="tex" viewBox="0 0 1200 600" preserveAspectRatio="none">
@@ -122,7 +127,11 @@ def cap_of(figure_html):
     return re.sub(r'<[^>]+>', '', m.group(1)).strip() if m else ''
 
 
-def page(n, eyebrow, title, lead, figure, cards, navy=False):
+N = [1]   # 表紙が1ページ目
+
+
+def page(eyebrow, title, lead, figure, cards, navy=False):
+    N[0] += 1
     cs = ''.join('<div class="card"><h3>%s</h3><p>%s</p></div>' % (h, b)
                  for h, b in cards)
     P.append(
@@ -133,7 +142,7 @@ def page(n, eyebrow, title, lead, figure, cards, navy=False):
         '<div class="foot">業務変革大全 ─ AXは、プロセスを動かす</div>'
         '<div class="pnum">%02d</div></div>'
         % (' navy' if navy else '', eyebrow, title, lead,
-           only_svg(figure), ' two' if len(cards) == 2 else '', cs, n))
+           only_svg(figure), ' two' if len(cards) == 2 else '', cs, N[0]))
 
 
 # ── 01 表紙 ──────────────────────────────────────────────────
@@ -149,7 +158,7 @@ P.append(
     'ozaken-ai.github.io/ozaken-materials</div></div>')
 
 # ── 02 DXとAX ────────────────────────────────────────────────
-page(2, 'Section 01 ─ Two Axes',
+page('Section 01 ─ Two Axes',
      'DXは「見える」をつくり、AXは「動く」をつくる',
      'DXは横の軸、AXは縦の軸。二つは対立するものではなく、直交します。'
      'データがどれだけ整っても、回すのが人のままなら、それはDXの完成にすぎません。',
@@ -173,7 +182,7 @@ page(2, 'Section 01 ─ Two Axes',
      navy=True)
 
 # ── 03 3フェーズ ─────────────────────────────────────────────
-page(3, 'Section 02 ─ Three Phases',
+page('Section 02 ─ Three Phases',
      '業務変革は、3つのフェーズで進む',
      'AXは一足飛びには進みません。既存のプロセスとAIの関わり方が深まるにつれて、'
      '変革は段階を踏みます。自社がいまどこにいて、次にどこへ進むのか。'
@@ -197,7 +206,7 @@ page(3, 'Section 02 ─ Three Phases',
        'プロセスの主役が、人からAIへ移ります。')])
 
 # ── 04 断層 ──────────────────────────────────────────────────
-page(4, 'Section 03 ─ The Gap',
+page('Section 03 ─ The Gap',
      'ほとんどの会社は、①効率化で止まっている',
      '議事録が速くなった、メールを下書きさせた。それも価値です。'
      'ただし<b>手順が変わっていない限り、成果は個人の時短にとどまります</b>。'
@@ -223,8 +232,35 @@ page(4, 'Section 03 ─ The Gap',
        'ここに人を置けるかが、実質的な分岐点です。')],
      navy=True)
 
+# ── 層 ──────────────────────────────────────────────────────
+page('Section 04 ─ The Layers',
+     'どの層まで降りると、任せる判断ができるのか',
+     '「AIに任せられるか」は、仕事の層では答えが出ません。業務の層でも、まだ束のままです。'
+     '<b>任せる／任せないを決められるのは、動詞で書ける作業の層に降りてから</b>。'
+     'ただし降りすぎると、今度は業務としての意味が見えなくなります。',
+     fig_ladder([
+         ('仕事 ── 何のためにいるか',
+          '役割と責任の単位。「経理担当」「営業」。この層で任せられるかを論じても答えは出ない'),
+         ('業務 ── 始まりと終わりがある',
+          '月次決算、請求書処理、見積作成。繰り返される活動。まだ複数の判断を含んだ束'),
+         ('作業（タスク）── 動詞で書ける',
+          '「突き合わせる」「差異の理由を確認する」。任せる判断ができるのは、この層から'),
+         ('操作（ステップ）── 個々の手つき',
+          '「PDFから金額を読み取る」。道具の選定はここ。降りすぎると業務の意味が消える'),
+     ], '', '', asc=False),
+     [('<span class="tag">判定</span>動詞で書けるか',
+       '「〜を確認する」「〜に転記する」と書けたら、作業の層に降りています。'
+       '<b>名詞のままなら、まだ束です</b>。'),
+      ('<span class="tag">終点</span>任せる判断ができるところまで',
+       '分解の終点は、細かさではありません。'
+       '<b>任せる／任せないを決められた時点で、そこが終点</b>です。'),
+      ('<span class="tag">例外</span>本体から切り離す',
+       '「ただし海外取引の場合は」を本体に混ぜると、'
+       '<b>作業全体が任せられないものに見えます</b>。別の作業として立てます。')],
+     navy=True)
+
 # ── 05 単位 ──────────────────────────────────────────────────
-page(5, 'Section 04 ─ The Unit',
+page('Section 04 ─ The Unit',
      '変革の単位は「業務」ではなく、「工程」',
      '「この業務をAIに」と言っている限り、どこにも入りません。'
      '一つの業務は複数の工程でできていて、AIが強い工程と、'
@@ -247,8 +283,67 @@ page(5, 'Section 04 ─ The Unit',
        '効くのは地味で回数の多い工程。'
        '派手な業務から選ぶと、たいてい外します。')])
 
+# ── 手法 ────────────────────────────────────────────────────
+page('Section 06 ─ Methods',
+     '業務分解には、確立された道具が5つある',
+     '手ぶらで割ろうとすると、人によって粒度も観点もばらつきます。'
+     '<b>どれも新しいものではなく、生産管理・人間工学・認知科学で'
+     '長く使われてきた道具</b>です。AI活用の文脈で効き方が変わっただけです。',
+     fig_sheet(
+         ['手法', '何を決めるか', 'AI活用では、こう効く', '出どころ'],
+         [['SIPOC', '業務の外枠。どこから始まり、どこで終わるか',
+           '入力欄が、そのまま「渡すべきコンテキストの一覧」になる', '品質管理の実務'],
+          ['HTA', '目標から下位目標へ割り、操作の層まで降ろす',
+           'planに書いた順序と条件が、そのままエージェントに渡す手順になる',
+           'Annett & Duncan 1967'],
+          ['CTA', '言葉になっていない判断の中身を掘る',
+           'なぜそう決めたかの基準が出る。最も人手がかかり、最も差がつく',
+           'Klein ら CDM 1989'],
+          ['ECRS', '排除・結合・交換・簡素化。まず捨てる',
+           '消せる工程を先に落とす。任せてから消すと、無駄が高速化するだけ',
+           'IE（生産管理）の定石'],
+          ['RACI', '実行と説明責任を切り離す',
+           'R（実行）はエージェントに移せる。A（説明責任）は移せない',
+           'プロジェクト管理の定石']],
+         [0.09, 0.24, 0.43, 0.24], '', '', badge='5つの道具'),
+     [('<span class="tag">SIPOC</span>入力欄が、そのまま渡す資料の一覧',
+       '供給者・入力・プロセス・出力・顧客の5列。'
+       '<b>入力欄が埋まらない業務は、そもそも任せられません</b>。'),
+      ('<span class="tag">CTA</span>いちばん時間がかかり、いちばん効く',
+       '難しかった事例を時系列で語ってもらい、'
+       '各局面で何を見て決めたかを掘る。'
+       '<b>ここに人を割けるかが分かれ目</b>です。'),
+      ('<span class="tag">RACI</span>AはAIに移らない',
+       'Rにエージェントを書き込むと、責任の所在が一気にはっきりします。'
+       '<b>この一点を明文化するだけで、事故時の議論が変わります</b>。')])
+
+# ── 順番 ────────────────────────────────────────────────────
+page('Section 07 ─ Sequence',
+     '5つの道具は、この順番で回す',
+     '順番を間違えると、途中で何度も前に戻ることになります。'
+     '<b>外枠を決めてから中を割り、判断を掘ってから削り、最後に責任を確定させる</b>。'
+     'この順で回すと、戻る回数がいちばん少なくなります。',
+     fig_flow([
+         ('SIPOC', '外枠を決める。入力と出力、受け渡しの相手を確定させる'),
+         ('HTA', '手順に割る。必ず動詞で書き、順序と条件を添える'),
+         ('CTA', '判断を掘る。難しかった事例を、時系列で語ってもらう'),
+         ('ECRS', '削る。消せる工程を先に落としてから、任せ方を考える'),
+         ('RACI', '責任を確定させる。Rの列には、エージェントも書き込む'),
+     ], '', '', uid='bptm', note=''),
+     [('<span class="tag">やりがち</span>いきなり作業に割ろうとする',
+       '業務の境界が曖昧なまま細部に入ると、必ず戻ります。'
+       '<b>SIPOCを1枚書いて外枠を固定してから</b>、中を割ります。'),
+      ('<span class="tag">配り方</span>4枚1セットで、部署ごとに書いてもらう',
+       'SIPOC・分解シート・資産台帳・RACIの4枚。'
+       '<b>空欄のまま返ってきた列が、そのままその部署の弱点</b>を示します。'),
+      ('<span class="tag">見落とし</span>分解して、そこで終わる',
+       '最も多い失敗です。'
+       '<b>各タスクに委譲の段階とRACIを割り当てるところまで進めて、'
+       'はじめて業務が変わります</b>。')],
+     navy=True)
+
 # ── 06 組み替え ──────────────────────────────────────────────
-page(6, 'Section 05 ─ Redesign',
+page('Section 05 ─ Redesign',
      'AI前提で組み替える、4つの型',
      '再構築とは、工程を消す・移す・分ける・順番を変えるという、'
      '4つの操作の組み合わせです。'
@@ -280,7 +375,7 @@ page(6, 'Section 05 ─ Redesign',
      navy=True)
 
 # ── 07 委譲範囲 ──────────────────────────────────────────────
-page(7, 'Section 06 ─ Delegation',
+page('Section 06 ─ Delegation',
      'どこまで任せ、どこで止めるか',
      '機能名で仕分けると必ず迷います。'
      '<b>やり直しがきくか、件数が多いか</b>。'
@@ -304,7 +399,7 @@ page(7, 'Section 06 ─ Delegation',
        '<b>あとから決めようとすると、決まりません</b>。')])
 
 # ── 08 定着 ──────────────────────────────────────────────────
-page(8, 'Section 07 ─ Adoption',
+page('Section 07 ─ Adoption',
      '定着は、回し続けるループとして設計する',
      '一度決めて終わりの委譲は、半年で実態と乖離して誰も見なくなります。'
      '<b>範囲を決め、止め方を用意し、差し戻しの理由を貯め、'
@@ -328,7 +423,7 @@ page(8, 'Section 07 ─ Adoption',
      navy=True)
 
 # ── 09 失敗 ──────────────────────────────────────────────────
-page(9, 'Section 08 ─ Pitfalls',
+page('Section 08 ─ Pitfalls',
      'よくある失敗は、だいたいこの5つ',
      'どれも技術の問題ではありません。'
      '<b>変革の単位、順番、そして誰が手順を決めるか</b>。'
@@ -351,7 +446,7 @@ page(9, 'Section 08 ─ Pitfalls',
        '広げるのは、1周まわしてからです。')])
 
 # ── 10 90日と診断 ────────────────────────────────────────────
-page(10, 'Section 09 ─ First 90 Days',
+page('Section 09 ─ First 90 Days',
      '最初の90日と、自社診断',
      '大きな構想は要りません。'
      '<b>1つの業務を選び、工程にほどき、1つの工程を任せて、'
@@ -394,7 +489,7 @@ P.append(
     'だからこそ、外から買うことができません。</p>'
     '<div class="foot">業務変革大全 ─ AXは、プロセスを動かす　'
     '｜　小澤健祐（おざけん）／ 一般社団法人AICX協会</div>'
-    '<div class="pnum">11</div></div>')
+    '<div class="pnum">%02d</div></div>' % (N[0] + 1))
 
 html = ('<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">'
         '<title>業務変革大全</title><style>%s</style></head><body>%s</body></html>'
