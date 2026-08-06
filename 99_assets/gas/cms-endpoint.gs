@@ -19,10 +19,12 @@ var ASK_SHEET   = 'questions';                          // 質問箱の記録先
 var SENDER_NAME = '小澤健祐（おざけん）｜AICX協会';        // 差出人の表示名
 var REPLY_TO = 'kensuke.ozawa@aicx.jp';       // 返信先（受信者の返信がここに届く）
 var SUBJECT     = '資料を手に取っていただき、ありがとうございます ─ 小澤健祐（おざけん）';
-var NOTIFY_ASK  = true;                                 // 質問が届いたら REPLY_TO に知らせる
+var NOTIFY_ASK  = false;                                // 質問が届いたら REPLY_TO に知らせる。
+                                                        // false でもシートへの記録とタイムラインへの
+                                                        // 表示はそのまま。メールだけが止まる
 var SS_ID       = '';                                   // 通常は空でよい。スクリプトがシートに
                                                         // 紐づいていない場合だけ、シートのIDを入れる
-var CODE_TAG    = '2026-08-03-ask';                     // 動いているコードの版。/exec を開くと出る
+var CODE_TAG    = '2026-08-06-nomail';                  // 動いているコードの版。/exec を開くと出る
 var LIST_MAX    = 30;                                   // 投影ページに返す質問の最大件数（新しい順）
 var HIDE_COL    = 8;                                    // この列（H）に何か書くと、その質問は投影に出ない
 
