@@ -490,6 +490,13 @@ def fig_bars(items, title, cap, dark=False, unit='', note=None):
 AMBER = '#c9762f'
 TEAL = '#2f8f8a'
 ACCENTS = [AZURE, RED, AMBER, TEAL]
+# 紺地の上では AZURE が地に沈んで、番号も色帯もほとんど見えない。
+# 琥珀と青緑は紺の上でも立つので、青と赤だけ明るいほうに寄せる
+ACCENTS_ON_NAVY = ['#8fb0e0', '#ff5d6a', AMBER, TEAL]
+
+
+def accents(dark):
+    return ACCENTS_ON_NAVY if dark else ACCENTS
 
 
 # ------------------------------------------------------------------
@@ -799,41 +806,68 @@ def fig_flow(steps, title, cap, dark=False, uid='', note=None):
 # F17  円環（PDCA、フィードバックループ。終わりが始まりに戻る話に）
 # ------------------------------------------------------------------
 def fig_cycle(steps, title, cap, dark=False, center='', uid=''):
-    """steps: [(見出し, 補足)] を時計回りに配置する。4〜6個"""
+    """steps: [(見出し, 補足)] を時計回りに配置する。4〜6個
+
+    正円ではなく楕円に置く。16:9の面では正円だと左右が余り、
+    箱を外へ逃がすと中央が空洞になる（実際、業務変革大全の
+    「定着ループ」がそうなった）。輪も破線の円をただ置くのではなく、
+    箱と箱のあいだを埋める弧にして矢じりを付ける。
+    「回り続ける」と書いてある図が、止まって見えていた。
+    """
     import math
     fg = WHITE if dark else INK
     sub = 'rgba(255,255,255,.62)' if dark else MUTED
     box = 'rgba(255,255,255,.06)' if dark else WHITE
     edge = 'rgba(255,255,255,.16)' if dark else 'rgba(46,84,150,.22)'
+    arrow = 'rgba(255,255,255,.5)' if dark else AZURE
+    hub = 'rgba(255,255,255,.10)' if dark else 'rgba(46,84,150,.07)'
+    acc = accents(dark)
+    uid = uid or 'cy'
     n = len(steps)
-    CX, CY, R = 450, 250, 168
-    bw, bh = 210, 84
+    CX, CY, RX, RY = 450, 232, 292, 148
+    bw, bh = 214, 92
+    ARX, ARY = 176, 92          # 弧の半径。箱の内側を、触れない距離で回る
     parts = []
-    # 外周の輪
-    parts.append('<circle cx="%d" cy="%d" r="%d" fill="none" stroke="%s" '
-                 'stroke-width="2" stroke-dasharray="4 7"/>' % (CX, CY, R - 34, edge))
+    # 箱と箱のすきまを弧でつなぐ。円を1本置くだけでは、どちら回りかが出ない
+    for i in range(n):
+        a0 = -math.pi / 2 + 2 * math.pi * i / n
+        a1 = a0 + 2 * math.pi / n
+        pad = (a1 - a0) * 0.24
+        sx, sy = CX + ARX * math.cos(a0 + pad), CY + ARY * math.sin(a0 + pad)
+        ex, ey = CX + ARX * math.cos(a1 - pad), CY + ARY * math.sin(a1 - pad)
+        parts.append('<path d="M%.1f %.1f A%d %d 0 0 1 %.1f %.1f" fill="none" '
+                     'stroke="%s" stroke-width="2" stroke-dasharray="5 6" '
+                     'marker-end="url(#cyc%s)"/>'
+                     % (sx, sy, ARX, ARY, ex, ey, arrow, uid))
     if center:
-        parts.append(lines(center, CX, CY - 4, 9, 22, fill=fg, font_size='15',
+        w = len(center) * 17 + 34
+        parts.append('<rect x="%.1f" y="%d" width="%d" height="36" rx="18" fill="%s"/>'
+                     % (CX - w / 2, CY - 18, w, hub))
+        parts.append(lines(center, CX, CY + 6, 12, 22, fill=fg, font_size='15',
                            font_weight='700', text_anchor='middle'))
     for i, (h, note) in enumerate(steps):
         a = -math.pi / 2 + 2 * math.pi * i / n
-        x = CX + R * math.cos(a) * 1.42 - bw / 2
-        y = CY + R * math.sin(a) - bh / 2
+        x = CX + RX * math.cos(a) - bw / 2
+        y = CY + RY * math.sin(a) - bh / 2
         x = max(8, min(892 - bw, x))
-        c = ACCENTS[i % len(ACCENTS)]
+        c = acc[i % len(acc)]
         parts.append('<rect x="%.1f" y="%.1f" width="%d" height="%d" rx="9" fill="%s" '
                      'stroke="%s" stroke-width="1"/>' % (x, y, bw, bh, box, edge))
         parts.append('<rect x="%.1f" y="%.1f" width="4" height="%d" rx="2" fill="%s"/>'
                      % (x, y, bh, c))
         parts.append('<text x="%.1f" y="%.1f" fill="%s" font-size="10.5" '
                      'font-weight="700" letter-spacing="1.4">%02d</text>'
-                     % (x + 16, y + 24, c, i + 1))
-        parts.append(lines(h, x + 44, y + 26, 13, 18, fill=fg, font_size='13.5',
+                     % (x + 16, y + 25, c, i + 1))
+        parts.append(lines(h, x + 44, y + 27, 12, 18, fill=fg, font_size='13.5',
                            font_weight='700'))
-        parts.append(lines(note, x + 16, y + 52, 17, 15, fill=sub, font_size='11'))
+        parts.append(lines(note, x + 16, y + 54, 16, 15, fill=sub, font_size='11'))
+    h = int(CY + RY + bh / 2 + 22)
     return _fig(title, cap,
-        '<svg viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg" role="img">'
-        '%s</svg>' % ''.join(parts))
+        '<svg viewBox="0 0 900 %d" xmlns="http://www.w3.org/2000/svg" role="img">'
+        '<defs><marker id="cyc%s" viewBox="0 0 10 10" refX="9" refY="5" '
+        'markerWidth="6" markerHeight="6" orient="auto-start-reverse">'
+        '<path d="M0 0L10 5L0 10z" fill="%s"/></marker></defs>%s</svg>'
+        % (h, uid, arrow, ''.join(parts)))
 
 
 # ------------------------------------------------------------------
