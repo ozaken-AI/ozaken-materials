@@ -508,6 +508,7 @@ def fig_timeline(events, title, cap, dark=False, axis='2026年5月'):
     sub = 'rgba(255,255,255,.68)' if dark else MUTED
     box = 'rgba(255,255,255,.05)' if dark else WHITE
     edge = 'rgba(255,255,255,.14)' if dark else 'rgba(46,84,150,.18)'
+    acc = accents(dark)
     n = len(events)
     w = int((884 - 16 - (n - 1) * 20) / n)
     LY = 66
@@ -517,7 +518,7 @@ def fig_timeline(events, title, cap, dark=False, axis='2026年5月'):
                  'letter-spacing="2.4">%s</text>' % (sub, esc(axis)))
     for i, (date, who, what, mean, ai) in enumerate(events):
         x = 16 + i * (w + 20)
-        c = ACCENTS[ai % len(ACCENTS)]
+        c = acc[ai % len(acc)]
         cx = x + w / 2
         parts.append('<circle cx="%.1f" cy="%d" r="7" fill="%s"/>' % (cx, LY, c))
         parts.append('<circle cx="%.1f" cy="%d" r="13" fill="%s" fill-opacity=".18"/>'
@@ -728,13 +729,14 @@ def fig_cols(items, title, cap, dark=False):
     sub = 'rgba(255,255,255,.62)' if dark else MUTED
     box = 'rgba(255,255,255,.05)' if dark else WHITE
     edge = 'rgba(255,255,255,.14)' if dark else 'rgba(46,84,150,.2)'
+    acc = accents(dark)
     n = len(items)
     gap = 20
     w = int((868 - (n - 1) * gap) / n)
     H = 214
     parts = []
     for i, (en, ja, one, txt, ai) in enumerate(items):
-        c = ACCENTS[ai % len(ACCENTS)]
+        c = acc[ai % len(acc)]
         x = 16 + i * (w + gap)
         parts.append('<rect x="%d" y="20" width="%d" height="%d" rx="11" fill="%s" '
                      'stroke="%s" stroke-width="1"/>' % (x, w, H, box, edge))
