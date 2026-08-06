@@ -291,6 +291,7 @@ Copilot Credits 完全ガイド<br>「使った分だけ」が始まった
 | `apply_keynav.py` | 資料上で2文字打つと投影画面へ飛ぶショートカット |
 | `apply_ogp.py` | SNSに貼ったときの題・概要・共有カードを、鍵のかかった外側に入れる |
 | `make_ogp.mjs` | 共有カードの画像（1200×630）を資料ごとに刷る。`apply_ogp.py cards` から呼ばれる |
+| `make_pdf.mjs` | 配布用HTMLをA4横のPDFに焼く（index の無料配布資料はこれで作る） |
 | `registry.py` | パスワード台帳の読み書き |
 | `reapply.py` | 演出を直したとき、既存の全資料に当て直す（`reapply.py herofx` など） |
 
@@ -336,6 +337,21 @@ OZAKEN_PW=マスター python3 .claude/skills/ozaken-shiryo/scripts/publish.py \
 ```bash
 OZAKEN_PW=マスター python3 .claude/skills/ozaken-shiryo/scripts/reapply.py herofx   # herofx / keynav / spacing / bg / all
 ```
+
+## 配布するPDFを作るとき
+
+index の「無料でプレゼント」に置くPDFは、**暗号化せず、HTMLから焼く**。
+組み立てのソースは `99_assets/pdf-src/` に置く。あとで直せるようにするため。
+
+```bash
+python3 99_assets/pdf-src/業務変革大全.py            # HTMLを書体フォルダに書き出す
+node .claude/skills/ozaken-shiryo/scripts/make_pdf.mjs \
+     /tmp/ozaken-ogp-fonts/bpt.html 04_活用・実践/業務変革大全.pdf
+```
+
+A4横・1ページ1テーマ。図版は `domain_fig` の `<svg>` だけを抜いて使う
+（`.figure` の枠ごと入れると、PDFでは枠が二重に見える）。
+**書体は file:// で読ませるので、HTMLは書体フォルダの中に書き出す。**
 
 ## SNSに貼られたときの見え方
 
