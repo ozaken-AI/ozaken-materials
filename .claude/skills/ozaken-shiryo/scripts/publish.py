@@ -113,6 +113,7 @@ def add_to_index(rel, label):
 
 
 SPOT_HEAD = 'スポット講演・セミナー'
+TRAIN_HEAD = '法人研修'          # Training/ に置いた資料は、こちらの節へ
 
 
 def add_to_backstage(rel, label, pw):
@@ -131,8 +132,12 @@ def add_to_backstage(rel, label, pw):
             '<p>個別パスワード <b>%s</b></p></div>\n'
             % (n, href, label, pw))
 
-    if SPOT_HEAD in inner:
-        i = inner.find(SPOT_HEAD)
+    # 置き場所で節を選ぶ。Training/ は法人研修、それ以外はスポット講演
+    train = rel.startswith('Training/')
+    head = TRAIN_HEAD if train else SPOT_HEAD
+
+    if head in inner:
+        i = inner.find(head)
         k = inner.find('<div class="cards">', i)
         if k < 0:
             return False
@@ -149,13 +154,16 @@ def add_to_backstage(rel, label, pw):
             return False
         inner = inner[:j] + card + inner[j:]
     else:
-        sec = ('<section class="sec-navy" data-bg="1">\n  <div class="inner" data-reveal>\n'
-               '    <span class="eyebrow">Spot Sessions</span>\n'
+        tone, eyebrow, sub = (
+            ('sec-light', 'Corporate Training',
+             '企業向けの研修カリキュラム案と、当日の進行資料です。') if train else
+            ('sec-navy', 'Spot Sessions', '単発の講演・セミナー用に組んだ資料です。'))
+        sec = ('<section class="%s" data-bg="1">\n  <div class="inner" data-reveal>\n'
+               '    <span class="eyebrow">%s</span>\n'
                '    <h2 class="sec-title">%s</h2>\n'
-               '    <p class="sec-sub">単発の講演・セミナー用に組んだ資料です。'
-               '個別パスワードを併記しています。</p>\n'
+               '    <p class="sec-sub">%s個別パスワードを併記しています。</p>\n'
                '    <div class="cards">\n%s    </div>\n  </div>\n</section>\n'
-               % (SPOT_HEAD, card))
+               % (tone, eyebrow, head, sub, card))
         k = inner.rfind('<footer>')
         if k < 0:
             return False

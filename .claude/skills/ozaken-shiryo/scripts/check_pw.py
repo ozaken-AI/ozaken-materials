@@ -39,6 +39,7 @@ def docs():
     for d in sorted(glob.glob(os.path.join(ROOT, '0*_*'))):
         out += sorted(glob.glob(os.path.join(d, '*.html')))
     out += sorted(glob.glob(os.path.join(ROOT, 'AX_Table', '*.html')))
+    out += sorted(glob.glob(os.path.join(ROOT, 'Training', '*.html')))
     out += [f for f in sorted(glob.glob(os.path.join(ROOT, '*.html')))
             if os.path.basename(f) not in ('index.html', 'ask.html')]
     return [f for f in out if 'OZAKEN-LOCKED2' in open(f, encoding='utf-8').read(64)]

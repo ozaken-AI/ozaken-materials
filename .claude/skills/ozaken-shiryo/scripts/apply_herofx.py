@@ -346,6 +346,7 @@ def targets():
         for f in sorted(glob.glob(os.path.join(d, '*.html'))):
             yield f
     for f in sorted(glob.glob(os.path.join(ROOT, 'AX_Table', '*.html'))):
+    for f in sorted(glob.glob(os.path.join(ROOT, 'Training', '*.html'))):
         yield f
     for f in sorted(glob.glob(os.path.join(ROOT, '*.html'))):
         if os.path.basename(f) != 'index.html':   # indexは元から演出を持っている

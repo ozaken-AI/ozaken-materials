@@ -59,6 +59,7 @@ CATS = {
     '08_業界別': 'INDUSTRY',
     '09_職種別': 'FUNCTION',
     'AX_Table': 'AX TABLE',
+    'Training': 'CORPORATE TRAINING',
     'index.html': 'PROFILE & ARCHIVE',
     'ask.html': 'Q & A',
     '資料マトリクス.html': 'MATRIX',
@@ -78,7 +79,7 @@ def targets():
     out = []
     for d in sorted(os.listdir(ROOT)):
         p = os.path.join(ROOT, d)
-        if not os.path.isdir(p) or not re.match(r'^(0\d_|AX_)', d):
+        if not os.path.isdir(p) or not re.match(r'^(0\d_|AX_|Training$)', d):
             continue
         for f in sorted(os.listdir(p)):
             if f.endswith('.html'):

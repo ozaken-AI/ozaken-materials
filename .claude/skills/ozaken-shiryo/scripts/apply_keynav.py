@@ -30,13 +30,13 @@ JS = """
              qa:'#ask',    ma:'#map',     ur:'#gate',    go:'#boot', en:'#end',
              pw:'#ledger', mx:'#matrix' };
   /* トップへの行き方。フッターのリンクが階層を知っているので、あればそれを借りる。
-     無い資料もあるので、その場合は置き場所（01_… / AX_Table）から判断する */
+     無い資料もあるので、その場合は置き場所（01_… / AX_Table / Training）から判断する */
   function home(){
     var a = document.querySelector('a[href$="index.html"]');
     if (a) return a.getAttribute('href');
     var seg = location.pathname.split('/');
     var dir = decodeURIComponent(seg[seg.length - 2] || '');
-    return /^(0\\d_|AX_Table)/.test(dir) ? '../index.html' : 'index.html';
+    return /^(0\\d_|AX_Table|Training)/.test(dir) ? '../index.html' : 'index.html';
   }
   var buf = '';
   document.addEventListener('keydown', function(e){
@@ -69,6 +69,7 @@ def targets():
         for f in sorted(glob.glob(os.path.join(d, '*.html'))):
             yield f
     for f in sorted(glob.glob(os.path.join(ROOT, 'AX_Table', '*.html'))):
+    for f in sorted(glob.glob(os.path.join(ROOT, 'Training', '*.html'))):
         yield f
     for f in sorted(glob.glob(os.path.join(ROOT, '*.html'))):
         b = os.path.basename(f)
