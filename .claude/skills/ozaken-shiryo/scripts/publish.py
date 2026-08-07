@@ -133,7 +133,18 @@ def add_to_backstage(rel, label, pw):
 
     if SPOT_HEAD in inner:
         i = inner.find(SPOT_HEAD)
-        j = inner.find('</div>', inner.find('<div class="cards">', i))
+        k = inner.find('<div class="cards">', i)
+        if k < 0:
+            return False
+        # 単に次の </div> を探すと、それは1枚目のカードの閉じタグ。
+        # そこに差すと新しいカードが前のカードの中に入れ子になる（実際に起きた）。
+        # 開きと閉じを数えて、cards を閉じる </div> を見つける
+        depth, j = 0, -1
+        for t in re.finditer(r'<div\b|</div>', inner[k:]):
+            depth += 1 if t.group(0).startswith('<div') else -1
+            if depth == 0:
+                j = k + t.start()
+                break
         if j < 0:
             return False
         inner = inner[:j] + card + inner[j:]
