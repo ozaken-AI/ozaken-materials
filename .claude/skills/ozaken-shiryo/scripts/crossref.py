@@ -309,8 +309,9 @@ def cmd_matrix(hits, titles, bodies):
         # 鍵は作り直さない。配ってあるものが死ぬので
         lockbox.encrypt(out, PW, page)
     else:
-        keys = [PW] + ([common] if common else [])
-        lockbox.create(os.path.join(ROOT, 'backstage.html'), page, out, keys)
+        # **道具のページに共通鍵は付けない。** 共通パスワードは資料を配るためのもので、
+        # 全資料の一覧が共通鍵で開くと、渡した相手にアーカイブの中身が全部見える
+        lockbox.create(os.path.join(ROOT, 'backstage.html'), page, out, [PW])
     assert lockbox.decrypt(out, PW) == page
     print('資料マトリクスを更新しました（資料 %d 本 / 概念 %d 個 / つながり %d 本）'
           % (len(rows), len(CONCEPTS), len(ed)))

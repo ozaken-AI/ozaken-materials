@@ -33,6 +33,11 @@ ROOT = oz_root.root()
 MASTER = os.environ.get('OZAKEN_PW', '')      # 環境変数で渡す。ここには書かない
 ITER = 200000
 
+# 道具のページ。**マスターだけで開く。共通パスワードを付けない。**
+# 共通パスワードは資料を配るためのもので、配った相手にこの3枚まで開かれると、
+# 全資料の一覧・裏資料の置き場・全パスワードが渡ってしまう
+TOOLS = ('passwords.html', 'backstage.html', 'matrix.html')
+
 
 def docs():
     out = []
@@ -74,6 +79,20 @@ def _job(args):
     return path, pw, opens(path, pw)
 
 
+def audit(files):
+    """道具のページに、マスター以外の鍵が付いていないかを毎回見る。
+    ここが崩れると、共通パスワードを渡した相手にアーカイブ全体が渡る"""
+    bad = [os.path.relpath(f, ROOT) for f in files
+           if os.path.basename(f) in TOOLS and len(wrappers(f)) != 1]
+    if bad:
+        print('!! 道具のページに余分な鍵が付いています: %s' % ' / '.join(bad))
+        print('   マスター以外を外してください:')
+        print('   lockbox.remove_password(パス, マスター, 外す鍵)\n')
+    else:
+        print('道具のページ（%s）は、マスターのみで開きます\n'
+              % ' / '.join(TOOLS))
+
+
 def main():
     args = sys.argv[1:]
     cands = []
@@ -84,6 +103,7 @@ def main():
 
     files = docs()
     print('暗号化された資料: %d 本\n' % len(files))
+    audit(files)
 
     if not cands:
         print('%-52s %s' % ('資料', '鍵'))
