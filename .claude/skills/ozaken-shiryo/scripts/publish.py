@@ -303,15 +303,14 @@ def main():
         else:
             where = 'index の資料一覧' if add_to_index(rel, a.label) else 'index（分類が見つからず失敗）'
 
-    # 7) 会場に見せるQR画面。裏資料置き場に載ったものだけに入る。
-    #    個別パスワードを焼き込むので、台帳に記録したあとに回す
-    if a.backstage and a.label:
-        import apply_qr
-        inner = lockbox.decrypt(out, m)
-        got = apply_qr.patch(inner, rel, data[rel]['title'], pw)
-        if got:
-            lockbox.encrypt(out, m, got)
-            assert lockbox.decrypt(out, m) == got
+    # 7) 会場に見せるQR画面。表・裏を問わず、個別パスワードを持つ資料すべてに入る。
+    #    パスワードを焼き込むので、台帳に記録したあとに回す
+    import apply_qr
+    inner = lockbox.decrypt(out, m)
+    got = apply_qr.patch(inner, rel, data[rel]['title'], pw)
+    if got:
+        lockbox.encrypt(out, m, got)
+        assert lockbox.decrypt(out, m) == got
 
     # 8) SNSに貼ったときの題と概要。ここを忘れると「🔒 資料アーカイブ」だけが出る
     import apply_ogp

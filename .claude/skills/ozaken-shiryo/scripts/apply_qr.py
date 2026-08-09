@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 """資料の中に、会場に見せるQRコードを仕込む。──「QR画面」
 
-**裏資料置き場に載っている資料だけの機能。**
+**個別パスワードを持つ資料すべてに入る**（表・裏を問わない）。
 壇上のパソコンで `qr` と打つと、全画面にQRコードと**個別パスワード**が出る。
 聴いている人はスマートフォンのカメラを向けるだけで、その資料を開ける。
+
+表の資料でも、講演で1本だけ見せたいときに「この資料はここです」と渡せる。
+裏資料だけに入れていたときは、そのたびにURLを読み上げていた。
 
 URLを読み上げるのは無理があるし、短縮URLは外のサービスに依存する。
 パスワードは口頭で言うと必ず聞き返される。**両方まとめて画面に出せば済む。**
@@ -36,7 +39,7 @@ BACKSTAGE = os.path.join(ROOT, 'backstage.html')
 MARK = '<!-- OZ-QR v1 -->'
 
 CSS = """
-/* OZ-QR v1 ── 会場に見せるQR画面（裏資料限定） */
+/* OZ-QR v1 ── 会場に見せるQR画面（個別パスワードを持つ資料すべて） */
 .qrv{position:fixed;inset:0;z-index:9200;display:none;
   font-family:var(--font-ja-sans);color:#fff;
   background:linear-gradient(168deg,#1f3864 0%,#182a52 44%,#141d35 100%);
@@ -105,15 +108,18 @@ def master():
 
 
 def targets(pw):
-    """裏資料置き場に載っている資料。カードのリンクをそのまま拾う"""
-    inner = lockbox.decrypt(BACKSTAGE, pw)
-    seen, out = set(), []
-    for m in re.finditer(r'<div class="card">.*?<h3><a href="([^"]+)"', inner):
-        rel = m.group(1)
-        if rel not in seen and os.path.exists(os.path.join(ROOT, rel)):
-            seen.add(rel)
+    """個別パスワードを持つ資料すべて。台帳が正。
+
+    道具のページ（台帳・裏資料置き場・資料マトリクス）はマスターだけで開き、
+    個別パスワードを持たないので、ここで自然に外れる。
+    """
+    led = registry.load(pw)
+    out = []
+    for f in registry.docs():
+        rel = os.path.relpath(f, ROOT)
+        if (led.get(rel) or {}).get('pw'):
             out.append(rel)
-    return out
+    return sorted(out)
 
 
 def block(rel, title, pw):
