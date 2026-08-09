@@ -5,7 +5,7 @@
 同じかたちの図が続いていないか、文字量が偏っていないか、赤を撒いていないか。
 評価するときの材料を、先に機械で出しておくための道具。
 
-  OZAKEN_PW=… python3 deck_stats.py 03_ツール・製品/foo.html
+  OZAKEN_PW=… python3 deck_stats.py 03_tools/foo.html
 
 判断はしない。並べるだけ。読むのは人（か、評価スキル）の仕事。
 """

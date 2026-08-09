@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ページが見つかりません | おざけん 資料アーカイブ</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&family=Shippori+Mincho+B1:wght@500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1f3864;--navy-deep:#141d35;--azure-pale:#d8e4f0;--red-bright:#ff5d6a;
+  --fs:'Zen Kaku Gothic New',sans-serif;--fm:'Shippori Mincho B1',serif;--fe:'Hanken Grotesk',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--navy-deep)}
+body{font-family:var(--fs);color:#fff;line-height:1.9;min-height:100vh;
+  display:flex;align-items:center;justify-content:center;padding:2rem 1.2rem;
+  background:radial-gradient(ellipse 70% 50% at 50% -6%,rgba(46,84,150,.55),transparent 62%),
+    linear-gradient(168deg,#1f3864 0%,#182a52 44%,#141d35 100%);background-attachment:fixed}
+.wrap{width:min(620px,100%);text-align:center}
+.badge{display:inline-flex;align-items:center;gap:.5rem;padding:.45em .9em;border-radius:999px;
+  background:rgba(20,29,53,.5);border:1px solid rgba(216,228,240,.22);
+  font-family:var(--fe);font-size:.62rem;font-weight:600;letter-spacing:.16em;
+  color:rgba(216,228,240,.9);margin-bottom:1.6rem}
+.badge .dot{width:6px;height:6px;border-radius:50%;background:var(--red-bright);box-shadow:0 0 8px var(--red-bright)}
+.num{font-family:var(--fe);font-size:clamp(3.4rem,12vw,5rem);font-weight:700;line-height:1;
+  letter-spacing:.04em;color:rgba(216,228,240,.28)}
+h1{font-family:var(--fm);font-weight:600;font-size:clamp(1.3rem,4.4vw,1.75rem);margin:.6rem 0 .9rem}
+p{font-size:.88rem;color:rgba(216,228,240,.75)}
+.go{margin-top:1.6rem;font-size:.84rem;color:rgba(216,228,240,.6);min-height:1.6em}
+.go b{color:#fff;font-weight:500}
+a.btn{display:inline-block;margin-top:1.4rem;padding:.7em 1.6em;border-radius:999px;
+  background:rgba(255,255,255,.08);border:1px solid rgba(216,228,240,.3);
+  color:#fff;text-decoration:none;font-size:.82rem}
+a.btn:hover{background:rgba(255,255,255,.16)}
+code{font-family:var(--fe);font-size:.76rem;color:rgba(216,228,240,.55);word-break:break-all}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="badge"><span class="dot"></span><span>OZAKEN MATERIALS</span></div>
+  <div class="num">404</div>
+  <h1>そのページは、いまここにはありません</h1>
+  <p>資料のURLをすべて英語に付け替えました。<br>古いリンクは、この画面が新しい置き場所へ送り届けます。</p>
+  <div class="go" id="go"></div>
+  <a class="btn" href="/ozaken-materials/">資料アーカイブへ</a>
+  <p style="margin-top:1.2rem"><code id="was"></code></p>
+</div>
+<script>
+// 旧URL → 新URL。2026年8月に日本語のパスを英語へ移したときの対応表
+var FILES = {"01_概念・思想/5レベル_Copilot.html": "01_concept/five-levels-copilot.html","01_概念・思想/5レベル_Gemini.html": "01_concept/five-levels-gemini.html","01_概念・思想/5レベル_copilot.pdf": "01_concept/five-levels-copilot.pdf","01_概念・思想/5レベル_gemini.pdf": "01_concept/five-levels-gemini.pdf","01_概念・思想/AIエージェントとは.html": "01_concept/what-is-ai-agent.html","01_概念・思想/AXとは.pdf": "01_concept/what-is-ax.pdf","01_概念・思想/AXとは何か.pdf": "01_concept/what-is-ax-full.pdf","01_概念・思想/使うAIから任せるAIへ_AIエージェント実装の5レベル.pdf": "01_concept/five-levels-of-delegation.pdf","01_概念・思想/日本再興戦略.html": "01_concept/japan-revival-strategy.html","01_概念・思想/生成AIとDX.html": "01_concept/genai-and-dx.html","01_概念・思想/生成AIとは.html": "01_concept/what-is-genai.html","02_技術・モデル動向/AI音声.html": "02_models/ai-voice.html","02_技術・モデル動向/Mythos1.html": "02_models/mythos-1.html","02_技術・モデル動向/Mythos2.html": "02_models/mythos-2.html","02_技術・モデル動向/Mythosが公開.pdf": "02_models/mythos-release.pdf","02_技術・モデル動向/ハイブリッドAI_適材適所のモデル使い分け.html": "02_models/hybrid-ai-model-routing.html","02_技術・モデル動向/モデル使い分け.html": "02_models/model-selection.html","03_ツール・製品/ChatGPT_Work_解説資料.html": "03_tools/chatgpt-work.html","03_ツール・製品/Claude大全.html": "03_tools/claude-guide.html","03_ツール・製品/Copilot大全.html": "03_tools/copilot-guide.html","03_ツール・製品/Cowork.html": "03_tools/cowork.html","03_ツール・製品/Gemini大全.html": "03_tools/gemini-guide.html","04_活用・実践/業務変革大全.pdf": "04_practice/business-transformation-guide.pdf","04_活用・実践/資料作成.html": "04_practice/deck-design.html","05_推進/AIエージェント_予算.html": "05_drive/agent-budget-v1.html","05_推進/AIエージェント予算.html": "05_drive/agent-budget-v2.html","05_推進/AIエージェント予算_タクシー.html": "05_drive/agent-budget-taxi.html","05_推進/AIエージェント・ストラテジスト.html": "05_drive/agent-strategist.html","05_推進/AI推進51施策マスター.pdf": "05_drive/ai-51-measures.pdf","05_推進/推進フェーズ.html": "05_drive/drive-phase.html","05_推進/発展フェーズ.html": "05_drive/growth-phase.html","06_キャリア・人材/AIエージェント時代のキャリア.html": "06_people/career-in-agent-era.html","06_キャリア・人材/AIエージェント時代のキャリア.pdf": "06_people/career-in-agent-era.pdf","06_キャリア・人材/人事.html": "06_people/hr-role.html","06_キャリア・人材/人事.pdf": "06_people/hr-role.pdf","06_キャリア・人材/任せるAI時代の人事変革.html": "06_people/hr-transformation-v1.html","06_キャリア・人材/生成AI時代の組織論.html": "06_people/org-theory.html","07_リスク・法務/個人情報保護法.html": "07_risk/privacy-law.html","パスワード台帳.html": "passwords.html","裏資料置き場.html": "backstage.html","資料マトリクス.html": "matrix.html","99_assets/AICX_AIエージェント人材基準_v0.5.pdf": "99_assets/aicx-agent-talent-standard-v0.5.pdf","99_assets/AICX協会_ホワイトペーパー2026.pdf": "99_assets/aicx-whitepaper-2026.pdf"};
+var DIRS  = {"01_概念・思想": "01_concept","02_技術・モデル動向": "02_models","03_ツール・製品": "03_tools","04_活用・実践": "04_practice","05_推進": "05_drive","06_キャリア・人材": "06_people","07_リスク・法務": "07_risk","08_業界別": "08_industry","09_職種別": "09_role"};
+var BASE = '/ozaken-materials/';
+
+var path = decodeURIComponent(location.pathname);
+var rel  = path.indexOf(BASE) === 0 ? path.slice(BASE.length) : path.replace(/^\//, '');
+document.getElementById('was').textContent = rel ? '/' + rel : '';
+
+var dest = FILES[rel];
+if (!dest) {                          // 対応表になければ、フォルダ名だけ差し替えてみる
+  var i = rel.indexOf('/');
+  if (i > 0 && DIRS[rel.slice(0, i)]) dest = DIRS[rel.slice(0, i)] + rel.slice(i);
+}
+if (dest) {
+  document.getElementById('go').innerHTML = '新しい場所へ移動します — <b>' + dest + '</b>';
+  location.replace(BASE + dest + location.hash);
+}
+</script>
+</body>
+</html>

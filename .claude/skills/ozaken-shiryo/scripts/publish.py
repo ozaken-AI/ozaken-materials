@@ -12,14 +12,14 @@
 
   使い方:
     OZAKEN_PW=マスター python3 publish.py \\
-        body_foo.html 03_ツール・製品/foo.html \\
+        body_foo.html 03_tools/foo.html \\
         --list "Foo入門 ─ 副題" [--backstage] [--to 共有先]
 
   --backstage を付けると index ではなく裏資料置き場に載せる。
   --list を省くと一覧には載せず、ファイルの生成と台帳登録だけを行う。
 
   既存資料の本文を作り直すとき:
-    OZAKEN_PW=マスター python3 publish.py body_foo.html 05_推進/foo.html --update
+    OZAKEN_PW=マスター python3 publish.py body_foo.html 05_drive/foo.html --update
 
   --update は 1〜3 を通したうえで **lockbox.encrypt** で書き戻す。
   鍵は作り直さないので、配布済みのパスワードはそのまま使える。
@@ -44,9 +44,9 @@ from page_parts import EXTRA_CSS
 from spacing import SPACING_CSS, CARD_COLS_CSS, annotate_cards
 from reissue_words import WORDS
 
-TPL = os.path.join(ROOT, '03_ツール・製品/Cowork.html')   # ロック画面の型として借りる
+TPL = os.path.join(ROOT, '03_tools/cowork.html')   # ロック画面の型として借りる
 INDEX = os.path.join(ROOT, 'index.html')
-BACKSTAGE = os.path.join(ROOT, '裏資料置き場.html')
+BACKSTAGE = os.path.join(ROOT, 'backstage.html')
 
 
 def compose(body_path, extra=''):

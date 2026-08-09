@@ -9,7 +9,7 @@
     OZAKEN_PW=… python3 registry.py sync
         資料の一覧を取り込み、鍵の本数を最新にする（未記録はそのまま残す）
 
-    OZAKEN_PW=… python3 registry.py set 05_推進/kiban-phase.html あいことば --to "みずほFG"
+    OZAKEN_PW=… python3 registry.py set 05_drive/kiban-phase.html あいことば --to "みずほFG"
         パスワードを記録する。実際にその資料が開くかを確かめてから書き込む
 
     OZAKEN_PW=… python3 registry.py list
@@ -32,7 +32,7 @@ sys.path.insert(0, HERE)
 import oz_root
 
 ROOT = oz_root.root(HERE)
-LEDGER = os.path.join(ROOT, 'パスワード台帳.html')
+LEDGER = os.path.join(ROOT, 'passwords.html')
 ITER = 200000
 
 
@@ -109,7 +109,7 @@ def save(pw, data):
     if os.path.exists(LEDGER):
         lockbox.encrypt(LEDGER, pw, inner)
     else:
-        tpl = os.path.join(ROOT, '裏資料置き場.html')
+        tpl = os.path.join(ROOT, 'backstage.html')
         lockbox.create(tpl, inner, LEDGER, [pw])
     assert lockbox.decrypt(LEDGER, pw) == inner, '書き戻しの確認に失敗しました'
 
@@ -239,7 +239,7 @@ __ROWS__
 
   <p class="note">
     この台帳は <code>.claude/skills/ozaken-shiryo/scripts/registry.py</code> が読み書きします。手で書き換えないでください。<br>
-    記録する：<code>OZAKEN_PW=… python3 registry.py set 05_推進/kiban-phase.html 合言葉 --to "共有先"</code><br>
+    記録する：<code>OZAKEN_PW=… python3 registry.py set 05_drive/kiban-phase.html 合言葉 --to "共有先"</code><br>
     資料を足したら：<code>OZAKEN_PW=… python3 registry.py sync</code><br>
     <a href="index.html">← AI資料アーカイブに戻る</a>
   </p>

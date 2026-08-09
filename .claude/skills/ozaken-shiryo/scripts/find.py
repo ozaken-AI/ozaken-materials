@@ -7,7 +7,7 @@
 
   OZAKEN_PW=… python3 find.py 暗黙知
   OZAKEN_PW=… python3 find.py 1クレジット --full       # 前後を長めに出す
-  OZAKEN_PW=… python3 find.py 予算 --in 05_推進        # 置き場所でしぼる
+  OZAKEN_PW=… python3 find.py 予算 --in 05_drive        # 置き場所でしぼる
   OZAKEN_PW=… python3 find.py ハルシネーション --heads   # 見出しだけを出す
 
 見出しの一覧が欲しいだけなら --heads が速い。

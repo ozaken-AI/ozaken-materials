@@ -1,5 +1,5 @@
 // 資料を「面」ごとにPNGで撮る。投影したときにどう見えるかは、絵で見ないと分からない。
-//   OZAKEN_PW=マスター node shot_secs.mjs 03_ツール・製品/foo.html [出力先ディレクトリ]
+//   OZAKEN_PW=マスター node shot_secs.mjs 03_tools/foo.html [出力先ディレクトリ]
 //
 // 図版だけを見る shot_figs.mjs と違い、こちらは1画面まるごと。
 // 背景色の移り変わり・文字の量・余白の詰まり具合を見るためのもの。

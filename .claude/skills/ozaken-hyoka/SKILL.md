@@ -101,7 +101,7 @@ MECEでない分類は、**その面だけでなく資料全体の信用を削�
 
 ```bash
 cd .claude/skills/ozaken-shiryo/scripts
-OZAKEN_PW=マスター python3 deck_stats.py 03_ツール・製品/foo.html
+OZAKEN_PW=マスター python3 deck_stats.py 03_tools/foo.html
 ```
 
 面ごとの 背景／文字量／カード数／図版のかたち／赤の数 が出る。
@@ -111,7 +111,7 @@ OZAKEN_PW=マスター python3 deck_stats.py 03_ツール・製品/foo.html
 ### 2. 見る
 
 ```bash
-OZAKEN_PW=マスター node shot_secs.mjs 03_ツール・製品/foo.html /tmp/secs
+OZAKEN_PW=マスター node shot_secs.mjs 03_tools/foo.html /tmp/secs
 ```
 
 表紙＋各面のPNGが出るので、**Readツールで1枚ずつ全部見る**。

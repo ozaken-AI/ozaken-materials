@@ -56,12 +56,12 @@ Apps Script は久しぶりに呼ばれると起動に数秒かかる。
 | 共通（`O29daisuki`） | まとめて何本も渡すとき |
 | 個別（`otter-lily-turtle` 形式） | 特定の資料を、特定の相手に渡すとき |
 
-個別パスワードは**パスワード台帳.html**（`pw` で開く）に載っている。
+個別パスワードは**passwords.html**（`pw` で開く）に載っている。
 共有先も記録できるので、「誰にどれを渡したか」が後から追える。
 
 ```bash
 OZAKEN_PW=マスター python3 .claude/skills/ozaken-shiryo/scripts/registry.py set \
-    05_推進/kiban-phase.html 合言葉 --to "みずほFG 8/6"
+    05_drive/kiban-phase.html 合言葉 --to "みずほFG 8/6"
 ```
 
 台帳だけは共通パスワードで開かない。全資料の鍵が載っているため。

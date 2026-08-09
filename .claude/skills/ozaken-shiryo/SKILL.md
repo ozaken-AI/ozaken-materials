@@ -73,7 +73,7 @@ fitz.open(path)[6].get_pixmap(dpi=170).save('/tmp/p7.png')   # Readツールで�
 cd .claude/skills/ozaken-shiryo/scripts
 OZAKEN_PW=マスター python3 find.py 暗黙知              # 全資料の本文からさがす
 OZAKEN_PW=マスター python3 find.py 1クレジット --full   # 前後を長めに出す
-OZAKEN_PW=マスター python3 find.py --heads --in 05_推進 # 見出しだけ一望する
+OZAKEN_PW=マスター python3 find.py --heads --in 05_drive # 見出しだけ一望する
 OZAKEN_PW=マスター python3 crossref.py map            # 概念と正典の対応
 ```
 
@@ -93,7 +93,7 @@ OZAKEN_PW=マスター python3 crossref.py map            # 概念と正典の�
 `crossref_data.py` に正典として登録する。以後、他の資料からそこへリンクが張られる。
 
 ```python
-'Copilot Credits': ('03_ツール・製品/copilot-credits.html',
+'Copilot Credits': ('03_tools/copilot-credits.html',
     ['Copilot Credit', 'クレジット'], '使った分だけ課金される仕組み'),
 ```
 
@@ -150,12 +150,18 @@ OZAKEN_PW=マスター python3 crossref.py map            # 概念と正典の�
 ```bash
 cd .claude/skills/ozaken-shiryo/scripts
 OZAKEN_PW=マスター python3 publish.py \
-    /tmp/body_foo.html 03_ツール・製品/foo.html \
+    /tmp/body_foo.html 03_tools/foo.html \
     --list "Foo入門 ─ 現場で効く3つの型"
 ```
 
 `--backstage` を付けると index ではなく裏資料置き場に載る。
 `--list` を省くと一覧に載せず、生成と台帳登録だけを行う。
+
+**出力先のパスは英語だけで書く。** URLをそのまま人に渡すので、
+日本語のファイル名だとシェアしたときに `%E7%94%9F%E6%88%90…` に化ける。
+フォルダは `NN_english`、ファイルは `lowercase-hyphen.html`。
+題を直訳せず、内容が分かる短い英語にする（`ai-coe.html` `agent-budget-taxi.html`）。
+すでにある資料と紛らわしいときは、末尾に `-v2` のような区別を足す。
 
 裏資料の置き場所は3つあり、**どのフォルダに出すかで載る節が決まる**。
 
@@ -181,7 +187,7 @@ OZAKEN_PW=マスター python3 publish.py \
 
 ```bash
 npm i playwright-core          # リポジトリ直下で一度だけ。ブラウザ本体は導入済み
-OZAKEN_PW=マスター node .claude/skills/ozaken-shiryo/scripts/shot_figs.mjs 03_ツール・製品/foo.html /tmp/figs
+OZAKEN_PW=マスター node .claude/skills/ozaken-shiryo/scripts/shot_figs.mjs 03_tools/foo.html /tmp/figs
 ```
 
 各図版のPNGが出るので、Readツールで1枚ずつ見る。見るべきは4点。
@@ -208,8 +214,8 @@ OZAKEN_PW=マスター node .claude/skills/ozaken-shiryo/scripts/shot_figs.mjs 0
 
 ```bash
 cd .claude/skills/ozaken-shiryo/scripts
-OZAKEN_PW=マスター python3 deck_stats.py 03_ツール・製品/foo.html    # 面ごとに数える
-OZAKEN_PW=マスター node shot_secs.mjs 03_ツール・製品/foo.html /tmp/secs  # 面ごとに撮る
+OZAKEN_PW=マスター python3 deck_stats.py 03_tools/foo.html    # 面ごとに数える
+OZAKEN_PW=マスター node shot_secs.mjs 03_tools/foo.html /tmp/secs  # 面ごとに撮る
 ```
 
 **★2以下が付いた軸は、直してから公開する。** 評価は出して終わりではない。
@@ -318,7 +324,7 @@ Copilot Credits 完全ガイド<br>「使った分だけ」が始まった
 - **共通** … 全資料に共通。まとめて渡すとき用
 - **個別** … その資料だけ。やさしい英単語3つ（`otter-lily-turtle`）
 
-`publish.py` が個別パスワードを生成し、**パスワード台帳.html**（マスター専用の暗号化ページ）に
+`publish.py` が個別パスワードを生成し、**passwords.html**（マスター専用の暗号化ページ）に
 記録する。台帳だけは共通パスワードで開かない。全資料の鍵が載っているため。
 
 ## 既存資料を直すとき
@@ -327,7 +333,7 @@ Copilot Credits 完全ガイド<br>「使った分だけ」が始まった
 
 ```bash
 OZAKEN_PW=マスター python3 .claude/skills/ozaken-shiryo/scripts/publish.py \
-    /tmp/body_foo.html 05_推進/foo.html --update
+    /tmp/body_foo.html 05_drive/foo.html --update
 ```
 
 `--update` は「組む → 検査 → 演出を注入 → `lockbox.encrypt` で書き戻す」。
@@ -356,9 +362,9 @@ index の「無料でプレゼント」に置くPDFは、**暗号化せず、HTM
 組み立てのソースは `99_assets/pdf-src/` に置く。あとで直せるようにするため。
 
 ```bash
-python3 99_assets/pdf-src/業務変革大全.py            # HTMLを書体フォルダに書き出す
+python3 99_assets/pdf-src/business-transformation-guide.py            # HTMLを書体フォルダに書き出す
 node .claude/skills/ozaken-shiryo/scripts/make_pdf.mjs \
-     /tmp/ozaken-ogp-fonts/bpt.html 04_活用・実践/業務変革大全.pdf
+     /tmp/ozaken-ogp-fonts/bpt.html 04_practice/business-transformation-guide.pdf
 ```
 
 **配布用PDFは、例外なく16:9（338.67mm × 190.5mm）で焼く。** 投影とスライド共有を
@@ -435,7 +441,7 @@ OZAKEN_PW=マスター python3 .claude/skills/ozaken-shiryo/scripts/apply_ogp.py
 その資料が正典になる概念があるなら、そこに登録する。
 
 ```python
-'Copilot Credits': ('03_ツール・製品/copilot-credits.html',
+'Copilot Credits': ('03_tools/copilot-credits.html',
     ['Copilot Credit', 'クレジット'], '使った分だけ課金される仕組み'),
 ```
 

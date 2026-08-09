@@ -1,5 +1,5 @@
 // 資料の図版を1点ずつPNGに撮る。文字のはみ出しは目で見ないと分からない。
-//   OZAKEN_PW=マスター node shot_figs.mjs 03_ツール・製品/foo.html [出力先ディレクトリ]
+//   OZAKEN_PW=マスター node shot_figs.mjs 03_tools/foo.html [出力先ディレクトリ]
 import path from 'path';
 import fs from 'fs';
 

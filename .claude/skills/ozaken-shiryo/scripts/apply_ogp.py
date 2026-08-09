@@ -45,25 +45,25 @@ SITE_NAME = 'おざけん 資料アーカイブ'
 DESC_MAX = 120
 
 # 台帳は中身が中身なので、題も概要も出さない
-SKIP = {'パスワード台帳.html'}
+SKIP = {'passwords.html'}
 
 # フォルダ名 → カードに出す小見出し
 CATS = {
-    '01_概念・思想': 'CONCEPT',
-    '02_技術・モデル動向': 'TECHNOLOGY',
-    '03_ツール・製品': 'PRODUCT',
-    '04_活用・実践': 'PRACTICE',
-    '05_推進': 'ADOPTION',
-    '06_キャリア・人材': 'CAREER',
-    '07_リスク・法務': 'RISK & LAW',
-    '08_業界別': 'INDUSTRY',
-    '09_職種別': 'FUNCTION',
+    '01_concept': 'CONCEPT',
+    '02_models': 'TECHNOLOGY',
+    '03_tools': 'PRODUCT',
+    '04_practice': 'PRACTICE',
+    '05_drive': 'ADOPTION',
+    '06_people': 'CAREER',
+    '07_risk': 'RISK & LAW',
+    '08_industry': 'INDUSTRY',
+    '09_role': 'FUNCTION',
     'AX_Table': 'AX TABLE',
     'Training': 'CORPORATE TRAINING',
     'index.html': 'PROFILE & ARCHIVE',
     'ask.html': 'Q & A',
-    '資料マトリクス.html': 'MATRIX',
-    '裏資料置き場.html': 'BACKSTAGE',
+    'matrix.html': 'MATRIX',
+    'backstage.html': 'BACKSTAGE',
 }
 
 

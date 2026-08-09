@@ -304,13 +304,13 @@ def cmd_matrix(hits, titles, bodies):
     ed = [(a, b, w, titles.get(a, a), titles.get(b, b)) for a, b, w in edges_of(hits)]
     page = crossref_page.build(rows, ed, datetime.date.today().isoformat())
 
-    out = os.path.join(ROOT, '資料マトリクス.html')
+    out = os.path.join(ROOT, 'matrix.html')
     if os.path.exists(out):
         # 鍵は作り直さない。配ってあるものが死ぬので
         lockbox.encrypt(out, PW, page)
     else:
         keys = [PW] + ([common] if common else [])
-        lockbox.create(os.path.join(ROOT, '裏資料置き場.html'), page, out, keys)
+        lockbox.create(os.path.join(ROOT, 'backstage.html'), page, out, keys)
     assert lockbox.decrypt(out, PW) == page
     print('資料マトリクスを更新しました（資料 %d 本 / 概念 %d 個 / つながり %d 本）'
           % (len(rows), len(CONCEPTS), len(ed)))
