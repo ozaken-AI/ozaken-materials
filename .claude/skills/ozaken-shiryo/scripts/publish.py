@@ -74,10 +74,11 @@ def compose(body_path, extra=''):
         if got is None:
             sys.exit('%s の注入に失敗しました' % mod.__name__)
         page = got
-    # 持ち帰りキットは、印がある資料にだけ入る（裏資料限定）。
+    # 持ち帰りキットと確認テストは、印がある資料にだけ入る（裏資料限定）。
     # 無ければ None が返るので、そのときは何もしない
-    import apply_kit
+    import apply_kit, apply_quiz
     page = apply_kit.patch(page) or page
+    page = apply_quiz.patch(page) or page
     os.path.exists(tmp) and os.remove(tmp)
     return page, summary
 
