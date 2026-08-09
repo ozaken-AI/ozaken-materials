@@ -1,19 +1,21 @@
 #!/usr/bin/env python3
-"""資料の中に、合言葉で開く確認テストを仕込む。──「秘密の確認テスト」
+"""資料の中に、隠しコマンドで開く確認テストを仕込む。──「秘密の確認テスト」
 
 **裏資料（企業講演・法人研修・AX Table）だけの機能。**
 表の解説資料は不特定多数が読むので、置かない。
 
-講演の最後に「合言葉は bunkai です」と伝えると、
+講演の最後に「画面を3回たたいてください」と伝えると、
 受講者は自分の端末で確認テストを開ける。研修の理解度が、
 その場で本人に返る。**スマートフォンだけで完結する**ように作ってある。
 
-開き方は3つ。どれも同じ扉に着く。
+**合言葉は置かない。** 開き方そのものが隠しコマンドなので、
+その上にもう一枚パスワードを挟むと、会場での説明が長くなるだけになる。
 
-  画面を3回たたく   スマートフォン向け。どこでもいい。指で3回。
-                    合言葉を入れる小窓が出る
-  合言葉を打つ      キーボードのある端末向け。どこにも触れずに打つだけで開く
-  URLに #test       メールで案内するとき用。開くと小窓が出た状態になる
+開き方は3つ。どれもそのままテストが始まる。
+
+  画面を3回たたく   スマートフォン向け。どこでもいい。指で3回
+  quiz と打つ       キーボードのある端末向け。どこにも触れずに打つだけ
+  URLに #test       あとからメールで案内するとき用
 
 テストは全画面で出る。1問ずつ、選んだ瞬間に正誤と解説が返り、
 最後に点数と「見直すならこのパート」が並ぶ。
@@ -21,7 +23,7 @@
 
 書き方（本文フラグメント側）：
 
-    <div class="quiz" data-word="bunkai" data-title="確認テスト"
+    <div class="quiz" data-title="確認テスト"
          data-sub="今日の90分が身についているか、5問で確かめます">
       <div class="qz-q" data-a="2" data-ref="パート1　AIの主語が変わった">
         <div class="qz-t">AIエージェントが、これまでのAIと違うのは？</div>
@@ -37,9 +39,6 @@
   data-ref  どのパートの話か。間違えたときに「見直す先」として出る
   qz-w      選んだあとに出る一言。なぜそうなのかを短く
   qz-res    点数ごとの講評。data-min 以上のときに出る（高いものが優先）
-
-合言葉は資料ごとに変える。打ちやすさを優先して、英小文字にする
-（スマートフォンの日本語入力を挟ませない）。
 """
 import glob
 import os
@@ -55,9 +54,9 @@ ROOT = oz_root.root(HERE)
 MARK = '<!-- OZ-QUIZ v1 -->'
 
 # 色と書体はトークンから取る。正誤の2色だけ、図版で使っている
-# TEAL / RED を扉の中の変数として置く
+# TEAL / RED を画面の中の変数として置く
 CSS = """
-/* OZ-QUIZ v1 ── 合言葉で開く確認テスト（裏資料限定） */
+/* OZ-QUIZ v1 ── 隠しコマンドで開く確認テスト（裏資料限定） */
 .quiz{display:none}
 .qz{--qz-ok:#2f8f8a;--qz-ng:#ff5d6a;
   position:fixed;inset:0;z-index:9000;display:none;
@@ -145,45 +144,18 @@ CSS = """
   .qz-opt{font-size:1.05rem;padding:1.05rem 1.1rem 1.05rem 3.2rem}
   .qz-why p{font-size:.94rem}
 }
-/* 合言葉の小窓 */
-.qzd{position:fixed;inset:0;z-index:9001;display:none;
-  align-items:center;justify-content:center;padding:1.2rem;
-  background:rgba(10,15,28,.72);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
-.qzd.on{display:flex}
-.qzd-box{width:min(360px,100%);padding:1.7rem 1.5rem 1.5rem;border-radius:18px;
-  text-align:center;color:#fff;background:var(--navy);
-  border:1px solid rgba(216,228,240,.24);box-shadow:0 24px 60px rgba(10,15,28,.5)}
-.qzd-box.shake{animation:qzshake .42s}
-@keyframes qzshake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}
-  40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
-.qzd-t{font-family:var(--font-ja-serif);font-size:1.08rem;font-weight:600;margin-bottom:.4rem}
-.qzd-s{font-size:.79rem;line-height:1.8;color:rgba(216,228,240,.72);margin-bottom:1.1rem}
-.qzd input{width:100%;text-align:center;font-family:var(--font-en);
-  font-size:1.15rem;letter-spacing:.14em;color:var(--ink);background:#fff;
-  border:1px solid rgba(216,228,240,.4);border-radius:11px;padding:.72rem .8rem}
-.qzd input:focus{outline:2px solid var(--azure-pale);outline-offset:1px}
-.qzd-bar{display:flex;gap:.55rem;margin-top:.9rem}
-.qzd-bar button{flex:1;font-family:var(--font-ja-sans);font-size:.86rem;font-weight:700;
-  border-radius:999px;padding:.78em 1em;cursor:pointer;border:0;
-  -webkit-tap-highlight-color:transparent}
-.qzd-bar .go{color:var(--navy-deep);background:var(--azure-pale)}
-.qzd-bar .no{color:rgba(216,228,240,.85);background:transparent;
-  border:1px solid rgba(216,228,240,.35)}
 body.qz-lock{overflow:hidden}
-@media print{.qz,.qzd{display:none !important}}
+@media print{.qz{display:none !important}}
 /* /OZ-QUIZ */
 """
 
 JS = """
 <script>
-/* 確認テスト：合言葉で開く。点数はこの端末の中（localStorage）だけに残る */
+/* 確認テスト：隠しコマンドで開く。点数はこの端末の中（localStorage）だけに残る */
 (function(){
   var src = document.querySelector('.quiz');
   if (!src) return;
 
-  var WORD = (src.getAttribute('data-word') || '').toLowerCase();
-  var TITLE = src.getAttribute('data-title') || '確認テスト';
-  var SUB = src.getAttribute('data-sub') || '';
   var KEY = 'ozquiz:' + location.pathname;
 
   var QS = [].slice.call(src.querySelectorAll('.qz-q')).map(function(q){
@@ -345,74 +317,37 @@ JS = """
     pane.appendChild(out);
   }
 
-  /* ── 合言葉の小窓 ───────────────────────────────────── */
-  var door = el('div', 'qzd');
-  var box = el('div', 'qzd-box');
-  box.appendChild(el('p', 'qzd-t', TITLE));
-  box.appendChild(el('p', 'qzd-s', SUB || '合言葉を入れてください'));
-  var inp = document.createElement('input');
-  inp.type = 'text';
-  inp.placeholder = 'あいことば';
-  inp.setAttribute('autocapitalize', 'off');
-  inp.setAttribute('autocorrect', 'off');
-  inp.setAttribute('autocomplete', 'off');
-  inp.setAttribute('spellcheck', 'false');
-  box.appendChild(inp);
-  var dbar = el('div', 'qzd-bar');
-  var no = el('button', 'no', 'とじる');
-  var yes = el('button', 'go', 'はじめる');
-  dbar.appendChild(no); dbar.appendChild(yes);
-  box.appendChild(dbar);
-  door.appendChild(box);
-  document.body.appendChild(door);
-
-  function knock(){
-    door.classList.add('on');
-    inp.value = '';
-    setTimeout(function(){ inp.focus(); }, 60);
-  }
-  function unknock(){ door.classList.remove('on'); }
-  function tryWord(){
-    if (inp.value.trim().toLowerCase() === WORD){ unknock(); open(); return; }
-    box.classList.remove('shake');
-    void box.offsetWidth;                      // アニメーションを取り直す
-    box.classList.add('shake');
-    inp.select();
-  }
-  yes.addEventListener('click', tryWord);
-  no.addEventListener('click', unknock);
-  inp.addEventListener('keydown', function(e){ if (e.key === 'Enter') tryWord(); });
-  door.addEventListener('click', function(e){ if (e.target === door) unknock(); });
-
   /* ── 開け方は3つ ────────────────────────────────────── */
   // ① 画面を3回たたく（スマートフォン向け。どこでもいい）
   var taps = 0, last = 0;
   document.addEventListener('click', function(e){
-    if (qz.classList.contains('on') || door.classList.contains('on')) return;
-    if (e.target.closest('a,button,input,textarea,select,label,.kit')) return;
+    if (qz.classList.contains('on')) return;
+    if (e.target.closest('a,button,input,textarea,select,label,.kit,.qrv')) return;
     var now = e.timeStamp || 0;
-    taps = (now - last < 1200) ? taps + 1 : 1;
+    taps = (now - last < 900) ? taps + 1 : 1;      // words を選ぶ操作と紛れない程度に短く
     last = now;
     if (taps >= 3){
       taps = 0;
       if (window.getSelection) { try { window.getSelection().removeAllRanges(); } catch(err){} }
-      knock();
+      open();
     }
   });
 
-  // ② 合言葉をそのまま打つ（キーボードのある端末向け）
+  // ② quiz と打つ（キーボードのある端末向け）
+  //    「test」は使えない。apply_keynav が st を投影画面のショートカットに
+  //    使っているので、打った途中で index へ飛んでしまう
   var buf = '';
   document.addEventListener('keydown', function(e){
-    if (e.key === 'Escape'){ unknock(); close(); return; }
+    if (e.key === 'Escape'){ close(); return; }
     var t = e.target.tagName;
     if (t === 'INPUT' || t === 'TEXTAREA' || t === 'SELECT') return;
     if (e.key.length !== 1) return;
-    buf = (buf + e.key.toLowerCase()).slice(-24);
-    if (WORD && buf.indexOf(WORD) >= 0){ buf = ''; unknock(); open(); }
+    buf = (buf + e.key.toLowerCase()).slice(-8);
+    if (buf.indexOf('quiz') >= 0){ buf = ''; open(); }
   });
 
-  // ③ URLに #test を付けて開く（メールで案内するとき用）
-  if (/^#(test|quiz)$/i.test(location.hash)) setTimeout(knock, 400);
+  // ③ URLに #test を付けて開く（あとから案内するとき用）
+  if (/^#(test|quiz)$/i.test(location.hash)) setTimeout(open, 400);
 })();
 </script>
 """
@@ -455,24 +390,22 @@ def targets():
             yield f
 
 
-def words(pw):
-    """どの資料の合言葉が何か。おざけんが講演の最後に読み上げるための一覧"""
+def listing(pw):
+    """どの資料に何問入っているか。仕込み忘れの確認に"""
     out = []
     for f in targets():
         inner = lockbox.decrypt(f, pw)
-        m = re.search(r'<div class="quiz"[^>]*data-word="([^"]+)"', inner)
-        if not m:
-            continue
         n = len(re.findall(r'class="qz-q"', inner))
-        out.append((os.path.relpath(f, ROOT), m.group(1), n))
+        if n:
+            out.append((os.path.relpath(f, ROOT), n))
     return out
 
 
 if __name__ == '__main__':
     pw = os.environ.get('OZAKEN_PW') or sys.exit('OZAKEN_PW を設定してください')
-    if len(sys.argv) > 1 and sys.argv[1] == 'words':
-        for rel, w, n in words(pw):
-            print('%-40s %-12s %d問' % (rel, w, n))
+    if len(sys.argv) > 1 and sys.argv[1] == 'list':
+        for rel, n in listing(pw):
+            print('%-40s %d問' % (rel, n))
         sys.exit()
 
     fresh = len(sys.argv) > 1 and sys.argv[1] == 'refresh'
