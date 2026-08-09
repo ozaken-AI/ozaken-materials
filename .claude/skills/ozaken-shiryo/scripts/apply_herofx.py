@@ -345,7 +345,7 @@ def targets():
     for d in sorted(glob.glob(os.path.join(ROOT, '0*_*'))):
         for f in sorted(glob.glob(os.path.join(d, '*.html'))):
             yield f
-    for d in ('AX_Table', 'Training'):        # 裏資料の置き場は2つ
+    for d in oz_root.BACKSTAGE_DIRS:
         for f in sorted(glob.glob(os.path.join(ROOT, d, '*.html'))):
             yield f
     for f in sorted(glob.glob(os.path.join(ROOT, '*.html'))):

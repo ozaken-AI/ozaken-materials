@@ -36,7 +36,7 @@ JS = """
     if (a) return a.getAttribute('href');
     var seg = location.pathname.split('/');
     var dir = decodeURIComponent(seg[seg.length - 2] || '');
-    return /^(0\\d_|AX_Table|Training)/.test(dir) ? '../index.html' : 'index.html';
+    return /^(0\\d_|AX_Table|Training|Udemy)/.test(dir) ? '../index.html' : 'index.html';
   }
   /* 裏資料の隠しコマンドは、この2文字を内側に含んでしまう。
      test の st で待機画面へ飛ばれると、テストが永久に開けない。
@@ -73,7 +73,7 @@ def targets():
     for d in sorted(glob.glob(os.path.join(ROOT, '0*_*'))):
         for f in sorted(glob.glob(os.path.join(d, '*.html'))):
             yield f
-    for d in ('AX_Table', 'Training'):        # 裏資料の置き場は2つ
+    for d in oz_root.BACKSTAGE_DIRS:
         for f in sorted(glob.glob(os.path.join(ROOT, d, '*.html'))):
             yield f
     for f in sorted(glob.glob(os.path.join(ROOT, '*.html'))):

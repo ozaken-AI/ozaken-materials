@@ -73,7 +73,8 @@ def docs():
     for d in sorted(glob.glob(os.path.join(ROOT, '0*_*'))):
         out += sorted(glob.glob(os.path.join(d, '*.html')))
     out += sorted(glob.glob(os.path.join(ROOT, 'AX_Table', '*.html')))
-    out += sorted(glob.glob(os.path.join(ROOT, 'Training', '*.html')))
+    for d in oz_root.BACKSTAGE_DIRS[1:]:      # AX_Table は上で拾っている
+        out += sorted(glob.glob(os.path.join(ROOT, d, '*.html')))
     out += [f for f in sorted(glob.glob(os.path.join(ROOT, '*.html')))
             if os.path.basename(f) not in ('index.html', 'ask.html',
                                            os.path.basename(LEDGER))]

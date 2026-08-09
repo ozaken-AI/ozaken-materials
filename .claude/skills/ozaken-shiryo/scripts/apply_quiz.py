@@ -386,7 +386,7 @@ def patch(html):
 
 
 def targets():
-    for d in ('AX_Table', 'Training'):
+    for d in oz_root.BACKSTAGE_DIRS:
         for f in sorted(glob.glob(os.path.join(ROOT, d, '*.html'))):
             yield f
 

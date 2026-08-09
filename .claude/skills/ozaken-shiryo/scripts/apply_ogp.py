@@ -60,6 +60,7 @@ CATS = {
     '09_role': 'FUNCTION',
     'AX_Table': 'AX TABLE',
     'Training': 'CORPORATE TRAINING',
+    'Udemy': 'ONLINE COURSE',
     'index.html': 'PROFILE & ARCHIVE',
     'ask.html': 'Q & A',
     'matrix.html': 'MATRIX',
@@ -79,7 +80,10 @@ def targets():
     out = []
     for d in sorted(os.listdir(ROOT)):
         p = os.path.join(ROOT, d)
-        if not os.path.isdir(p) or not re.match(r'^(0\d_|AX_|Training$)', d):
+        # 表の分類フォルダ（01_… 〜 09_…）と、裏資料の置き場だけ
+        if not os.path.isdir(p):
+            continue
+        if not (re.match(r'^0\d_', d) or d in oz_root.BACKSTAGE_DIRS):
             continue
         for f in sorted(os.listdir(p)):
             if f.endswith('.html'):

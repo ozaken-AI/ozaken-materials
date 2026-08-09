@@ -128,7 +128,14 @@ def add_to_index(rel, label):
 
 
 SPOT_HEAD = 'スポット講演・セミナー'
-TRAIN_HEAD = '法人研修'          # Training/ に置いた資料は、こちらの節へ
+
+# 置き場のフォルダ → 裏資料置き場の節。ここに無いフォルダはスポット講演へ
+BACKSTAGE_SECTIONS = {
+    'Training': ('法人研修', 'Corporate Training',
+                 '企業向けの研修カリキュラム案と、当日の進行資料です。'),
+    'Udemy':    ('Udemy講座', 'Online Course',
+                 'オンライン講座の教材です。受講者がいつでも開ける前提で組んでいます。'),
+}
 
 
 def retone(inner):
@@ -185,9 +192,10 @@ def add_to_backstage(rel, label, pw):
             '<p>開いて <b>qr</b> と打つと、共有用のQRとパスワードが出ます</p></div>\n'
             % (href, label))
 
-    # 置き場所で節を選ぶ。Training/ は法人研修、それ以外はスポット講演
-    train = rel.startswith('Training/')
-    head = TRAIN_HEAD if train else SPOT_HEAD
+    # 置き場所で節を選ぶ。表の分類フォルダに置いたものはスポット講演へ
+    d = rel.split('/')[0]
+    head, eyebrow, sub = BACKSTAGE_SECTIONS.get(
+        d, (SPOT_HEAD, 'Spot Sessions', '単発の講演・セミナー用に組んだ資料です。'))
 
     if head in inner:
         i = inner.find(head)
@@ -201,10 +209,6 @@ def add_to_backstage(rel, label, pw):
         # 差してから、この節の中だけ番号を振り直す
         inner = inner[:k] + renumber(card + inner[k:e]) + inner[e:]
     else:
-        eyebrow, sub = (
-            ('Corporate Training', '企業向けの研修カリキュラム案と、当日の進行資料です。')
-            if train else
-            ('Spot Sessions', '単発の講演・セミナー用に組んだ資料です。'))
         sub += '各ページで qr と打つと、共有用のQRと個別パスワードが出ます。'
         sec = ('<section class="sec-light" data-bg="1">\n  <div class="inner" data-reveal>\n'
                '    <span class="eyebrow">%s</span>\n'
@@ -251,6 +255,13 @@ def main():
     if a.update:
         if not os.path.exists(out):
             sys.exit('%s がありません。新規なら --update を外してください。' % rel)
+        # 会場に見せるQR画面は本文フラグメントに無いので、組み直すと消える。
+        # 台帳に個別パスワードがあるものには、ここで入れ直す（実際に一度消した）
+        import apply_qr
+        row = registry.load(m).get(rel) or {}
+        if row.get('pw'):
+            got = apply_qr.patch(page, rel, row.get('title', rel), row['pw'])
+            page = got or page
         lockbox.encrypt(out, m, page)
         assert lockbox.decrypt(out, m) == page
         import apply_ogp

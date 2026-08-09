@@ -31,3 +31,9 @@ def find(start):
 def root(start=None):
     return os.environ.get('OZAKEN_ROOT') or find(start or os.path.dirname(
         os.path.abspath(__file__)))
+
+
+# 裏資料の置き場。ここを増やすと、走査するすべての道具が追随する。
+# 昔は8本のスクリプトに同じ2つ組を書いていて、
+# Training を足したときに5本で for 文の中身を消す事故を起こした。
+BACKSTAGE_DIRS = ('AX_Table', 'Training', 'Udemy')
