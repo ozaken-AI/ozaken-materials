@@ -102,6 +102,16 @@ def gen_pw():
     return '-'.join(secrets.choice(WORDS) for _ in range(3))
 
 
+def check_pw_word(pw, m):
+    """個別パスワードに使える形か。会場で読み上げて、スマホで打たれる前提"""
+    if not re.fullmatch(r'[a-z]{4,10}', pw):
+        sys.exit('個別パスワードは小文字の英字4〜10文字にしてください: ' + pw)
+    used = {v.get('pw') for k, v in registry.load(m).items() if k != '_meta'}
+    if pw in used:
+        sys.exit('その個別パスワードは、すでに別の資料が使っています: ' + pw)
+    return pw
+
+
 def add_to_index(rel, label):
     """同じ分類のリストの末尾に足す。分類が無ければ何もしない"""
     cat = rel.split('/')[0]
@@ -219,6 +229,9 @@ def main():
     ap.add_argument('--list', dest='label', default='')
     ap.add_argument('--backstage', action='store_true')
     ap.add_argument('--to', default='')
+    ap.add_argument('--pw', default='',
+                    help='個別パスワード。裏資料では必ず資料の芯になる1語を渡す'
+                         '（bunkai / soshiki / roadmap のように、小文字の英字だけ）')
     ap.add_argument('--extra-css', default='')
     ap.add_argument('--update', action='store_true',
                     help='既存資料の本文を差し替える（鍵は維持）')
@@ -247,8 +260,18 @@ def main():
         print('題や概要を変えたなら: OZAKEN_PW=… python3 apply_ogp.py cards')
         return
 
-    # 4) 3本鍵で暗号化
-    pw = gen_pw()
+    # 4) 3本鍵で暗号化。
+    #    **裏資料の個別パスワードは、その資料の芯になる1語にする。**
+    #    会場で読み上げ、聴いている人がスマホで打つ。ランダムな文字列だと
+    #    必ず聞き返されるし、打ち間違えても本人が気づけない。
+    #    1語にしておくと、打つこと自体がその日の主題の復唱になる
+    if a.pw:
+        pw = check_pw_word(a.pw, m)
+    elif a.backstage:
+        sys.exit('裏資料には --pw で1語のパスワードを付けてください'
+                 '（例: --pw bunkai）。会場で読み上げるためのものです。')
+    else:
+        pw = gen_pw()
     lockbox.create(TPL, page, out, [m, common(), pw])
     for k in (m, common(), pw):
         assert lockbox.decrypt(out, k) == page, '鍵の確認に失敗: ' + k
