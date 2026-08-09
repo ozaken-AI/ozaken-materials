@@ -441,6 +441,21 @@ node .claude/skills/ozaken-shiryo/scripts/make_pdf.mjs \
      /tmp/ozaken-ogp-fonts/bpt.html 04_practice/business-transformation-guide.pdf
 ```
 
+**配布物は、資料の中からダウンロードできるようにする。** `page_parts.dl()` が
+「FREE DOWNLOAD」の枠を出す。CTAボタン（`btn-primary`）は `check()` に弾かれるので使わない。
+
+```python
+from page_parts import dl
+A(sec(..., fig=図版 + dl('career-strategy-worksheet.pdf',
+                        'ワークシート（A4・4ページ）', '説明。')))
+```
+
+**リンク先のPDFは、暗号の外に置かれる。** 資料そのものは鍵で守られるが、
+PDFは公開URLで誰でも取れる。だから**個別パスワードを刷った紙をここに置かない**。
+配るなら2種類焼く ── 公開版（パスワードなし・「講座の中でお伝えします」）と、
+配布版（パスワードあり・Udemyの教材リソースや当日配布に使う）。
+`99_assets/pdf-src/career-worksheet.py` が両方を書き出す例。
+
 **書き込むワークシートだけは A4縦（`a4p`）で焼く。** 投影物ではなく、
 印刷して手で書くもの。横長の紙に手書きの欄を並べても、実際には使われない。
 `99_assets/pdf-src/career-worksheet.py` が例。**表紙にQRと個別パスワードを載せる**と、

@@ -23,6 +23,27 @@ EXTRA_CSS = """
   padding:2px 8px;border-radius:4px;margin-right:.5em;vertical-align:middle}
 .sec-navy .mth{color:#fff;background:rgba(255,255,255,.18)}
 .num{font-family:var(--font-en);font-weight:700;font-size:1.06em;letter-spacing:.02em}
+/* 配布物のダウンロード。CTAボタンではなく「資料に挟まれた配り物」として置く */
+.dl{display:flex;flex-wrap:wrap;align-items:center;gap:1.1rem;
+  margin:2.2rem 0 0;padding:1.4rem 1.5rem;border-radius:16px;
+  border:1px solid var(--azure-pale);background:rgba(46,84,150,.05)}
+.sec-navy .dl{border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.06)}
+.dl-body{flex:1 1 300px}
+.dl-tag{display:inline-block;font-family:var(--font-en);font-size:.6rem;font-weight:700;
+  letter-spacing:.16em;color:var(--navy-deep);background:var(--azure-pale);
+  padding:3px 9px;border-radius:999px;margin-bottom:.5rem}
+.dl h3{font-family:var(--font-ja-serif);font-size:1.08rem;font-weight:600;
+  color:var(--ink);margin-bottom:.25rem}
+.sec-navy .dl h3{color:#fff}
+.dl p{font-size:.82rem;line-height:1.85;color:var(--muted)}
+.sec-navy .dl p{color:rgba(255,255,255,.72)}
+.dl-go{flex:none;font-family:var(--font-ja-sans);font-size:.86rem;font-weight:700;
+  text-decoration:none;color:var(--azure);border:1px solid var(--azure);
+  border-radius:999px;padding:.72em 1.5em;transition:background .2s ease,color .2s ease}
+.dl-go:hover{background:var(--azure);color:#fff}
+.sec-navy .dl-go{color:var(--azure-pale);border-color:var(--azure-pale)}
+.sec-navy .dl-go:hover{background:var(--azure-pale);color:var(--navy-deep)}
+@media print{.dl-go{display:none}}
 """
 
 # 表紙の奥に薄く敷く格子と星座。地の色そのものは apply_herofx が当てる
@@ -35,6 +56,20 @@ HERO_TEXTURE = """  <div class="texture" aria-hidden="true">
     </svg>
   </div>
 """
+
+
+def dl(href, title, note, label='PDFをダウンロード', tag='FREE DOWNLOAD'):
+    """配布物のダウンロード。書き込むワークシートのように、
+    資料を見ながら手を動かすものを渡すときに置く。
+
+    **リンク先は暗号の外に置かれる。** 資料そのものは鍵で守られるが、
+    ここに置くPDFは公開URLで誰でも取れる。パスワードを刷り込んだ紙は置かない。
+    """
+    return ('<div class="dl">\n  <div class="dl-body">\n'
+            '    <span class="dl-tag">%s</span>\n'
+            '    <h3>%s</h3>\n    <p>%s</p>\n  </div>\n'
+            '  <a class="dl-go" href="%s" download>%s</a>\n</div>\n'
+            % (tag, esc(title), note, href, esc(label)))
 
 
 def cards(items, raw_head=True):

@@ -2,8 +2,13 @@
 """Udemy講座『AIエージェント時代のキャリア戦略』のワークシート（A4縦・4ページ）。
 
   python3 99_assets/pdf-src/career-worksheet.py
-  node .claude/skills/ozaken-shiryo/scripts/make_pdf.mjs \\
-       /tmp/ozaken-ogp-fonts/career-worksheet.html /tmp/career-worksheet.pdf a4p
+  node …/make_pdf.mjs /tmp/ozaken-ogp-fonts/career-worksheet.html      公開版.pdf a4p
+  node …/make_pdf.mjs /tmp/ozaken-ogp-fonts/career-worksheet-pw.html   配布版.pdf a4p
+
+**2種類を焼く。**
+  公開版  資料ページのダウンロードボタンから配る。**個別パスワードを刷らない。**
+          リンク先は暗号の外に置かれるので、誰でも取れる。パスワードを載せると鍵が漏れる
+  配布版  Udemyの教材リソースや、研修の当日配布に使う。パスワードを刷ってある
 
 **16:9で焼かない。** 講座のPDFは投影物なので16:9だが、これは印刷して手で書くもの。
 横長の紙に手書きの欄を並べても、実際には使われない。
@@ -29,7 +34,8 @@ URL = 'https://ozaken-ai.github.io/ozaken-materials/Udemy/career-strategy.html'
 PW = 'yoroi'
 
 FONTS = '/tmp/ozaken-ogp-fonts'
-OUT = os.path.join(FONTS, 'career-worksheet.html')
+OUT = os.path.join(FONTS, 'career-worksheet.html')          # 公開版
+OUT_PW = os.path.join(FONTS, 'career-worksheet-pw.html')    # 配布版（パスワードあり）
 
 CSS = """
 @font-face{font-family:'ZK';src:url('ZenKakuGothicNew-Medium.ttf')format('truetype');font-weight:500}
@@ -115,7 +121,10 @@ FOOT = ('<div class="foot"><span>AIエージェント時代のキャリア戦略
         '<span>OZAKEN / AICX %s</span></div>')
 
 
-def cover():
+def cover(with_pw):
+    key = (f'<p class="pw">PASSWORD　<b>{PW}</b></p>' if with_pw else
+           '<p class="pw">PASSWORD　<b style="font-size:9pt;letter-spacing:.02em">'
+           '講座の中でお伝えします</b></p>')
     return f'''<div class="page cover">
   <span class="tag">WORKSHEET ─ 4 PAGES</span>
   <h1>AIエージェント時代の<br>キャリア戦略 ワークシート</h1>
@@ -138,7 +147,7 @@ def cover():
         <b>URLは変わりません</b>ので、ブックマークしておけば、いつ開いても最新の数字になっています。
         このワークシートの設問は、数字が変わっても使えるように作ってあります。</p>
       <p class="url">{URL}</p>
-      <p class="pw">PASSWORD　<b>{PW}</b></p>
+      {key}
     </div>
   </div>
   {FOOT % 'COVER'}
@@ -250,11 +259,14 @@ def work3():
 </div>'''
 
 
-HTML = ('<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">'
-        '<title>AIエージェント時代のキャリア戦略 ワークシート</title>'
-        '<style>%s</style></head><body>%s</body></html>'
-        % (CSS, cover() + work1() + work2() + work3()))
+def build(with_pw):
+    return ('<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">'
+            '<title>AIエージェント時代のキャリア戦略 ワークシート</title>'
+            '<style>%s</style></head><body>%s</body></html>'
+            % (CSS, cover(with_pw) + work1() + work2() + work3()))
+
 
 os.makedirs(FONTS, exist_ok=True)
-open(OUT, 'w', encoding='utf-8').write(HTML)
-print('書きました:', OUT)
+open(OUT, 'w', encoding='utf-8').write(build(False))
+open(OUT_PW, 'w', encoding='utf-8').write(build(True))
+print('書きました:\n  公開版 %s\n  配布版 %s' % (OUT, OUT_PW))
