@@ -721,6 +721,125 @@ def fig_stairs(steps, title, cap, dark=False, note=None):
 
 
 # ------------------------------------------------------------------
+# F27  次元で見せる段階（点 → 線 → 面 → 立体）
+# ------------------------------------------------------------------
+def fig_dims(steps, title, cap, dark=False, note=None, split=1,
+             axis=('人が段取りを決める', 'AIが自分で決める'),
+             axis_title='段取りと目標を、誰がどこまで決めるか',
+             band=('使う ── プロンプトが主役', '任せる ── 設計と監督が主役')):
+    """steps: [(段階の表記, 形の種類, 名前, 製品, 説明, 差し色index)]
+
+    形の種類は dot / line / chain / plane / cube。**その次元の図形を実際に描く。**
+    「点→線→面→立体」は0次元から3次元になぞらえた比喩なので、
+    棒の高さで表すより、点・線・面・立方体をそのまま出したほうが一瞬で伝わる。
+
+    split は「使う」と「任せる」の境目（この番号の手前で切る）。
+    下の帯は、段取りを決めるのが人からAIへ移っていく度合いを示す。
+    """
+    fg = WHITE if dark else INK
+    sub = 'rgba(255,255,255,.62)' if dark else MUTED
+    edge = 'rgba(255,255,255,.18)' if dark else 'rgba(46,84,150,.2)'
+    card = 'rgba(255,255,255,.06)' if dark else WHITE
+    acc = accents(dark)
+    n = len(steps)
+    gap = 14
+    w = int((868 - (n - 1) * gap) / n)
+    GTOP, GH = 62, 112
+    yb = GTOP + GH
+    parts = []
+
+    def glyph(kind, cx, cy, c):
+        o = []
+        if kind == 'dot':
+            o.append('<circle cx="%d" cy="%d" r="9" fill="%s"/>' % (cx, cy, c))
+        elif kind == 'line':
+            o.append('<line x1="%d" y1="%d" x2="%d" y2="%d" stroke="%s" '
+                     'stroke-width="2.5"/>' % (cx - 30, cy, cx + 30, cy, c))
+            for dx in (-30, 30):
+                o.append('<circle cx="%d" cy="%d" r="7" fill="%s"/>' % (cx + dx, cy, c))
+        elif kind == 'chain':
+            xs = [cx - 45, cx - 15, cx + 15, cx + 45]
+            o.append('<polyline points="%s" fill="none" stroke="%s" stroke-width="2.5"/>'
+                     % (' '.join('%d,%d' % (x, cy) for x in xs), c))
+            for x in xs:
+                o.append('<circle cx="%d" cy="%d" r="6" fill="%s"/>' % (x, cy, c))
+        elif kind == 'plane':
+            o.append('<rect x="%d" y="%d" width="76" height="52" rx="3" fill="%s" '
+                     'fill-opacity=".16" stroke="%s" stroke-width="2"/>'
+                     % (cx - 38, cy - 26, c, c))
+            for dx in (-38 + 25, -38 + 50):
+                o.append('<line x1="%d" y1="%d" x2="%d" y2="%d" stroke="%s" '
+                         'stroke-width="1" stroke-opacity=".55"/>'
+                         % (cx + dx, cy - 26, cx + dx, cy + 26, c))
+            o.append('<line x1="%d" y1="%d" x2="%d" y2="%d" stroke="%s" '
+                     'stroke-width="1" stroke-opacity=".55"/>'
+                     % (cx - 38, cy, cx + 38, cy, c))
+            for dx in (-13, 12):
+                for dy in (-13, 13):
+                    o.append('<circle cx="%d" cy="%d" r="3.5" fill="%s"/>'
+                             % (cx + dx, cy + dy, c))
+        elif kind == 'cube':
+            top = '%d,%d %d,%d %d,%d %d,%d' % (cx - 34, cy - 12, cx, cy - 34,
+                                               cx + 34, cy - 12, cx, cy + 10)
+            left = '%d,%d %d,%d %d,%d %d,%d' % (cx - 34, cy - 12, cx, cy + 10,
+                                                cx, cy + 38, cx - 34, cy + 16)
+            right = '%d,%d %d,%d %d,%d %d,%d' % (cx + 34, cy - 12, cx, cy + 10,
+                                                 cx, cy + 38, cx + 34, cy + 16)
+            for pts, op in ((left, '.16'), (right, '.30'), (top, '.46')):
+                o.append('<polygon points="%s" fill="%s" fill-opacity="%s" '
+                         'stroke="%s" stroke-width="1.6" stroke-linejoin="round"/>'
+                         % (pts, c, op, c))
+        return ''.join(o)
+
+    bx = 16 + split * (w + gap) - gap / 2.0        # 「使う」と「任せる」の境目
+    parts.append('<text x="16" y="34" fill="%s" font-size="10.5" font-weight="700" '
+                 'letter-spacing="1.4">%s</text>' % (sub, esc(band[0])))
+    parts.append('<text x="%.1f" y="34" fill="%s" font-size="10.5" font-weight="700" '
+                 'letter-spacing="1.4">%s</text>' % (bx + 12, fg, esc(band[1])))
+    parts.append('<line x1="16" y1="44" x2="%.1f" y2="44" stroke="%s" stroke-width="1"/>'
+                 % (bx - 12, edge))
+    parts.append('<line x1="%.1f" y1="44" x2="884" y2="44" stroke="%s" stroke-width="1.8"/>'
+                 % (bx + 12, PALE if dark else AZURE))
+    parts.append('<line x1="%.1f" y1="20" x2="%.1f" y2="%d" stroke="%s" '
+                 'stroke-width="1" stroke-dasharray="4 5" class="a-flow"/>'
+                 % (bx, bx, yb + 198, edge))
+
+    for i, (lv, kind, name, prod, desc, ai) in enumerate(steps):
+        c = acc[ai % len(acc)]
+        x = 16 + i * (w + gap)
+        parts.append('<rect x="%d" y="%d" width="%d" height="%d" rx="12" fill="%s" '
+                     'stroke="%s" stroke-width="1"/>' % (x, GTOP, w, GH, card, edge))
+        parts.append(glyph(kind, x + w // 2, GTOP + GH // 2, c))
+        parts.append('<text x="%d" y="%d" fill="%s" font-size="10" font-weight="700" '
+                     'letter-spacing="1.6">%s</text>' % (x + 2, yb + 26, c, esc(lv)))
+        parts.append(lines(name, x + 2, yb + 52, 10, 20, fill=fg, font_size='15',
+                           font_weight='700'))
+        parts.append(lines(desc, x + 2, yb + 100, 15, 15, fill=sub, font_size='10.5'))
+        parts.append(lines(prod, x + 2, yb + 152, 16, 14, fill=c, font_size='10',
+                           font_weight='700'))
+
+    ay = yb + 206
+    parts.append('<text x="16" y="%d" fill="%s" font-size="10" font-weight="700" '
+                 'letter-spacing="1.4">%s</text>' % (ay - 10, sub, esc(axis_title)))
+    for i in range(n):
+        x = 16 + i * (w + gap)
+        parts.append('<rect x="%d" y="%d" width="%d" height="9" rx="4.5" fill="%s" '
+                     'fill-opacity="%.2f" class="a-grow"/>'
+                     % (x, ay, w, PALE if dark else AZURE, .22 + i * .17))
+    parts.append('<text x="16" y="%d" fill="%s" font-size="10.5">%s</text>'
+                 % (ay + 28, sub, esc(axis[0])))
+    parts.append('<text x="884" y="%d" fill="%s" font-size="10.5" text-anchor="end">%s</text>'
+                 % (ay + 28, sub, esc(axis[1])))
+    h = ay + 52
+    if note:
+        parts.append(lines(note, 16, h + 4, 78, 16, fill=sub, font_size='10.5'))
+        h += 26
+    return _fig(title, cap,
+        '<svg viewBox="0 0 900 %d" xmlns="http://www.w3.org/2000/svg" role="img">'
+        '%s</svg>' % (h, ''.join(parts)))
+
+
+# ------------------------------------------------------------------
 # F15  3カラム（並列の概念を、色分けして並べる）
 # ------------------------------------------------------------------
 def fig_cols(items, title, cap, dark=False):
