@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Udemy講座『AIエージェント時代のキャリア戦略』のワークシート（A4縦・4ページ）。
+"""Udemy講座『AIエージェント時代のキャリア戦略』のワークシート（A4縦・6ページ）。
 
   python3 99_assets/pdf-src/career-worksheet.py
   node …/make_pdf.mjs /tmp/ozaken-ogp-fonts/career-worksheet.html      公開版.pdf a4p
@@ -16,12 +16,17 @@
 **書体は file:// で読ませるので、HTMLは書体フォルダの中に書き出す。**
 書体は apply_ogp.py の fonts() が /tmp/ozaken-ogp-fonts に用意する。
 
-中身は講座の3つの図版と1対1で対応させている。
-  ワーク1 → Fig.7  目的の四象限
-  ワーク2 → Fig.11 総合職の職務内容6つ
-  ワーク3 → Fig.24 90日の実行計画
+中身は講座の図版と1対1で対応させている。
+  ワーク1 → Fig.7  目的の四象限          （第1部・長期の投資判断）
+  ワーク2 → Fig.11 総合職の職務内容6つ    （第1部・長期の投資判断）
+  ワーク3 → Fig.28 90日の実行計画        （第2部・締め）
+  ワーク4 → Fig.24 30日で1業務を線に上げる（第2部・実務）
+  ワーク5 → Fig.25 依頼文の4点セット      （第2部・実務）
 講座を観ながら書けるように、図版の言い回しをそのまま使うこと。
 言い換えると、受講者が「どの回のワークか」を見失う。
+
+**紙面での並びは 1 → 2 → 4 → 5 → 3。** 講座の進行と同じ順にする。
+ワーク3（90日）は最後のセクションなので、いちばん後ろに来る。
 """
 import os
 
@@ -108,7 +113,37 @@ h2{font-family:'SM';font-weight:600;font-size:15pt;line-height:1.5;margin:4mm 0 
 .checks i{flex:none;width:4.5mm;height:4.5mm;border:1.4px solid var(--azure);
   border-radius:1mm;margin-top:1mm}
 .checks em{font-style:normal;color:var(--muted);font-size:7.5pt;display:block;line-height:1.6}
+/* 30日の日程（ワーク4）。日付と成果物を、行ごとに書き込ませる */
+.pick{border:1.2px solid var(--azure);border-radius:3mm;padding:4mm 5mm;margin-top:1mm;
+  background:rgba(46,84,150,.045)}
+.pick .k{font-family:'HG';font-size:7pt;font-weight:700;letter-spacing:.14em;color:var(--azure)}
+.pick .big{display:flex;align-items:flex-end;gap:3mm;margin-top:2mm}
+.pick .big span{font-size:8.5pt;color:var(--muted);flex:none;padding-bottom:1mm}
+.pick .big .line{flex:1;height:8mm;border-bottom:1.2px solid rgba(46,84,150,.5)}
+.pick ul{display:flex;gap:5mm;margin-top:3mm}
+.pick li{list-style:none;display:flex;gap:2mm;align-items:center;font-size:8pt;color:var(--muted)}
+.pick i{flex:none;width:3.6mm;height:3.6mm;border:1.3px solid var(--azure);border-radius:.8mm}
+.days{width:100%;border-collapse:collapse;margin-top:4mm}
+.days th{font-family:'HG';font-size:7.5pt;font-weight:700;letter-spacing:.12em;
+  text-align:left;color:#fff;background:var(--navy);padding:2.4mm 3mm}
+.days td{border:1px solid var(--azure-pale);padding:2.4mm 3mm;vertical-align:middle;height:19mm}
+.days td.d{width:20mm;background:rgba(46,84,150,.04);font-family:'HG';font-size:8.5pt;
+  font-weight:700;text-align:center}
+.days td.w{width:62mm;font-size:8.5pt;line-height:1.6}
+.days td.w em{font-style:normal;display:block;font-size:7pt;color:var(--muted);margin-top:.6mm}
+.days td.dt{width:24mm}
+.days td.done{width:14mm;text-align:center}
+.days td.done i{display:inline-block;width:4.2mm;height:4.2mm;
+  border:1.3px solid var(--azure);border-radius:1mm}
+/* 依頼文の記入欄（ワーク5） */
+.slots{margin-top:1mm}
+.slot{border:1px solid var(--azure-pale);border-radius:2.5mm;padding:3.2mm 4mm;margin-bottom:2.6mm}
+.slot.hi{border-color:var(--azure);background:rgba(46,84,150,.04)}
+.slot h3{font-family:'SM';font-size:10pt;font-weight:600}
+.slot p{font-size:7.5pt;line-height:1.6;color:var(--muted);margin:.6mm 0 2.4mm}
+.slot .line{border-bottom:1px dotted rgba(46,84,150,.45);height:6.5mm}
 """
+
 
 FOOT = ('<div class="foot"><span>AIエージェント時代のキャリア戦略 ─ ワークシート</span>'
         '<span>OZAKEN / AICX %s</span></div>')
@@ -119,17 +154,22 @@ def cover(with_pw):
            '<p class="pw">PASSWORD　<b style="font-size:9pt;letter-spacing:.02em">'
            '講座の中でお伝えします</b></p>')
     return f'''<div class="page cover">
-  <span class="tag">WORKSHEET ─ 4 PAGES</span>
+  <span class="tag">WORKSHEET ─ 6 PAGES</span>
   <h1>AIエージェント時代の<br>キャリア戦略 ワークシート</h1>
   <div class="rule"></div>
-  <p class="sub">観るだけでは残りません。この3枚を書き終えたとき、はじめて講座が
-    自分のキャリアの話になります。印刷して、手で書いてください。</p>
+  <p class="sub">観るだけでは残りません。この5枚を書き終えたとき、はじめて講座が
+    自分のキャリアの話になります。印刷して、手で書いてください。
+    前半2枚が長期の投資判断、後半3枚が来週から動かす実務です。</p>
   <ul class="howto">
     <li><b>01</b><span><b>ワーク1｜目的の四象限。</b>いま抱えている仕事を5つ書き出し、
       4つの枠のどこに入るかを置きます。左下が3つ以上なら、時間の使い方から変えます。</span></li>
     <li><b>02</b><span><b>ワーク2｜職務内容の棚卸し。</b>「なんでもやってきました」は市場で0点。
       6つの項目に分けて、実績を具体名詞で紐づけます。</span></li>
-    <li><b>03</b><span><b>ワーク3｜90日の実行計画。</b>5つの投資先に日付を入れます。
+    <li><b>03</b><span><b>ワーク4｜30日の実務。</b>業務を1つ選び、7つの行に日付を入れます。
+      考える紙ではなく、予定を書く紙です。週3〜4時間で足ります。</span></li>
+    <li><b>04</b><span><b>ワーク5｜依頼文の実物。</b>6日目に書く文を、ここで書き切ります。
+      ⑤越えない線と⑥渡す材料まで書けて、ようやく実務で使えます。</span></li>
+    <li><b>05</b><span><b>ワーク3｜90日の実行計画。</b>5つの投資先に日付を入れます。
       同時に全部は動きません。1か月目は導線づくりだけで十分です。</span></li>
   </ul>
   <div class="promise">
@@ -234,7 +274,7 @@ def work3():
     ]
     ck = ''.join(f'<li><i></i><span>{t}<em>{d}</em></span></li>' for t, d in checks)
     return f'''<div class="page">
-  <span class="tag">WORK 03 ─ SECTION 13</span>
+  <span class="tag">WORK 03 ─ SECTION 15</span>
   <h1>90日の計画に、日付を入れる</h1>
   <div class="rule"></div>
   <p class="sub">やることではなく、<b>いつやるか</b>を書きます。
@@ -251,11 +291,87 @@ def work3():
 </div>'''
 
 
+def work4():
+    """Fig.24 と同じ7行。ここだけは「考える紙」ではなく「予定を書く紙」にする。
+
+    抽象的な設問ばかりだと、書き終えても月曜に手が動かない。
+    日付欄と済チェックを置いて、机上の計画を実行の記録に変える。
+    """
+    days = [
+        ('1〜3日', '直近30件の問い合わせを書き出す', '問い合わせ一覧（表1枚）'),
+        ('4〜5日', 'ベテランに「どう見分けているか」を聞く', '判断の分かれ目メモ'),
+        ('6〜10日', '依頼文を1本書き、過去10件で試す', '依頼文（4点セット＝ワーク5）'),
+        ('11〜15日', '外した回だけ、理由を書いて依頼文を直す', '却下ログ（外した理由）'),
+        ('16〜20日', '固まった依頼文を、型として保存する', '業務ボット1つ'),
+        ('21〜25日', '同僚2人に使ってもらい、横で見る', '使い方メモ（A4半分）'),
+        ('26〜30日', '抜き取りの基準と、止める線を決める', '監督手順書（A4半分）'),
+    ]
+    tr = ''.join(f'''<tr><td class="d">{d}</td>
+      <td class="w">{w}<em>作るもの：{o}</em></td>
+      <td class="dt"></td><td class="done"><i></i></td></tr>''' for d, w, o in days)
+    return f'''<div class="page">
+  <span class="tag">WORK 04 ─ SECTION 13</span>
+  <h1>1つの業務を、30日で「線」に上げる</h1>
+  <div class="rule"></div>
+  <p class="sub">ここから先は、考える紙ではなく<b>予定を書く紙</b>です。
+    業務を1つだけ選び、7つの行に日付を入れてください。週3〜4時間で足ります。</p>
+  <div class="pick">
+    <span class="k">STEP 0 ─ 選ぶ</span>
+    <div class="big"><span>取り上げる業務</span><div class="line"></div></div>
+    <ul>
+      <li><i></i>毎週やっている</li>
+      <li><i></i>社内で完結する</li>
+      <li><i></i>自分が当事者である</li>
+    </ul>
+  </div>
+  <table class="days">
+    <tr><th>日</th><th>やること／作るもの</th><th>やる日</th><th>済</th></tr>
+    {tr}
+  </table>
+  <p class="note" style="margin-top:4mm">3つのチェックが揃わない業務を選ぶと、
+    たいてい2週目で止まります。人に頼まれた業務では、外した理由を書く手が動きません。
+    30日後に手元に残るのは、ボットではなく上の<b>5枚の紙</b>のほうです。</p>
+  {FOOT % 'WORK 04'}
+</div>'''
+
+
+def work5():
+    slots = [
+        ('① あなたは誰か', '肩書きではなく、立場と担当範囲。例：保険代理店のサポート担当。'
+         '中小の代理店を30社ほど担当している', 2, False),
+        ('② 相手は誰か', '誰が、何に、どのくらいの頻度で困っているか。例：代理店の事務担当者。'
+         '契約変更の手続きで、月に2〜3回問い合わせてくる', 2, False),
+        ('③ 何をしてほしいか', '出力の中身を1つに絞る。例：下に貼る問い合わせに対する、一次回答の案を1つ',
+         2, False),
+        ('④ どういう形で欲しいか', '長さ・体裁・根拠の出し方まで指定する。例：300字以内。'
+         '根拠にした規程の条番号を、最後に並べる', 2, False),
+        ('⑤ 越えない線', '<b>ここが無いと、平気で作文します。</b>例：規程に書かれていないことは'
+         '推測せず「確認が必要」と書く', 2, True),
+        ('⑥ 渡す材料', '<b>ここが無いと、一般論しか返ってきません。</b>'
+         '例：過去の類似回答を3件、要約せずそのまま貼る', 2, True),
+    ]
+    sl = ''.join(f'''<div class="slot{' hi' if hi else ''}">
+      <h3>{t}</h3><p>{d}</p>{'<div class="line"></div>' * n}
+    </div>''' for t, d, n, hi in slots)
+    return f'''<div class="page">
+  <span class="tag">WORK 05 ─ SECTION 13</span>
+  <h1>6日目に書く、依頼文の実物</h1>
+  <div class="rule"></div>
+  <p class="sub">ワーク4の6〜10日で書くものです。ここで書いた文が、そのまま型の原型になります。
+    <b>①〜④が4点セット、⑤と⑥は実務で必ず要る2つ</b>です。</p>
+  <div class="slots">{sl}</div>
+  <p class="note" style="margin-top:3mm">1発で当てようとしないでください。
+    過去10件で試して、外した回だけ理由を書いて直す。この往復が型をつくります。
+    却下した理由を書き残した紙が、そのまま「検証の基準」の証拠になります。</p>
+  {FOOT % 'WORK 05'}
+</div>'''
+
+
 def build(with_pw):
     return ('<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">'
             '<title>AIエージェント時代のキャリア戦略 ワークシート</title>'
             '<style>%s</style></head><body>%s</body></html>'
-            % (CSS, cover(with_pw) + work1() + work2() + work3()))
+            % (CSS, cover(with_pw) + work1() + work2() + work4() + work5() + work3()))
 
 
 os.makedirs(FONTS, exist_ok=True)
