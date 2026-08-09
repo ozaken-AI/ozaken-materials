@@ -121,21 +121,57 @@ SPOT_HEAD = 'スポット講演・セミナー'
 TRAIN_HEAD = '法人研修'          # Training/ に置いた資料は、こちらの節へ
 
 
+def retone(inner):
+    """節の並びが変わったら、明暗と背景の段を付け直す。
+
+    先頭から light → navy → light … と交互に置き、背景の段は
+    それぞれの側で 1→2→3 を回す（`apply_bgcycle.py` と同じ考え方）。
+    並べ替えのたびに手で直すと、必ずどこかで色が続く。
+    """
+    n = {'sec-light': 0, 'sec-navy': 0}
+    seen = [0]
+
+    def fix(_m):
+        tone = 'sec-light' if seen[0] % 2 == 0 else 'sec-navy'
+        seen[0] += 1
+        n[tone] = n[tone] % 3 + 1
+        return '<section class="%s" data-bg="%d">' % (tone, n[tone])
+
+    return re.sub(r'<section class="sec-(?:light|navy)"[^>]*>', fix, inner)
+
+
+def renumber(sec):
+    """節の中のカード番号を上から振り直す。01 が常にいちばん新しいもの。
+    AX Table だけは番号がセッション番号そのものなので、触らない"""
+    if 'AX Table' in sec:
+        return sec
+    c = [0]
+
+    def f(_m):
+        c[0] += 1
+        return '<span class="card-tag">%d</span>' % c[0]
+
+    return re.sub(r'<span class="card-tag">\d+</span>', f, sec)
+
+
 def add_to_backstage(rel, label, pw):
     """裏資料置き場に足す。
 
     このページは箇条書きではなくカードで並んでいる。
     AX Table の一覧に混ぜると別物が同居してしまうので、
     スポット講演用のセクションを持たせ、無ければ作る。
+
+    **新しいものほど上に置く。** 講演の前に開くのはたいてい直近の資料で、
+    終わった資料は下に積み上がって一覧として残る。だから新しいカードは
+    節の先頭に差し、節ごと作るときはヒーローのすぐ下に置く。
     """
     m = master()
     inner = lockbox.decrypt(BACKSTAGE, m)
     href = rel if rel.startswith('..') else rel
-    n = inner.count('<div class="card">') + 1
-    card = ('      <div class="card"><span class="card-tag">%d</span>'
+    card = ('      <div class="card"><span class="card-tag">1</span>'
             '<h3><a href="%s">%s</a></h3>'
             '<p>個別パスワード <b>%s</b></p></div>\n'
-            % (n, href, label, pw))
+            % (href, label, pw))
 
     # 置き場所で節を選ぶ。Training/ は法人研修、それ以外はスポット講演
     train = rel.startswith('Training/')
@@ -146,33 +182,28 @@ def add_to_backstage(rel, label, pw):
         k = inner.find('<div class="cards">', i)
         if k < 0:
             return False
-        # 単に次の </div> を探すと、それは1枚目のカードの閉じタグ。
-        # そこに差すと新しいカードが前のカードの中に入れ子になる（実際に起きた）。
-        # 開きと閉じを数えて、cards を閉じる </div> を見つける
-        depth, j = 0, -1
-        for t in re.finditer(r'<div\b|</div>', inner[k:]):
-            depth += 1 if t.group(0).startswith('<div') else -1
-            if depth == 0:
-                j = k + t.start()
-                break
-        if j < 0:
+        k = inner.find('\n', k) + 1                    # cards を開いた直後
+        e = inner.find('</section>', i)                # この節の終わり
+        if e < 0:
             return False
-        inner = inner[:j] + card + inner[j:]
+        # 差してから、この節の中だけ番号を振り直す
+        inner = inner[:k] + renumber(card + inner[k:e]) + inner[e:]
     else:
-        tone, eyebrow, sub = (
-            ('sec-light', 'Corporate Training',
-             '企業向けの研修カリキュラム案と、当日の進行資料です。') if train else
-            ('sec-navy', 'Spot Sessions', '単発の講演・セミナー用に組んだ資料です。'))
-        sec = ('<section class="%s" data-bg="1">\n  <div class="inner" data-reveal>\n'
+        eyebrow, sub = (
+            ('Corporate Training', '企業向けの研修カリキュラム案と、当日の進行資料です。')
+            if train else
+            ('Spot Sessions', '単発の講演・セミナー用に組んだ資料です。'))
+        sec = ('<section class="sec-light" data-bg="1">\n  <div class="inner" data-reveal>\n'
                '    <span class="eyebrow">%s</span>\n'
                '    <h2 class="sec-title">%s</h2>\n'
                '    <p class="sec-sub">%s個別パスワードを併記しています。</p>\n'
-               '    <div class="cards">\n%s    </div>\n  </div>\n</section>\n'
-               % (tone, eyebrow, head, sub, card))
-        k = inner.rfind('<footer>')
+               '    <div class="cards">\n%s    </div>\n  </div>\n</section>\n\n'
+               % (eyebrow, head, sub, card))
+        k = inner.find('<section class="sec-')          # ヒーローの次に割り込む
         if k < 0:
             return False
         inner = inner[:k] + sec + inner[k:]
+    inner = retone(inner)
     lockbox.encrypt(BACKSTAGE, m, inner)
     assert lockbox.decrypt(BACKSTAGE, m) == inner
     return True
