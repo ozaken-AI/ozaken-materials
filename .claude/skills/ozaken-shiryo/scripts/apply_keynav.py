@@ -18,7 +18,7 @@ import lockbox
 
 ROOT = oz_root.root(HERE)
 PW = os.environ.get('OZAKEN_PW') or sys.exit('OZAKEN_PW を設定してください')
-MARK = '/* OZ-KEYNAV v3 */'
+MARK = '/* OZ-KEYNAV v4 */'
 
 JS = """
 <script>
@@ -38,12 +38,17 @@ JS = """
     var dir = decodeURIComponent(seg[seg.length - 2] || '');
     return /^(0\\d_|AX_Table|Training)/.test(dir) ? '../index.html' : 'index.html';
   }
+  /* 裏資料の隠しコマンドは、この2文字を内側に含んでしまう。
+     test の st で待機画面へ飛ばれると、テストが永久に開けない。
+     長いほうを打ち終えたときは、2文字のショートカットを見送る */
+  var LONG = /(test|quiz)$/;
   var buf = '';
   document.addEventListener('keydown', function(e){
     var t = e.target;
     if (t && (/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) || t.isContentEditable)) return;
     if (!e.key || e.key.length !== 1 || e.metaKey || e.ctrlKey || e.altKey) return;
     buf = (buf + e.key.toLowerCase()).slice(-4);
+    if (LONG.test(buf)){ buf = ''; return; }
     var k = buf.slice(-2);
     if (GO[k]){ buf = ''; location.href = home() + GO[k]; }
   });
@@ -57,7 +62,7 @@ def patch(html):
         return None
     # 旧版が入っていたら、そっくり外してから入れ直す。
     # 二重に置くと同じキーが2回走る
-    html = re.sub(r'\n?<script>\n/\* OZ-KEYNAV v[12] \*/[\s\S]*?</script>\n?', '\n', html)
+    html = re.sub(r'\n?<script>\n/\* OZ-KEYNAV v[123] \*/[\s\S]*?</script>\n?', '\n', html)
     i = html.rfind('</body>')
     if i < 0:
         return None

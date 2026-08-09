@@ -168,10 +168,12 @@ def add_to_backstage(rel, label, pw):
     m = master()
     inner = lockbox.decrypt(BACKSTAGE, m)
     href = rel if rel.startswith('..') else rel
+    # **個別パスワードはここに書かない。** この一覧は投影することがあり、
+    # 全資料の鍵が一度に映ってしまう。パスワードは資料を開いて qr で出す
     card = ('      <div class="card"><span class="card-tag">1</span>'
             '<h3><a href="%s">%s</a></h3>'
-            '<p>個別パスワード <b>%s</b></p></div>\n'
-            % (href, label, pw))
+            '<p>開いて <b>qr</b> と打つと、共有用のQRとパスワードが出ます</p></div>\n'
+            % (href, label))
 
     # 置き場所で節を選ぶ。Training/ は法人研修、それ以外はスポット講演
     train = rel.startswith('Training/')
@@ -193,10 +195,11 @@ def add_to_backstage(rel, label, pw):
             ('Corporate Training', '企業向けの研修カリキュラム案と、当日の進行資料です。')
             if train else
             ('Spot Sessions', '単発の講演・セミナー用に組んだ資料です。'))
+        sub += '各ページで qr と打つと、共有用のQRと個別パスワードが出ます。'
         sec = ('<section class="sec-light" data-bg="1">\n  <div class="inner" data-reveal>\n'
                '    <span class="eyebrow">%s</span>\n'
                '    <h2 class="sec-title">%s</h2>\n'
-               '    <p class="sec-sub">%s個別パスワードを併記しています。</p>\n'
+               '    <p class="sec-sub">%s</p>\n'
                '    <div class="cards">\n%s    </div>\n  </div>\n</section>\n\n'
                % (eyebrow, head, sub, card))
         k = inner.find('<section class="sec-')          # ヒーローの次に割り込む

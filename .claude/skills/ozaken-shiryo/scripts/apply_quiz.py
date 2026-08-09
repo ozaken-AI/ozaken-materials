@@ -14,7 +14,7 @@
 開き方は3つ。どれもそのままテストが始まる。
 
   画面を3回たたく   スマートフォン向け。どこでもいい。指で3回
-  quiz と打つ       キーボードのある端末向け。どこにも触れずに打つだけ
+  test と打つ       キーボードのある端末向け。どこにも触れずに打つだけ
   URLに #test       あとからメールで案内するとき用
 
 テストは全画面で出る。1問ずつ、選んだ瞬間に正誤と解説が返り、
@@ -333,9 +333,10 @@ JS = """
     }
   });
 
-  // ② quiz と打つ（キーボードのある端末向け）
-  //    「test」は使えない。apply_keynav が st を投影画面のショートカットに
-  //    使っているので、打った途中で index へ飛んでしまう
+  // ② test と打つ（キーボードのある端末向け）
+  //    apply_keynav が st を投影画面のショートカットに使っているので、
+  //    そのままだと打っている途中で index へ飛ぶ。keynav 側で
+  //    「test / quiz を打ち終えたときは見送る」ようにして避けている
   var buf = '';
   document.addEventListener('keydown', function(e){
     if (e.key === 'Escape'){ close(); return; }
@@ -343,7 +344,7 @@ JS = """
     if (t === 'INPUT' || t === 'TEXTAREA' || t === 'SELECT') return;
     if (e.key.length !== 1) return;
     buf = (buf + e.key.toLowerCase()).slice(-8);
-    if (buf.indexOf('quiz') >= 0){ buf = ''; open(); }
+    if (/(test|quiz)$/.test(buf)){ buf = ''; open(); }
   });
 
   // ③ URLに #test を付けて開く（あとから案内するとき用）
