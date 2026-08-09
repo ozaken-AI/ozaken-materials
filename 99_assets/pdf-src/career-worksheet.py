@@ -19,16 +19,11 @@
 中身は講座の3つの図版と1対1で対応させている。
   ワーク1 → Fig.7  目的の四象限
   ワーク2 → Fig.11 総合職の職務内容6つ
-  ワーク3 → Fig.16 90日の実行計画
+  ワーク3 → Fig.20 90日の実行計画
 講座を観ながら書けるように、図版の言い回しをそのまま使うこと。
 言い換えると、受講者が「どの回のワークか」を見失う。
 """
 import os
-import sys
-
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                '..', '..', '.claude', 'skills', 'ozaken-shiryo', 'scripts'))
-import qrgen
 
 URL = 'https://ozaken-ai.github.io/ozaken-materials/Udemy/career-strategy.html'
 PW = 'yoroi'
@@ -71,14 +66,12 @@ h2{font-family:'SM';font-weight:600;font-size:15pt;line-height:1.5;margin:4mm 0 
   border-top:1px solid rgba(216,228,240,.22);font-size:9.5pt;line-height:1.8}
 .howto b{font-family:'HG';font-size:9pt;color:var(--azure-pale);flex:none;width:8mm}
 .howto span{color:rgba(255,255,255,.92)}
-.promise{margin-top:8mm;padding:6mm;border-radius:4mm;display:flex;gap:6mm;align-items:flex-start;
+.promise{margin-top:8mm;padding:6mm;border-radius:4mm;
   background:rgba(255,255,255,.07);border:1px solid rgba(216,228,240,.26)}
 .promise p{font-size:9pt;line-height:1.85;color:rgba(216,228,240,.92)}
 .promise b{color:#fff}
-.qr{flex:none;width:34mm;padding:2.5mm;background:#fff;border-radius:2.5mm}
-.qr svg{display:block;width:100%;height:auto}
-.promise .url{font-family:'HG';font-size:7.5pt;letter-spacing:.02em;
-  color:rgba(216,228,240,.7);margin-top:3.5mm;word-break:break-all}
+.promise .url{font-family:'HG';font-size:9.5pt;font-weight:700;letter-spacing:.02em;
+  color:#fff;margin-top:4mm;word-break:break-all}
 .promise .pw{font-family:'HG';font-size:8pt;font-weight:700;letter-spacing:.14em;
   color:rgba(216,228,240,.7);margin-top:1.5mm}
 .promise .pw b{font-size:12pt;letter-spacing:.06em;color:#fff}
@@ -140,7 +133,6 @@ def cover(with_pw):
       同時に全部は動きません。1か月目は導線づくりだけで十分です。</span></li>
   </ul>
   <div class="promise">
-    <div class="qr">{qrgen.svg(URL)}</div>
     <div>
       <p><b>この教材は更新されます。</b>AIと雇用のデータは数か月で景色が変わるので、
         新しい統計が出るたびに講座ページの数字を差し替えています。
@@ -242,7 +234,7 @@ def work3():
     ]
     ck = ''.join(f'<li><i></i><span>{t}<em>{d}</em></span></li>' for t, d in checks)
     return f'''<div class="page">
-  <span class="tag">WORK 03 ─ SECTION 09</span>
+  <span class="tag">WORK 03 ─ SECTION 11</span>
   <h1>90日の計画に、日付を入れる</h1>
   <div class="rule"></div>
   <p class="sub">やることではなく、<b>いつやるか</b>を書きます。
