@@ -19,7 +19,7 @@
 中身は講座の3つの図版と1対1で対応させている。
   ワーク1 → Fig.7  目的の四象限
   ワーク2 → Fig.11 総合職の職務内容6つ
-  ワーク3 → Fig.20 90日の実行計画
+  ワーク3 → Fig.24 90日の実行計画
 講座を観ながら書けるように、図版の言い回しをそのまま使うこと。
 言い換えると、受講者が「どの回のワークか」を見失う。
 """
@@ -234,7 +234,7 @@ def work3():
     ]
     ck = ''.join(f'<li><i></i><span>{t}<em>{d}</em></span></li>' for t, d in checks)
     return f'''<div class="page">
-  <span class="tag">WORK 03 ─ SECTION 11</span>
+  <span class="tag">WORK 03 ─ SECTION 13</span>
   <h1>90日の計画に、日付を入れる</h1>
   <div class="rule"></div>
   <p class="sub">やることではなく、<b>いつやるか</b>を書きます。
