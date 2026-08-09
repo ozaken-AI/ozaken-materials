@@ -71,7 +71,9 @@ CSS = """
 .qz-bar{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:.7rem;
   padding:calc(1.1rem + env(safe-area-inset-top)) 0 .9rem;
   border-bottom:1px solid rgba(216,228,240,.2);
-  background:linear-gradient(180deg,#1f3864 72%,rgba(31,56,100,0))}
+  /* 面の背景は要素に貼り付いていて動かないので、上端は常にこの色。
+     半透明にすると問題文が透けて読みにくくなる（実際そうなった） */
+  background:#1f3864}
 .qz-tag{font-family:var(--font-en);font-size:.6rem;font-weight:700;letter-spacing:.16em;
   color:var(--navy-deep);background:var(--azure-pale);padding:4px 10px;border-radius:999px}
 .qz-step{font-family:var(--font-en);font-size:.78rem;font-weight:600;
