@@ -71,7 +71,7 @@ h2{font-family:'SM';font-weight:600;font-size:15pt;line-height:1.5;margin:4mm 0 
   border-top:1px solid rgba(216,228,240,.22);font-size:9.5pt;line-height:1.8}
 .howto b{font-family:'HG';font-size:9pt;color:var(--azure-pale);flex:none;width:8mm}
 .howto span{color:rgba(255,255,255,.92)}
-.promise{margin-top:8mm;padding:6mm;border-radius:4mm;
+.promise{margin-top:5mm;padding:5mm;border-radius:4mm;
   background:rgba(255,255,255,.07);border:1px solid rgba(216,228,240,.26)}
 .promise p{font-size:9pt;line-height:1.85;color:rgba(216,228,240,.92)}
 .promise b{color:#fff}
@@ -95,21 +95,24 @@ h2{font-family:'SM';font-weight:600;font-size:15pt;line-height:1.5;margin:4mm 0 
 .rows th{font-family:'HG';font-size:7.5pt;font-weight:700;letter-spacing:.12em;
   text-align:left;color:#fff;background:var(--navy);padding:2.5mm 3mm}
 .rows td{border:1px solid var(--azure-pale);padding:2.6mm 3mm;vertical-align:top}
-.rows td.q{width:52mm;background:rgba(46,84,150,.04)}
+.rows td.q{width:42mm;background:rgba(46,84,150,.04)}
 .rows td.q b{font-size:9.5pt;display:block;margin-bottom:1mm}
 .rows td.q span{font-size:7.5pt;line-height:1.6;color:var(--muted)}
+/* 記入例は、書く欄の隣に置いて、書いている間ずっと見えるようにする */
+.rows td.e{width:52mm;background:rgba(46,84,150,.02);font-size:7.5pt;
+  line-height:1.65;color:var(--muted)}
 .rows td.a{height:19mm}
 .plan{width:100%;border-collapse:collapse;margin-top:2mm}
 .plan th{font-family:'HG';font-size:7.5pt;font-weight:700;letter-spacing:.12em;
   color:#fff;background:var(--navy);padding:2.5mm;text-align:center}
 .plan th:first-child{text-align:left;width:44mm}
-.plan td{border:1px solid var(--azure-pale);padding:3mm;height:17mm;vertical-align:top}
+.plan td{border:1px solid var(--azure-pale);padding:2.4mm 3mm;height:12mm;vertical-align:top}
 .plan td.n{background:rgba(46,84,150,.04);font-size:9pt;font-weight:700;vertical-align:middle}
 .plan td.n span{display:block;font-weight:500;font-size:7.5pt;line-height:1.6;
   color:var(--muted);margin-top:1mm}
-.checks{margin-top:4mm}
+.checks{margin-top:2mm}
 .checks li{list-style:none;display:flex;gap:3mm;align-items:flex-start;
-  padding:2.8mm 0;border-bottom:1px solid rgba(46,84,150,.14);font-size:9pt;line-height:1.7}
+  padding:2.3mm 0;border-bottom:1px solid rgba(46,84,150,.14);font-size:9pt;line-height:1.7}
 .checks i{flex:none;width:4.5mm;height:4.5mm;border:1.4px solid var(--azure);
   border-radius:1mm;margin-top:1mm}
 .checks em{font-style:normal;color:var(--muted);font-size:7.5pt;display:block;line-height:1.6}
@@ -126,7 +129,7 @@ h2{font-family:'SM';font-weight:600;font-size:15pt;line-height:1.5;margin:4mm 0 
 .days{width:100%;border-collapse:collapse;margin-top:4mm}
 .days th{font-family:'HG';font-size:7.5pt;font-weight:700;letter-spacing:.12em;
   text-align:left;color:#fff;background:var(--navy);padding:2.4mm 3mm}
-.days td{border:1px solid var(--azure-pale);padding:2.4mm 3mm;vertical-align:middle;height:19mm}
+.days td{border:1px solid var(--azure-pale);padding:2.4mm 3mm;vertical-align:middle;height:14.5mm}
 .days td.d{width:20mm;background:rgba(46,84,150,.04);font-family:'HG';font-size:8.5pt;
   font-weight:700;text-align:center}
 .days td.w{width:62mm;font-size:8.5pt;line-height:1.6}
@@ -136,12 +139,34 @@ h2{font-family:'SM';font-weight:600;font-size:15pt;line-height:1.5;margin:4mm 0 
 .days td.done i{display:inline-block;width:4.2mm;height:4.2mm;
   border:1.3px solid var(--azure);border-radius:1mm}
 /* 依頼文の記入欄（ワーク5） */
-.slots{margin-top:1mm}
-.slot{border:1px solid var(--azure-pale);border-radius:2.5mm;padding:3.2mm 4mm;margin-bottom:2.6mm}
+/* ①〜④の4点セットは2×2に組む。縦一列に6つ並べるとA4に収まらないうえ、
+   4点セットと、その外側の⑤⑥という構造も見えなくなる */
+.slots{display:grid;grid-template-columns:1fr 1fr;gap:2.5mm;margin-top:1mm}
+.slots .slot{margin-bottom:0}
+.slots2{margin-top:2.5mm}
+.slot{border:1px solid var(--azure-pale);border-radius:2.5mm;padding:2.4mm 4mm;margin-bottom:2mm}
 .slot.hi{border-color:var(--azure);background:rgba(46,84,150,.04)}
 .slot h3{font-family:'SM';font-size:10pt;font-weight:600}
-.slot p{font-size:7.5pt;line-height:1.6;color:var(--muted);margin:.6mm 0 2.4mm}
-.slot .line{border-bottom:1px dotted rgba(46,84,150,.45);height:6.5mm}
+.slot p{font-size:7.5pt;line-height:1.6;color:var(--muted);margin:.5mm 0 1.6mm}
+.slot .line{border-bottom:1px dotted rgba(46,84,150,.45);height:6mm}
+/* 記入例。**書き込む線の上には置かない。** 手で書く場所と重なると、両方読めなくなる。
+   薄い青の帯として、書きはじめる直前に置く */
+.ex{border-left:2px solid rgba(46,84,150,.55);background:rgba(46,84,150,.05);
+  padding:1.6mm 3mm;margin:0 0 2mm;border-radius:0 1.5mm 1.5mm 0}
+.ex b{font-family:'HG';font-size:6.5pt;font-weight:700;letter-spacing:.14em;
+  color:var(--azure);display:block;margin-bottom:.8mm}
+.ex span{display:block;font-size:7.5pt;line-height:1.65;color:var(--muted)}
+.ex span+span{margin-top:1mm}
+.ex i{font-style:normal;font-weight:700;color:var(--azure)}
+.ex .ng{color:rgba(226,55,68,.75)}
+.ex .ng i{color:var(--red)}
+/* 記入例の人物。表紙で一度だけ名乗らせる */
+.who{margin-top:5mm;padding:4mm 5mm;border-radius:3mm;
+  background:rgba(255,255,255,.05);border:1px solid rgba(216,228,240,.2)}
+.who>b{font-family:'HG';font-size:7pt;font-weight:700;letter-spacing:.14em;
+  color:var(--azure-pale);display:block;margin-bottom:1.5mm}
+.who p{font-size:8.5pt;line-height:1.8;color:rgba(216,228,240,.85)}
+.who p b{color:#fff}          /* 本文中の強調は行の中に置く。ラベルと同じ見た目にしない */
 """
 
 
@@ -172,6 +197,12 @@ def cover(with_pw):
     <li><b>05</b><span><b>ワーク3｜90日の実行計画。</b>5つの投資先に日付を入れます。
       同時に全部は動きません。1か月目は導線づくりだけで十分です。</span></li>
   </ul>
+  <div class="who">
+    <b>記入例について</b>
+    <p>5枚とも、<b>保険代理店のサポート担当（中小の代理店を30社担当）</b>という
+      ひとりの記入例を通しで載せています。業種が違っても、粒度の目安として使えます。
+      <b>薄い青の帯が記入例です。</b>そこには書かず、下の線から書きはじめてください。</p>
+  </div>
   <div class="promise">
     <div>
       <p><b>この教材は更新されます。</b>AIと雇用のデータは数か月で景色が変わるので、
@@ -189,19 +220,26 @@ def cover(with_pw):
 def work1():
     cells = [
         ('A', '言語化すれば、資産になる',
-         '内側から出ているが、まだ言葉になっていない。ここを言葉にすると、右上へ移ります', False),
+         '内側から出ているが、まだ言葉になっていない。ここを言葉にすると、右上へ移ります',
+         '新人が毎回同じところで詰まるのが、ずっと気になっている。'
+         'なぜ気になるのかは、まだ説明できない', False),
         ('B', 'ここを増やす',
-         '内側から出ていて、かつ人に説明できる。委譲もでき、枯れない。増やすのはここだけ', True),
+         '内側から出ていて、かつ人に説明できる。委譲もでき、枯れない。増やすのはここだけ',
+         '代理店の事務担当が、手続きで消耗している。'
+         'そこを軽くするのが自分の仕事だと、人に言える', True),
         ('C', 'まだ目的になっていない',
-         '外から与えられ、言葉にもなっていない。最初に捨ててよい領域です', False),
+         '外から与えられ、言葉にもなっていない。最初に捨ててよい領域です',
+         '上期の売上目標。なぜこの数字なのかを知らないまま追っている', False),
         ('D', '渡せるが、枯れやすい',
-         '言葉になった、外から与えられた課題。AIに委譲できるが、解くほど速く消費されます', False),
+         '言葉になった、外から与えられた課題。AIに委譲できるが、解くほど速く消費されます',
+         '月次レポートの作成。フォーマットも締切も決まっている', False),
     ]
     grid = ''.join(
         f'''<div class="cell{' hi' if hi else ''}">
       <span class="k">{k}</span><h3>{t}</h3><p>{d}</p>
-      {'<div class="line"></div>' * 5}
-    </div>''' for k, t, d, hi in cells)
+      <div class="ex"><b>記入例</b><span>{ex}</span></div>
+      {'<div class="line"></div>' * 4}
+    </div>''' for k, t, d, ex, hi in cells)
     return f'''<div class="page">
   <span class="tag">WORK 01 ─ SECTION 04</span>
   <h1>いまの仕事を、4つの枠に置く</h1>
@@ -220,34 +258,47 @@ def work1():
 
 def work2():
     rows = [
-        ('① 状況の解像度', 'Whyの入力',
-         '組織の政治、予算の出所、決裁者の関心。書かれていない一次情報を、どれだけ持っているか'),
-        ('② 目的の設定', 'Whyの本体',
-         '解ける問題ではなく、解くべき問題を選んだ経験。「やらない」と決めたこと'),
-        ('③ 検証の基準', 'Whyの出力管理',
-         'AIや部下の出力を却下した経験。何を根拠に却下したかまで'),
-        ('④ 文脈翻訳', '越境',
-         '営業の言葉を開発の言葉に。同じ日本語なのに通じない場所に、意味を通した仕事'),
-        ('⑤ 合意形成', '越境',
-         '利害の違う人間を、ひとつの目的に束ねた経験。誰が何を諦めたかまで'),
-        ('⑥ 全体設計', '統合',
-         '部分最適の総和を、ひとつの成果に統合した経験'),
+        ('① 状況の解像度',
+         '組織の政治、予算の出所、決裁者の関心。書かれていない一次情報を、どれだけ持っているか',
+         '担当30社の、どの代理店がどの手続きで詰まるかを社名で言える。'
+         '規程に書かれていない「例外扱いの3社」も把握している'),
+        ('② 目的の設定',
+         '解ける問題ではなく、解くべき問題を選んだ経験。「やらない」と決めたこと',
+         '問い合わせ件数の削減ではなく、事務担当の残業を減らすことを目的に置き直した。'
+         '件数が増える施策も通した'),
+        ('③ 検証の基準',
+         'AIや部下の出力を却下した経験。何を根拠に却下したかまで',
+         'AIの回答案を、引いている条番号が改訂前のものだという理由で12件却下し、'
+         '却下理由を一覧に残した'),
+        ('④ 文脈翻訳',
+         '営業の言葉を開発の言葉に。同じ日本語なのに通じない場所に、意味を通した仕事',
+         '代理店が言う「手続きが面倒」を、システム部門に'
+         '「入力項目が3つ多く、うち2つは既存データから引ける」と翻訳して伝えた'),
+        ('⑤ 合意形成',
+         '利害の違う人間を、ひとつの目的に束ねた経験。誰が何を諦めたかまで',
+         '締切をめぐる営業と事務の対立を、月末3日前で合意させた。'
+         '営業は駆け込み受付を、事務は当日対応を諦めた'),
+        ('⑥ 全体設計',
+         '部分最適の総和を、ひとつの成果に統合した経験',
+         '問い合わせ・入力・確認をひとつの導線にまとめ、'
+         '1件あたりの手続き時間を平均40分から24分にした'),
     ]
     tr = ''.join(f'''<tr><td class="q"><b>{n}</b><span>{d}</span></td>
-      <td class="a"></td></tr>''' for n, _, d in rows)
+      <td class="e">{ex}</td><td class="a"></td></tr>''' for n, d, ex in rows)
     return f'''<div class="page">
   <span class="tag">WORK 02 ─ SECTION 06</span>
   <h1>職務内容に、名前をつける</h1>
   <div class="rule"></div>
   <p class="sub">「なんでもやってきました」は市場で0点です。6つに分けて、
-    <b>具体名詞で</b>書いてください。「部門間を翻訳した」ではなく
-    「営業の要望を開発の仕様に翻訳し、3か月で合意まで持っていった」まで書けると、はじめて名乗れます。</p>
+    <b>具体名詞で</b>書いてください。真ん中の列は、保険代理店のサポート担当の場合の記入例です。
+    <b>この粒度まで書けて、はじめて名乗れます。</b></p>
   <table class="rows">
-    <tr><th>職務内容</th><th>あなたの実績（具体名詞で）</th></tr>
+    <tr><th>職務内容</th><th>記入例</th><th>あなたの実績</th></tr>
     {tr}
   </table>
   <p class="note" style="margin-top:4mm">空欄が3つ以上あるなら、そこが次の90日の投資先です。
-    埋まっている項目は、職務経歴書にその言葉のまま書けます。</p>
+    埋まっている項目は、職務経歴書にその言葉のまま書けます。
+    <b>数字と固有名詞が1つも入っていない行は、まだ書けていません。</b></p>
   {FOOT % 'WORK 02'}
 </div>'''
 
@@ -255,10 +306,10 @@ def work2():
 def work3():
     rows = [
         ('Howを満たす', '要求水準を淡々とクリアする。ここに人生を賭けない'),
-        ('一次情報の導線', '社内異動でも副業でもいい。生身の困りごとに触れる場を1つ'),
-        ('下積みを自己発注', '小さく企画し、自分で決め、自分で刈り取る'),
-        ('週15分のループ', '外した判断を1つ選び、前提を書き出す。予定に固定する'),
-        ('職務内容の棚卸し', 'ワーク2の6項目に、実績を紐づけて名前をつける'),
+        ('一次情報の導線', '生身の困りごとに触れる場を1つ'),
+        ('下積みを自己発注', '小さく企画し、自分で刈り取る'),
+        ('週15分のループ', '外した判断の前提を書き出す'),
+        ('職務内容の棚卸し', 'ワーク2の6項目に紐づける'),
     ]
     tr = ''.join(f'''<tr><td class="n">{n}<span>{d}</span></td>
       <td></td><td></td><td></td></tr>''' for n, d in rows)
@@ -279,13 +330,21 @@ def work3():
   <div class="rule"></div>
   <p class="sub">やることではなく、<b>いつやるか</b>を書きます。
     同時に全部は動きません。1か月目は導線づくりだけで十分です。</p>
+  <div class="ex">
+    <b>記入例 ─ 一次情報の導線</b>
+    <span><i>1〜30日：</i>代理店3社に同行を申し込む（4/15までに連絡）</span>
+    <span><i>31〜60日：</i>月2回の同行を固定。困りごとをその場でメモに起こす</span>
+    <span><i>61〜90日：</i>拾った困りごとを1つ選び、社内に企画として出す</span>
+    <span class="ng"><i>書けていない例：</i>「一次情報に触れる機会を増やす」──
+      いつ・誰に・何をするかが無いものは、90日後にそのまま残ります</span>
+  </div>
   <table class="plan">
     <tr><th>投資先</th><th>1〜30日</th><th>31〜60日</th><th>61〜90日</th></tr>
     {tr}
   </table>
-  <h2 style="margin-top:7mm">90日後に、この4つで自分を点検する</h2>
+  <h2 style="margin-top:4mm">90日後に、この4つで自分を点検する</h2>
   <ul class="checks">{ck}</ul>
-  <p class="note" style="margin-top:5mm">4つとも具体名詞で答えられるなら、市場がどう荒れてもポジションは残ります。
+  <p class="note" style="margin-top:3mm">4つとも具体名詞で答えられるなら、市場がどう荒れてもポジションは残ります。
     答えられなかった項目は、次の90日の投資先です。もう一度この紙を印刷してください。</p>
   {FOOT % 'WORK 03'}
 </div>'''
@@ -324,6 +383,14 @@ def work4():
       <li><i></i>自分が当事者である</li>
     </ul>
   </div>
+  <div class="ex" style="margin-top:3mm">
+    <b>記入例</b>
+    <span><i>取り上げる業務：</i>契約変更手続きの問い合わせ対応（週に10件ほど・社内で完結・自分が一次窓口）</span>
+    <span><i>やる日：</i>4/7 → 4/10 → 4/13 → 4/20 → 4/27 → 5/2 → 5/7。
+      週に1コマ（3〜4時間）を先に予定へ入れると、ちょうど30日に収まります</span>
+    <span class="ng"><i>選ばないほうがいい例：</i>年に1回の契約更改（頻度が低い）／
+      顧客へ直接出す書類（社内で完結しない）／他部署から頼まれた集計（当事者でない）</span>
+  </div>
   <table class="days">
     <tr><th>日</th><th>やること／作るもの</th><th>やる日</th><th>済</th></tr>
     {tr}
@@ -337,29 +404,34 @@ def work4():
 
 def work5():
     slots = [
-        ('① あなたは誰か', '肩書きではなく、立場と担当範囲。例：保険代理店のサポート担当。'
-         '中小の代理店を30社ほど担当している', 2, False),
-        ('② 相手は誰か', '誰が、何に、どのくらいの頻度で困っているか。例：代理店の事務担当者。'
-         '契約変更の手続きで、月に2〜3回問い合わせてくる', 2, False),
-        ('③ 何をしてほしいか', '出力の中身を1つに絞る。例：下に貼る問い合わせに対する、一次回答の案を1つ',
-         2, False),
-        ('④ どういう形で欲しいか', '長さ・体裁・根拠の出し方まで指定する。例：300字以内。'
-         '根拠にした規程の条番号を、最後に並べる', 2, False),
-        ('⑤ 越えない線', '<b>ここが無いと、平気で作文します。</b>例：規程に書かれていないことは'
-         '推測せず「確認が必要」と書く', 2, True),
-        ('⑥ 渡す材料', '<b>ここが無いと、一般論しか返ってきません。</b>'
-         '例：過去の類似回答を3件、要約せずそのまま貼る', 2, True),
+        ('① あなたは誰か', '肩書きではなく、立場と担当範囲',
+         '保険代理店のサポート担当。中小の代理店を30社ほど担当している', 2, False),
+        ('② 相手は誰か', '誰が、何に、どのくらいの頻度で困っているか',
+         '代理店の事務担当者。契約変更の手続きで、月に2〜3回問い合わせてくる', 2, False),
+        ('③ 何をしてほしいか', '出力の中身を1つに絞る。2つ以上頼むと、どちらも浅くなる',
+         '下に貼る問い合わせに対する、一次回答の案を1つ', 2, False),
+        ('④ どういう形で欲しいか', '長さ・体裁・根拠の出し方まで指定する',
+         '300字以内。根拠にした規程の条番号を、最後に並べる', 2, False),
+        ('⑤ 越えない線', '<b>ここが無いと、平気で作文します。</b>規程の外に出たときの振る舞いを、先に決める',
+         '規程に書かれていないことは推測せず「確認が必要」と書く', 2, True),
+        ('⑥ 渡す材料', '<b>ここが無いと、一般論しか返ってきません。</b>要約せず、そのまま貼るのが要点',
+         '過去の類似回答を3件、原文のまま貼る（要約した時点で、判断の分かれ目が消える）', 2, True),
     ]
-    sl = ''.join(f'''<div class="slot{' hi' if hi else ''}">
-      <h3>{t}</h3><p>{d}</p>{'<div class="line"></div>' * n}
-    </div>''' for t, d, n, hi in slots)
+    def box(t, d, ex, n, hi):
+        return (f'<div class="slot{" hi" if hi else ""}">'
+                f'<h3>{t}</h3><p>{d}</p>'
+                f'<div class="ex"><b>記入例</b><span>{ex}</span></div>'
+                + '<div class="line"></div>' * n + '</div>')
+    four = ''.join(box(*x) for x in slots[:4])
+    two = ''.join(box(*x) for x in slots[4:])
     return f'''<div class="page">
   <span class="tag">WORK 05 ─ SECTION 13</span>
   <h1>6日目に書く、依頼文の実物</h1>
   <div class="rule"></div>
   <p class="sub">ワーク4の6〜10日で書くものです。ここで書いた文が、そのまま型の原型になります。
     <b>①〜④が4点セット、⑤と⑥は実務で必ず要る2つ</b>です。</p>
-  <div class="slots">{sl}</div>
+  <div class="slots">{four}</div>
+  <div class="slots2">{two}</div>
   <p class="note" style="margin-top:3mm">1発で当てようとしないでください。
     過去10件で試して、外した回だけ理由を書いて直す。この往復が型をつくります。
     却下した理由を書き残した紙が、そのまま「検証の基準」の証拠になります。</p>
