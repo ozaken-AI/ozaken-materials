@@ -22,6 +22,7 @@
 """
 import html as H
 import os
+import zlib
 
 from crossref_data import CONCEPTS, GROUPS
 
@@ -44,6 +45,16 @@ def _cell(rel, name, n, canon):
     if n >= 3:
         return ('<td class="v v2" title="%d回">●</td>' % n, 2)
     return ('<td class="v v1" title="%d回">・</td>' % n, 1)
+
+
+def _slug(name):
+    """概念名から、飛び先にできる短い印を作る。
+
+    日本語をそのまま id にすると参照側で壊れる。
+    hash() は実行ごとに値が変わるので、毎回ちがう id が出て差分が濁る。
+    内容だけで決まる crc32 を使う。
+    """
+    return '%08x' % (zlib.crc32(name.encode('utf-8')) & 0xffffffff)
 
 
 def _rank(touch, heavy, has_canon):
@@ -83,51 +94,57 @@ def build(rows, edges, stamp):
 
     maxtouch = max([a[2] for a in agg.values()] + [1])
 
-    # ── 1. 手薄なところ ──
+    # ── 1. 手薄なところ。名前だけ1行に並べる ──
+    #    ここでカードにすると、下の一覧と同じ概念をもう一度読むことになる
     todo = []
     for n in names:
         canon, ok, touch, heavy = agg[n]
         key, label = _rank(touch, heavy, ok)
         if key in ('nocanon', 'empty', 'thin'):
-            why = {'nocanon': '正典に指定した資料が見つかりません（%s）' % canon,
-                   'empty': 'この概念に触れている資料が、正典のほかにありません',
-                   'thin': '触れているのは %d 本だけです' % touch}[key]
-            todo.append('<li class="k-%s"><b>%s</b><span class="lb">%s</span>'
-                        '<span class="wy">%s</span></li>'
-                        % (key, H.escape(n), H.escape(label), H.escape(why)))
-    todo_html = ('<ul class="todo">%s</ul>' % ''.join(todo)) if todo else \
+            todo.append('<a class="chip k-%s" href="#c-%s">%s<b>%s</b></a>'
+                        % (key, _slug(n), H.escape(n),
+                           '正典なし' if key == 'nocanon' else
+                           '0本' if key == 'empty' else '%d本' % touch))
+    todo_html = ('<div class="chips">%s</div>' % ''.join(todo)) if todo else \
         '<p class="none">手薄な概念はありません。どのテーマにも正典があり、'\
         '複数の資料がそこへ寄っています。</p>'
 
-    # ── 2. テーマ別の網羅性 ──
+    # ── 2. テーマ別の網羅性。**カードではなく、起点のそろった表にする** ──
+    #    カードを格子に並べると、帯の左端が揃わないので概念どうしを比べられない。
+    #    網羅性を見るページで比べられないのは致命的なので、1行1概念の表にした。
+    #    群の中は本数の少ない順。手薄なものが自然に上へ来る
     blocks = []
     for g, ns in GROUPS:
         ns = [n for n in ns if n in CONCEPTS]
         if not ns:
             continue
-        cards = []
+        ns = sorted(ns, key=lambda n: (agg[n][1], agg[n][2], agg[n][3]))
+        lines = []
         for n in ns:
             canon, ok, touch, heavy = agg[n]
             key, label = _rank(touch, heavy, ok)
-            desc = CONCEPTS[n][2]
             w = int(touch * 100 / maxtouch)
             wh = int(heavy * 100 / maxtouch)
-            canon_html = ('<a class="cn" href="%s">%s</a>'
+            canon_html = ('<a href="%s">%s</a>'
                           % (H.escape(canon), H.escape(title_of.get(canon, canon)))
-                          if ok else '<span class="cn ng">正典なし</span>')
-            cards.append(
-                '<div class="cc k-%s"><div class="cc-h"><b>%s</b>'
-                '<span class="lb">%s</span></div>'
-                '<p class="cc-d">%s</p>%s'
-                '<div class="cc-b"><i style="width:%d%%"></i>'
-                '<u style="width:%d%%"></u></div>'
-                '<div class="cc-n"><span>%d 本が触れる</span>'
-                '<span>%d 本が厚く扱う</span></div></div>'
-                % (key, H.escape(n), H.escape(label), H.escape(desc),
-                   canon_html, w, wh, touch, heavy))
-        blocks.append('<h3 class="gh">%s<span>%d の概念</span></h3>'
-                      '<div class="ccs">%s</div>'
-                      % (H.escape(g), len(ns), ''.join(cards)))
+                          if ok else '<span class="ng">正典が見つかりません</span>')
+            lines.append(
+                '<tr class="k-%s" id="c-%s">'
+                '<td class="st"><span>%s</span></td>'
+                '<td class="nm"><b>%s</b><em>%s</em></td>'
+                '<td class="cn">%s</td>'
+                '<td class="bw"><span class="bb"><i style="width:%d%%"></i>'
+                '<u style="width:%d%%"></u></span></td>'
+                '<td class="n1">%d</td><td class="n2">%d</td></tr>'
+                % (key, _slug(n), H.escape(label), H.escape(n),
+                   H.escape(CONCEPTS[n][2]), canon_html, w, wh, touch, heavy))
+        blocks.append(
+            '<h3 class="gh">%s<span>%d の概念</span></h3>'
+            '<table class="cov"><thead><tr>'
+            '<th class="st">状態</th><th class="nm">概念</th><th class="cn">正典</th>'
+            '<th class="bw">触れている資料</th><th class="n1">触れる</th>'
+            '<th class="n2">厚く</th></tr></thead><tbody>%s</tbody></table>'
+            % (H.escape(g), len(ns), ''.join(lines)))
 
     # ── 格子（詳細）。ここは前の版のまま ──
     head1, head2 = [], []
@@ -233,52 +250,67 @@ h2 em{font-style:normal;font-family:var(--fe);font-size:.7rem;font-weight:700;
 .stat.warn{border-color:rgba(255,93,106,.5);background:rgba(226,55,68,.12)}
 .stat.warn b{color:var(--red-bright)}
 
-/* ── 手薄なところ ── */
-ul.todo{list-style:none;display:grid;gap:.5rem;
-  grid-template-columns:repeat(auto-fill,minmax(310px,1fr))}
-ul.todo li{padding:.7rem .95rem;border-radius:11px;background:rgba(255,255,255,.05);
-  border:1px solid rgba(216,228,240,.16);border-left-width:3px}
-ul.todo li b{font-size:.92rem;margin-right:.5em}
-ul.todo li .lb{font-family:var(--fe);font-size:.6rem;font-weight:700;letter-spacing:.12em;
-  padding:.15em .6em;border-radius:999px;background:rgba(255,255,255,.1)}
-ul.todo li .wy{display:block;font-size:.76rem;color:rgba(216,228,240,.68);line-height:1.7}
-li.k-nocanon{border-left-color:var(--red-bright)}
-li.k-nocanon .lb{background:rgba(226,55,68,.3);color:#fff}
-li.k-empty{border-left-color:var(--amber)}
-li.k-empty .lb{background:rgba(201,118,47,.32)}
-li.k-thin{border-left-color:rgba(159,198,245,.6)}
+/* ── 手薄なところ。カードにすると下の表と二度読みになるので、名前だけ並べる ── */
+.chips{display:flex;flex-wrap:wrap;gap:.4rem}
+.chips .chip{display:inline-flex;align-items:baseline;gap:.45em;
+  padding:.34em .8em;border-radius:999px;font-size:.82rem;text-decoration:none;
+  background:rgba(255,255,255,.06);border:1px solid rgba(216,228,240,.2);color:#fff}
+.chips .chip b{font-family:var(--fe);font-size:.62rem;font-weight:700;letter-spacing:.06em;
+  color:rgba(216,228,240,.6)}
+.chips .chip:hover{border-color:var(--red-bright)}
+.chips .chip.k-nocanon{border-color:rgba(255,93,106,.65);background:rgba(226,55,68,.16)}
+.chips .chip.k-nocanon b{color:var(--red-bright)}
+.chips .chip.k-empty{border-color:rgba(201,118,47,.6);background:rgba(201,118,47,.14)}
 
 /* ── テーマ別の網羅性 ── */
-.gh{font-size:.9rem;font-weight:700;margin:1.6rem 0 .6rem;
-  display:flex;align-items:baseline;gap:.8rem;
-  border-bottom:1px solid rgba(216,228,240,.14);padding-bottom:.4rem}
+.gh{font-size:.95rem;font-weight:700;margin:2rem 0 .5rem;
+  display:flex;align-items:baseline;gap:.8rem}
 .gh span{font-family:var(--fe);font-size:.64rem;font-weight:600;letter-spacing:.1em;
-  color:rgba(216,228,240,.55)}
-.ccs{display:grid;gap:.6rem;grid-template-columns:repeat(auto-fill,minmax(258px,1fr))}
-.cc{padding:.8rem .95rem;border-radius:12px;background:rgba(255,255,255,.05);
-  border:1px solid rgba(216,228,240,.15);border-top-width:3px}
-.cc-h{display:flex;align-items:baseline;gap:.5rem;flex-wrap:wrap}
-.cc-h b{font-size:.92rem;line-height:1.5}
-.cc-h .lb{font-family:var(--fe);font-size:.58rem;font-weight:700;letter-spacing:.1em;
-  padding:.1em .55em;border-radius:999px;background:rgba(255,255,255,.1);
-  color:rgba(216,228,240,.85)}
-.cc-d{font-size:.72rem;line-height:1.65;color:rgba(216,228,240,.6);margin:.25rem 0 .45rem}
-.cc a.cn,.cc .cn{display:block;font-size:.74rem;line-height:1.5;color:#9fc6f5;
-  text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.cc a.cn:hover{color:#fff;text-decoration:underline}
-.cc .cn.ng{color:var(--red-bright);font-weight:700}
-.cc-b{position:relative;height:6px;border-radius:3px;background:rgba(255,255,255,.09);
-  margin:.6rem 0 .35rem;overflow:hidden}
-.cc-b i,.cc-b u{position:absolute;left:0;top:0;height:100%;border-radius:3px}
-.cc-b i{background:rgba(159,198,245,.55)}
-.cc-b u{background:var(--red-bright);opacity:.85}
-.cc-n{display:flex;justify-content:space-between;font-family:var(--fe);
-  font-size:.62rem;letter-spacing:.06em;color:rgba(216,228,240,.55)}
-.cc.k-rich{border-top-color:var(--teal)}
-.cc.k-fair{border-top-color:rgba(159,198,245,.7)}
-.cc.k-thin{border-top-color:var(--amber)}
-.cc.k-empty{border-top-color:var(--amber)}
-.cc.k-nocanon{border-top-color:var(--red-bright);background:rgba(226,55,68,.1)}
+  color:rgba(216,228,240,.5)}
+table.cov{width:100%;border-collapse:collapse;font-size:.84rem}
+table.cov thead th{font-family:var(--fe);font-size:.6rem;font-weight:700;
+  letter-spacing:.12em;color:rgba(216,228,240,.45);text-align:left;
+  padding:.2rem .7rem .45rem;border-bottom:1px solid rgba(216,228,240,.16);
+  white-space:nowrap}
+table.cov tbody tr{border-bottom:1px solid rgba(216,228,240,.08)}
+table.cov tbody tr:hover{background:rgba(255,255,255,.045)}
+table.cov td{padding:.6rem .7rem;vertical-align:middle}
+/* 状態は左端の色帯で示す。ここが揃っていると、上から下へ目で追える */
+td.st{width:76px;padding-left:0}
+td.st span{display:inline-block;width:100%;text-align:center;
+  font-size:.68rem;font-weight:700;padding:.2em 0;border-radius:5px;
+  background:rgba(255,255,255,.08);color:rgba(216,228,240,.8)}
+tr.k-rich td.st span{background:rgba(47,143,138,.3);color:#7fd6d0}
+tr.k-fair td.st span{background:rgba(159,198,245,.2);color:#bcd7f6}
+tr.k-thin td.st span{background:rgba(201,118,47,.3);color:#eab27a}
+tr.k-empty td.st span{background:rgba(201,118,47,.42);color:#f2c795}
+tr.k-nocanon td.st span{background:rgba(226,55,68,.42);color:#ffc2c7}
+td.nm{width:23%;min-width:150px}
+td.nm b{display:block;font-size:.9rem;font-weight:700;line-height:1.5}
+td.nm em{display:block;font-style:normal;font-size:.7rem;line-height:1.5;
+  color:rgba(216,228,240,.5)}
+td.cn{width:28%;min-width:170px;font-size:.78rem;line-height:1.5}
+td.cn a{color:#9fc6f5;text-decoration:none;display:block;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+td.cn a:hover{color:#fff;text-decoration:underline}
+td.cn .ng{color:var(--red-bright);font-weight:700}
+/* **帯の左端をそろえる。** カードを並べていたときは起点がばらばらで、
+   概念どうしの多い少ないが目で比べられなかった */
+td.bw{min-width:130px}
+.bb{position:relative;display:block;height:9px;border-radius:5px;
+  background:rgba(255,255,255,.08);overflow:hidden}
+.bb i,.bb u{position:absolute;left:0;top:0;height:100%;border-radius:5px}
+.bb i{background:rgba(159,198,245,.6)}
+.bb u{background:var(--red-bright);opacity:.9}
+td.n1,td.n2{width:52px;text-align:right;font-family:var(--fe);font-size:.86rem;
+  font-weight:700}
+td.n1{color:#bcd7f6}
+td.n2{color:var(--red-bright)}
+tr.k-empty td.n1,tr.k-nocanon td.n1{color:rgba(216,228,240,.35)}
+@media(max-width:760px){
+  td.cn,th.cn{display:none}
+  td.nm em{display:none}
+}
 
 /* ── 詳細（折りたたみ） ── */
 details.more{margin-top:2.2rem;border-radius:14px;border:1px solid rgba(216,228,240,.16);
@@ -386,14 +418,15 @@ footer a:hover{color:#fff}
   </div>
 
   <h2><em>GAPS</em>手薄なところ</h2>
-  <p class="note">ここに出ているものが、次に書くべき資料か、既存の資料に足すべき節です。
-    <b>正典なし</b>は指定した資料が見つからない状態、<b>正典だけ</b>は
-    その概念に触れている資料がほかに無い状態です。</p>
+  <p class="note">次に書くべき資料か、既存の資料に足すべき節の候補です。
+    名前を押すと、下の一覧のその行へ飛びます。</p>
   __TODO__
 
   <h2><em>COVERAGE</em>テーマ別の網羅性</h2>
-  <p class="note">薄い青の帯が「触れている資料」、赤の帯が「厚く扱う資料」。
-    赤が伸びている概念ほど、資料どうしで主張を揃える必要があります。</p>
+  <p class="note">1行が1つの概念です。<b>帯の左端はそろえてあるので、
+    上から下へ見ていけば多い少ないがそのまま比べられます</b>。
+    薄い青が「触れている資料」、赤が「厚く扱う資料」。
+    群の中は本数の少ない順なので、手薄なものが上に来ます。</p>
   __GROUPS__
 
   <h2><em>ORPHANS</em>孤立している資料</h2>
