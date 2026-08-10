@@ -305,6 +305,10 @@ a { color: inherit; text-decoration: none; }
 .sec-light .hot { color: var(--red); }
 
 .text-azure { color: var(--azure); }
+.text-red { color: var(--red); }
+/* 暗い面では #e23744 が地に沈む。表紙の強調と同じ明るい赤に替える */
+.sec-navy .text-red, .sec-download .text-red { color: var(--red-bright); }
+.sec-navy .text-azure, .sec-download .text-azure { color: var(--azure-pale); }
 .fw-bold { font-weight: 700; }
 
 footer {
