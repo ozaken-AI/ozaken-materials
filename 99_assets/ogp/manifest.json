@@ -256,6 +256,22 @@
   "cat": "PRODUCT"
  },
  {
+  "rel": "04_practice/build-a-bot.html",
+  "file": "2bda3d5cf1.jpg",
+  "title": "特化型チャットボットの作り方 ─ 前提を渡せば、毎回説明しなくてよくなる",
+  "desc": "GPTs・Gems・Copilot Studio。製品は違っても、作るものは同じ。題材の選び方、指示文の6つの欄、ナレッジの入れ方と入れてはいけないもの、「答えられない」の設計、過去10件での試し方、配って使われるまで、半年後に嘘をつきはじめないための更新まで。30日で1体つくる手順に落とす。",
+  "card": "GPTs・Gems・Copilot Studio。製品は違っても、作るものは同じ。題材の選び方、指示文の6つの欄、ナレッジの入れ方と入れてはいけないもの、「答えられな…",
+  "cat": "PRACTICE"
+ },
+ {
+  "rel": "04_practice/build-a-workflow.html",
+  "file": "2031c1aeb8.jpg",
+  "title": "ワークフローの作り方 ─ 動かし方より、止め方を先に決める",
+  "desc": "Power Automate・Zapier・Dify。起動が人の手を離れた瞬間、必要になるものが増える。トリガーの選び方、分岐と例外の置き方、人に戻す線の引き方、失敗したときに気づく仕組み、止め方と巻き戻し方、棚卸しまで。ボットとの違いから、30日で1本つくる手順に落とす。",
+  "card": "Power Automate・Zapier・Dify。起動が人の手を離れた瞬間、必要になるものが増える。トリガーの選び方、分岐と例外の置き方、人に戻す線の引き方、失敗…",
+  "cat": "PRACTICE"
+ },
+ {
   "rel": "04_practice/context-harness-engineering.html",
   "file": "3b9d68da44.jpg",
   "title": "コンテキスト＆ハーネスエンジニアリング ─ プロンプトの、その先へ",
