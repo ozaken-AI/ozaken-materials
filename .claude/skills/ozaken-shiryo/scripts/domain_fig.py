@@ -723,120 +723,193 @@ def fig_stairs(steps, title, cap, dark=False, note=None):
 # ------------------------------------------------------------------
 # F27  次元で見せる段階（点 → 線 → 面 → 立体）
 # ------------------------------------------------------------------
-def fig_dims(steps, title, cap, dark=False, note=None, split=1,
-             axis=('人が段取りを決める', 'AIが自分で決める'),
-             axis_title='段取りと目標を、誰がどこまで決めるか',
-             band=('使う ── プロンプトが主役', '任せる ── 設計と監督が主役')):
+def fig_dims(steps, title, cap, dark=False, note=None, split=1, uid='dims',
+             marks=None,
+             axis=('人がルートを決める', 'AIがルートも探索する'),
+             axis_title=None,
+             band=('使うAI', '任せるAI')):
     """steps: [(段階の表記, 形の種類, 名前, 製品, 説明, 差し色index)]
 
     形の種類は dot / line / chain / plane / cube。**その次元の図形を実際に描く。**
     「点→線→面→立体」は0次元から3次元になぞらえた比喩なので、
     棒の高さで表すより、点・線・面・立方体をそのまま出したほうが一瞬で伝わる。
 
-    split は「使う」と「任せる」の境目（この番号の手前で切る）。
-    下の帯は、段取りを決めるのが人からAIへ移っていく度合いを示す。
+    **下の帯は切らずに、紺から赤へ一続きにする。**
+    「使う」と「任せる」は白黒で分かれるものではなく、
+    どこまで人がルートを決めるかが少しずつ移っていくグラデーションだから。
+    段ごとの短い注記は marks で渡す（['ほぼ全て人が決める', …]）。
+
+    split は境目の位置（この番号の手前に破線を落とす）。
+    同じ面に2つ置くときは uid を変える。グラデーションのidが衝突する。
     """
     fg = WHITE if dark else INK
     sub = 'rgba(255,255,255,.62)' if dark else MUTED
-    edge = 'rgba(255,255,255,.18)' if dark else 'rgba(46,84,150,.2)'
-    card = 'rgba(255,255,255,.06)' if dark else WHITE
+    edge = 'rgba(255,255,255,.18)' if dark else 'rgba(46,84,150,.16)'
+    card = 'rgba(255,255,255,.06)' if dark else 'rgba(46,84,150,.045)'
     acc = accents(dark)
+    cold = PALE if dark else NAVY          # 帯の「使う」側。暗い面では紺が沈む
+    hot = ACCENTS_ON_NAVY[1] if dark else RED
     n = len(steps)
     gap = 14
-    w = int((868 - (n - 1) * gap) / n)
-    GTOP, GH = 62, 112
-    yb = GTOP + GH
+    w = (868 - (n - 1) * gap) / n
+    X0 = 16
+    CT, CH = 16, 190                       # カードの上端と高さ
+    MOTIF = CT + CH + 40                   # 矢印の意匠
+    CCY, CR = CT + CH + 112, 34            # 次元の図形を囲む円
+    DIMY = CCY + CR + 30                   # 点・線・面・立体
+    BARY = DIMY + 18
+    MARKY = BARY + 28
     parts = []
+
+    def cx_of(i):
+        return X0 + i * (w + gap) + w / 2.0
 
     def glyph(kind, cx, cy, c):
         o = []
         if kind == 'dot':
-            o.append('<circle cx="%d" cy="%d" r="9" fill="%s"/>' % (cx, cy, c))
+            o.append('<circle cx="%.1f" cy="%d" r="6" fill="%s"/>' % (cx, cy, c))
         elif kind == 'line':
-            o.append('<line x1="%d" y1="%d" x2="%d" y2="%d" stroke="%s" '
-                     'stroke-width="2.5"/>' % (cx - 30, cy, cx + 30, cy, c))
-            for dx in (-30, 30):
-                o.append('<circle cx="%d" cy="%d" r="7" fill="%s"/>' % (cx + dx, cy, c))
+            o.append('<line x1="%.1f" y1="%d" x2="%.1f" y2="%d" stroke="%s" '
+                     'stroke-width="2.2"/>' % (cx - 15, cy, cx + 15, cy, c))
+            for dx in (-15, 15):
+                o.append('<circle cx="%.1f" cy="%d" r="5" fill="%s"/>' % (cx + dx, cy, c))
         elif kind == 'chain':
-            xs = [cx - 45, cx - 15, cx + 15, cx + 45]
-            o.append('<polyline points="%s" fill="none" stroke="%s" stroke-width="2.5"/>'
-                     % (' '.join('%d,%d' % (x, cy) for x in xs), c))
+            xs = [cx - 18, cx - 6, cx + 6, cx + 18]
+            o.append('<polyline points="%s" fill="none" stroke="%s" stroke-width="2.2"/>'
+                     % (' '.join('%.1f,%d' % (x, cy) for x in xs), c))
             for x in xs:
-                o.append('<circle cx="%d" cy="%d" r="6" fill="%s"/>' % (x, cy, c))
+                o.append('<circle cx="%.1f" cy="%d" r="4.2" fill="%s"/>' % (x, cy, c))
         elif kind == 'plane':
-            o.append('<rect x="%d" y="%d" width="76" height="52" rx="3" fill="%s" '
-                     'fill-opacity=".16" stroke="%s" stroke-width="2"/>'
-                     % (cx - 38, cy - 26, c, c))
-            for dx in (-38 + 25, -38 + 50):
-                o.append('<line x1="%d" y1="%d" x2="%d" y2="%d" stroke="%s" '
-                         'stroke-width="1" stroke-opacity=".55"/>'
-                         % (cx + dx, cy - 26, cx + dx, cy + 26, c))
-            o.append('<line x1="%d" y1="%d" x2="%d" y2="%d" stroke="%s" '
-                     'stroke-width="1" stroke-opacity=".55"/>'
-                     % (cx - 38, cy, cx + 38, cy, c))
-            for dx in (-13, 12):
-                for dy in (-13, 13):
-                    o.append('<circle cx="%d" cy="%d" r="3.5" fill="%s"/>'
+            o.append('<rect x="%.1f" y="%d" width="38" height="30" rx="2" fill="%s" '
+                     'fill-opacity=".14" stroke="%s" stroke-width="1.8"/>'
+                     % (cx - 19, cy - 15, c, c))
+            o.append('<line x1="%.1f" y1="%d" x2="%.1f" y2="%d" stroke="%s" '
+                     'stroke-width="1" stroke-opacity=".5"/>'
+                     % (cx, cy - 15, cx, cy + 15, c))
+            o.append('<line x1="%.1f" y1="%d" x2="%.1f" y2="%d" stroke="%s" '
+                     'stroke-width="1" stroke-opacity=".5"/>'
+                     % (cx - 19, cy, cx + 19, cy, c))
+            for dx in (-9, 9):
+                for dy in (-7, 7):
+                    o.append('<circle cx="%.1f" cy="%d" r="2.6" fill="%s"/>'
                              % (cx + dx, cy + dy, c))
         elif kind == 'cube':
-            top = '%d,%d %d,%d %d,%d %d,%d' % (cx - 34, cy - 12, cx, cy - 34,
-                                               cx + 34, cy - 12, cx, cy + 10)
-            left = '%d,%d %d,%d %d,%d %d,%d' % (cx - 34, cy - 12, cx, cy + 10,
-                                                cx, cy + 38, cx - 34, cy + 16)
-            right = '%d,%d %d,%d %d,%d %d,%d' % (cx + 34, cy - 12, cx, cy + 10,
-                                                 cx, cy + 38, cx + 34, cy + 16)
-            for pts, op in ((left, '.16'), (right, '.30'), (top, '.46')):
+            top = '%.1f,%d %.1f,%d %.1f,%d %.1f,%d' % (cx - 19, cy - 7, cx, cy - 19,
+                                                       cx + 19, cy - 7, cx, cy + 5)
+            left = '%.1f,%d %.1f,%d %.1f,%d %.1f,%d' % (cx - 19, cy - 7, cx, cy + 5,
+                                                        cx, cy + 21, cx - 19, cy + 9)
+            right = '%.1f,%d %.1f,%d %.1f,%d %.1f,%d' % (cx + 19, cy - 7, cx, cy + 5,
+                                                         cx, cy + 21, cx + 19, cy + 9)
+            for pts, op in ((left, '.14'), (right, '.28'), (top, '.44')):
                 o.append('<polygon points="%s" fill="%s" fill-opacity="%s" '
-                         'stroke="%s" stroke-width="1.6" stroke-linejoin="round"/>'
+                         'stroke="%s" stroke-width="1.4" stroke-linejoin="round"/>'
                          % (pts, c, op, c))
         return ''.join(o)
 
-    bx = 16 + split * (w + gap) - gap / 2.0        # 「使う」と「任せる」の境目
-    parts.append('<text x="16" y="34" fill="%s" font-size="10.5" font-weight="700" '
-                 'letter-spacing="1.4">%s</text>' % (sub, esc(band[0])))
-    parts.append('<text x="%.1f" y="34" fill="%s" font-size="10.5" font-weight="700" '
-                 'letter-spacing="1.4">%s</text>' % (bx + 12, fg, esc(band[1])))
-    parts.append('<line x1="16" y1="44" x2="%.1f" y2="44" stroke="%s" stroke-width="1"/>'
-                 % (bx - 12, edge))
-    parts.append('<line x1="%.1f" y1="44" x2="884" y2="44" stroke="%s" stroke-width="1.8"/>'
-                 % (bx + 12, PALE if dark else AZURE))
-    parts.append('<line x1="%.1f" y1="20" x2="%.1f" y2="%d" stroke="%s" '
-                 'stroke-width="1" stroke-dasharray="4 5" class="a-flow"/>'
-                 % (bx, bx, yb + 198, edge))
+    DIMNAME = {'dot': '点', 'line': '線', 'chain': '線', 'plane': '面', 'cube': '立体'}
+
+    # 紺 → 赤の一続きの帯。座標系を固定して、5つに割っても色がつながるようにする
+    parts.append('<defs><linearGradient id="%s-g" gradientUnits="userSpaceOnUse" '
+                 'x1="%d" y1="0" x2="884" y2="0">'
+                 '<stop offset="0" stop-color="%s"/>'
+                 '<stop offset="0.5" stop-color="%s"/>'
+                 '<stop offset="1" stop-color="%s"/></linearGradient></defs>'
+                 % (uid, X0, cold, AZURE, hot))
 
     for i, (lv, kind, name, prod, desc, ai) in enumerate(steps):
         c = acc[ai % len(acc)]
-        x = 16 + i * (w + gap)
-        parts.append('<rect x="%d" y="%d" width="%d" height="%d" rx="12" fill="%s" '
-                     'stroke="%s" stroke-width="1"/>' % (x, GTOP, w, GH, card, edge))
-        parts.append(glyph(kind, x + w // 2, GTOP + GH // 2, c))
-        parts.append('<text x="%d" y="%d" fill="%s" font-size="10" font-weight="700" '
-                     'letter-spacing="1.6">%s</text>' % (x + 2, yb + 26, c, esc(lv)))
-        parts.append(lines(name, x + 2, yb + 52, 10, 20, fill=fg, font_size='15',
-                           font_weight='700'))
-        parts.append(lines(desc, x + 2, yb + 100, 15, 15, fill=sub, font_size='10.5'))
-        parts.append(lines(prod, x + 2, yb + 152, 16, 14, fill=c, font_size='10',
-                           font_weight='700'))
+        x = X0 + i * (w + gap)
+        cx = cx_of(i)
+        parts.append('<rect x="%.1f" y="%d" width="%.1f" height="%d" rx="10" fill="%s" '
+                     'stroke="%s" stroke-width="1"/>' % (x, CT, w, CH, card, edge))
+        parts.append('<text x="%.1f" y="%d" fill="%s" font-size="9.5" font-weight="700" '
+                     'letter-spacing="1.6" text-anchor="middle">%s</text>'
+                     % (cx, CT + 22, c, esc(lv)))
+        # 行数が段ごとに違うので、上から積み上げる。
+        # 固定の座標に置くと、製品名が3行に折れた段だけ説明と重なる
+        ty = CT + 46
+        nl = wrap(name, 12)
+        parts.append(lines(name, cx, ty, 12, 19, fill=fg, font_size='13.5',
+                           font_weight='700', text_anchor='middle'))
+        ty += (len(nl) - 1) * 19 + 26
+        # 製品名は「／」で折る。ここは意味の切れ目なので、字数で折るより読みやすい
+        pl = []
+        for k, piece in enumerate(str(prod).split('／')):
+            piece = piece.strip()
+            if piece:
+                pl += wrap(piece if k == 0 else '／' + piece, 21)
+        parts.append('<text x="%.1f" y="%d" fill="%s" font-size="10" font-weight="700" '
+                     'text-anchor="middle">%s</text>'
+                     % (cx, ty, c, ''.join('<tspan x="%.1f" dy="%s">%s</tspan>'
+                                           % (cx, 0 if k == 0 else 15, esc(l))
+                                           for k, l in enumerate(pl))))
+        ty += (len(pl) - 1) * 15 + 22
+        parts.append(lines(desc, cx, ty, 15, 14, fill=sub, font_size='10',
+                           text_anchor='middle'))
 
-    ay = yb + 206
-    parts.append('<text x="16" y="%d" fill="%s" font-size="10" font-weight="700" '
-                 'letter-spacing="1.4">%s</text>' % (ay - 10, sub, esc(axis_title)))
-    for i in range(n):
-        x = 16 + i * (w + gap)
-        parts.append('<rect x="%d" y="%d" width="%d" height="9" rx="4.5" fill="%s" '
-                     'fill-opacity="%.2f" class="a-grow"/>'
-                     % (x, ay, w, PALE if dark else AZURE, .22 + i * .17))
-    parts.append('<text x="16" y="%d" fill="%s" font-size="10.5">%s</text>'
-                 % (ay + 28, sub, esc(axis[0])))
-    parts.append('<text x="884" y="%d" fill="%s" font-size="10.5" text-anchor="end">%s</text>'
-                 % (ay + 28, sub, esc(axis[1])))
-    h = ay + 52
+        # カードから円へ落ちる破線
+        parts.append('<line x1="%.1f" y1="%d" x2="%.1f" y2="%d" stroke="%s" '
+                     'stroke-width="1" stroke-dasharray="3 4" class="a-flow"/>'
+                     % (cx, CT + CH + 6, cx, CCY - CR - 6, edge))
+        # 矢印の意匠。段が進むほど、右向きの流れが強くなる
+        parts.append('<g class="a-flow">')
+        for k in range(3):
+            tx = cx - 44 + k * 9
+            parts.append('<polygon points="%.1f,%d %.1f,%d %.1f,%d" fill="%s" '
+                         'fill-opacity=".55"/>'
+                         % (tx, MOTIF - 4, tx + 5, MOTIF, tx, MOTIF + 4, c))
+        parts.append('<circle cx="%.1f" cy="%d" r="5" fill="%s"/>' % (cx - 12, MOTIF, c))
+        for k in range(3):
+            bx2 = cx + 2 + k * 5
+            parts.append('<line x1="%.1f" y1="%d" x2="%.1f" y2="%d" stroke="%s" '
+                         'stroke-width="2" stroke-opacity=".55"/>'
+                         % (bx2, MOTIF - 5, bx2, MOTIF + 5, c))
+        parts.append('<path d="M%.1f %d L%.1f %d M%.1f %d l-6 -6 M%.1f %d l-6 6" '
+                     'stroke="%s" stroke-width="2.4" fill="none" stroke-linecap="round"/>'
+                     % (cx + 22, MOTIF, cx + 42, MOTIF, cx + 42, MOTIF, cx + 42, MOTIF, c))
+        parts.append('</g>')
+
+        parts.append('<circle cx="%.1f" cy="%d" r="%d" fill="%s" stroke="%s" '
+                     'stroke-width="1" class="a-pop"/>' % (cx, CCY, CR, card, edge))
+        parts.append(glyph(kind, cx, CCY, c))
+        parts.append('<text x="%.1f" y="%d" fill="%s" font-size="19" font-weight="700" '
+                     'text-anchor="middle">%s</text>'
+                     % (cx, DIMY, fg, esc(DIMNAME.get(kind, ''))))
+
+        parts.append('<rect x="%.1f" y="%d" width="%.1f" height="9" rx="4.5" '
+                     'fill="url(#%s-g)" class="a-grow"/>' % (x, BARY, w, uid))
+        if marks and i < len(marks):
+            parts.append(lines(marks[i], cx, MARKY, 13, 13, fill=sub, font_size='9.5',
+                               font_weight='700', text_anchor='middle'))
+
+    # 境目。白黒では分かれないので、線ではなく細い破線で「このあたり」を示す
+    bx = X0 + split * (w + gap) - gap / 2.0
+    parts.append('<line x1="%.1f" y1="%d" x2="%.1f" y2="%d" stroke="%s" '
+                 'stroke-width="1" stroke-dasharray="4 6"/>'
+                 % (bx, CT - 4, bx, BARY + 9, edge))
+
+    h = MARKY + (28 if marks else 8)
+    parts.append('<text x="%d" y="%d" fill="%s" font-size="11.5" font-weight="700" '
+                 'letter-spacing="1.2">%s</text>' % (X0, h, cold if not dark else PALE,
+                                                     esc(band[0])))
+    parts.append('<text x="%d" y="%d" fill="%s" font-size="10">%s</text>'
+                 % (X0 + 62, h, sub, esc(axis[0])))
+    parts.append('<text x="884" y="%d" fill="%s" font-size="11.5" font-weight="700" '
+                 'letter-spacing="1.2" text-anchor="end">%s</text>' % (h, hot, esc(band[1])))
+    parts.append('<text x="%d" y="%d" fill="%s" font-size="10" text-anchor="end">%s</text>'
+                 % (884 - 62, h, sub, esc(axis[1])))
+    h += 12
+    if axis_title:
+        h += 20
+        parts.append('<text x="%d" y="%d" fill="%s" font-size="10" font-weight="700" '
+                     'letter-spacing="1.4">%s</text>' % (X0, h, sub, esc(axis_title)))
     if note:
-        parts.append(lines(note, 16, h + 4, 78, 16, fill=sub, font_size='10.5'))
-        h += 26
+        h += 20
+        parts.append(lines(note, X0, h, 78, 16, fill=sub, font_size='10.5'))
+        h += 16
     return _fig(title, cap,
         '<svg viewBox="0 0 900 %d" xmlns="http://www.w3.org/2000/svg" role="img">'
-        '%s</svg>' % (h, ''.join(parts)))
+        '%s</svg>' % (h + 14, ''.join(parts)))
 
 
 # ------------------------------------------------------------------
