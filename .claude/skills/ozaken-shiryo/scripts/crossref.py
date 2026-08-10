@@ -27,7 +27,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import lockbox
 import registry
-from crossref_data import CONCEPTS, NOT_DOCS, STOP
+from crossref_data import CONCEPTS, NO_CHIP_TO, NOT_DOCS, STOP
 
 PW = os.environ.get('OZAKEN_PW') or sys.exit('OZAKEN_PW を設定してください')
 ROOT = registry.ROOT
@@ -174,6 +174,8 @@ def picks(rel, sec_txt, docs, w, titles):
 
     out = []
     for r in set(con) | set(gen):
+        if r in NO_CHIP_TO:      # 顧客名を冠した研修資料には、外からリンクを張らない
+            continue
         a, b = con.get(r, 0.0), gen.get(r, 0.0)
         if (a and a + b >= CHIP_MIN) or b >= CHIP_LOOSE:
             out.append((r, a + b))
