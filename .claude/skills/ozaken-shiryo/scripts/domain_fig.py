@@ -41,6 +41,45 @@ def wrap(text, n):
     return out or ['']
 
 
+def _cw(c):
+    """おおよその表示幅。全角は半角の2倍として数える"""
+    return 2 if ord(c) > 0x2E7F else 1
+
+
+def wrapw(text, cols):
+    """**表示幅で折り返す。全角を2、半角を1として数える。**
+
+    wrap() は文字数で数えるので、和文と欧文が混じる欄では
+    どちらかが必ずはみ出す。たとえば幅21で折る欄に
+    「Microsoft 365 Copilot」（21字＝幅21）を入れると収まるのに、
+    「応募受付から書類整理・日程調整まで流す」（18字＝幅36）は溢れる。
+    製品名と実例のように、和文と欧文のどちらも来る欄はこちらを使う。
+    """
+    out, cur, w = [], [], 0
+    for i, ch in enumerate(text):
+        cw = _cw(ch)
+        if w + cw > cols and cur:
+            # 英数字の連なりの途中では切らない。wrap() と同じ扱い
+            if _isw(cur[-1]) and _isw(ch):
+                k = len(cur)
+                while k > 1 and _isw(cur[k - 1]):
+                    k -= 1
+                if k > 1:
+                    out.append(''.join(cur[:k]))
+                    cur = cur[k:]
+                    w = sum(_cw(c) for c in cur)
+                    cur.append(ch)
+                    w += cw
+                    continue
+            out.append(''.join(cur))
+            cur, w = [], 0
+        cur.append(ch)
+        w += cw
+    if cur:
+        out.append(''.join(cur))
+    return out or ['']
+
+
 def lines(text, x, y, n, lh, **kw):
     """折り返した複数行のtspanを持つtext要素"""
     attrs = ' '.join('%s="%s"' % (k.replace('_', '-'), v) for k, v in kw.items())
@@ -837,7 +876,9 @@ def fig_dims(steps, title, cap, dark=False, note=None, split=1, uid='dims',
         for k, piece in enumerate(str(prod).split('／')):
             piece = piece.strip()
             if piece:
-                pl += wrap(piece if k == 0 else '／' + piece, 21)
+                # 幅で折る。ここには製品名（欧文）も実例（和文）も来るので、
+                # 文字数で折ると和文の段だけがカードから溢れる
+                pl += wrapw(piece if k == 0 else '／' + piece, 30)
         parts.append('<text x="%.1f" y="%d" fill="%s" font-size="10" font-weight="700" '
                      'text-anchor="middle">%s</text>'
                      % (cx, ty, c, ''.join('<tspan x="%.1f" dy="%s">%s</tspan>'
