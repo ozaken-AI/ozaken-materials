@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""『AI担当者の教科書』のワークシート（A4縦・表紙＋6ワークの7ページ）。
+"""『AI推進の教科書』のワークシート（A4縦・表紙＋6ワークの7ページ）。
 
-  python3 99_assets/pdf-src/ai-lead-worksheet.py
-  node …/make_pdf.mjs /tmp/ozaken-ogp-fonts/ai-lead-worksheet.html    99_assets/ai-lead-worksheet.pdf a4p
-  node …/make_pdf.mjs /tmp/ozaken-ogp-fonts/ai-lead-worksheet-pw.html 05_drive/ai-lead-worksheet-pw.pdf a4p
+  python3 99_assets/pdf-src/ai-drive-worksheet.py
+  node …/make_pdf.mjs /tmp/ozaken-ogp-fonts/ai-drive-worksheet.html    99_assets/ai-drive-worksheet.pdf a4p
+  node …/make_pdf.mjs /tmp/ozaken-ogp-fonts/ai-drive-worksheet-pw.html 05_drive/ai-drive-worksheet-pw.pdf a4p
 
 **2種類を焼く。**
   公開版  資料ページのダウンロードから配る。**個別パスワードを刷らない。**
@@ -18,15 +18,16 @@
   ワーク1 → Fig.2  3ヶ月で寄っていく3つの形   （Section 01）
   ワーク2 → Fig.6  1業務目を、この2軸で選ぶ    （Section 03）
   ワーク3 → Fig.8  期ごとの、終わったと言える条件（Section 04）
-  ワーク4 → Fig.10 誰に、何を、どう持っていくか （Section 05）
-  ワーク5 → Fig.14 1本目にする5条件           （Section 07）
-  ワーク6 → Fig.23 折れる5つの瞬間            （Section 12）
+  ワーク4 → Fig.12 誰に、何を、どう持っていくか （Section 06）
+  ワーク5 → Fig.16 1本目にする5条件           （Section 08）
+  ワーク6 → Fig.27 折れる5つの瞬間            （Section 14）
 
 **紙面の並びは 1 → 4 → 2 → 5 → 3 → 6。**
 資料の進行そのままだと、味方づくり（ワーク4）が真ん中に来て、
 「1業務を選ぶ」の前に手が止まる。実際に動く順に並べ替えている。
 
 記入例は、**製造業の情シス兼務でAI推進を任された人**を通しで使う。
+専任の担当者は実際には多くないので、兼務の人を置いている。
 業種が違っても、粒度の目安になる。
 """
 import os
@@ -35,14 +36,14 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from worksheet_style import CSS  # noqa: E402
 
-URL = 'https://ozaken-ai.github.io/ozaken-materials/05_drive/ai-lead-handbook.html'
+URL = 'https://ozaken-ai.github.io/ozaken-materials/05_drive/ai-drive-handbook.html'
 PW = 'tebanasu'
 
 FONTS = '/tmp/ozaken-ogp-fonts'
-OUT = os.path.join(FONTS, 'ai-lead-worksheet.html')
-OUT_PW = os.path.join(FONTS, 'ai-lead-worksheet-pw.html')
+OUT = os.path.join(FONTS, 'ai-drive-worksheet.html')
+OUT_PW = os.path.join(FONTS, 'ai-drive-worksheet-pw.html')
 
-FOOT = ('<div class="foot"><span>AI担当者の教科書 ─ ワークシート</span>'
+FOOT = ('<div class="foot"><span>AI推進の教科書 ─ ワークシート</span>'
         '<span>OZAKEN / AICX %s</span></div>')
 
 
@@ -52,7 +53,7 @@ def cover(with_pw):
            '資料の中でお伝えします</b></p>')
     return f'''<div class="page cover">
   <span class="tag">WORKSHEET ─ 7 PAGES</span>
-  <h1>AI担当者の教科書<br>ワークシート</h1>
+  <h1>AI推進の教科書<br>ワークシート</h1>
   <div class="rule"></div>
   <p class="sub">読むだけでは、月曜に手が動きません。この6枚を書き終えたとき、
     はじめて自分の会社の話になります。印刷して、手で書いてください。
@@ -144,10 +145,10 @@ def work4():
         color:#2e5496;display:block;margin-bottom:.8mm">記入例</b>{ex}</td>
       <td class="a"></td></tr>''' for n, w, _t, ex in rows)
     return f'''<div class="page">
-  <span class="tag">WORK 04 ─ SECTION 05</span>
+  <span class="tag">WORK 04 ─ SECTION 06</span>
   <h1>味方を3人。名前で書けるか</h1>
   <div class="rule"></div>
-  <p class="sub">この役がいちばん多く失敗するのは、技術でも予算でもなく<b>孤立</b>です。
+  <p class="sub">この仕事がいちばん多く失敗するのは、技術でも予算でもなく<b>孤立</b>です。
     経営に1人、情シスに1人、現場に1人。<b>役職ではなく、名前で書いてください。</b>
     書けないなら、それがいまいちばんの課題です。</p>
   <table class="rows"><tr><th>相手</th><th>記入例</th><th>名前と、その人の事情</th></tr>
@@ -219,7 +220,7 @@ def work5():
         color:#2e5496;display:block;margin-bottom:.8mm">記入例</b>{ex}</td>
       <td class="a"></td></tr>''' for n, h, ex in rows)
     return f'''<div class="page">
-  <span class="tag">WORK 05 ─ SECTION 07</span>
+  <span class="tag">WORK 05 ─ SECTION 08</span>
   <h1>5条件で、1本目を確定させる</h1>
   <div class="rule"></div>
   <p class="sub">ワーク2で右上に置いた業務を、ここで確かめます。
@@ -302,7 +303,7 @@ def work6():
       <td style="width:14mm;text-align:center"><i style="display:inline-block;width:4.6mm;height:4.6mm;border:1.3px solid #2e5496;border-radius:1mm"></i></td>
       <td class="a" style="height:14mm"></td></tr>''' for n, w, h in rows)
     return f'''<div class="page">
-  <span class="tag">WORK 06 ─ SECTION 12</span>
+  <span class="tag">WORK 06 ─ SECTION 14</span>
   <h1>折れる前に、先に打っておく</h1>
   <div class="rule"></div>
   <p class="sub">この5つのうち、自分に来そうなものは今でも分かるはずです。
@@ -327,7 +328,7 @@ def work6():
 
 def build(with_pw):
     return ('<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">'
-            '<title>AI担当者の教科書 ワークシート</title>'
+            '<title>AI推進の教科書 ワークシート</title>'
             '<style>%s</style></head><body>%s</body></html>'
             % (CSS, cover(with_pw) + work1() + work4() + work2()
                + work5() + work3() + work6()))
