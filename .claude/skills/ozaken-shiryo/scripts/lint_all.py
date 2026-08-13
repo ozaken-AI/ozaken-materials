@@ -7,6 +7,7 @@
 
   OZAKEN_PW=マスター python3 lint_all.py            # 要約だけ
   OZAKEN_PW=マスター python3 lint_all.py --detail   # 資料ごとの中身も出す
+  OZAKEN_PW=マスター python3 lint_all.py --wakaru   # わかりにくさだけを一覧にする
 """
 import os
 import sys
@@ -17,13 +18,42 @@ sys.path.insert(0, HERE)
 import lockbox
 import registry
 from build_page import check, check_tokens
+from check_wakaru import check_wakaru
 from crossref_data import NOT_DOCS
 
 PW = os.environ.get('OZAKEN_PW') or sys.exit('OZAKEN_PW を設定してください')
 DETAIL = '--detail' in sys.argv
+WAKARU = '--wakaru' in sys.argv
+
+
+def wakaru():
+    """**わかりにくさは、色の乱れと同じくらい資料を壊す。**
+    色は check_tokens が弾いてきたが、中身は誰も見ていなかった。
+    直す順番を決めるために、指摘の多い順に並べる"""
+    files = [f for f in registry.docs() if os.path.basename(f) not in NOT_DOCS]
+    rows, total = [], 0
+    for f in files:
+        rel = os.path.relpath(f, registry.ROOT)
+        got = check_wakaru(lockbox.decrypt(f, PW))
+        total += len(got)
+        if got:
+            rows.append((len(got), rel, got))
+    rows.sort(reverse=True)
+    print('資料 %d 本 ／ 指摘のある資料 %d 本 ／ 指摘 %d 件\n'
+          % (len(files), len(rows), total))
+    kinds = Counter(g.split('「')[0] for _, _, got in rows for g in got)
+    for k, n in kinds.most_common():
+        print('  %-28s %3d 件' % (k.strip(), n))
+    print()
+    for n, rel, got in rows:
+        print('■ %s（%d件）' % (rel, n))
+        for g in got:
+            print('   ・' + g)
 
 
 def main():
+    if WAKARU:
+        return wakaru()
     # 置き場・索引・台帳は資料ではない。道具としてのページなので規定の外
     files = [f for f in registry.docs() if os.path.basename(f) not in NOT_DOCS]
     colors, issues, clean = Counter(), [], 0

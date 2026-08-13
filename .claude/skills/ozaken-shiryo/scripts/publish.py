@@ -68,6 +68,17 @@ def compose(body_path, extra=''):
     if errs:
         sys.exit('スタイル検査で止まりました:\n  - ' + '\n  - '.join(errs))
 
+    # **わかりにくさは公開を止めない。ただし必ず目に入るところに出す。**
+    # 主語や肩書きの抜けは「直せば良くなる」類なので、止めると直す機会ごと失う。
+    # 出さないと気づかれないまま公開されるので、ここで必ず読ませる
+    from check_wakaru import check_wakaru
+    warn = check_wakaru(page)
+    if warn:
+        print('⚠ わかりにくさ %d 件（公開は止めません。直せるものは直してください）'
+              % len(warn))
+        for w in warn:
+            print('   ・' + w)
+
     import apply_spacing, apply_herofx, apply_keynav, apply_bgcycle, apply_figanim
     for mod in (apply_spacing, apply_bgcycle, apply_herofx, apply_keynav, apply_figanim):
         got = mod.patch(page)
