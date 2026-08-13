@@ -657,6 +657,78 @@ def fig_pyramid(layers, title, cap, dark=False, left_label='', right_label=''):
 
 
 # ------------------------------------------------------------------
+# F12b  水位（下から順に沈んでいく3層）
+# ------------------------------------------------------------------
+def fig_waterline(layers, title, cap, dark=False, note=None,
+                  water_at=1, water_label='AIの水位', rising='上昇中'):
+    """layers: [(英字, 見出し, 説明, 右の見出し, 右の補足)] を上から3つ。
+
+    **帯グラフでは「水面」が描けない。**
+    fig_ranges は「どこまで伸びているか」は出せるが、
+    水位が下から上がってくるという一方向の動きが出ない。
+    ここでは層を積み、その中ほどに水面を引いて、下を水で満たす。
+
+      water_at   何番目の層（0始まり）の中ほどに水面を置くか
+      right      各層の右に置く注釈。水面のある層だけは水位の札に替わる
+    """
+    fg = WHITE if dark else INK
+    sub = 'rgba(255,255,255,.62)' if dark else MUTED
+    box = 'rgba(255,255,255,.10)' if dark else 'rgba(46,84,150,.05)'
+    edge = PALE if dark else 'rgba(46,84,150,.3)'
+    red = '#ff5d6a' if dark else RED
+    wet = 'rgba(255,255,255,.78)' if dark else MUTED
+    X, BW, BH, GY, Y0 = 40, 540, 88, 18, 24
+    RX = 620                                   # 右の注釈を置く列
+    H = Y0 + BH * 3 + GY * 2 + 26
+    wy = Y0 + (BH + GY) * water_at + BH / 2    # 水面の高さ
+    parts = []
+    # **水は層より先に描く。** あとから描くと箱の文字が沈んで読めなくなる
+    parts.append('<rect x="0" y="%.1f" width="900" height="%.1f" fill="%s" '
+                 'fill-opacity="%s"/>' % (wy, H - wy, AZURE, '.5' if dark else '.14'))
+    for i, (en, name, desc, rhead, rsub) in enumerate(layers):
+        y = Y0 + (BH + GY) * i
+        under = y > wy                          # 完全に水面下の層
+        parts.append('<rect x="%d" y="%d" width="%d" height="%d" rx="8" fill="%s" '
+                     'stroke="%s" stroke-width="1.5"/>' % (X, y, BW, BH, box, edge))
+        parts.append('<text x="%d" y="%.1f" fill="%s" font-size="15" font-weight="700" '
+                     'letter-spacing=".08em">%s</text>'
+                     % (X + 22, y + 36, fg, esc(en)))
+        parts.append('<text x="%d" y="%.1f" fill="%s" font-size="13.5" '
+                     'font-weight="700">%s</text>'
+                     % (X + 132, y + 36, fg, esc(name)))
+        parts.append(lines(desc, X + 22, y + 62, 38, 16,
+                           fill=wet if under else sub, font_size='11.5'))
+        if i == water_at:
+            parts.append('<text x="%d" y="%.1f" fill="%s" font-size="12.5" '
+                         'font-weight="700">%s</text>' % (RX, wy - 8, red, esc(water_label)))
+        if rhead:
+            parts.append('<text x="%d" y="%.1f" fill="%s" font-size="12.5" '
+                         'font-weight="700">%s</text>'
+                         % (RX, y + 36, fg, esc(rhead)))
+        if rsub:
+            parts.append(lines(rsub, RX, y + 58, 17, 15,
+                               fill=wet if under else sub, font_size='11'))
+    # 水面の線。破線は _animate が流れる動きに振り分ける
+    parts.append('<line x1="0" y1="%.1f" x2="900" y2="%.1f" stroke="%s" '
+                 'stroke-width="2" stroke-dasharray="8 6"/>' % (wy, wy, red))
+    # 上昇の矢印。水の中を下から突き上げる
+    ax, atop = 856, wy + 34
+    parts.append('<line x1="%d" y1="%.1f" x2="%d" y2="%.1f" stroke="%s" '
+                 'stroke-width="2"/>' % (ax, H - 40, ax, atop, red))
+    parts.append('<path d="M%d %.1f l-7 12 h14 z" fill="%s"/>' % (ax, atop - 6, red))
+    if rising:
+        parts.append('<text x="%d" y="%.1f" fill="%s" font-size="11" '
+                     'font-weight="700" text-anchor="middle">%s</text>'
+                     % (ax, H - 20, red, esc(rising)))
+    if note:
+        parts.append(lines(note, 14, H + 18, 76, 17, fill=sub, font_size='11'))
+        H += 26
+    return _fig(title, cap,
+        '<svg viewBox="0 0 900 %d" xmlns="http://www.w3.org/2000/svg" role="img">'
+        '%s</svg>' % (H, ''.join(parts)))
+
+
+# ------------------------------------------------------------------
 # F12  カバー範囲の比較（どの工程まで担うか）
 # ------------------------------------------------------------------
 def fig_ranges(phases, rows, title, cap, dark=False, note=None):
