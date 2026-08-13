@@ -1149,20 +1149,28 @@ def fig_loop4(items, title, cap, dark=False, uid='', edge_labels=None, note=None
                          % (cx, yy, (BW - 52) / 2, chip))
             parts.append('<text x="%.1f" y="%.1f" fill="%s" font-size="10.5">%s</text>'
                          % (cx + 10, yy + 15.5, fg, esc(t[:13])))
-    # 外周を回る矢印。上→右→下→左
+    # 外周を回る矢印。上→右→下→左。
+    #
+    # **辺いっぱいに引く。** もとは箱の隅から隣の箱の中心までしか引いておらず、
+    # 4本が短い破線として宙に浮き、「回っている」ことがまったく伝わらなかった。
+    # それぞれの辺を、箱の中心から隣の箱の中心まで通すと輪として読める。
     W = X0 * 2 + BW * 2 + GX
     H = Y0 + BH * 2 + GY + 64
-    M = 26
-    arcs = [('M%d %d H%d' % (X0 + BW + 14, Y0 - M, X0 + BW + GX + BW / 2), 0),
-            ('M%d %d V%d' % (W - X0 + M, Y0 + BH + 14, Y0 + BH + GY + BH / 2), 1),
-            ('M%d %d H%d' % (X0 + BW + GX - 14, H - 38, X0 + BW / 2), 2),
-            ('M%d %d V%d' % (X0 - M, Y0 + BH + GY + BH - 14, Y0 + BH / 2), 3)]
-    for d, _ in arcs:
+    M = 26                                   # 箱の外側に取る余白
+    L, R = X0, X0 + BW * 2 + GX              # 箱の並びの左端・右端
+    T, Bm = Y0, Y0 + BH * 2 + GY             # 箱の並びの上端・下端
+    arcs = ['M%.1f %d H%.1f' % (L + BW / 2, T - M, R - BW / 2),      # 上 →
+            'M%d %.1f V%.1f' % (R + M, T + BH / 2, Bm - BH / 2),     # 右 ↓
+            'M%.1f %d H%.1f' % (R - BW / 2, Bm + M, L + BW / 2),     # 下 ←
+            'M%d %.1f V%.1f' % (L - M, Bm - BH / 2, T + BH / 2)]     # 左 ↑
+    for d in arcs:
         parts.append('<path d="%s" fill="none" stroke="%s" stroke-width="1.6" '
                      'stroke-dasharray="7 5" marker-end="url(#l4a%s)"/>' % (d, mid, uid))
     if edge_labels:
-        spots = [(X0 + BW + GX / 2, Y0 - M - 10), (W - X0 + M + 14, Y0 + BH + GY / 2),
-                 (X0 + BW + GX / 2, H - 46), (X0 - M - 10, Y0 + BH + GY / 2)]
+        # ラベルは、その辺の矢印の真ん中に置く。
+        # もとは箱と箱の隙間の座標に置いていたので、矢印から離れて浮いていた
+        spots = [(W / 2, T - M - 12), (R + M + 15, (T + Bm) / 2),
+                 (W / 2, Bm + M + 20), (L - M - 15, (T + Bm) / 2)]
         for k, t in enumerate(edge_labels[:4]):
             sx, sy = spots[k]
             if k % 2:
