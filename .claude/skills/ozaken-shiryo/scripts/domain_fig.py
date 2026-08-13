@@ -360,17 +360,31 @@ def fig_kpi(top, branches, title, cap, dark=False):
 # ------------------------------------------------------------------
 # F6  2×2マトリクス（区分の整理に使う）
 # ------------------------------------------------------------------
-def fig_quad(xlab, ylab, cells, title, cap, dark=False):
-    """cells: [(見出し, 補足, 危険度0-2)] を左上→右上→左下→右下の順で4つ"""
+def fig_quad(xlab, ylab, cells, title, cap, dark=False, xpoles=None, ypoles=None):
+    """cells: [(見出し, 補足, 危険度0-2)] を左上→右上→左下→右下の順で4つ
+
+    **xpoles / ypoles を渡すと、軸の両端が何を指すかが出る。**
+    軸名だけだと「言語化されているか」と書いてあっても、
+    右がイエスなのか左がイエスなのかが読み手に分からない。
+    実際「左右と上下が分かりにくい」と何度も言われた欄。
+
+      xpoles=('まだ言葉になっていない', '言葉になっている')   左 → 右
+      ypoles=('外から与えられた', '自分の内側から出ている')     下 → 上
+
+    省略すると軸名だけの従来の形になるので、既存の呼び出しはそのまま動く。
+    """
     fg = WHITE if dark else INK
     sub = 'rgba(255,255,255,.6)' if dark else MUTED
+    pol = 'rgba(255,255,255,.82)' if dark else INK
     edge = 'rgba(255,255,255,.16)' if dark else 'rgba(46,84,150,.22)'
     tone = [('rgba(46,84,150,.16)', AZURE), ('rgba(226,55,68,.12)', '#c9762f'),
             ('rgba(226,55,68,.18)', RED)]
+    TOP = 76 if xpoles else 56          # 両端を出すぶん、盤面を1段下げる
+    H = TOP + 340
     parts = []
     for i, (h, note, lv) in enumerate(cells):
         cx = 120 + (i % 2) * 372
-        cy = 56 + (i // 2) * 168
+        cy = TOP + (i // 2) * 168
         bg, bar = tone[lv]
         parts.append('<rect x="%d" y="%d" width="356" height="152" rx="10" '
                      'fill="%s" stroke="%s" stroke-width="1"/>' % (cx, cy, bg, edge))
@@ -379,18 +393,37 @@ def fig_quad(xlab, ylab, cells, title, cap, dark=False):
         parts.append(lines(h, cx + 20, cy + 40, 17, 24, fill=fg, font_size='15',
                            font_weight='700'))
         parts.append(lines(note, cx + 20, cy + 90, 21, 19, fill=sub, font_size='12'))
-    parts.append('<text x="470" y="24" fill="%s" font-size="12" font-weight="700" '
-                 'text-anchor="middle">%s</text>' % (sub, esc(xlab)))
+    parts.append('<text x="470" y="%d" fill="%s" font-size="12" font-weight="700" '
+                 'text-anchor="middle">%s</text>' % (20 if xpoles else 24, sub, esc(xlab)))
+    if xpoles:
+        # 左端と右端に、その側が何を指すかを置く。矢印はここでは横書きなので使える
+        parts.append('<text x="120" y="46" fill="%s" font-size="12" font-weight="700">'
+                     '← %s</text>' % (pol, esc(xpoles[0])))
+        parts.append('<text x="848" y="46" fill="%s" font-size="12" font-weight="700" '
+                     'text-anchor="end">%s →</text>' % (pol, esc(xpoles[1])))
     # 回転テキストに矢印グリフを入れると向きが破綻するため、必ず落とす
-    ysafe = ''.join(c for c in ylab if c not in '↑↓←→')
+    def _ysafe(t):
+        return ''.join(c for c in t if c not in '↑↓←→')
     parts.append('<text x="0" y="0" fill="%s" font-size="12" font-weight="700" '
-                 'text-anchor="middle" transform="translate(28 200) rotate(-90)">%s</text>'
-                 % (sub, esc(ysafe)))
-    parts.append('<path d="M96 380 L96 40" stroke="%s" stroke-width="1" fill="none"/>' % edge)
-    parts.append('<path d="M96 380 L884 380" stroke="%s" stroke-width="1" fill="none"/>' % edge)
+                 'text-anchor="middle" transform="translate(%d %d) rotate(-90)">%s</text>'
+                 % (sub, 26 if ypoles else 28, TOP + 170, esc(_ysafe(ylab))))
+    if ypoles:
+        # 縦は回転させて、下端＝下の意味／上端＝上の意味。読みは下から上へ。
+        # **rotate(-90) では字が下から上へ進む。** だから下の札は始点を下端に置き、
+        # 上の札は終点を上端に置く。逆にすると、どちらも枠の外へ出て頭が切れる
+        parts.append('<text x="0" y="0" fill="%s" font-size="12" font-weight="700" '
+                     'transform="translate(50 %d) rotate(-90)">%s</text>'
+                     % (pol, H - 22, esc(_ysafe(ypoles[0]))))
+        parts.append('<text x="0" y="0" fill="%s" font-size="12" font-weight="700" '
+                     'text-anchor="end" transform="translate(50 %d) rotate(-90)">%s</text>'
+                     % (pol, TOP + 6, esc(_ysafe(ypoles[1]))))
+    parts.append('<path d="M96 %d L96 %d" stroke="%s" stroke-width="1" fill="none"/>'
+                 % (H - 16, TOP - 16, edge))
+    parts.append('<path d="M96 %d L884 %d" stroke="%s" stroke-width="1" fill="none"/>'
+                 % (H - 16, H - 16, edge))
     return _fig(title, cap,
-        '<svg viewBox="0 0 900 396" xmlns="http://www.w3.org/2000/svg" role="img">'
-        '%s</svg>' % ''.join(parts))
+        '<svg viewBox="0 0 900 %d" xmlns="http://www.w3.org/2000/svg" role="img">'
+        '%s</svg>' % (H, ''.join(parts)))
 
 
 # ------------------------------------------------------------------
