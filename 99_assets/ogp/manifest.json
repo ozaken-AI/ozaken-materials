@@ -8,6 +8,14 @@
   "cat": "CONCEPT"
  },
  {
+  "rel": "01_concept/ai-agent-mechanics.html",
+  "file": "6b9a1cf156.jpg",
+  "title": "AIエージェントとは何か ─ ReACT・状態管理・RAGで読み解く仕組みと社会実装",
+  "desc": "放送大学 第11回「AIエージェント」。指示を待つ生成AIから、状況を把握し自律的に判断・実行するAIエージェントへ。ReACT・状態管理・RAGという3つの仕組みと、医療・自治体・金融の社会実装例を読み解く。",
+  "card": "放送大学 第11回「AIエージェント」。指示を待つ生成AIから、状況を把握し自律的に判断・実行するAIエージェントへ。ReACT・状態管理・RAGという3つの仕組みと…",
+  "cat": "CONCEPT"
+ },
+ {
   "rel": "01_concept/ai-seci.html",
   "file": "826c2993bf.jpg",
   "title": "AI-SECIモデル ─ 野中郁次郎の知識創造理論を、AI時代に読み直す",
