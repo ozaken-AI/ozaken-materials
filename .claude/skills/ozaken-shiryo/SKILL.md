@@ -702,6 +702,42 @@ OZAKEN_PW=マスター python3 .claude/skills/ozaken-shiryo/scripts/apply_ogp.py
 **新しい資料には description を書く。** 表紙のひとことは詩的なことが多く、
 一覧で並べたときに何の資料か分からないことがある。
 
+## 型は、テンプレート便覧にまとめてある
+
+**トップページで `te` と打つと開く**（`template.html` / マスターのみ）。
+図版28種類の見本、面の並びの決まり、部品、レギュレーション、
+そして「どの資料がどの生成元から組まれるか」の一覧が載っている。
+
+見本は説明文ではなく、**実物の CSS と実物の部品で描いている**。
+`domain_fig` や `page_parts` を直せば、このページの見本も一緒に変わる。
+だから便覧だけが古くなる、ということが起きない。
+
+```bash
+cd .claude/skills/ozaken-shiryo/scripts
+OZAKEN_PW=マスター python3 make_template.py    # 便覧を焼き直す
+```
+
+**部品を足したら、便覧にも見本を足す。** 足さないと、次にその形が要る場面で
+誰も見つけられず、似た図版がもう1つ増えることになる。
+
+## 資料の生成元は、必ず版で残す
+
+置き場所は `.claude/skills/ozaken-shiryo/sources/`。
+
+**資料を直すときは、公開済みのHTMLではなく生成元を直して焼き直す。**
+
+```bash
+cd .claude/skills/ozaken-shiryo/sources
+python3 gen_xxx.py                              # /tmp/body_xxx.html を書き出す
+cd ../scripts
+OZAKEN_PW=マスター python3 publish.py \
+    /tmp/body_xxx.html 01_concept/xxx.html --update
+```
+
+以前は生成元を作業用の一時ディレクトリに置いていた。セッションが変われば
+そこは消えるので、資料を直すたびに、出来上がったHTMLからSVGを読み取って
+組み直す羽目になっていた。**新しい資料を作ったら、生成元をここへ置く。**
+
 ## 資料どうしをつなぐ
 
 同じ概念が何本もの資料に出てくる。放っておくと、資料ごとに少しずつ違う説明が

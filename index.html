@@ -3215,6 +3215,10 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
       if(buf.slice(-2)==='mx'){ buf='';
         all.forEach(function(o){ if(o.el.classList.contains('show')) o.hide(); });
         if(window.ozGate) window.ozGate('matrix'); return; }
+      /* te はテンプレート便覧。図版カタログと、資料の型の台帳 */
+      if(buf.slice(-2)==='te'){ buf='';
+        all.forEach(function(o){ if(o.el.classList.contains('show')) o.hide(); });
+        if(window.ozGate) window.ozGate('template'); return; }
       if(buf.slice(-2)==='go'&&window.ozBoot){ buf='';
         all.forEach(function(o){ if(o.el.classList.contains('show')) o.hide(); });
         window.ozBoot(null,'start'); return; }
@@ -3243,6 +3247,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
       '#gate':   function(){ if(window.ozGate) window.ozGate('backstage'); },
       '#ledger': function(){ if(window.ozGate) window.ozGate('ledger'); },
       '#matrix': function(){ if(window.ozGate) window.ozGate('matrix'); },
+      '#template': function(){ if(window.ozGate) window.ozGate('template'); },
       '#boot':   function(){ if(window.ozBoot) window.ozBoot(null,'start'); },
       '#end':    function(){ if(window.ozBoot&&bySecret['th'])
                                window.ozBoot(function(){ bySecret['th'].show(); },'end'); }
@@ -3361,6 +3366,8 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
       lead:'スポット講演・パネルディスカッションの資料置き場です。<br>マスターパスワードを入力してください。' },
     ledger:{ dest:'passwords.html', title:'パスワード台帳',
       lead:'各資料の個別パスワードの記録です。<br>マスターパスワードを入力してください。' },
+    template:{ dest:'template.html', title:'テンプレート便覧',
+      lead:'資料の型・図版カタログ・レギュレーション・生成元の一覧です。<br>マスターパスワードを入力してください。' },
     matrix:{ dest:'matrix.html', title:'資料マトリクス',
       lead:'どの資料が、どの概念に触れているかの一覧です。<br>パスワードを入力してください。' }
   };
