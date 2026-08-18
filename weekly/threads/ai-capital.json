@@ -1,0 +1,19 @@
+{
+  "slug": "ai-capital",
+  "domain": "capital",
+  "title": "お金は、上位2社に集まっている",
+  "watching": ["調達額", "集中度", "評価額", "設備投資"],
+  "facts": [
+    {"date": "2026-H1", "text": "Crunchbase集計：2026年上半期の世界のベンチャー投資は過去最高の$510B。2025年通年の$440Bを半年で超えた。四半期別ではQ1 $305B、Q2 $205B（5,000社超）", "src": "https://news.crunchbase.com/venture/global-startup-exits-ipo-ma-soar-ai-q2-h1-2026/", "tier": 1},
+    {"date": "2026-H1", "text": "OpenAI と Anthropic の2社だけで $217B、上半期の全スタートアップ調達額の43%を占めた", "src": "https://news.crunchbase.com/venture/global-startup-exits-ipo-ma-soar-ai-q2-h1-2026/", "tier": 1}
+  ],
+  "open": [
+    "『AI関連』に限定した上半期の合計額はいくらか（全体$510Bとの切り分けが未確定）",
+    "上位2社を除いた中央値の企業に、資金は届いているのか"
+  ],
+  "stance": "未記入（おざけんが書く）",
+  "falsify": "下半期に集中度が下がれば、『2社に集まる』という読みは弱まる",
+  "related": ["01_concept/business-model-shift.html", "05_drive/ai-budget.html"],
+  "written": [],
+  "note": "二次情報では『AIスタートアップがH1で$407B』『通年で$120B超の見込み』という桁の割れた数字が同時に出回っていた。集計元に当たって解決した例"
+}
