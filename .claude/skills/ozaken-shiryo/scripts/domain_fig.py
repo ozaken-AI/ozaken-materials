@@ -1683,47 +1683,130 @@ def fig_tree(root, branches, title, cap, dark=False, uid=''):
 # ------------------------------------------------------------------
 # F24  2軸の位置づけ（点を置く。4象限より自由度が高い）
 # ------------------------------------------------------------------
-def fig_map(xlab, ylab, points, title, cap, dark=False, corners=None):
-    """points: [(名前, x0-100, y0-100, 差し色index, 補足)]"""
+def fig_map(xlab, ylab, points, title, cap, dark=False, corners=None,
+            xen=None, yen=None, legend=None, curve=False, uid='map'):
+    """2つの軸の上に、点を置く。
+
+      points  [(名前, x0-100, y0-100, 差し色index, 添え書き)]
+              添え書きは名前の**上**に、明朝のイタリックで小さく出る
+      xen/yen 軸の英字表記。日本語の下に、イタリックで添える
+      legend  [(見出し, 説明)] を2つまで。図の下に、細い罫で仕切って並べる
+      curve   点どうしを破線でつなぐ。「ここからここへ」の順番を出したいとき
+
+    **最後の点が到達点として扱われる。**背後に淡いにじみを敷くので、
+    いちばん言いたい場所を最後に置くこと。
+    """
     fg = WHITE if dark else INK
     sub = 'rgba(255,255,255,.62)' if dark else MUTED
-    edge = 'rgba(255,255,255,.16)' if dark else 'rgba(46,84,150,.2)'
-    grid = 'rgba(255,255,255,.07)' if dark else 'rgba(46,84,150,.07)'
-    X0, Y0, W, H = 96, 40, 700, 320
+    axis = 'rgba(255,255,255,.55)' if dark else AZURE
+    grid = 'rgba(255,255,255,.07)' if dark else 'rgba(46,84,150,.08)'
+    rule = 'rgba(255,255,255,.14)' if dark else 'rgba(46,84,150,.16)'
+    X0, Y0, W, H = 150, 46, 620, 300
+    BOT = Y0 + H
     parts = []
-    for i in range(1, 4):
+
+    # ── 目盛り。位置の手がかりなので、ぎりぎりまで薄く ──
+    for i in range(1, 3):
         parts.append('<line x1="%d" y1="%.1f" x2="%d" y2="%.1f" stroke="%s" '
-                     'stroke-width="1"/>' % (X0, Y0 + H * i / 4, X0 + W, Y0 + H * i / 4, grid))
+                     'stroke-width="1"/>' % (X0, Y0 + H * i / 3, X0 + W, Y0 + H * i / 3, grid))
         parts.append('<line x1="%.1f" y1="%d" x2="%.1f" y2="%d" stroke="%s" '
-                     'stroke-width="1"/>' % (X0 + W * i / 4, Y0, X0 + W * i / 4, Y0 + H, grid))
-    parts.append('<path d="M%d %d L%d %d L%d %d" stroke="%s" stroke-width="1.5" '
-                 'fill="none"/>' % (X0, Y0, X0, Y0 + H, X0 + W, Y0 + H, edge))
+                     'stroke-width="1"/>' % (X0 + W * i / 3, Y0, X0 + W * i / 3, BOT, grid))
+
+    # ── 軸。先端に矢印を付けて、進む向きを出す ──
+    # **class を先に付ける。**矢印を持つ線を _animate は「流れる破線」と見なすので、
+    # 何もしないと軸が点線になってしまう。引かれる線だと明示しておく
+    for x1, y1, x2, y2 in ((X0, BOT, X0, Y0 - 6), (X0, BOT, X0 + W + 6, BOT)):
+        parts.append('<line x1="%d" y1="%d" x2="%d" y2="%d" stroke="%s" stroke-width="2" '
+                     'class="a-draw" marker-end="url(#mpa%s)"/>'
+                     % (x1, y1, x2, y2, axis, uid))
+
     if corners:
         for (cx, cy, txt) in corners:
             parts.append(lines(txt, X0 + W * cx / 100, Y0 + H * (100 - cy) / 100, 14, 15,
                                fill=sub, font_size='10.5', text_anchor='middle'))
-    for name, px, py, ai, sup in points:
+
+    # ── 点をつなぐ道筋 ──
+    if curve and len(points) >= 2:
+        pts = [(X0 + W * p[1] / 100, Y0 + H * (100 - p[2]) / 100) for p in points]
+        d = 'M%.1f %.1f' % pts[0]
+        for (x, y), (px, py) in zip(pts[1:], pts[:-1]):
+            d += ' C%.1f %.1f %.1f %.1f %.1f %.1f' % (px + (x - px) * .55, py,
+                                                      x - (x - px) * .25, y, x, y)
+        parts.append('<path d="%s" stroke="%s" stroke-width="1.8" fill="none" '
+                     'stroke-dasharray="7 6" stroke-linecap="round"/>'
+                     % (d, 'rgba(255,255,255,.42)' if dark else 'rgba(46,84,150,.55)'))
+
+    # ── 点 ──
+    last = len(points) - 1
+    for i, (name, px, py, ai, sup) in enumerate(points):
         c = ACCENTS[ai % len(ACCENTS)]
         x = X0 + W * px / 100
         y = Y0 + H * (100 - py) / 100
-        parts.append('<circle class="a-pop" style="--o:%.1fpx %.1fpx" cx="%.1f" cy="%.1f" '
-                     'r="9" fill="%s" fill-opacity=".9"/>' % (x, y, x, y, c))
-        parts.append('<circle cx="%.1f" cy="%.1f" r="16" fill="%s" fill-opacity=".14"/>'
-                     % (x, y, c))
-        parts.append(lines(name, x, y - 24, 16, 16, fill=fg, font_size='12.5',
-                           font_weight='700', text_anchor='middle'))
+        if i == last:
+            # 到達点。背後のにじみで、どこが結論かを決める
+            parts.append('<circle cx="%.1f" cy="%.1f" r="62" fill="url(#mpg%s)"/>'
+                         % (x, y, uid))
+        if i == 0 and len(points) > 1:
+            # 起点は中を抜く。塗ると、到達点と同じ重さに見えてしまう
+            parts.append('<circle class="a-pop" style="--o:%.1fpx %.1fpx" cx="%.1f" cy="%.1f" '
+                         'r="7" fill="%s" stroke="%s" stroke-width="2"/>'
+                         % (x, y, x, y, NAVY_DEEP if dark else WHITE, c))
+        else:
+            parts.append('<circle class="a-pop" style="--o:%.1fpx %.1fpx" cx="%.1f" cy="%.1f" '
+                         'r="8" fill="%s"/>' % (x, y, x, y, c))
         if sup:
-            parts.append(lines(sup, x, y + 32, 18, 14, fill=sub, font_size='10.5',
-                               text_anchor='middle'))
-    parts.append('<text x="%d" y="%d" fill="%s" font-size="12" font-weight="700" '
-                 'text-anchor="middle">%s</text>' % (X0 + W // 2, Y0 + H + 34, sub, esc(xlab)))
-    ysafe = ''.join(c for c in ylab if c not in '↑↓←→')
-    parts.append('<text x="0" y="0" fill="%s" font-size="12" font-weight="700" '
-                 'text-anchor="middle" transform="translate(30 %d) rotate(-90)">%s</text>'
-                 % (sub, Y0 + H // 2, esc(ysafe)))
+            parts.append('<text x="%.1f" y="%.1f" fill="%s" font-size="10.5" '
+                         'font-style="italic" text-anchor="middle">%s</text>'
+                         % (x, y - 40, sub, esc(sup)))
+        parts.append(lines(name, x, y - 22, 16, 16, fill=fg, font_size='13',
+                           font_weight='700', text_anchor='middle'))
+
+    # ── 軸名。日本語で読ませ、英字で位置づける ──
+    parts.append('<text x="%d" y="%d" fill="%s" font-size="12.5" font-weight="700" '
+                 'text-anchor="middle">%s</text>'
+                 % (X0 + W // 2, BOT + 34, fg, esc(xlab)))
+    if xen:
+        parts.append('<text x="%d" y="%d" fill="%s" font-size="10" font-style="italic" '
+                     'letter-spacing="1.4" text-anchor="middle">%s</text>'
+                     % (X0 + W // 2, BOT + 52, sub, esc(xen)))
+    ysafe = ''.join(ch for ch in ylab if ch not in '↑↓←→')
+    parts.append('<text x="0" y="0" fill="%s" font-size="12.5" font-weight="700" '
+                 'text-anchor="middle" transform="translate(%d %d) rotate(-90)">%s</text>'
+                 % (fg, 62 if yen else 74, Y0 + H // 2, esc(ysafe)))
+    if yen:
+        parts.append('<text x="0" y="0" fill="%s" font-size="10" font-style="italic" '
+                     'letter-spacing="1.4" text-anchor="middle" '
+                     'transform="translate(84 %d) rotate(-90)">%s</text>'
+                     % (sub, Y0 + H // 2, esc(yen)))
+
+    # ── 凡例。軸の意味は、図の中ではなくここで説明する ──
+    h = BOT + (66 if xen else 50)
+    if legend:
+        h += 16
+        parts.append('<line x1="150" y1="%d" x2="770" y2="%d" stroke="%s" '
+                     'stroke-width="1"/>' % (h, h, rule))
+        cw = 620 // max(1, len(legend))
+        nl = 1
+        for i, (head, note) in enumerate(legend[:2]):
+            x = 150 + i * cw
+            parts.append('<text x="%d" y="%d" fill="%s" font-size="11.5" '
+                         'font-weight="700">%s</text>' % (x, h + 26, fg, esc(head)))
+            ls = wrap(note, int((cw - 24) / 11.2))
+            nl = max(nl, len(ls))
+            parts.append(lines(note, x, h + 48, int((cw - 24) / 11.2), 17,
+                               fill=sub, font_size='11'))
+        h += 48 + nl * 17
+    glow = RED if not dark else '#ff5d6a'
     return _fig(title, cap,
         '<svg viewBox="0 0 900 %d" xmlns="http://www.w3.org/2000/svg" role="img">'
-        '%s</svg>' % (Y0 + H + 52, ''.join(parts)))
+        '<defs>'
+        '<marker id="mpa%s" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" '
+        'markerHeight="5" orient="auto-start-reverse">'
+        '<path d="M0 0L10 5L0 10z" fill="%s"/></marker>'
+        '<radialGradient id="mpg%s"><stop offset="0" stop-color="%s" stop-opacity=".30"/>'
+        '<stop offset="1" stop-color="%s" stop-opacity="0"/></radialGradient>'
+        '</defs>%s</svg>'
+        % (h + 10, uid, axis, uid, glow, glow, ''.join(parts)))
 
 
 # ------------------------------------------------------------------
