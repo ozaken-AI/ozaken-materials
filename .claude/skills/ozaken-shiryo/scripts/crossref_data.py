@@ -173,4 +173,5 @@ NOT_DOCS = {'backstage.html', 'matrix.html', 'passwords.html'}
 #
 # チップの「行き先」にならないだけで、その資料自身にチップは入る。
 # 資料どうしの整合を見る check / map / matrix でも、ふつうに扱われる。
-NO_CHIP_TO = {'Training/msa-life-training.html'}
+NO_CHIP_TO = {'Training/msa-life-training.html',
+              '09_role/kanadevia-ict.html'}
