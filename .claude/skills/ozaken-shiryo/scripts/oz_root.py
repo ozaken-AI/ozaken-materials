@@ -36,4 +36,4 @@ def root(start=None):
 # 裏資料の置き場。ここを増やすと、走査するすべての道具が追随する。
 # 昔は8本のスクリプトに同じ2つ組を書いていて、
 # Training を足したときに5本で for 文の中身を消す事故を起こした。
-BACKSTAGE_DIRS = ('AX_Table', 'Training', 'Udemy')
+BACKSTAGE_DIRS = ('AX_Table', 'Training', 'Udemy', 'weekly')

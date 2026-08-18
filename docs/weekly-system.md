@@ -223,13 +223,61 @@ news.google.com
 
 ---
 
-## 10. 最初の1週間でやること
+## 10. 実装したもの（2026年8月18日時点）
+
+| | 状態 |
+|---|---|
+| 定点表 `weekly/watchlist.yml`（7領域） | ✅ |
+| 定点ファイル `weekly/threads/*.json`（9本） | ✅ |
+| 号の組版 `weekly/src/YYYY-MM-DD.py` | ✅ |
+| 公開 `weekly_publish.py`（暗号化・台帳・index掲載） | ✅ |
+| 週次購読キー（`_meta.weekly`。四半期ごとに付け替え） | ✅ |
+| トップページの「今週のトレンド」枠 | ✅ |
+| 収集の自動化（Routine） | 未（許可ドメイン待ち） |
+
+### 号を1本作る手順
+
+```bash
+# 1) 前の号の src をコピーして本文を組む（数字は threads/*.json から引く）
+cp weekly/src/2026-08-18.py weekly/src/2026-08-25.py
+
+# 2) フラグメントを書き出して、スタイル検査だけ先に通す
+python3 weekly/src/2026-08-25.py /tmp/body.html
+python3 .claude/skills/ozaken-shiryo/scripts/build_page.py /tmp/body.html /tmp/page.html
+
+# 3) 公開（暗号化 → 台帳 → トップページ掲載まで一括）
+OZAKEN_PW=マスター python3 .claude/skills/ozaken-shiryo/scripts/weekly_publish.py \
+    /tmp/body.html 2026-08-25 --pw <その週の1語> \
+    --title "…" --lead "トップに平文で出る3行"
+
+# 4) 面ごとに絵で見る（1画面に収まらない面が出ていないか）
+OZAKEN_PW=マスター node .claude/skills/ozaken-shiryo/scripts/shot_secs.mjs \
+    weekly/2026-08-25.html /tmp/secs
+```
+
+本文だけ直すときは `--update` を付ける。**鍵は作り直されないので、配布済みの購読キーは生きる。**
+
+### 組むときの制約（`build_page.check` が見ている）
+
+- **`<table>` は使えない。** 数字は `domain_fig` の `fig_sheet` / `fig_stats` / `fig_bars` / `fig_donut` で図にする
+- **本文セクションは奇数本**、明るい面と暗い面が交互、**末尾はネイビー**
+- カードの見出しに番号チップ（`.mth`）を入れない。`card-tag` が既に番号を振っていて二重になる
+- `fig_stats` の見出しは**14文字以内**。超えると3行に折り返して注記と重なる
+
+### 鍵
+
+| 鍵 | 誰に | 備考 |
+|---|---|---|
+| マスター | おざけん本人 | すべてを開く |
+| 週次購読キー `_meta.weekly` | 週次の購読者 | 全号に共通。四半期ごとに付け替える |
+| その週の1語 | 会場・当日の配布 | 小文字英字4〜10文字。台帳が重複を弾く |
+
+**資料アーカイブの共通パスワードは付けない。** 資料をまとめて渡した相手に
+週次まで渡ってしまうため。逆に、週次を渡した相手に資料92本は開かない。
+（`weekly/2026-08-18.html` で実際に確認済み）
+
+### 次にやること
 
 1. 環境の許可ドメインを設定する（→ 9）
-2. `weekly/` と定点ファイルを3本だけ作る（例: `cerebras` / `agent-dev` / `japan-policy`）
-3. 収集〜深掘りを**手で1回通し、実際にカードのスキーマが埋まるか確かめる**
-4. 埋まったら `ozaken-weekly` スキルに固め、Routine で毎朝の収集を自動化する
-5. トップページの「今週のトレンド」枠と、週次購読キーを入れる
-
-**3 を飛ばさない。** スキーマが埋まらない話題ばかりだと分かったら、
-自動化する前に収集元のほうを直す必要がある。
+2. 2週目を回して、**`差分` 欄が実際に埋まるかを見る**
+3. 収集をRoutineで自動化する（`OZAKEN_PW` をシークレットとして渡す設計が要る）
