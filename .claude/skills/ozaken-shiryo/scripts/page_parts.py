@@ -80,8 +80,14 @@ def cards(items, raw_head=True):
         % (i + 1, h if raw_head else esc(h), p) for i, (h, p) in enumerate(items))
 
 
-def sec(tone, eyebrow, title, sub=None, lede=None, fig=None, body=None, cattr=''):
-    """tone: 'sec-light' か 'sec-navy'。fig は必ず1つ以上入れる"""
+def sec(tone, eyebrow, title, sub=None, lede=None, fig=None, body=None, cattr='',
+        after=None):
+    """tone: 'sec-light' か 'sec-navy'。fig は必ず1つ以上入れる。
+
+    **after はカードの外に置く。** ここを用意していなかったので、
+    「おざけんのワンポイント」や注記を body に混ぜてしまい、
+    カードの格子の中に入って1列ぶんの幅に潰れていた（実際に出た）。
+    """
     out = ['<section class="%s">' % tone, '  <div class="inner" data-reveal>',
            '    <span class="eyebrow">%s</span>' % eyebrow,
            '    <h2 class="sec-title">%s</h2>' % title]
@@ -95,6 +101,8 @@ def sec(tone, eyebrow, title, sub=None, lede=None, fig=None, body=None, cattr=''
         out.append('    <div class="cards"%s>' % cattr)
         out.append(body)
         out.append('    </div>')
+    if after:
+        out.append(after)
     out += ['  </div>', '</section>', '']
     return '\n'.join(out)
 

@@ -430,30 +430,46 @@ def fig_quad(xlab, ylab, cells, title, cap, dark=False, xpoles=None, ypoles=None
 # F7  段（層を上に積む。手順にも、抽象度の階段にも使う）
 # ------------------------------------------------------------------
 def fig_ladder(items, title, cap, dark=False, asc=True):
-    """items: [(見出し, 補足)] を下から上へ／上から下へ並べる"""
+    """items: [(見出し, 補足)] を下から上へ／上から下へ並べる。
+
+    **段は右へずれるぶん、横幅が狭くなる。**
+    折り返し幅と箱の高さを固定にしていたので、補足が2行になる段では
+    文字が箱の下と右へはみ出していた（経産省WGの資料で実際に出た）。
+    ここでは段ごとに使える幅を計算し、行数から高さを決める。
+    """
     fg = WHITE if dark else INK
     sub = 'rgba(255,255,255,.6)' if dark else MUTED
     box = 'rgba(255,255,255,.06)' if dark else WHITE
     edge = 'rgba(255,255,255,.16)' if dark else 'rgba(46,84,150,.22)'
     n = len(items)
-    parts = []
+    LEFT, RIGHT, STEP, PAD, GAP = 16, 884, 40, 58, 14
+
+    # 先に寸法を決める。段ごとに幅が違うので、折り返しも段ごとに変わる
+    plan, y = [], 20
     for i, (h, note) in enumerate(items):
-        y = 20 + i * 84
-        ind = (n - 1 - i) * 40 if asc else i * 40
-        x = 16 + ind
-        parts.append('<rect x="%d" y="%d" width="%d" height="68" rx="10" fill="%s" '
-                     'stroke="%s" stroke-width="1"/>' % (x, y, 884 - x, box, edge))
-        parts.append('<rect x="%d" y="%d" width="4" height="68" rx="2" fill="%s" '
-                     'fill-opacity="%.2f"/>' % (x, y, AZURE, 1 - i * 0.15))
+        x = LEFT + ((n - 1 - i) * STEP if asc else i * STEP)
+        cols = max(14, int((RIGHT - x - PAD - 18) / 12))   # 12pxの和文1字＝1桁
+        ls = wrap(note, cols) if note else ['']
+        hgt = 34 + len(ls) * 18 + 16
+        plan.append((x, y, hgt, cols, h, note))
+        y += hgt + GAP
+
+    parts = []
+    for i, (x, yy, hgt, cols, h, note) in enumerate(plan):
+        parts.append('<rect x="%d" y="%d" width="%d" height="%d" rx="10" fill="%s" '
+                     'stroke="%s" stroke-width="1"/>' % (x, yy, RIGHT - x, hgt, box, edge))
+        parts.append('<rect x="%d" y="%d" width="4" height="%d" rx="2" fill="%s" '
+                     'fill-opacity="%.2f"/>' % (x, yy, hgt, AZURE, max(.25, 1 - i * 0.15)))
         parts.append('<text x="%d" y="%d" fill="%s" font-size="11" font-weight="700" '
                      'letter-spacing="1.2">%02d</text>'
-                     % (x + 22, y + 26, AZURE if not dark else PALE, i + 1))
+                     % (x + 22, yy + 26, AZURE if not dark else PALE, i + 1))
         parts.append('<text x="%d" y="%d" fill="%s" font-size="15" font-weight="700">%s</text>'
-                     % (x + 58, y + 28, fg, esc(h)))
-        parts.append(lines(note, x + 58, y + 52, 52, 18, fill=sub, font_size='12'))
+                     % (x + PAD, yy + 28, fg, esc(h)))
+        if note:
+            parts.append(lines(note, x + PAD, yy + 52, cols, 18, fill=sub, font_size='12'))
     return _fig(title, cap,
         '<svg viewBox="0 0 900 %d" xmlns="http://www.w3.org/2000/svg" role="img">'
-        '%s</svg>' % (20 + n * 84, ''.join(parts)))
+        '%s</svg>' % (y - GAP + 8, ''.join(parts)))
 
 
 # ------------------------------------------------------------------
