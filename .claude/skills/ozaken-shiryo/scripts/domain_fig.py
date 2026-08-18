@@ -284,16 +284,24 @@ ROLES = [('ストラテジスト', 'どこに置くかを決める', 'STRATEGIST
 
 
 def fig_roles(who, title, cap, dark=False):
-    """who: [ストラテジストの担当, アーキテクトの担当, オペレーターの担当]"""
+    """who: [ストラテジストの担当, アーキテクトの担当, オペレーターの担当]
+
+    **箱の高さは、いちばん行数の多い担当に合わせて伸ばす。**
+    固定にしていたので、担当の説明が4行になると最終行が
+    箱の下端に貼りついて読めなくなっていた。
+    """
     fg = WHITE if dark else INK
     sub = 'rgba(255,255,255,.62)' if dark else MUTED
     box = 'rgba(255,255,255,.06)' if dark else WHITE
     edge = 'rgba(255,255,255,.16)' if dark else 'rgba(46,84,150,.22)'
+    COLS, Y0 = 15, 156
+    nl = max(len(wrap(d, COLS)) for d in who)
+    H = (Y0 - 34) + (nl - 1) * 21 + 24
     parts = []
     for i, ((ja, verb, en), duty) in enumerate(zip(ROLES, who)):
         x = 16 + i * 296
-        parts.append('<rect x="%d" y="34" width="272" height="188" rx="10" '
-                     'fill="%s" stroke="%s" stroke-width="1"/>' % (x, box, edge))
+        parts.append('<rect x="%d" y="34" width="272" height="%d" rx="10" '
+                     'fill="%s" stroke="%s" stroke-width="1"/>' % (x, H, box, edge))
         parts.append('<rect x="%d" y="34" width="272" height="4" rx="2" fill="%s"/>'
                      % (x, AZURE))
         parts.append('<text x="%d" y="66" fill="%s" font-size="11" '
@@ -306,17 +314,17 @@ def fig_roles(who, title, cap, dark=False):
         parts.append('<line x1="%d" y1="132" x2="%d" y2="132" stroke="%s" '
                      'stroke-width="1" stroke-dasharray="3 4"/>'
                      % (x + 20, x + 268, edge))
-        parts.append(lines(duty, x + 20, 156, 15, 21, fill=fg, font_size='13'))
+        parts.append(lines(duty, x + 20, Y0, COLS, 21, fill=fg, font_size='13'))
         if i < 2:
             parts.append('<path d="M%d 128 L%d 128" stroke="%s" stroke-width="2" '
                          'fill="none" marker-end="url(#rlarrow)"/>'
                          % (x + 274, x + 292, AZURE))
     return _fig(title, cap,
-        '<svg viewBox="0 0 900 236" xmlns="http://www.w3.org/2000/svg" role="img">'
+        '<svg viewBox="0 0 900 %d" xmlns="http://www.w3.org/2000/svg" role="img">'
         '<defs><marker id="rlarrow" viewBox="0 0 10 10" refX="9" refY="5" '
         'markerWidth="6" markerHeight="6" orient="auto-start-reverse">'
         '<path d="M0 0L10 5L0 10z" fill="%s"/></marker></defs>%s</svg>'
-        % (AZURE, ''.join(parts)))
+        % (34 + H + 16, AZURE, ''.join(parts)))
 
 
 # ------------------------------------------------------------------
@@ -1121,7 +1129,19 @@ def fig_cols(items, title, cap, dark=False):
 # F16  横一列のプロセス（汎用のフロー。fig_issues は「壁」固定なので別に持つ）
 # ------------------------------------------------------------------
 def fig_flow(steps, title, cap, dark=False, uid='', note=None):
-    """steps: [(見出し, 補足)] を矢印でつなぐ。3〜5個が読みやすい"""
+    """steps: [(見出し, 補足)] を矢印でつなぐ。3〜5個まで。
+
+    **6個以上は、ここでは組まない。**
+    横に割るので、増えるほど1枚の箱が狭くなる。折り返し桁数には
+    読めるだけの下限があるので、狭くなりすぎると下限が箱幅を追い越し、
+    文字が右へはみ出す（カナデビア様の資料で6個渡して実際に出た）。
+    6個以上を並べたいときは fig_ladder を使う。
+
+    高さも、いちばん行数の多い箱に合わせて伸ばす。
+    ここを固定にしていると、補足が長い箱だけ下へ溢れる。
+    """
+    if len(steps) > 5:
+        raise ValueError('fig_flow は5個まで。%d個なら fig_ladder を使ってください' % len(steps))
     fg = WHITE if dark else INK
     sub = 'rgba(255,255,255,.62)' if dark else MUTED
     box = 'rgba(255,255,255,.06)' if dark else WHITE
@@ -1129,7 +1149,13 @@ def fig_flow(steps, title, cap, dark=False, uid='', note=None):
     n = len(steps)
     gap = 40
     w = int((884 - 16 - (n - 1) * gap) / n)
-    H = 158
+    inner = w - 36
+    hc = max(4, int(inner / 15.4))          # 見出しの折り返し桁
+    nc = max(6, int(inner / 11.4))          # 補足の折り返し桁
+    hl = max(len(wrap(h, hc)) for h, _ in steps)
+    nl = max(len(wrap(t, nc)) if t else 1 for _, t in steps)
+    Y0, Y1 = 84, 84 + (hl - 1) * 22 + 34    # 見出しと補足の1行目のベースライン
+    H = (Y1 - 34) + (nl - 1) * 17 + 20
     parts = []
     for i, (h, note_) in enumerate(steps):
         x = 16 + i * (w + gap)
@@ -1138,18 +1164,19 @@ def fig_flow(steps, title, cap, dark=False, uid='', note=None):
         parts.append('<circle cx="%d" cy="34" r="15" fill="%s"/>' % (x + w // 2, AZURE))
         parts.append('<text x="%d" y="39" fill="%s" font-size="13" font-weight="700" '
                      'text-anchor="middle">%d</text>' % (x + w // 2, WHITE, i + 1))
-        parts.append(lines(h, x + 18, 84, max(6, int((w - 36) / 15.4)), 22,
-                           fill=fg, font_size='15', font_weight='700'))
-        parts.append(lines(note_, x + 18, 128, max(8, int((w - 36) / 11.4)), 17,
-                           fill=sub, font_size='11.5'))
+        parts.append(lines(h, x + 18, Y0, hc, 22, fill=fg, font_size='15',
+                           font_weight='700'))
+        if note_:
+            parts.append(lines(note_, x + 18, Y1, nc, 17, fill=sub, font_size='11.5'))
         if i < n - 1:
-            cx = x + w + 8
-            parts.append('<path d="M%d 112 L%d 112" stroke="%s" stroke-width="2" '
-                         'fill="none" marker-end="url(#flw%s)"/>' % (cx, cx + gap - 18, AZURE, uid))
-    h = H + 54
+            cx, cy = x + w + 8, 34 + H // 2
+            parts.append('<path d="M%d %d L%d %d" stroke="%s" stroke-width="2" '
+                         'fill="none" marker-end="url(#flw%s)"/>'
+                         % (cx, cy, cx + gap - 18, cy, AZURE, uid))
+    h = 34 + H + 20
     if note:
-        parts.append(lines(note, 16, h - 8, 76, 17, fill=sub, font_size='11'))
-        h += 18
+        parts.append(lines(note, 16, h + 6, 76, 17, fill=sub, font_size='11'))
+        h += 24
     return _fig(title, cap,
         '<svg viewBox="0 0 900 %d" xmlns="http://www.w3.org/2000/svg" role="img">'
         '<defs><marker id="flw%s" viewBox="0 0 10 10" refX="9" refY="5" '

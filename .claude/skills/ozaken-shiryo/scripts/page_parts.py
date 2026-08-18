@@ -80,6 +80,26 @@ def cards(items, raw_head=True):
         % (i + 1, h if raw_head else esc(h), p) for i, (h, p) in enumerate(items))
 
 
+def take(text, name='小澤健祐（おざけん）'):
+    """おざけんのワンポイント。
+
+    **毎回このHTMLを手で書いていたので、事故が繰り返された。**
+    body（カードの格子）に混ぜてしまい、1列ぶんの幅に潰れる。
+    sec(..., after=take('…')) の形で、カードの外に置く。
+
+    アイコンは実物の顔写真を使う。頭文字の丸だと、
+    誰の一言なのかが投影中に伝わらない。
+    """
+    return ('    <div class="take">\n'
+            '      <img class="take-avatar" src="../99_assets/ozaken-avatar.jpg" '
+            'alt="%s" loading="lazy">\n'
+            '      <div class="take-body">\n'
+            '        <div class="take-label">Ozaken\'s One Point</div>\n'
+            '        <div class="take-author">%s</div>\n'
+            '        <p class="take-text">%s</p>\n'
+            '      </div>\n    </div>\n' % (name, name, text))
+
+
 def sec(tone, eyebrow, title, sub=None, lede=None, fig=None, body=None, cattr='',
         after=None):
     """tone: 'sec-light' か 'sec-navy'。fig は必ず1つ以上入れる。
