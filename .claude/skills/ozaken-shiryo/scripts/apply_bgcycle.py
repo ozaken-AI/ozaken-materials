@@ -26,9 +26,12 @@ MARK_END = '/* /OZ-BG */'
 
 CSS = MARK + """
 /* ══ 面ごとの背景。明るい面・暗い面それぞれの中で3段を循環させる ══ */
+/* **明るい面は、全部おなじ青系で回す。**
+   以前は3番目だけ生成り（#f6f2ea）で、そこだけ紙の色が変わって見えた。
+   面ごとに紙が変わると、資料をまたいだときに「別のサイト」に見える */
 .sec-light[data-bg="1"]{background:var(--paper)}
 .sec-light[data-bg="2"]{background:linear-gradient(178deg,#eef3fa 0%,#e7eef8 100%)}
-.sec-light[data-bg="3"]{background:linear-gradient(178deg,#f6f2ea 0%,#f1eade 100%)}
+.sec-light[data-bg="3"]{background:linear-gradient(178deg,#e7eef8 0%,#eef3fa 100%)}
 .sec-navy[data-bg="1"]{background:linear-gradient(172deg,#1f3864 0%,#1b3059 100%)}
 .sec-navy[data-bg="2"]{background:linear-gradient(172deg,#24446f 0%,#182c55 100%)}
 .sec-navy[data-bg="3"]{background:linear-gradient(172deg,#182a52 0%,#131c33 100%)}
