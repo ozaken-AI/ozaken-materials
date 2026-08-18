@@ -96,11 +96,57 @@ import re as _re
 # 描画順に少しずつ遅らせると、図が組み上がっていくように見える。
 _TAG = _re.compile(r'<(rect|circle|line|path|text|ellipse|polygon|polyline)([^>]*)>')
 
+def _pos(tag, attrs):
+    """その要素が、図のどのあたりに置かれているか。段で遅らせるために使う"""
+    def num(name):
+        m = _re.search(r'\b%s="(-?[\d.]+)"' % name, attrs)
+        return float(m.group(1)) if m else None
+    if tag in ('circle', 'ellipse'):
+        return num('cx') or 0.0, num('cy') or 0.0
+    if tag == 'line':
+        return num('x1') or 0.0, num('y1') or 0.0
+    if tag in ('path', 'polygon', 'polyline'):
+        m = _re.search(r'(-?[\d.]+)[ ,]+(-?[\d.]+)', attrs)
+        return (float(m.group(1)), float(m.group(2))) if m else (0.0, 0.0)
+    return num('x') or 0.0, num('y') or 0.0
 
-def _animate(svg, window=1.05):
-    """SVGの各要素に、描画順の遅延つきで a-fade を振る。
-    すでに a-grow などが個別に付いている要素は、その指定を尊重して遅延だけ足す。"""
-    # defs の中（marker や pattern の定義）は動かさないので、いったん退避する
+
+def _kind(tag, attrs):
+    """何であるかを、形から見分ける。動き方はここで決まる"""
+    if 'marker-end' in attrs or 'marker-start' in attrs or 'stroke-dasharray' in attrs:
+        return 'a-flow'                       # 矢印・破線は流れ続ける
+    stroked = 'stroke="' in attrs and 'stroke="none"' not in attrs
+    hollow = 'fill="none"' in attrs or 'fill:none' in attrs or 'fill="' not in attrs
+    if tag in ('line', 'path', 'polyline') and stroked and hollow:
+        return 'a-draw'                       # **線は、引かれるように出す**
+    if tag == 'circle':
+        m = _re.search(r'\br="([\d.]+)"', attrs)
+        if m and not hollow:
+            return 'a-pulse' if float(m.group(1)) >= 13 else 'a-breathe'
+        return 'a-fade'
+    if tag == 'rect':
+        w = _re.search(r'\bwidth="([\d.]+)"', attrs)
+        h = _re.search(r'\bheight="([\d.]+)"', attrs)
+        wv = float(w.group(1)) if w else 0.0
+        hv = float(h.group(1)) if h else 0.0
+        if hv and hv <= 6 and 'rx=' in attrs:
+            return 'a-breathe'                # カード上端の細い色帯
+        if wv >= 90 and hv and hv <= 34:
+            return 'a-grow'                   # 棒・帯は、横に伸びる
+        if hv and hv > 34:
+            return 'a-rise'                   # 箱は、下からすっと上がる
+    return 'a-fade'
+
+
+def _animate(svg, window=0.85):
+    """SVGの各要素に、置かれている場所に応じた遅延と、形に応じた動きを振る。
+
+    **遅延は要素の順番ではなく、y座標の段で決める。**
+    順番で振ると、要素の多い図ほど間隔が詰まって一気に出てしまう。
+    段で振れば、図がどれだけ細かくても「上から順に組み上がる」ように見える。
+
+    すでに作図関数が a-grow などを指定している要素は、その指定を尊重する。
+    """
     defs = []
 
     def stash(m):
@@ -108,52 +154,55 @@ def _animate(svg, window=1.05):
         return '\x00%d\x00' % (len(defs) - 1)
 
     body = _re.sub(r'<defs>[\s\S]*?</defs>', stash, svg)
-    n = len(_TAG.findall(body)) or 1
-    step = min(0.045, window / n)
-    idx = [0]
+
+    # ── まず全部の位置を測って、段に割る ──
+    found = []
+    for m in _TAG.finditer(body):
+        found.append((m.start(), m.group(1), m.group(2)))
+    if not found:
+        return _re.sub(r'\x00(\d+)\x00', lambda mm: defs[int(mm.group(1))], body)
+
+    BAND = 26.0                                   # これより近い高さは同じ段とみなす
+    ys = sorted({round(_pos(t, a)[1] / BAND) for _, t, a in found})
+    rank = {y: i for i, y in enumerate(ys)}
+    nb = max(1, len(ys))
+    band_step = min(0.075, window / nb)
+
+    delay = {}
+    seen = {}
+    for off, tag, attrs in found:
+        x, y = _pos(tag, attrs)
+        b = rank[round(y / BAND)]
+        k = seen.get(b, 0)
+        seen[b] = k + 1
+        # 同じ段の中は、左から順にわずかにずらす。ずらしすぎると段が崩れる
+        delay[off] = b * band_step + min(k * 0.012, band_step * 0.7)
 
     def rewrite(m):
         tag, attrs = m.group(1), m.group(2)
         close = ''
-        if attrs.rstrip().endswith('/'):        # 自己終了タグの / は末尾へ戻す
+        if attrs.rstrip().endswith('/'):
             attrs = attrs.rstrip()[:-1]
             close = '/'
-        d = '%.3fs' % (idx[0] * step)
-        idx[0] += 1
         if '--d' in attrs:
             return m.group(0)
-        # 出たあとも動き続けるものを、形から判断して振り分ける。
-        # 投影中に気が散らないよう、動きはどれもゆっくり・小さくしてある
-        if 'class="a-' not in attrs:
-            r = _re.search(r'\br="([\d.]+)"', attrs)
-            hollow = 'fill="none"' in attrs or 'fill:none' in attrs
-            if 'marker-end' in attrs or 'stroke-dasharray' in attrs:
-                attrs += ' class="a-flow"'          # 矢印・破線は流れ続ける
-            elif tag == 'circle' and r and not hollow:
-                # 大きめの丸（VSの座や見出しの座）はゆっくり脈打つ。
-                # 小さな点は動かすと落ち着かないので、明るさだけ揺らす
-                attrs += ' class="a-pulse"' if float(r.group(1)) >= 13 else ' class="a-breathe"'
-            elif tag == 'rect' and _re.search(r'height="([2-6])"', attrs) and 'rx=' in attrs:
-                attrs += ' class="a-breathe"'       # カード上端の細い色帯は呼吸する
-        if 'class="a-' in attrs:               # 個別に指定済み。遅延だけ足す
-            if 'style="' in attrs:
-                attrs = attrs.replace('style="', 'style="--d:%s;' % d, 1)
-            else:
-                attrs += ' style="--d:%s"' % d
+        d = '%.3fs' % delay.get(m.start(), 0.0)
+        if 'class="a-' in attrs:               # 作図関数の指定を尊重し、遅延だけ足す
+            pass
         else:
-            # class や style がすでにあるなら、そこに混ぜる。属性を二重に書かない
+            cls = _kind(tag, attrs)
             if 'class="' in attrs:
-                attrs = attrs.replace('class="', 'class="a-fade ', 1)
+                attrs = attrs.replace('class="', 'class="%s ' % cls, 1)
             else:
-                attrs += ' class="a-fade"'
-            if 'style="' in attrs:
-                attrs = attrs.replace('style="', 'style="--d:%s;' % d, 1)
-            else:
-                attrs += ' style="--d:%s"' % d
+                attrs += ' class="%s"' % cls
+        if 'style="' in attrs:
+            attrs = attrs.replace('style="', 'style="--d:%s;' % d, 1)
+        else:
+            attrs += ' style="--d:%s"' % d
         return '<%s%s%s>' % (tag, attrs, close)
 
     body = _TAG.sub(rewrite, body)
-    return _re.sub(r'\x00(\d+)\x00', lambda m: defs[int(m.group(1))], body)
+    return _re.sub(r'\x00(\d+)\x00', lambda mm: defs[int(mm.group(1))], body)
 
 
 def _fig(title, cap, svg, anim=True):
