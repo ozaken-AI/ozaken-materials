@@ -1,0 +1,18 @@
+{
+  "slug": "jp-power",
+  "title": "日本のデータセンターと、電力の接続待ち",
+  "watching": ["系統接続", "託送料金", "AIデータセンター", "地方分散"],
+  "facts": [
+    {"date": "2026", "text": "経産省が、東京・関西・九州エリアで系統接続の手続き中のデータセンターを実態調査。手続きが進まない理由や計画変更の有無を把握しようとしている", "src": "https://www.meti.go.jp/shingikai/enecho/denryoku_gas/jisedai_kiban/system_design_wg/", "tier": 1, "note": "所在のみ確認。資料本文は未取得"},
+    {"date": "2026", "text": "現状は需要家の行動を制限できず、過剰な申込が後続の接続を遅らせうる。過剰投資が増えれば託送料金への波及も懸念される", "src": "https://www.meti.go.jp/shingikai/enecho/denryoku_gas/jisedai_kiban/system_design_wg/", "tier": 1, "note": "検索スニペット経由。原典PDF未取得"},
+    {"date": "2026", "text": "RIETIが、AI事業者に電源・送配電・バックアップの自前調達を求める案を論じている", "src": "https://www.rieti.go.jp/jp/publications/nts/26e013.html", "tier": 1, "note": "所在のみ確認"}
+  ],
+  "open": [
+    "接続キューの待ち年数は、エリア別に実際いくつか（一次資料の数値が未取得）",
+    "秋田のAIデータセンター計画（UAEからの大型投資という報）の一次情報はどこか"
+  ],
+  "stance": "未記入（おざけんが書く）",
+  "falsify": "接続手続きの制度改正で待ち行列が短縮されれば、この制約は解ける",
+  "related": ["08_industry/", "05_drive/keiei-data-kiban.html"],
+  "written": []
+}

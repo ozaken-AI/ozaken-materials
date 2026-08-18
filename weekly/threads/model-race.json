@@ -1,0 +1,20 @@
+{
+  "slug": "model-race",
+  "title": "賢さの差が縮み、値段と速度が選択軸になる",
+  "watching": ["モデル価格", "推論速度", "Intelligence Index", "導入価格の切替日"],
+  "facts": [
+    {"date": "2026-08-13", "text": "Gemini 3.7 Flash がGA。導入価格は入力$0.75／出力$3.75（100万トークンあたり）だが、2026年12月31日を過ぎると標準価格の入力$1.50／出力$7.50になる。コンテキスト100万トークン、最大出力64k、thinkingレベルはlow/medium/highの3段", "src": "https://blog.google/intl/ja-jp/company-news/technology/gemini-37-flash/", "tier": 1},
+    {"date": "2026-08-18", "text": "Artificial Analysis の計測では Gemini 3.7 Flash (high) が Intelligence Index 56。GPT-5.6 Terra (max) 57、Muse Spark 1.2 (xhigh) 57 のすぐ下。出力速度は約340トークン/秒で、GPT-5.6 Terra や GLM-5.2 の約3倍", "src": "https://artificialanalysis.ai/models/gemini-3-7-flash", "tier": 1, "note": "確認日基準。ランキングは日々動く"},
+    {"date": "2026-08-12", "text": "Grok 4.6 (high) 公開。入力$2.00／出力$6.00", "src": "https://artificialanalysis.ai/models/grok-4-6", "tier": 1},
+    {"date": "2026-08-05", "text": "Muse Spark 1.2 (xhigh) 公開。入力$1.25／出力$4.25", "src": "https://artificialanalysis.ai/models/muse-spark-1-2", "tier": 1},
+    {"date": "2026-08-06", "text": "OpenAI が GPT-5.6 Sol を更新し、無料・Goユーザーの既定モデルを入れ替え。応答にかける手間を選ぶスライダーを追加。あわせて o3 は2026年8月26日、DALL·E GPT は8月30日に引退", "src": "https://openai.com/index/improving-gpt-5-6-sol-in-chatgpt/", "tier": 1}
+  ],
+  "open": [
+    "12月31日の価格切替で、Flash系を前提に組んだ社内ワークフローの費用は実際どれだけ増えるか",
+    "『賢さ3ポイント差・値段2倍』のとき、業務ごとにどちらを選ぶべきか"
+  ],
+  "stance": "未記入（おざけんが書く）",
+  "falsify": "導入価格が延長されるか、標準価格が引き下げられたら、期ずれの警告は外れ",
+  "related": ["02_models/model-selection.html", "02_models/model-routing-16patterns.html", "05_drive/ai-budget.html", "03_tools/gemini-guide.html"],
+  "written": []
+}

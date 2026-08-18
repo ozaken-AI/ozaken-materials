@@ -1,0 +1,20 @@
+{
+  "slug": "enterprise-adoption",
+  "title": "売り物が『モデル』から『導入能力』に移っている",
+  "watching": ["FDE", "サービス提携", "認定者数", "Partner Network", "AIサービス会社"],
+  "facts": [
+    {"date": "2025-12-03", "text": "Snowflake と Anthropic が複数年・$200M の提携。Claudeが12,600社以上のSnowflake顧客に届く", "src": "https://www.snowflake.com/en/news/press-releases/snowflake-and-anthropic-announce-200-million-partnership-to-bring-agentic-ai-to-global-enterprises/", "tier": 1, "note": "当初『今週の話題』として拾ったが、検証で2025年12月と判明。降格して背景に置く"},
+    {"date": "2026-05-14", "text": "PwC が Claude を全社展開。共同CoEと、米国3万人の認定プログラム", "src": "https://www.anthropic.com/news/pwc-expanded-partnership", "tier": 1},
+    {"date": "2026", "text": "Accenture と複数年提携。約3万人のAccentureプロフェッショナルがClaudeの訓練を受ける（Accenture Anthropic Business Group）", "src": "https://www.anthropic.com/news/anthropic-accenture-partnership", "tier": 1, "note": "発表日が未確定"},
+    {"date": "2026", "text": "Blackstone・Hellman & Friedman・Goldman Sachs と、中堅企業向けのAIサービス会社を新設", "src": "https://www.anthropic.com/news/enterprise-ai-services-company", "tier": 1, "note": "発表日が未確定"},
+    {"date": "2026", "text": "Claude Partner Network に Services Track と Partner Hub を新設", "src": "https://www.anthropic.com/news/services-track-partner-hub", "tier": 1, "note": "発表日が未確定"}
+  ],
+  "open": [
+    "各提携の正確な発表日（検索スニペットでは確定できない）",
+    "『認定者3万人』という単位が、実際の導入成果とどう結びついているか"
+  ],
+  "stance": "未記入（おざけんが書く）",
+  "falsify": "提携が人数の発表だけで終わり、導入事例の数字が出てこなければ、この読みは外れ",
+  "related": ["06_people/openai-fde.html", "05_drive/ai-coe.html", "01_concept/business-model-shift.html"],
+  "written": []
+}

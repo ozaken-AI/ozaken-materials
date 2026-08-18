@@ -1,0 +1,18 @@
+{
+  "slug": "eu-ai-act",
+  "title": "EU AI Act：2026年8月2日に本当に始まったもの",
+  "watching": ["EU AI Act", "透明性義務", "高リスク", "Digital Omnibus", "日本企業への影響"],
+  "facts": [
+    {"date": "2026-08-02", "text": "この日から始まるのは第50条の透明性義務と、AI Officeの完全な執行権限。重い高リスク義務ではない", "src": "（二次情報のみ。原典未取得）", "tier": 3},
+    {"date": "2026-05-07", "text": "Digital Omnibus の政治合意により、Annex III の高リスク義務は2027年12月2日へ、Annex I は2028年8月2日へ延期されたとされる", "src": "（二次情報のみ。原典未取得）", "tier": 3}
+  ],
+  "open": [
+    "延期の根拠となる正文（EUR-Lex）と、AI Office のガイダンスの所在",
+    "日本企業が2026年8月2日時点で実際に負う義務は何か"
+  ],
+  "stance": "未記入（保留：一次情報に降りるまで書かない）",
+  "falsify": "原典を確認して日付や条番号が違えば、この節はそのまま落とす",
+  "related": ["07_risk/ai-guidelines.html", "07_risk/privacy-law.html"],
+  "written": [],
+  "hold": "原典に到達できていないため、今週は公開しない"
+}
