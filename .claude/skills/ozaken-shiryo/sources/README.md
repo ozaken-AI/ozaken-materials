@@ -13,11 +13,30 @@ OZAKEN_PW=マスター python3 publish.py \
 
 `--update` は鍵を作り直さないので、配布済みのパスワードはそのまま使える。
 
+## 新しい資料は、`gen_template.py` を複製して作る
+
+`gen_template.py` はテンプレート便覧（`template.html`）の生成元であり、
+**同時に、新しい資料の雛形でもある。**
+表紙・明暗の交互・締めがすでに揃っているので、節と図版を差し替えるだけで
+規約を満たす。ゼロから組むと、必ずどこかで機械検査に引っかかる。
+
+```bash
+cp gen_template.py gen_atarashii.py
+# 題と節を書き換える
+python3 gen_atarashii.py
+cd ../scripts
+OZAKEN_PW=マスター python3 publish.py \
+    /tmp/body_template.html 01_concept/atarashii.html --list "題 ─ 副題"
+```
+
+（複製したら、書き出し先のファイル名も書き換えること）
+
 ## どの生成元が、どの資料を組むか
 
 題（`<!--META title=...-->`）から突き合わせたもの。
 空欄は、複数の資料をまとめて組む生成元か、題を変えたあとのもの。
 
+- `gen_template.py` … template.html（**雛形。新しい資料はこれを複製して作る**）
 - `gen_ai_drive.py` … 05_drive/ai-drive-handbook.html
 - `gen_ai_lead.py` … （要確認）
 - `gen_bizmodel.py` … 01_concept/business-model-shift.html

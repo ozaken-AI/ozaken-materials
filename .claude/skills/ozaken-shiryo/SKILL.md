@@ -712,10 +712,20 @@ OZAKEN_PW=マスター python3 .claude/skills/ozaken-shiryo/scripts/apply_ogp.py
 `domain_fig` や `page_parts` を直せば、このページの見本も一緒に変わる。
 だから便覧だけが古くなる、ということが起きない。
 
+**便覧そのものが、普通の資料として組んである。**
+表紙も背景の動きも図版の組み上がりも、他の資料とまったく同じ。
+型の見本が実物と違う見え方をしていたら、見本の役目を果たさないので。
+
 ```bash
-cd .claude/skills/ozaken-shiryo/scripts
-OZAKEN_PW=マスター python3 make_template.py    # 便覧を焼き直す
+cd .claude/skills/ozaken-shiryo/sources
+python3 gen_template.py
+cd ../scripts
+OZAKEN_PW=マスター python3 publish.py /tmp/body_template.html template.html --update
 ```
+
+**新しい資料は、この便覧の生成元を複製して作る。**
+`gen_template.py` には表紙・明暗の交互・締めがすでに揃っているので、
+節と図版を差し替えるだけで規約を満たす。ゼロから組むと、必ずどこかで検査に引っかかる。
 
 **部品を足したら、便覧にも見本を足す。** 足さないと、次にその形が要る場面で
 誰も見つけられず、似た図版がもう1つ増えることになる。
