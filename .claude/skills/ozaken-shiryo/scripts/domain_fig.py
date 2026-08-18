@@ -206,11 +206,20 @@ def _animate(svg, window=0.85):
 
 
 def _fig(title, cap, svg, anim=True):
+    """**図番号だけを切り出して、別の書体で置く。**
+
+    「Fig.12 ── 90日の進め方」を1本の文として組むと、番号と題が同じ強さになり、
+    投影したときに題のほうが読まれない。番号を明朝のイタリックへ逃がすと、
+    番号は番号として拾え、題はまっすぐ題として読める。
+    """
     if anim:
         svg = _animate(svg)
+    m = _re.match(r'^(Fig\.\d+)\s*(?:──|—|-)?\s*(.*)$', title)
+    head = ('<span class="fig-no">%s</span>%s' % (esc(m.group(1)), esc(m.group(2)))
+            if m else esc(title))
     return ('<div class="figure">\n  <p class="fig-title">%s</p>\n'
             '  <div class="figure-scroll">%s</div>\n'
-            '  <p class="figure-cap">%s</p>\n</div>' % (esc(title), svg, esc(cap)))
+            '  <p class="figure-cap">%s</p>\n</div>' % (head, svg, esc(cap)))
 
 
 # ------------------------------------------------------------------

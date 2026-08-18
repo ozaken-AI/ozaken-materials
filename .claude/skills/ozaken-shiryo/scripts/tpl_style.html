@@ -92,9 +92,11 @@ a { color: inherit; text-decoration: none; }
 .bare p + p { margin-top: 1rem; }
 
 /* ----- ヒーロー ----- */
+/* **左揃え。**視線は左上から始まる。中央に置くと、題・リード文・署名の
+   行頭がそれぞれ違う位置に来て、読み手は毎回その行の始まりを探すことになる */
 .hero {
   background: var(--navy); padding: 5.5rem 1.5rem 4.5rem;
-  text-align: center; color: var(--white);
+  text-align: left; color: var(--white);
   position: relative; overflow: hidden;
 }
 .hero::before {
@@ -107,39 +109,85 @@ a { color: inherit; text-decoration: none; }
 .hero .eyebrow { color: var(--white); background: rgba(255,255,255,0.15); }
 .hero-title {
   font-family: var(--font-ja-serif);
-  font-size: clamp(1.85rem, 5vw, 2.9rem);
-  font-weight: 600; line-height: 1.34; letter-spacing: 0.01em;
-  margin-bottom: 1.2rem; position: relative;
+  font-size: clamp(2rem, 5.2vw, 3.25rem);
+  font-weight: 600; line-height: 1.36; letter-spacing: 0.01em;
+  margin-bottom: 1.5rem; position: relative;
+}
+/* 題の中の要になる語。赤で抜くと警告に見えるので、淡い青に下線を引く */
+.hero-title .hl {
+  color: var(--azure-pale);
+  background-image: linear-gradient(var(--azure), var(--azure));
+  background-size: 100% 3px; background-position: 0 calc(100% - 0.1em);
+  background-repeat: no-repeat; padding-bottom: 0.12em;
 }
 .hero-copy {
-  font-size: 1.02rem; color: rgba(255,255,255,0.82);
-  max-width: 620px; margin: 0 auto 2.6rem; line-height: 1.9; position: relative;
+  font-size: 1rem; color: rgba(255,255,255,0.8);
+  max-width: 520px; margin: 0 0 2.2rem; line-height: 2; position: relative;
 }
+/* 著者と所属。区切りは記号ではなく、細い縦の罫で入れる */
+.hero-meta {
+  position: relative; z-index: 3;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.9em;
+  font-size: 0.82rem; color: rgba(216,228,240,0.72);
+}
+.hero-meta b { font-weight: 700; color: #fff; }
+.hero-meta span { position: relative; padding-left: 0.9em; }
+.hero-meta span::before {
+  content: ''; position: absolute; left: 0; top: 0.2em; bottom: 0.2em;
+  width: 1px; background: rgba(216,228,240,0.32);
+}
+/* 右上の区分。明朝のイタリックで、本文とは別の層に見せる */
+.hero-cat {
+  position: absolute; top: 1.7rem; right: 2rem; z-index: 3;
+  font-family: var(--font-ja-serif); font-style: italic;
+  font-size: 0.82rem; letter-spacing: 0.04em; color: rgba(216,228,240,0.6);
+}
+@media (max-width: 640px) { .hero-cat { display: none; } }
 .hero-glyph { position: relative; max-width: 640px; margin: 0 auto; }
 .hero-glyph svg { width: 100%; height: auto; display: block; }
 
 /* ----- figure / diagram ----- */
+/* 白い箱を、もう少し大きな角丸と深い影に。
+   図版は資料の主役なので、面から浮いて見えるだけの重さを持たせる */
 .figure {
-  background: var(--white); border-radius: var(--radius);
-  padding: 1.75rem 1.5rem 1.25rem;
-  box-shadow: 0 2px 12px rgba(26,26,46,0.08);
-  margin: 2rem 0 0;
+  background: var(--white); border-radius: 14px;
+  padding: 2.1rem 2.1rem 1.5rem;
+  box-shadow: 0 18px 44px -22px rgba(20,29,53,0.34);
+  border: 1px solid rgba(46,84,150,0.07);
+  margin: 2.2rem 0 0;
 }
-.sec-navy .figure { background: var(--navy-deep); box-shadow: none; }
+.sec-navy .figure {
+  background: var(--navy-deep); box-shadow: none;
+  border-color: rgba(216,228,240,0.10);
+}
+@media (max-width: 640px) { .figure { padding: 1.4rem 1.1rem 1rem; } }
 .figure-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .figure svg { width: 100%; height: auto; display: block; }
 .figure text { font-family: var(--font-ja-sans); }
+/* **全部大文字にしない。**日本語の文に大文字化を掛けると、
+   中の英数字だけが浮いて読みにくくなる（build_page.check_tokens が
+   BUILD_PAGE.CHECK_TOKENS になる、という具合に） */
 .figure-cap {
-  font-family: var(--font-en); font-size: 11px; font-weight: 600;
-  letter-spacing: 0.08em; text-transform: uppercase;
-  color: var(--muted); margin-top: 1rem; text-align: center;
+  font-family: var(--font-ja-sans); font-size: 0.78rem; font-weight: 400;
+  letter-spacing: 0.01em; line-height: 1.85;
+  color: var(--muted); margin-top: 1.1rem; text-align: center;
+  max-width: 720px; margin-left: auto; margin-right: auto;
 }
-.sec-navy .figure-cap { color: rgba(255,255,255,0.5); }
+.sec-navy .figure-cap { color: rgba(255,255,255,0.55); }
 .fig-title {
-  font-family: var(--font-ja-serif); font-size: 1rem; font-weight: 500;
-  margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--azure-pale);
+  font-family: var(--font-ja-sans); font-size: 1.02rem; font-weight: 700;
+  line-height: 1.6;
+  margin-bottom: 1.1rem; padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--azure-pale);
+}
+/* 図番号だけ、明朝のイタリックへ逃がす。番号と題が同じ強さだと、
+   投影したときに題のほうが読まれない */
+.fig-no {
+  font-family: var(--font-ja-serif); font-style: italic; font-weight: 600;
+  color: var(--azure); margin-right: 0.7em;
 }
 .sec-navy .fig-title { color: var(--white); border-bottom-color: rgba(255,255,255,0.15); }
+.sec-navy .fig-no { color: var(--azure-pale); }
 .legend { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; margin-top: 0.75rem; }
 .legend-item { display: flex; align-items: center; gap: 0.45rem; font-size: 0.78rem; color: var(--muted); }
 .sec-navy .legend-item { color: rgba(255,255,255,0.6); }

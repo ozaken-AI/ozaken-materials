@@ -194,13 +194,32 @@ def sec(tone, eyebrow, title, sub=None, lede=None, fig=None, body=None, cattr=''
     return '\n'.join(out)
 
 
-def hero(eyebrow, title, copy):
-    """title は <br> で2行に割る。「」の中か英字のかたまりが自動で赤くなる"""
-    return ('<section class="hero">\n%s  <div class="inner" data-reveal>\n'
+BYLINE = ('<b>小澤健祐（おざけん）</b>'
+          '<span>一般社団法人AICX協会 代表理事</span>')
+
+
+def hero(eyebrow, title, copy, cat=None, meta=BYLINE):
+    """資料の扉。**中央揃えではなく左揃え。**
+
+    投影したときも、あとから読んだときも、視線は左上から始まる。
+    中央に置くと、題・リード文・署名の行頭がそれぞれ違う位置に来るので、
+    読み手は毎回その行の始まりを探すことになる。
+
+      eyebrow  助走の小さなラベル。罫線が自動で付く
+      title    <br> で2行に割る。<span class="hl"> で一部を淡い青＋下線に
+      copy     リード文。3〜4行で収める
+      cat      右上に置く区分（「AI Transformation ／ 解説」など）。省略可
+      meta     著者と所属の行。既定でおざけんの署名が入る。None で消せる
+
+    稼働の読み出しとスクロール誘導は apply_herofx が入れるので、ここでは書かない。
+    """
+    top = '  <span class="hero-cat">%s</span>\n' % esc(cat) if cat else ''
+    mt = '    <p class="hero-meta">%s</p>\n' % meta if meta else ''
+    return ('<section class="hero">\n%s%s  <div class="inner" data-reveal>\n'
             '    <span class="eyebrow">%s</span>\n'
             '    <h1 class="hero-title">%s</h1>\n'
-            '    <p class="hero-copy">%s</p>\n  </div>\n</section>\n'
-            % (HERO_TEXTURE, eyebrow, title, esc(copy)))
+            '    <p class="hero-copy">%s</p>\n%s  </div>\n</section>\n'
+            % (HERO_TEXTURE, top, eyebrow, title, esc(copy), mt))
 
 
 def close(title, copy):
