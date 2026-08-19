@@ -70,7 +70,11 @@ def opens(path, pw):
 
 def docs():
     out = []
-    for d in sorted(glob.glob(os.path.join(ROOT, '0*_*'))):
+    # **分類フォルダは2桁。0 始まりとは限らない。**
+    # 昔は '0*_*' で拾っていたので、分類が10を超えた日に
+    # 10_policy と 11_stats が丸ごと外れた。ここを通る道具（台帳・関連づけ・
+    # 検査・統計）が、そろって新しい資料を見なくなる
+    for d in sorted(glob.glob(os.path.join(ROOT, '[0-9][0-9]_*'))):
         out += sorted(glob.glob(os.path.join(d, '*.html')))
     out += sorted(glob.glob(os.path.join(ROOT, 'AX_Table', '*.html')))
     for d in oz_root.BACKSTAGE_DIRS[1:]:      # AX_Table は上で拾っている

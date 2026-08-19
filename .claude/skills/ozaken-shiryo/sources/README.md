@@ -53,6 +53,12 @@ OZAKEN_PW=マスター python3 publish.py \
 - `gen_keiei.py` … 05_drive/keiei-data-kiban.html
 - `gen_meti_wg5.py` … 06_people/meti-ax-skill-wg5.html
 - `gen_msa.py` … Training/msa-life-training.html
+- `gen_policy_japan.py` … 10_policy/japan-ai-strategy.html
+- `gen_policy_usa.py` … 10_policy/usa-ai-strategy.html
+- `gen_policy_china.py` … 10_policy/china-ai-strategy.html
+- `gen_policy_eu.py` … 10_policy/eu-ai-strategy.html
+- `gen_policy_compare.py` … 10_policy/ai-policy-compare.html
+- `gen_stats_2026.py` … 11_stats/ai-stats-2026.html
 - `gen_rag_ft.py` … 02_models/rag-finetuning.html
 - `gen_role_docs.py` … （要確認）
 - `gen_role_docs2.py` … （要確認）

@@ -612,7 +612,8 @@ def fig_bars(items, title, cap, dark=False, unit='', note=None):
     fg = WHITE if dark else INK
     sub = 'rgba(255,255,255,.6)' if dark else MUTED
     track = 'rgba(255,255,255,.07)' if dark else 'rgba(46,84,150,.08)'
-    tone = [AZURE, '#c9762f', RED]
+    # 紺を基調に、赤だけを強調。0＝基準／1＝並べるだけ／2＝ここが要点
+    tone = [AZURE, '#24446f', RED]
     mx = max(v for _, v, _, _, _ in items) or 1
     X, W = 250, 500
     parts = []
@@ -668,7 +669,13 @@ def accents(dark):
 # F10  年表（時間の流れと、主体ごとの色分け）
 # ------------------------------------------------------------------
 def fig_timeline(events, title, cap, dark=False, axis='2026年5月'):
-    """events: [(日付, 主体, 出来事, 意味, 差し色index)]"""
+    """events: [(日付, 主体, 出来事, 意味, 差し色index)]
+
+    **折り返しの幅も、箱の高さも、出来事の数から決める。**
+    以前は「15文字で折り返し、箱は高さ190」と決め打ちだったので、
+    出来事を5つ並べた図では1列が157pxしかなく、字が箱からはみ出した。
+    年表は3つのときと5つのときで、1列の幅がまるごと変わる欄。
+    """
     fg = WHITE if dark else INK
     sub = 'rgba(255,255,255,.68)' if dark else MUTED
     box = 'rgba(255,255,255,.05)' if dark else WHITE
@@ -676,6 +683,22 @@ def fig_timeline(events, title, cap, dark=False, axis='2026年5月'):
     acc = accents(dark)
     n = len(events)
     w = int((884 - 16 - (n - 1) * 20) / n)
+    inner = w - 32
+    # 全角1文字は、おおむね字の大きさぶんの幅を取る
+    pw = max(4, int(inner / 13))
+    pt = max(4, int(inner / 12))
+    pm = max(4, int(inner / 11.5))
+    nw = max(len(wrap(e[1], pw)) for e in events)
+    nt = max(len(wrap(e[2], pt)) for e in events)
+    nm = max(len(wrap(e[3], pm)) for e in events)
+
+    BT = 96
+    y_who = BT + 30
+    y_what = y_who + (nw - 1) * 18 + 26
+    y_rule = y_what + (nt - 1) * 18 + 16
+    y_mean = y_rule + 22
+    bot = y_mean + (nm - 1) * 17 + 16
+
     LY = 66
     parts = ['<line x1="16" y1="%d" x2="884" y2="%d" stroke="%s" stroke-width="2"/>'
              % (LY, LY, edge)]
@@ -688,23 +711,25 @@ def fig_timeline(events, title, cap, dark=False, axis='2026年5月'):
         parts.append('<circle cx="%.1f" cy="%d" r="7" fill="%s"/>' % (cx, LY, c))
         parts.append('<circle cx="%.1f" cy="%d" r="13" fill="%s" fill-opacity=".18"/>'
                      % (cx, LY, c))
-        parts.append('<line x1="%.1f" y1="%d" x2="%.1f" y2="96" stroke="%s" '
-                     'stroke-width="1.5"/>' % (cx, LY + 13, cx, c))
-        parts.append(lines(date, cx, 44, 12, 14, fill=c, font_size='11.5',
-                           font_weight='700', text_anchor='middle'))
-        parts.append('<rect x="%d" y="96" width="%d" height="190" rx="10" fill="%s" '
-                     'stroke="%s" stroke-width="1"/>' % (x, w, box, edge))
-        parts.append('<rect x="%d" y="96" width="%d" height="4" rx="2" fill="%s"/>'
-                     % (x, w, c))
-        parts.append(lines(who, x + 16, 126, 13, 18, fill=c, font_size='13',
+        parts.append('<line x1="%.1f" y1="%d" x2="%.1f" y2="%d" stroke="%s" '
+                     'stroke-width="1.5"/>' % (cx, LY + 13, cx, BT, c))
+        parts.append(lines(date, cx, 44, max(6, int(w / 11.5)), 14, fill=c,
+                           font_size='11.5', font_weight='700',
+                           text_anchor='middle'))
+        parts.append('<rect x="%d" y="%d" width="%d" height="%d" rx="10" fill="%s" '
+                     'stroke="%s" stroke-width="1"/>' % (x, BT, w, bot - BT, box, edge))
+        parts.append('<rect x="%d" y="%d" width="%d" height="4" rx="2" fill="%s"/>'
+                     % (x, BT, w, c))
+        parts.append(lines(who, x + 16, y_who, pw, 18, fill=c, font_size='13',
                            font_weight='700'))
-        parts.append(lines(what, x + 16, 156, 15, 18, fill=fg, font_size='12'))
-        parts.append('<line x1="%d" y1="228" x2="%d" y2="228" stroke="%s" '
-                     'stroke-width="1" stroke-dasharray="3 4"/>' % (x + 16, x + w - 16, edge))
-        parts.append(lines(mean, x + 16, 250, 15, 17, fill=sub, font_size='11.5'))
+        parts.append(lines(what, x + 16, y_what, pt, 18, fill=fg, font_size='12'))
+        parts.append('<line x1="%d" y1="%d" x2="%d" y2="%d" stroke="%s" '
+                     'stroke-width="1" stroke-dasharray="3 4"/>'
+                     % (x + 16, y_rule, x + w - 16, y_rule, edge))
+        parts.append(lines(mean, x + 16, y_mean, pm, 17, fill=sub, font_size='11.5'))
     return _fig(title, cap,
-        '<svg viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg" role="img">'
-        '%s</svg>' % ''.join(parts))
+        '<svg viewBox="0 0 900 %d" xmlns="http://www.w3.org/2000/svg" role="img">'
+        '%s</svg>' % (bot + 14, ''.join(parts)))
 
 
 # ------------------------------------------------------------------

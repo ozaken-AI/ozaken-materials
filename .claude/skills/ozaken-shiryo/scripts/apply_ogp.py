@@ -80,10 +80,13 @@ def targets():
     out = []
     for d in sorted(os.listdir(ROOT)):
         p = os.path.join(ROOT, d)
-        # 表の分類フォルダ（01_… 〜 09_…）と、裏資料の置き場だけ
+        # 表の分類フォルダ（01_… 以降）と、裏資料の置き場だけ。
+        # **2桁は 0 始まりとは限らない。**分類が10を超えたとき、
+        # `^0\d_` のままだと 10_policy と 11_stats が丸ごと外れて、
+        # 共有カードだけが作られない資料ができた
         if not os.path.isdir(p):
             continue
-        if not (re.match(r'^0\d_', d) or d in oz_root.BACKSTAGE_DIRS):
+        if not (re.match(r'^\d\d_', d) or d in oz_root.BACKSTAGE_DIRS):
             continue
         for f in sorted(os.listdir(p)):
             if f.endswith('.html'):
