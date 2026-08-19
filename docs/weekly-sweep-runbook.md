@@ -20,6 +20,18 @@
 
 ディレクトリ名は**対象週の火曜の日付**。実行日ではない。
 
+対象週を決めたら、**始める前に既にやってあるかを確認する。**
+
+```bash
+git fetch origin --prune
+git ls-remote --heads origin 'claude/weekly-sweep-*'
+```
+
+`claude/weekly-sweep-MMDD` が既に origin にある、または
+`weekly/<対象週の火曜>/sweep.json` が既に main にあるなら、その週は済んでいる。
+**やり直さず、その旨だけ報告して終わる。**
+（Routine を作った当日など、同じ週に2回走る条件が実際に起こる）
+
 水曜17時（JST）に回すのは、米国時間の火曜が完全に終わってからにするため。
 Anthropic・TechCrunch・Crunchbase は米国時間で日付が付くので、
 日本時間の水曜朝に回すと火曜ぶんを半日取りこぼす。
