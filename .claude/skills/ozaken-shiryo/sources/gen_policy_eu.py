@@ -99,7 +99,7 @@ A(sec('sec-light', 'Section 01 ─ Why',
 A(sec('sec-navy', 'Section 02 ─ Structure',
       'AI Actは、リスクの高さで4段に区切ります',
       '技術で区切らず、用途で区切る。これがEUのやり方の核心です。',
-      lede='AI Act（Regulation (EU) 2024/1689）は、'
+      lede='AI Act（Regulation (EU) 2024/1689＝欧州連合のAI規則）は、'
            '<span class="fw-bold text-azure">用途のリスクで4段に区切る</span>'
            '構造をとっています。'
            'モデルの大きさでも、技術の種類でもありません。'

@@ -225,7 +225,8 @@ A(sec('sec-navy', 'Section 04 ─ Labeling',
             '義務。ただし高リスクの義務は2027年12月へ延期された')],
           'Fig.8 ── 表示の義務は、両方にある。細かさが違う',
           '出典：中国＝標識弁法および GB 45438-2025、'
-          'EU＝Regulation (EU) 2024/1689 第50条。確認日 2026年8月19日',
+          'EU＝Regulation (EU) 2024/1689（EUのAI規則。通称 AI Act）の'
+          '第50条（透明性義務）。確認日 2026年8月19日',
           dark=True),
       body=cards([
           ('<span class="mth">二重</span>見える表示だけでは、足りない',
