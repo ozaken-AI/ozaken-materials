@@ -1426,6 +1426,54 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
   .bkgate-hud b{left:52px;bottom:20px}}
 @media (prefers-reduced-motion: reduce){.bkgate::before{animation:none}.bkgate.show{animation:none}}
 
+/* ══ スマートフォン向けの秘密コマンド ══════════════════════════
+   キーボードの2文字コマンドは、スマートフォンでは打てない。
+   壇上や移動中に裏資料を開きたいのはむしろスマートフォンのほうなので、
+   **画面の右下の隅を長押しする**と、同じ行き先の一覧が下から出る。
+
+   隅に置く見えないボタンは作らない。置くと、その下にあるものが
+   押せなくなる。触った座標を見て判定するだけにしてある */
+.ozsheet{position:fixed;inset:0;z-index:9999;display:none;
+  background:rgba(4,6,13,.72);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.ozsheet.show{display:block;animation:ozsFade .22s ease both}
+@keyframes ozsFade{from{opacity:0}to{opacity:1}}
+.ozs-panel{position:absolute;left:0;right:0;bottom:0;
+  background:linear-gradient(172deg,#1f3864 0%,#131c33 100%);
+  color:var(--azure-pale);border-top:1px solid rgba(159,198,245,.28);
+  border-radius:18px 18px 0 0;padding:.9rem 1.1rem calc(1.4rem + env(safe-area-inset-bottom));
+  box-shadow:0 -22px 60px -20px rgba(0,0,0,.7);
+  animation:ozsUp .3s cubic-bezier(.22,.9,.3,1) both;
+  max-height:82vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+@keyframes ozsUp{from{transform:translateY(101%)}to{transform:translateY(0)}}
+.ozs-grip{width:38px;height:4px;border-radius:2px;background:rgba(159,198,245,.35);
+  margin:.1rem auto .9rem}
+.ozs-eyebrow{display:flex;align-items:center;gap:.7em;font-family:var(--font-en);
+  font-size:.58rem;font-weight:700;letter-spacing:.34em;color:#f0b429;margin-bottom:.9rem}
+.ozs-eyebrow::before{content:"";width:22px;height:1px;background:currentColor;opacity:.7}
+.ozs-group{font-family:var(--font-en);font-size:.55rem;font-weight:700;letter-spacing:.26em;
+  color:rgba(159,198,245,.5);margin:.9rem 0 .5rem}
+.ozs-list{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+@media(max-width:380px){.ozs-list{grid-template-columns:1fr}}
+/* **札は1行に収める。** 2列に並べたとき、片方だけ2行になると
+   その行の箱だけが高くなって、並びが崩れて見える。
+   実際「テンプレート便覧」が折り返して、隣より一段高くなった */
+.ozs-item{display:flex;align-items:center;gap:.55rem;width:100%;text-align:left;
+  padding:.72rem .7rem;border:1px solid rgba(159,198,245,.2);border-radius:10px;
+  background:rgba(159,198,245,.07);color:#fff;font-family:var(--font-ja-sans);
+  font-size:.8rem;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;
+  white-space:nowrap;overflow:hidden}
+.ozs-item:active{background:rgba(159,198,245,.18);transform:scale(.98)}
+.ozs-key{flex:none;min-width:1.9em;padding:.16em .34em;border-radius:4px;text-align:center;
+  background:rgba(159,198,245,.16);color:#9fc6f5;
+  font-family:var(--font-en);font-size:.58rem;font-weight:700;letter-spacing:.1em}
+.ozs-item[data-lock] .ozs-key{background:rgba(240,180,41,.16);color:#f0b429}
+.ozs-note{font-size:.68rem;line-height:1.8;color:rgba(216,228,240,.55);margin-top:1rem}
+.ozs-close{width:100%;margin-top:.9rem;padding:.8rem;border:none;border-radius:10px;
+  background:rgba(159,198,245,.12);color:rgba(216,228,240,.8);
+  font-family:var(--font-ja-sans);font-weight:700;font-size:.86rem;cursor:pointer}
+@media (prefers-reduced-motion: reduce){
+  .ozsheet.show,.ozs-panel{animation:none}}
+
 /* YouTubeチャンネルの見出し。アイコンが無い間は枠だけの仮置きで並びを保つ */
 .pf-ytch{display:flex;align-items:center;gap:clamp(1rem,2.4vw,1.5rem);margin:0 0 1.8rem;flex-wrap:wrap}
 .pf-ytav{flex:0 0 auto;width:clamp(72px,11vw,104px);height:clamp(72px,11vw,104px);
@@ -2715,6 +2763,36 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
   </form>
 </div>
 
+<!-- スマートフォン向けの秘密コマンド：右下の隅を長押しすると出る -->
+<div id="ozsheet" class="ozsheet" role="dialog" aria-label="隠しメニュー" aria-hidden="true">
+  <div class="ozs-panel" role="document">
+    <div class="ozs-grip" aria-hidden="true"></div>
+    <span class="ozs-eyebrow">OZAKEN CMS ／ QUICK ACCESS</span>
+
+    <div class="ozs-group">RESTRICTED ／ 要パスワード</div>
+    <div class="ozs-list">
+      <button class="ozs-item" type="button" data-oz="ur" data-lock><span class="ozs-key">UR</span>裏資料置き場</button>
+      <button class="ozs-item" type="button" data-oz="te" data-lock><span class="ozs-key">TE</span>テンプレート便覧</button>
+      <button class="ozs-item" type="button" data-oz="pw" data-lock><span class="ozs-key">PW</span>パスワード台帳</button>
+      <button class="ozs-item" type="button" data-oz="mx" data-lock><span class="ozs-key">MX</span>資料マトリクス</button>
+    </div>
+
+    <div class="ozs-group">STAGE ／ 投影</div>
+    <div class="ozs-list">
+      <button class="ozs-item" type="button" data-oz="ma"><span class="ozs-key">MA</span>星座マップ</button>
+      <button class="ozs-item" type="button" data-oz="qa"><span class="ozs-key">QA</span>質問箱のQR</button>
+      <button class="ozs-item" type="button" data-oz="pr"><span class="ozs-key">PR</span>プロフィール</button>
+      <button class="ozs-item" type="button" data-oz="ti"><span class="ozs-key">TI</span>タイトルカード</button>
+      <button class="ozs-item" type="button" data-oz="st"><span class="ozs-key">ST</span>開演までの待機</button>
+      <button class="ozs-item" type="button" data-oz="th"><span class="ozs-key">TH</span>お礼の画面</button>
+    </div>
+
+    <p class="ozs-note">画面の右下の隅を長押しすると、いつでもここに戻れます。
+      パソコンでは、同じ行き先に2文字のキー（<b>ur</b>／<b>te</b> など）で移動できます。</p>
+    <button class="ozs-close" type="button" data-ozs-close>閉じる</button>
+  </div>
+</div>
+
 <!-- 秘密コマンド ti：講演タイトルカード（その場で入力できる投影用フルスクリーン） -->
 <div id="titlecard" class="thanks tc" aria-hidden="true" role="dialog" aria-label="講演タイトル">
   <canvas class="thanks-net" aria-hidden="true"></canvas>
@@ -3239,6 +3317,29 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
       }).observe(pf,{attributes:true,attributeFilter:['class']});
     }
   })();
+  /* **行き先の呼び出しを、1か所にまとめる。**
+     キーボードの2文字コマンドと、スマートフォンの長押しメニューが
+     同じ処理を呼ぶようにしておかないと、片方だけ行き先が増えて食い違う。
+     実際、資料マトリクス（mx）を足したときに、片側にだけ入れて忘れかけた */
+  function closeAll(){ all.forEach(function(o){ if(o.el.classList.contains('show')) o.hide(); }); }
+  function run(code){
+    if(code==='ma'){ if(!window.ozMap) return false; closeAll(); window.ozMap(); return true; }
+    if(code==='ur'||code==='pw'||code==='mx'||code==='te'){
+      if(!window.ozGate) return false;
+      closeAll();
+      window.ozGate({ur:'backstage',pw:'ledger',mx:'matrix',te:'template'}[code]);
+      return true; }
+    if(code==='go'){ if(!window.ozBoot) return false; closeAll(); window.ozBoot(null,'start'); return true; }
+    if(code==='en'){ if(!window.ozBoot||!bySecret['th']) return false; closeAll();
+      window.ozBoot(function(){ bySecret['th'].show(); },'end'); return true; }
+    var target=bySecret[code];
+    if(!target) return false;
+    all.forEach(function(o){ if(o!==target&&o.el.classList.contains('show')) o.hide(); });
+    target.show();
+    return true;
+  }
+  window.ozOpen=run;
+
   var buf='';
   document.addEventListener('keydown',function(e){
     var t=e.target;
@@ -3263,38 +3364,13 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     var map=document.getElementById('arcmap');
     if(map&&map.classList.contains('show')) return;   /* 星座マップ表示中は他のコマンドを拾わない */
     if(e.key&&e.key.length===1&&!e.metaKey&&!e.ctrlKey&&!e.altKey){ buf=(buf+e.key.toLowerCase()).slice(-8);
-      /* go は開演の演出だけを再生する。どこにも遷移せず、終わったら元の画面に戻る */
-      /* ur は裏資料置き場のゲートを開く。判定は遷移先の暗号化ページに任せる */
-      if(buf.slice(-2)==='ma'&&window.ozMap){ buf='';
-        all.forEach(function(o){ if(o.el.classList.contains('show')) o.hide(); });
-        window.ozMap(); return; }
-      if(buf.slice(-2)==='ur'){ buf='';
-        all.forEach(function(o){ if(o.el.classList.contains('show')) o.hide(); });
-        if(window.ozGate) window.ozGate('backstage'); return; }
-      /* pw はパスワード台帳。判定は台帳ページ自身に任せる */
-      if(buf.slice(-2)==='pw'){ buf='';
-        all.forEach(function(o){ if(o.el.classList.contains('show')) o.hide(); });
-        if(window.ozGate) window.ozGate('ledger'); return; }
-      /* mx は資料マトリクス。どの資料がどの概念に触れているかの一覧 */
-      if(buf.slice(-2)==='mx'){ buf='';
-        all.forEach(function(o){ if(o.el.classList.contains('show')) o.hide(); });
-        if(window.ozGate) window.ozGate('matrix'); return; }
-      /* te はテンプレート便覧。図版カタログと、資料の型の台帳 */
-      if(buf.slice(-2)==='te'){ buf='';
-        all.forEach(function(o){ if(o.el.classList.contains('show')) o.hide(); });
-        if(window.ozGate) window.ozGate('template'); return; }
-      if(buf.slice(-2)==='go'&&window.ozBoot){ buf='';
-        all.forEach(function(o){ if(o.el.classList.contains('show')) o.hide(); });
-        window.ozBoot(null,'start'); return; }
-      /* en は終了の演出を再生し、そのままお礼＋QRへ着地する */
-      if(buf.slice(-2)==='en'&&window.ozBoot&&bySecret['th']){ buf='';
-        all.forEach(function(o){ if(o.el.classList.contains('show')) o.hide(); });
-        window.ozBoot(function(){ bySecret['th'].show(); },'end'); return; }
-      for(var s in bySecret){ if(buf.slice(-s.length)===s){ buf='';
-        var target=bySecret[s];
-        all.forEach(function(o){ if(o!==target&&o.el.classList.contains('show')) o.hide(); });
-        target.show();
-        break; } } }
+      /* ma 星座マップ／ur 裏資料置き場／pw パスワード台帳／mx 資料マトリクス／
+         te テンプレート便覧／go 開演の演出／en 終演の演出。
+         鍵の要る行き先は、判定を遷移先の暗号化ページに任せる */
+      var CODES=['ma','ur','pw','mx','te','go','en'];
+      for(var ci=0;ci<CODES.length;ci++){
+        if(buf.slice(-2)===CODES[ci]&&run(CODES[ci])){ buf=''; return; } }
+      for(var sc in bySecret){ if(buf.slice(-sc.length)===sc){ buf=''; run(sc); break; } } }
   });
   /* 資料ページからのショートカットは、この受け口に着地する。
      開いたらハッシュは消しておく。再読み込みで勝手に開き直さないため */
@@ -3320,6 +3396,82 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     try { history.replaceState(null, '', location.pathname + location.search); } catch(e){}
     setTimeout(open[h], 60);
   })();
+})();
+</script>
+
+<script>
+/* ══ スマートフォン向けの秘密コマンド ══════════════════════════════════
+   2文字のキーコマンドは、スマートフォンでは打てない。
+   だが壇上や移動中に裏資料を開きたいのは、むしろスマートフォンのほうだ。
+
+   **画面の右下の隅を、指で1秒ほど押し続ける**と、行き先の一覧が下から出る。
+
+   隅に見えないボタンを置く作りにはしていない。置くと、その真下にある
+   リンクやボタンが押せなくなる。触った座標を見て判定するだけにしてある。
+
+   誤爆しないように、3つ条件を付けた。
+     ・右下の隅から 76px 四方の中で始まった指だけを見る
+     ・12px 以上動いたら、読んでいる途中のスクロールとみなして取り消す
+     ・950ms 押し続けること
+   iOS の文字選択メニューと重ならないよう、開くときに既定の動作を止める */
+(function(){
+  var sheet=document.getElementById('ozsheet'); if(!sheet) return;
+  var CORNER=76, MOVE=12, HOLD=950;
+  var timer=null, sx=0, sy=0;
+
+  function open(){
+    timer=null;
+    if(sheet.classList.contains('show')) return;
+    sheet.classList.add('show');
+    sheet.setAttribute('aria-hidden','false');
+    document.documentElement.classList.add('boot-locked');
+    if(navigator.vibrate) try{ navigator.vibrate(18); }catch(e){}
+  }
+  function close(){
+    if(!sheet.classList.contains('show')) return;
+    sheet.classList.remove('show');
+    sheet.setAttribute('aria-hidden','true');
+    document.documentElement.classList.remove('boot-locked');
+  }
+  window.ozSheetClose=close;
+
+  function cancel(){ if(timer){ clearTimeout(timer); timer=null; } }
+
+  document.addEventListener('touchstart',function(e){
+    if(sheet.classList.contains('show')) return;
+    if(e.touches.length!==1) return;
+    var t=e.touches[0];
+    sx=t.clientX; sy=t.clientY;
+    if(sx < window.innerWidth-CORNER || sy < window.innerHeight-CORNER) return;
+    cancel();
+    timer=setTimeout(open,HOLD);
+  },{passive:true});
+
+  document.addEventListener('touchmove',function(e){
+    if(!timer) return;
+    var t=e.touches[0];
+    if(Math.abs(t.clientX-sx)>MOVE||Math.abs(t.clientY-sy)>MOVE) cancel();
+  },{passive:true});
+
+  document.addEventListener('touchend',cancel,{passive:true});
+  document.addEventListener('touchcancel',cancel,{passive:true});
+  /* 開いた直後に、指を離した動作がそのまま下の要素へ抜けるのを止める */
+  document.addEventListener('contextmenu',function(e){
+    if(sheet.classList.contains('show')) e.preventDefault();
+  });
+
+  sheet.addEventListener('click',function(e){
+    if(e.target===sheet||e.target.closest('[data-ozs-close]')){ close(); return; }
+    var b=e.target.closest('[data-oz]'); if(!b) return;
+    close();
+    /* 閉じる動きと行き先の演出が重ならないように、一拍おく */
+    setTimeout(function(){ if(window.ozOpen) window.ozOpen(b.getAttribute('data-oz')); },160);
+  });
+
+  /* Escape で閉じる。キーボードの分岐より先に拾う必要はないので、ここで足す */
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape') close();
+  });
 })();
 </script>
 
