@@ -1872,13 +1872,15 @@ def fig_check(items, title, cap, dark=False, note=None):
     """items: [(可否 True/False/None, 見出し, 補足)]"""
     fg = WHITE if dark else INK
     sub = 'rgba(255,255,255,.62)' if dark else MUTED
-    okbg = 'rgba(47,143,138,.10)'
-    ngbg = 'rgba(226,55,68,.09)'
-    nabg = 'rgba(46,84,150,.07)' if not dark else 'rgba(255,255,255,.05)'
+    # **○は緑ではなく紺。**緑を足すと、紺・赤・緑の3色になる。
+    # 「守ること」は特別なことではなく基準なので、基調の色でいい
+    okbg = 'rgba(46,84,150,.06)'
+    ngbg = 'rgba(226,55,68,.06)'
+    nabg = 'rgba(107,122,153,.07)'
     parts = []
     y = 16
     for ok, h, sup in items:
-        c = TEAL if ok is True else (RED if ok is False else MUTED)
+        c = AZURE if ok is True else (RED if ok is False else MUTED)
         bg = okbg if ok is True else (ngbg if ok is False else nabg)
         mark = '○' if ok is True else ('×' if ok is False else '－')
         nl = max(len(wrap(h, 34)), 1) + (len(wrap(sup, 62)) if sup else 0)
@@ -1901,3 +1903,27 @@ def fig_check(items, title, cap, dark=False, note=None):
     return _fig(title, cap,
         '<svg viewBox="0 0 900 %.0f" xmlns="http://www.w3.org/2000/svg" role="img">'
         '%s</svg>' % (y + 8, ''.join(parts)))
+
+
+# ==================================================================
+# **図版の箱は、濃い面の上でも白。だから中身は常に明るい組みで描く。**
+#
+# 濃い面では箱まで濃くしていたので、図の中まで暗くなり、
+# 薄い塗りが濁って読みにくくなっていた。紙の資料でも、濃い扉の上に置く図版は
+# 白い紙のまま刷る。面の色は面の色、図版は図版として独立していたほうが、
+# 資料をとおして図の見え方が一定になる。
+#
+# dark= はどの生成元にも書かれているので、消して回らずに、ここで捨てる。
+# 受け取ってはいるが効かない、という状態を1か所に閉じ込めておく。
+# ==================================================================
+def _always_light(fn):
+    def wrapped(*a, **kw):
+        kw['dark'] = False
+        return fn(*a, **kw)
+    wrapped.__name__ = fn.__name__
+    wrapped.__doc__ = fn.__doc__
+    return wrapped
+
+
+for _name in [n for n in list(globals()) if n.startswith('fig_')]:
+    globals()[_name] = _always_light(globals()[_name])
