@@ -797,6 +797,7 @@ OZAKEN_PW=マスター python3 crossref.py matrix   # 資料×概念の一覧ペ
 - `references/structure.md` — セクション構成の型と、本文フラグメントの書き方の実例
 - `references/pitfalls.md` — 実際に踏んだ落とし穴。**詰まったら最初に開く**
 - `references/stage.md` — 登壇本番での操作（ショートカット一覧・質問箱・資料の渡し方）
+- `references/clients.md` — 取引先の正式名称。**社名を書く前に必ず見る**（前株・後株を間違えない）
 - **`ozaken-hyoka` スキル** — 受講者の目で評価する。公開前に必ず通す
 
 既存資料が規定に合っているかは `lint_all.py` で確かめられる。
