@@ -33,7 +33,7 @@ MARK = '<!-- OZ-FIGANIM v3 -->'
 CSS_END = '/* /OZ-FIGFLOW */'
 
 CSS = """
-/* OZ-FIGFLOW v2 */
+/* OZ-FIGFLOW v3 */
 /* 出たあとも動き続けるもの。投影中に気が散らないよう、ゆっくり・小さく */
 .figanim .figure svg .a-flow, .figanim .hero-glyph svg .a-flow,
 .figanim .figure svg .a-breathe, .figanim .hero-glyph svg .a-breathe,
@@ -61,6 +61,42 @@ CSS = """
 @keyframes ozPulse {
   0%,100% { transform: scale(1); opacity: 1; }
   50% { transform: scale(1.06); opacity: 0.84; }
+}
+/* ── マウスを載せたところが、必ず何かしら返す ────────────────────
+   **講演では、話し手がカーソルで図を指す。**
+   指したところが少しでも反応すると、聴いている側の目がそこへ付いてくる。
+   レーザーポインタの代わりになる。
+
+   反応させるのは、作図側が動きの印を付けた要素だけ。
+   図の地や枠まで光ると、どこを指しているのか分からなくなる。
+
+   触れる端末は対象外（`hover:hover`）。指で触れた瞬間に光ると、
+   スクロールしているだけで図がちらつく */
+@media (hover: hover) and (pointer: fine) {
+  .figure svg .a-fade, .figure svg .a-pop, .figure svg .a-rise,
+  .figure svg .a-grow, .figure svg .a-draw, .figure svg .a-flow,
+  .figure svg .a-pulse, .figure svg .a-breathe,
+  .hero-glyph svg .a-fade, .hero-glyph svg .a-pop {
+    transform-box: fill-box; transform-origin: center;
+    transition: filter .16s ease, transform .16s ease;
+  }
+  .figure svg .a-fade:hover, .figure svg .a-pop:hover, .figure svg .a-rise:hover,
+  .figure svg .a-grow:hover, .figure svg .a-draw:hover, .figure svg .a-flow:hover,
+  .figure svg .a-pulse:hover, .figure svg .a-breathe:hover,
+  .hero-glyph svg .a-fade:hover, .hero-glyph svg .a-pop:hover {
+    filter: brightness(1.16) drop-shadow(0 2px 9px rgba(46,84,150,.38));
+  }
+  /* 形ごとに、返し方を変える。**箱は浮き、点は膨らみ、棒は少しだけ太る。**
+     全部を同じ動きにすると、何を指しているかの手掛かりにならない */
+  .figure svg rect.a-rise:hover, .figure svg rect.a-fade:hover { transform: translateY(-2px); }
+  .figure svg rect.a-grow:hover { transform: scaleY(1.12); }
+  .figure svg circle.a-pop:hover, .figure svg circle.a-fade:hover,
+  .figure svg ellipse.a-fade:hover { transform: scale(1.22); }
+  .figure svg text.a-fade:hover { transform: scale(1.04); }
+  /* すでに動いているもの（流れる矢印・呼吸する丸）は、明るさだけ返す。
+     transform を足すと、走っている animation と取り合いになって跳ねる */
+  .figure svg .a-flow:hover, .figure svg .a-pulse:hover,
+  .figure svg .a-breathe:hover { transform: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .figanim .figure svg .a-flow, .figanim .figure svg .a-breathe,
@@ -114,8 +150,12 @@ TRIGGER = """
 """
 
 
+# **属性が続く書き方も拾う。**
+# `<div class="figure" data-reveal>` のように class のあとに属性があると、
+# 以前の `[^"]*">` では止まって一致しなかった。
+# そのせいで、ちゃんと .figure で組んである古い資料が丸ごと外れていた
 BLOCK = re.compile(
-    r'(<div class="(?:figure|hero-glyph)[^"]*">[\s\S]*?)(<svg[\s\S]*?</svg>)')
+    r'(<div class="(?:figure|hero-glyph)[^"]*"[^>]*>[\s\S]*?)(<svg[\s\S]*?</svg>)')
 
 
 def unmark(svg):

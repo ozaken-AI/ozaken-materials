@@ -125,6 +125,26 @@ CSS = """
   letter-spacing:.02em;line-height:1;color:var(--azure);background:none;padding:0;
   margin-bottom:.7rem}
 .sec-navy .card-tag{color:var(--azure-pale);background:none}
+
+/* ── マウスを載せた図の要素が、何かしら返す（受け皿） ──────────
+   本命は `apply_figanim.py` が入れる、動きの印つきの要素への反応。
+   ただし**印の無い古い資料**（カードの中に小さなSVGを直接置いている類）が
+   残っていて、そこでは何も返らない。
+
+   講演では、話し手がカーソルで図を指す。指したところが少しでも反応すると、
+   聴いている側の目がそこへ付いてくる。だから資料によって返ったり
+   返らなかったりするのが、いちばん困る。ここで受けておく。
+
+   見るのは面の中のSVGだけ。表紙の星座（.texture）まで光ると、
+   ただの背景が押せるものに見えてしまう */
+@media (hover: hover) and (pointer: fine){
+  .sec-light svg :is(rect,circle,ellipse,path,polygon,polyline,line,text),
+  .sec-navy  svg :is(rect,circle,ellipse,path,polygon,polyline,line,text){
+    transition:filter .16s ease}
+  .sec-light svg :is(rect,circle,ellipse,path,polygon,polyline,line,text):hover,
+  .sec-navy  svg :is(rect,circle,ellipse,path,polygon,polyline,line,text):hover{
+    filter:brightness(1.14) drop-shadow(0 2px 9px rgba(46,84,150,.34))}
+}
 /* /OZ-BODYSTYLE */
 """
 
