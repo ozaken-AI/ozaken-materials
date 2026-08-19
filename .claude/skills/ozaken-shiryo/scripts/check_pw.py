@@ -41,7 +41,9 @@ TOOLS = ('passwords.html', 'backstage.html', 'matrix.html')
 
 def docs():
     out = []
-    for d in sorted(glob.glob(os.path.join(ROOT, '0*_*'))):
+    # **分類フォルダは2桁。0 始まりとは限らない。**
+    # 分類が10を超えた日に、ここが '0*_*' のままだと新しい分類が丸ごと外れる
+    for d in sorted(glob.glob(os.path.join(ROOT, '[0-9][0-9]_*'))):
         out += sorted(glob.glob(os.path.join(d, '*.html')))
     out += sorted(glob.glob(os.path.join(ROOT, 'AX_Table', '*.html')))
     for d in oz_root.BACKSTAGE_DIRS[1:]:      # AX_Table は上で拾っている

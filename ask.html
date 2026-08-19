@@ -172,6 +172,8 @@ button.send:disabled{opacity:.55;cursor:default;transform:none}
 
 
 
+
+
 /* OZ-SPACING v1 */
 /* ブロック同士が隣り合ったときの余白。デザインシステム側で
    .figure/.take は margin-bottom を持たず、.cards/.two-col/.stepper/.stats は
@@ -246,9 +248,14 @@ button.send:disabled{opacity:.55;cursor:default;transform:none}
 @keyframes ozWipe{
   from{opacity:0;clip-path:inset(0 100% 0 0);transform:translateY(16px)}
   to{opacity:1;clip-path:inset(0 0 0 0);transform:none}}
-/* 見出しの赤い強調。index の .hl と同じ振る舞い */
-.hero-title .hl{color:var(--red-bright);
-  animation:ozGlitch .24s steps(2) 1.25s 3 both,ozHlBlink 9s linear 3s infinite}
+/* 見出しの強調。**赤ではなく淡い青に下線。**
+   赤で抜くと警告に見えて、題そのものより先に目が行ってしまう。
+   淡い青に下線なら、題の一部として読まれたまま、そこだけ残る。
+   点滅の演出も外した。投影中に見出しがちらつくと、話が入らない */
+.hero-title .hl{color:var(--azure-pale);
+  background-image:linear-gradient(var(--azure),var(--azure));
+  background-size:100% 3px;background-position:0 calc(100% - .1em);
+  background-repeat:no-repeat;padding-bottom:.12em}
 @keyframes ozGlitch{0%{opacity:.3;transform:translateX(-3px)}
   50%{opacity:1;transform:translateX(2px)}100%{opacity:1;transform:none}}
 @keyframes ozHlBlink{0%,90%{opacity:1;transform:none}
@@ -310,7 +317,7 @@ html.past-hero .site-frame{opacity:0}
   font-variant-numeric:tabular-nums;line-height:1.9;
   display:flex;flex-wrap:wrap;align-items:center;justify-content:center;
   gap:.1rem .2rem;animation:ozRise 1s .8s both}
-.hero[data-kabe] .oz-status{justify-content:flex-start}
+.oz-status{justify-content:flex-start}
 .oz-live{display:inline-block;width:7px;height:7px;border-radius:50%;background:#46c98a;
   box-shadow:0 0 8px #46c98a;margin-right:.6rem;vertical-align:middle;
   animation:ozPulse 2s ease-in-out infinite}
@@ -659,6 +666,8 @@ html.past-hero .site-frame{opacity:0}
   });
 })();
 </script>
+
+
 
 
 

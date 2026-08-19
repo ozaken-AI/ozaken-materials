@@ -70,7 +70,9 @@ def patch(html):
 
 
 def targets():
-    for d in sorted(glob.glob(os.path.join(ROOT, '0*_*'))):
+    # **分類フォルダは2桁。0 始まりとは限らない。**
+    # 分類が10を超えた日に、ここが '0*_*' のままだと新しい分類が丸ごと外れる
+    for d in sorted(glob.glob(os.path.join(ROOT, '[0-9][0-9]_*'))):
         for f in sorted(glob.glob(os.path.join(d, '*.html'))):
             yield f
     for d in oz_root.BACKSTAGE_DIRS:
