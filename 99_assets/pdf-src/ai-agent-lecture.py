@@ -42,15 +42,15 @@ body{font-family:'OZ Gothic',sans-serif;color:var(--ink);
 .page.navy .card p{color:rgba(255,255,255,.76)}
 .page.navy .eyebrow{background:rgba(255,255,255,.16);color:#fff}
 .page.navy .pnum{color:rgba(255,255,255,.5)}
-.eyebrow{display:inline-block;font-family:'OZ En',sans-serif;font-size:8.5pt;
-  font-weight:700;letter-spacing:.14em;color:var(--azure);background:var(--azure-pale);
-  padding:3px 9px;border-radius:4px;align-self:flex-start}
-h2{font-family:'OZ Mincho',serif;font-size:18pt;font-weight:700;line-height:1.4;
-  margin:5px 0 3px;letter-spacing:.01em}
-.lead{font-size:9.3pt;line-height:1.7;color:var(--muted);max-width:270mm}
+.eyebrow{display:inline-block;font-family:'OZ En',sans-serif;font-size:11pt;
+  font-weight:700;letter-spacing:.13em;color:var(--azure);background:var(--azure-pale);
+  padding:4px 11px;border-radius:4px;align-self:flex-start}
+h2{font-family:'OZ Mincho',serif;font-size:24pt;font-weight:700;line-height:1.4;
+  margin:7px 0 5px;letter-spacing:.01em}
+.lead{font-size:13pt;line-height:1.8;color:var(--muted);max-width:270mm}
 .page.navy h2{color:#fff}
 .fig{flex:1;display:flex;align-items:center;justify-content:center;
-  margin:5px 0 4px;min-height:0}
+  margin:6px 0 5px;min-height:0}
 .fig svg{max-width:100%;max-height:100%;height:auto}
 .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:7mm}
 .cards.two{grid-template-columns:repeat(2,1fr)}
@@ -61,21 +61,29 @@ h2{font-family:'OZ Mincho',serif;font-size:18pt;font-weight:700;line-height:1.4;
 .card p{font-size:8.2pt;line-height:1.68;color:var(--muted)}
 .card b{color:var(--ink);font-weight:700}
 .page.navy .card b{color:#fff}
-.tag{display:inline-block;font-family:'OZ En',sans-serif;font-size:7pt;font-weight:700;
-  letter-spacing:.1em;color:var(--azure);background:var(--azure-pale);
-  padding:1.5px 6px;border-radius:3px;margin-right:5px;vertical-align:2px}
+.tag{display:inline-block;font-family:'OZ En',sans-serif;font-size:9pt;font-weight:700;
+  letter-spacing:.08em;color:var(--azure);background:var(--azure-pale);
+  padding:2px 7px;border-radius:3px;margin-right:6px;vertical-align:2px}
 .page.navy .tag{color:#fff;background:rgba(255,255,255,.18)}
 
 .pnum{position:absolute;right:18mm;bottom:6mm;font-family:'OZ En',sans-serif;
-  font-size:8pt;letter-spacing:.12em;color:var(--muted)}
+  font-size:9.5pt;letter-spacing:.12em;color:var(--muted)}
 
-.foot{position:absolute;left:18mm;bottom:6mm;font-size:7.6pt;color:var(--muted);
+.foot{position:absolute;left:18mm;bottom:6mm;font-size:9pt;color:var(--muted);
   letter-spacing:.02em}
 .page.navy .foot{color:rgba(255,255,255,.5)}
 
 /* 出典 */
-.src{margin-top:3mm;font-size:7.4pt;line-height:1.6;color:var(--muted)}
+.src{margin-top:4mm;font-size:9.5pt;line-height:1.7;color:var(--muted)}
 .page.navy .src{color:rgba(255,255,255,.55)}
+
+/* ── 詳細ページ（カードを1ページに独立させ、大きい文字で見せる） ── */
+.page.detail h2{margin-bottom:6mm}
+.cards-stack{display:flex;flex-direction:column;gap:6mm;flex:1;
+  justify-content:center;min-height:0}
+.cards-stack .card{padding:7mm 12mm}
+.cards-stack .card h3{font-size:17pt;margin-bottom:3.5mm;line-height:1.5}
+.cards-stack .card p{font-size:13pt;line-height:1.85}
 
 /* ── 表紙・裏表紙 ── */
 .cover{background:
@@ -87,19 +95,19 @@ h2{font-family:'OZ Mincho',serif;font-size:18pt;font-weight:700;line-height:1.4;
 .cover .bar{position:absolute;left:0;top:0;bottom:0;width:7mm;background:var(--red)}
 .cover .tex{position:absolute;inset:0;opacity:.13}
 
-.cover h1{font-family:'OZ Mincho',serif;font-size:33pt;font-weight:700;
-  line-height:1.45;letter-spacing:.01em;position:relative}
+.cover h1{font-family:'OZ Mincho',serif;font-size:38pt;font-weight:700;
+  line-height:1.48;letter-spacing:.01em;position:relative}
 .cover h1 .hl{color:var(--red-bright)}
-.cover .sub{font-size:11.5pt;line-height:1.9;color:rgba(216,228,240,.82);
-  margin-top:8mm;max-width:220mm;position:relative}
+.cover .sub{font-size:14.5pt;line-height:1.95;color:rgba(216,228,240,.86);
+  margin-top:9mm;max-width:220mm;position:relative}
 
-.cover .who{position:absolute;left:28mm;bottom:14mm;font-size:9.5pt;
-  color:rgba(216,228,240,.72)}
-.cover .who b{color:#fff;font-size:11pt;font-weight:700}
+.cover .who{position:absolute;left:28mm;bottom:14mm;font-size:11pt;
+  color:rgba(216,228,240,.75)}
+.cover .who b{color:#fff;font-size:13pt;font-weight:700}
 .cover .eyebrow{position:relative;margin-bottom:6mm}
 .close{justify-content:center;align-items:center;text-align:center}
-.close h2{font-size:24pt;line-height:1.55;max-width:250mm}
-.close .lead{font-size:11pt;color:rgba(255,255,255,.8);margin-top:7mm;max-width:230mm}
+.close h2{font-size:30pt;line-height:1.6;max-width:250mm}
+.close .lead{font-size:14pt;color:rgba(255,255,255,.85);margin-top:8mm;max-width:230mm}
 """
 
 TEX = """<svg class="tex" viewBox="0 0 1200 600" preserveAspectRatio="none">
@@ -123,20 +131,33 @@ def only_svg(figure_html):
 N = [1]  # 表紙が1ページ目
 
 
+FOOT = '放送大学 第11回「AIエージェント」 ─ AI技術を人・社会へとつなぐ'
+
+
 def page(eyebrow, title, lead, figure, cards, navy=False, src=None):
+    # 本文ページ（図版まで）と、カード解説の独立ページに分けて出す。
+    # 文字を大きくした分、1ページに詰め込みすぎないための構成。
     N[0] += 1
-    cs = ''.join('<div class="card"><h3>%s</h3><p>%s</p></div>' % (h, b)
-                 for h, b in cards)
     src_html = '<p class="src">%s</p>' % src if src else ''
     P.append(
         '<div class="page%s">'
         '<span class="eyebrow">%s</span><h2>%s</h2><p class="lead">%s</p>'
         '<div class="fig">%s</div>%s'
-        '<div class="cards%s">%s</div>'
-        '<div class="foot">放送大学 第11回「AIエージェント」 ─ AI技術を人・社会へとつなぐ</div>'
+        '<div class="foot">%s</div>'
         '<div class="pnum">%02d</div></div>'
         % (' navy' if navy else '', eyebrow, title, lead,
-           only_svg(figure), src_html, ' two' if len(cards) == 2 else '', cs, N[0]))
+           only_svg(figure), src_html, FOOT, N[0]))
+
+    N[0] += 1
+    cs = ''.join('<div class="card"><h3>%s</h3><p>%s</p></div>' % (h, b)
+                 for h, b in cards)
+    P.append(
+        '<div class="page%s detail">'
+        '<span class="eyebrow">%s ─ もっと詳しく</span><h2>%s</h2>'
+        '<div class="cards-stack">%s</div>'
+        '<div class="foot">%s</div>'
+        '<div class="pnum">%02d</div></div>'
+        % (' navy' if navy else '', eyebrow, title, cs, FOOT, N[0]))
 
 
 # ── 01 表紙 ──────────────────────────────────────────────────
