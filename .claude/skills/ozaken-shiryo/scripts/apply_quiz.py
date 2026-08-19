@@ -386,8 +386,14 @@ def patch(html):
 
 
 def targets():
-    for d in oz_root.BACKSTAGE_DIRS:
-        for f in sorted(glob.glob(os.path.join(ROOT, d, '*.html'))):
+    """**裏資料は3つのフォルダに限らない。**
+    スポット講演の資料は、表の分類フォルダに置いて index に載せない形にしている。
+    そこに仕込んだテストが list に出てこず、仕込み忘れと見分けがつかなかった。
+    台帳にある資料を全部見る。"""
+    import registry
+    from crossref_data import NOT_DOCS
+    for f in registry.docs():
+        if os.path.basename(f) not in NOT_DOCS:
             yield f
 
 

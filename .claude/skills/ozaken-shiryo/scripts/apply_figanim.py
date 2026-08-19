@@ -120,8 +120,9 @@ BLOCK = re.compile(
 
 def unmark(svg):
     """前の版で振った印を外す。規則が変わったら振り直せるように。
-    a-grow / a-draw / a-pop は作図関数が意味を持って付けたものなので残す"""
-    svg = re.sub(r'\s?class="a-(?:fade|flow|breathe|pulse)"\s?style="--d:[\d.]+s"', '', svg)
+    a-pop は作図関数が意味を持って付けたものなので残す。
+    それ以外は _animate が形から振り直すので、いったん全部外す"""
+    svg = re.sub(r'\s?class="a-(?:fade|flow|breathe|pulse|rise|draw|grow)"\s?style="--d:[\d.]+s"', '', svg)
     svg = re.sub(r'\s?class="a-(?:flow|breathe|pulse)"', '', svg)
     svg = re.sub(r'class="a-fade ', 'class="', svg)
     svg = re.sub(r'style="--d:[\d.]+s;', 'style="', svg)
