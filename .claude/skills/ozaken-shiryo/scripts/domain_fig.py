@@ -443,8 +443,10 @@ def fig_quad(xlab, ylab, cells, title, cap, dark=False, xpoles=None, ypoles=None
     sub = 'rgba(255,255,255,.6)' if dark else MUTED
     pol = 'rgba(255,255,255,.82)' if dark else INK
     edge = 'rgba(255,255,255,.16)' if dark else 'rgba(46,84,150,.22)'
-    tone = [('rgba(46,84,150,.16)', AZURE), ('rgba(226,55,68,.12)', '#c9762f'),
-            ('rgba(226,55,68,.18)', RED)]
+    # 地はごく薄く。塗りが濃いと、4つの升が4つの「主張」に見えてしまう。
+    # 強く出すのは上の帯の色だけで、面は静かに保つ
+    tone = [('rgba(46,84,150,.07)', AZURE), ('rgba(46,84,150,.05)', MUTED),
+            ('rgba(226,55,68,.07)', RED)]
     TOP = 76 if xpoles else 56          # 両端を出すぶん、盤面を1段下げる
     H = TOP + 340
     parts = []
@@ -562,20 +564,23 @@ def fig_sheet(headers, rows, widths, title, cap, dark=False, note=None,
     parts = []
     y = 34
     # 見出し行
-    parts.append('<rect x="%d" y="%d" width="%d" height="34" rx="6" fill="%s"/>'
-                 % (X0, y, W, AZURE if not dark else 'rgba(46,84,150,.72)'))
+    # **見出し行を塗りつぶさない。**濃い帯を敷くと、表そのものより帯が目立つ。
+    # 太い罫を1本引くだけで、見出しと中身は十分に分かれる
     for i, h in enumerate(headers):
         parts.append('<text x="%.1f" y="%d" fill="%s" font-size="11.5" '
-                     'font-weight="700">%s</text>' % (xs[i] + 10, y + 22, WHITE, esc(h)))
+                     'font-weight="700" letter-spacing="0.04em">%s</text>'
+                     % (xs[i] + 10, y + 22, fg, esc(h)))
+    parts.append('<line x1="%d" y1="%d" x2="%d" y2="%d" stroke="%s" stroke-width="1.6"/>'
+                 % (X0, y + 34, X0 + W, y + 34,
+                    'rgba(216,228,240,.42)' if dark else 'rgba(31,56,100,.55)'))
     y += 34
     for r, row in enumerate(rows):
         nl = max(len(wrap(str(c), cap_chars(i))) for i, c in enumerate(row))
         h = 20 + nl * 17
-        if r % 2:
-            parts.append('<rect x="%d" y="%.1f" width="%d" height="%.1f" fill="%s"/>'
-                         % (X0, y, W, h, zebra))
-        parts.append('<line x1="%d" y1="%.1f" x2="%d" y2="%.1f" stroke="%s" '
-                     'stroke-width="1"/>' % (X0, y, X0 + W, y, grid))
+        # 縞も引かない。行の区切りは、薄い罫が1本あれば足りる
+        if r:
+            parts.append('<line x1="%d" y1="%.1f" x2="%d" y2="%.1f" stroke="%s" '
+                         'stroke-width="1"/>' % (X0, y, X0 + W, y, grid))
         for i, c in enumerate(row):
             col = fg if i == 0 else sub
             wt = '700' if i == 0 else '400'
@@ -584,9 +589,8 @@ def fig_sheet(headers, rows, widths, title, cap, dark=False, note=None,
         y += h
     parts.append('<line x1="%d" y1="%.1f" x2="%d" y2="%.1f" stroke="%s" '
                  'stroke-width="1"/>' % (X0, y, X0 + W, y, grid))
-    for i in range(1, len(headers)):
-        parts.append('<line x1="%.1f" y1="34" x2="%.1f" y2="%.1f" stroke="%s" '
-                     'stroke-width="1"/>' % (xs[i], xs[i], y, grid))
+    # 縦の仕切りは引かない。列は字の位置がそろっていれば読める。
+    # 格子を全部引くと、中身より枠のほうが目に入る
     if badge:
         parts.append('<text x="%d" y="24" fill="%s" font-size="10.5" font-weight="700" '
                      'letter-spacing="2">%s</text>'
@@ -643,10 +647,17 @@ def fig_bars(items, title, cap, dark=False, unit='', note=None):
 
 AMBER = '#c9762f'
 TEAL = '#2f8f8a'
-ACCENTS = [AZURE, RED, AMBER, TEAL]
-# 紺地の上では AZURE が地に沈んで、番号も色帯もほとんど見えない。
-# 琥珀と青緑は紺の上でも立つので、青と赤だけ明るいほうに寄せる
-ACCENTS_ON_NAVY = ['#8fb0e0', '#ff5d6a', AMBER, TEAL]
+# **紺を基調に、赤だけを強調。**
+# 以前は [青, 赤, 琥珀, 青緑] の4色を同じ強さで回していた。
+# 4色あると、どれが「ふつう」でどれが「注意」なのかが決まらない。
+# **赤は最後に置く。**並べるためだけの2つ目が赤になると、警告に見えてしまう。
+# 0〜2番は紺の濃淡（基準・並び）、3番だけが赤（強調）。
+# 赤を使いたいときは、意識して index 3 を渡す。
+ACCENTS = [AZURE, '#24446f', MUTED, RED]
+# 紺地の上では AZURE が地に沈むので、青だけ明るいほうへ寄せる
+ACCENTS_ON_NAVY = ['#8fb0e0', PALE, 'rgba(216,228,240,.55)', '#ff5d6a']
+# 琥珀と青緑は、段階が3つ以上あって良し悪しの無い図にだけ使う（水位図など）
+ACCENTS_NEUTRAL = [AZURE, AMBER, TEAL, MUTED]
 
 
 def accents(dark):
@@ -909,41 +920,73 @@ def fig_orgs(items, title, cap, dark=False, unit='', note=None):
 # F14  階段（レベルが上がるほど高くなる）
 # ------------------------------------------------------------------
 def fig_stairs(steps, title, cap, dark=False, note=None):
-    """steps: [(レベル表記, 形, 名前, 製品, 説明, 差し色index)]"""
+    """steps: [(レベル表記, 形, 名前, 製品, 説明, 差し色index)]
+
+    **底から伸びる柱にしない。**
+    前の版は段ごとに高さの違う柱を底から立てていた。ところがこの図の中に
+    量は一つも無く、高さが表しているのは順番だけ。量を持たないものを棒で描くと、
+    読み手は高さの差を「大きさの差」として読んでしまう。棒グラフの見た目を
+    していながら、目盛りが無いので確かめようもない。
+
+    そこで柱をやめ、**同じ大きさの札を、段の位置だけ上げて並べる**形にした。
+    高さがそろっているので量には読めず、位置の上がり方だけが段階を示す。
+    札の下端どうしを結ぶ折れ線が、階段そのものになる。
+    """
     fg = WHITE if dark else INK
     sub = 'rgba(255,255,255,.62)' if dark else MUTED
+    acc = accents(dark)
+    line = 'rgba(255,255,255,.20)' if dark else 'rgba(46,84,150,.24)'
     n = len(steps)
-    gap = 12
+    gap = 14
     w = int((868 - (n - 1) * gap) / n)
-    BASE = 322
+    PH, RISE, TOP = 96, 34, 22
+    FLOOR = TOP + (n - 1) * RISE + PH
+    cols = max(10, int((w - 8) / 11.4))
+    pcols = max(10, int((w - 8) / 11))
+    pl = max(len(wrap(p, pcols)) for _, _, _, p, _, _ in steps)
+    dl = max(len(wrap(d, cols)) for _, _, _, _, d, _ in steps)
+    Y_NAME = FLOOR + 40
+    Y_PROD = Y_NAME + 24
+    Y_DESC = Y_PROD + pl * 16 + 12
+    H = Y_DESC + dl * 17 + 14
     parts = []
-    for i, (lv, shape, name, prod, desc, ai) in enumerate(steps):
-        c = ACCENTS[ai % len(ACCENTS)]
+    d = []
+    for i in range(n):
         x = 16 + i * (w + gap)
-        top = BASE - (66 + i * 52)
-        parts.append('<rect x="%d" y="%d" width="%d" height="%d" rx="8" fill="%s" '
-                     'fill-opacity="%.2f"/>' % (x, top, w, BASE - top, c, .18 + i * .1))
-        parts.append('<rect x="%d" y="%d" width="%d" height="4" rx="2" fill="%s"/>'
-                     % (x, top, w, c))
-        parts.append('<text x="%d" y="%d" fill="%s" font-size="10.5" '
-                     'font-weight="700" letter-spacing="1.6">%s</text>'
-                     % (x + 14, top + 26, c, esc(lv)))
-        parts.append('<text x="%d" y="%d" fill="%s" font-size="21" '
-                     'font-weight="700">%s</text>' % (x + 14, top + 54, fg, esc(shape)))
-        parts.append(lines(name, x + 2, BASE + 26, 11, 17, fill=fg, font_size='12.5',
+        y = TOP + (n - 1 - i) * RISE + PH
+        d.append('%s%d %d' % ('M' if i == 0 else 'L', x, y))
+        d.append('L%d %d' % (x + w, y))
+        if i < n - 1:
+            d.append('L%d %d' % (x + w, y - RISE))
+    parts.append('<path d="%s" stroke="%s" stroke-width="1.5" fill="none" '
+                 'stroke-linejoin="round" class="a-draw"/>' % (' '.join(d), line))
+    for i, (lv, shape, name, prod, desc, ai) in enumerate(steps):
+        # **渡された差し色は使わない。**段は並びであって、良し悪しではない。
+        # 段ごとに色が変わると、上の段が「危ない段」に見えてしまう
+        top = i == n - 1
+        c = acc[0] if not top else (RED if not dark else '#ff5d6a')
+        x = 16 + i * (w + gap)
+        y = TOP + (n - 1 - i) * RISE
+        parts.append('<rect x="%d" y="%d" width="%d" height="%d" rx="10" fill="%s" '
+                     'fill-opacity="%.3f" stroke="%s" stroke-width="1"/>'
+                     % (x, y, w, PH, c, 0.10 if top else 0.05, line))
+        parts.append('<rect x="%d" y="%d" width="%d" height="3" rx="1.5" fill="%s" '
+                     'fill-opacity="%.2f"/>' % (x, y, w, c, 1 if top else 0.5))
+        parts.append('<text x="%d" y="%d" fill="%s" font-size="10" font-weight="700" '
+                     'letter-spacing="1.6">%s</text>' % (x + 16, y + 28, c, esc(lv)))
+        parts.append('<text x="%d" y="%d" fill="%s" font-size="19" '
+                     'font-weight="700">%s</text>' % (x + 16, y + 58, fg, esc(shape)))
+        parts.append(lines(name, x + 2, Y_NAME, cols, 17, fill=fg, font_size='13',
                            font_weight='700'))
-        parts.append(lines(prod, x + 2, BASE + 64, 15, 15, fill=c, font_size='11',
+        parts.append(lines(prod, x + 2, Y_PROD, pcols, 16, fill=c, font_size='11',
                            font_weight='700'))
-        parts.append(lines(desc, x + 2, BASE + 106, 15, 15, fill=sub, font_size='10.5'))
-    parts.append('<line x1="16" y1="%d" x2="884" y2="%d" stroke="%s" '
-                 'stroke-width="1.5"/>'
-                 % (BASE, BASE, 'rgba(255,255,255,.2)' if dark else 'rgba(46,84,150,.25)'))
-    h = BASE + 196
+        parts.append(lines(desc, x + 2, Y_DESC, cols, 17, fill=sub, font_size='10.5'))
     if note:
-        parts.append(lines(note, 16, h - 30, 76, 17, fill=sub, font_size='11'))
+        parts.append(lines(note, 16, H - 4, 76, 17, fill=sub, font_size='11'))
+        H += 16
     return _fig(title, cap,
         '<svg viewBox="0 0 900 %d" xmlns="http://www.w3.org/2000/svg" role="img">'
-        '%s</svg>' % (h, ''.join(parts)))
+        '%s</svg>' % (H, ''.join(parts)))
 
 
 # ------------------------------------------------------------------
@@ -1144,7 +1187,13 @@ def fig_dims(steps, title, cap, dark=False, note=None, split=1, uid='dims',
 # F15  3カラム（並列の概念を、色分けして並べる）
 # ------------------------------------------------------------------
 def fig_cols(items, title, cap, dark=False):
-    """items: [(英字ラベル, 名前, 一言, 本文, 差し色index)]"""
+    """items: [(英字ラベル, 名前, 一言, 本文, 差し色index)]
+
+    **箱の高さも、区切りの破線の位置も、中身の行数から決める。**
+    以前は破線を y=122 に固定していたので、一言が2行に折り返した箱では
+    2行目の上を破線が横切っていた。「paper / navy / navy-deep」のように、
+    16字で収まらない一言はふつうに出てくる。
+    """
     fg = WHITE if dark else INK
     sub = 'rgba(255,255,255,.62)' if dark else MUTED
     box = 'rgba(255,255,255,.05)' if dark else WHITE
@@ -1153,7 +1202,14 @@ def fig_cols(items, title, cap, dark=False):
     n = len(items)
     gap = 20
     w = int((868 - (n - 1) * gap) / n)
-    H = 214
+    ocols = max(8, int((w - 36) / 12.4))          # 一言の折り返し
+    tcols = max(8, int((w - 36) / 11.4))          # 本文の折り返し
+    ol = max(len(wrap(one, ocols)) for _, _, one, _, _ in items)
+    tl = max(len(wrap(txt, tcols)) for _, _, _, txt, _ in items)
+    Y_ONE = 106
+    Y_RULE = Y_ONE + (ol - 1) * 17 + 16           # 一言の最終行の、少し下
+    Y_TXT = Y_RULE + 24
+    H = Y_TXT + (tl - 1) * 17 + 16 - 20
     parts = []
     for i, (en, ja, one, txt, ai) in enumerate(items):
         c = acc[ai % len(acc)]
@@ -1167,11 +1223,11 @@ def fig_cols(items, title, cap, dark=False):
                      % (x + 18, c, esc(en)))
         parts.append('<text x="%d" y="82" fill="%s" font-size="17" '
                      'font-weight="700">%s</text>' % (x + 18, fg, esc(ja)))
-        parts.append(lines(one, x + 18, 106, 16, 17, fill=c, font_size='12'))
-        parts.append('<line x1="%d" y1="122" x2="%d" y2="122" stroke="%s" '
-                     'stroke-width="1" stroke-dasharray="3 4"/>' % (x + 18, x + w - 18, edge))
-        parts.append(lines(txt, x + 18, 146, int((w - 36) / 11.4), 17,
-                           fill=sub, font_size='11.5'))
+        parts.append(lines(one, x + 18, Y_ONE, ocols, 17, fill=c, font_size='12'))
+        parts.append('<line x1="%d" y1="%d" x2="%d" y2="%d" stroke="%s" '
+                     'stroke-width="1" stroke-dasharray="3 4"/>'
+                     % (x + 18, Y_RULE, x + w - 18, Y_RULE, edge))
+        parts.append(lines(txt, x + 18, Y_TXT, tcols, 17, fill=sub, font_size='11.5'))
     return _fig(title, cap,
         '<svg viewBox="0 0 900 %d" xmlns="http://www.w3.org/2000/svg" role="img">'
         '%s</svg>' % (H + 36, ''.join(parts)))
