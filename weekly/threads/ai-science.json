@@ -1,0 +1,64 @@
+{
+  "slug": "ai-science",
+  "domain": "tech",
+  "title": "検証が安い領域から、成果が出はじめている",
+  "watching": [
+    "湿式実験での検証",
+    "再現性",
+    "数学",
+    "検証コストと成果の関係",
+    "人が残る工程"
+  ],
+  "facts": [
+    {
+      "date": "2026-08-18",
+      "text": "Anthropic が、Claude にタンパク質のバインダーを一から設計させた実験の結果を公開。外部評価機関（Adaptyv Bio、Twist Bioscience）が実際に湿式実験で検証し、15標的のうち14で結合に成功。うち6標的以上で高親和性、4標的以上で既報の最良値と同等以上。全標的同時設計（48時間セッション）でのヒット率は Mythos Preview 26.7%、Opus 4.8 22.6%で、現在のタンパク質設計キャンペーンで一般的な10〜15%を上回った",
+      "src": "https://www.anthropic.com/research/Claude-accelerates-protein-design",
+      "tier": 1,
+      "checked": "2026-08-18"
+    },
+    {
+      "date": "2026-08-18",
+      "text": "同記事：一般提供モデルの Claude Opus 5 に、契約分析ラボの NMR・LC-MS 生ファイルと2文のプロンプトだけを渡したところ、23分と19分で分析結果を返し、水素数と純度でラボ自身の分析と一致した（純度 96.4% 対 96.33%）",
+      "src": "https://www.anthropic.com/research/Claude-accelerates-protein-design",
+      "tier": 1,
+      "checked": "2026-08-18",
+      "note": "『フロンティアの研究用モデル』ではなく一般提供モデルで出た結果である点が実務上は重要"
+    },
+    {
+      "date": "2026-08-13",
+      "text": "Hugging Face が、ICML 2026 の採択論文をコーディングエージェントで再現するハッカソン（2026年7月15日〜8月2日、19日間）の結果を公開。1,221人が参加し6,816件の再現ログを公開、2,226本（会議全体の約3分の1）の再現を試みた。参加者は1人20ドルの計算クレジットを受け取り、期間中に2,962件のクラウドジョブを起動。判定は オープンウェイトモデル GLM-5.2 による自動 Logbook Judge が担い、各主張を verified / falsified / toy / inconclusive に分類した",
+      "src": "https://huggingface.co/blog/icml-2026-open-reproductions",
+      "tier": 1,
+      "checked": "2026-08-18"
+    },
+    {
+      "date": "2026-08-13",
+      "text": "同記事の背景：ICML 2026 は23,918本の投稿を受け6,352本を採択し、前年の約2倍。査読側の処理能力は倍になっていない。ある spotlight 採択論文の査読者は『証明をすべて丁寧には確認していないので確信度は低い』と自ら書いている",
+      "src": "https://huggingface.co/blog/icml-2026-open-reproductions",
+      "tier": 1,
+      "checked": "2026-08-18"
+    },
+    {
+      "date": "2026-08-10",
+      "text": "（対象週の直前・背景）未公開の研究版 Claude が、リーマン予想に関連する問題で、仮説を満たすゼータ関数の零点の割合の下界を41.6%から67.2%へ改善",
+      "src": "https://www.anthropic.com/research/riemann-zeta",
+      "tier": 1,
+      "checked": "2026-08-18",
+      "note": "日付は2026年8月10日で対象週（8/12〜8/18）の外。今週の話として扱わないこと"
+    }
+  ],
+  "open": [
+    "『検証が安い工程から任せる』を自社の業務に写すと、どの工程が最初に来るのか",
+    "再現をエージェントに任せた場合、falsified 判定をそのまま信じてよいのはどこまでか",
+    "湿式実験のヒット率22〜35%は、次の四半期も再現するのか"
+  ],
+  "stance": "未記入（おざけんが書く）",
+  "falsify": "検証が高くつく領域でも同じ速度で成果が出るようになれば、『検証コストが順番を決める』という読みは外れ",
+  "related": [
+    "01_concept/human-in-on-the-loop-v2.html",
+    "04_practice/build-a-workflow.html"
+  ],
+  "written": [],
+  "note": "2026-08-18のスイープで新設。対象週にタンパク質設計と論文再現という、性格の違う『検証』の話が同じ週に出たので束ねた"
+}

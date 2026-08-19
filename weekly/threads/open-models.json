@@ -1,0 +1,73 @@
+{
+  "slug": "open-models",
+  "domain": "tech",
+  "title": "オープンモデルの土台が、Llama から Qwen に入れ替わった",
+  "watching": [
+    "派生モデル数",
+    "オープンウェイトの知能指数",
+    "中国系ラボの規模",
+    "ダウンロードといいねの乖離",
+    "エージェント経由のトラフィック"
+  ],
+  "facts": [
+    {
+      "date": "2026-08-14",
+      "text": "Hugging Face の半期レポート（2026年1〜8月）。Qwen ベースの派生モデルは151,448件で、Meta 全体の2.6倍、Llama リポジトリ単体の4.7倍。2位の Google は82,506件。Qwen 派生は2026年1〜7月を通じて1日180〜210件のペースで増え続けている。Qwen の GGUF 変換28,531件のうち Qwen 自身が公開したのは54件だけで、残りはコミュニティの手による",
+      "src": "https://huggingface.co/blog/state-of-open-models-summer-2026",
+      "tier": 1,
+      "checked": "2026-08-18"
+    },
+    {
+      "date": "2026-08-14",
+      "text": "同レポート：公開モデルリポジトリは243万件から296万件へ、データセットは71.1万件から100万件へ、Spaces は100万件から144万件へ。ただし分布は極端で、85.6%のモデルは生涯ダウンロード200回未満、1.5%のリポジトリが全ダウンロードの99.2%を占める",
+      "src": "https://huggingface.co/blog/state-of-open-models-summer-2026",
+      "tier": 1,
+      "checked": "2026-08-18"
+    },
+    {
+      "date": "2026-08-14",
+      "text": "同レポート：『注目』と『採用』は一致しない。年内ダウンロード上位25と いいね上位25 の両方に入ったリポジトリは1件だけ。2026年公開のモデルはダウンロード上位25に1本も入らず、25本のうち13本は2022年のもの。all-MiniLM-L6-v2 は7か月で15.5億回ダウンロードされ、いいねは5,156件だった",
+      "src": "https://huggingface.co/blog/state-of-open-models-summer-2026",
+      "tier": 1,
+      "checked": "2026-08-18",
+      "note": "『流行っているモデル』と『業務が依存しているモデル』を混ぜない、という実務上の警告"
+    },
+    {
+      "date": "2026-08-14",
+      "text": "同レポート：2026年のほぼ毎月、中国系ラボの最大・最高性能のオープンモデルが米国ラボのどれよりも大きかった。中国側の月次上限は7,540億〜2.78兆パラメータ、米国側は7か月中5か月で1,300億未満（例外は NVIDIA の Nemotron 3 Ultra 5,610億と Thinking Machines Lab の Inkling）。一方、新規オープンモデルを最も多く公開した2組織は AMD と NVIDIA でそれぞれ200リポジトリ超。フロンティア専業の Moonshot の年内ダウンロードは3,700万回、全サイズを揃える Qwen は20億4,500万回で約55倍",
+      "src": "https://huggingface.co/blog/state-of-open-models-summer-2026",
+      "tier": 1,
+      "checked": "2026-08-18"
+    },
+    {
+      "date": "2026-08-14",
+      "text": "同レポート：ハブへのアクセスに占めるエージェント経由のトラフィックで、7月は Claude Code が44.4%。ただし4月は67.8%、5月は64%で、Codex が10.4%から20.8%へ伸びた。7月のエージェント由来トラフィックの約4分の1は、データセットにまだ名前が登録されていないハーネスからのもの（5月は59.8%）",
+      "src": "https://huggingface.co/blog/state-of-open-models-summer-2026",
+      "tier": 1,
+      "checked": "2026-08-18",
+      "note": "『いま何が本命か』を1か月のシェアで判断できない市場だという証拠"
+    },
+    {
+      "date": "2026-08-14",
+      "text": "Alibaba がオープンウェイトの Qwen3.8 27B を公開。Artificial Analysis の計測で Intelligence Index 52、同規模のオープンウェイトモデルの中央値は9",
+      "src": "https://artificialanalysis.ai/models/qwen3-8-27b",
+      "tier": 1,
+      "checked": "2026-08-18",
+      "note": "Hugging Face API 上の原リポジトリの createdAt は 2026-08-05 で、Artificial Analysis の releaseDate（2026-08-14）と食い違う。公開日は未確定"
+    }
+  ],
+  "open": [
+    "自社サーバに置ける27Bクラスで知能指数52が出るなら、クラウドの中位モデルを使う理由はどこに残るのか",
+    "『中国系ラボが土台』という状態は、日本企業の調達基準（供給元の所在地、ライセンス、サプライチェーン）とどう折り合うのか",
+    "Qwen3.8 27B の原リポジトリの実際の公開日"
+  ],
+  "stance": "未記入（おざけんが書く）",
+  "falsify": "米国ラボや国内ラボの派生モデル数が Qwen に追いつけば、『土台が入れ替わった』という読みは弱まる",
+  "related": [
+    "02_models/model-selection.html",
+    "02_models/model-routing-16patterns.html",
+    "07_risk/privacy-law.html"
+  ],
+  "written": [],
+  "note": "2026-08-18のスイープで新設。対象週（8/12〜8/18）の tech 領域は、フロンティアの値下げ競争とオープンモデルの土台交代が同時に進んだ週だった"
+}

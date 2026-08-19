@@ -1,0 +1,1082 @@
+{
+ "window": {
+  "from": "2026-08-12",
+  "to": "2026-08-18"
+ },
+ "checked_at": "2026-08-18",
+ "candidates": [
+  {
+   "domain": "tech",
+   "date": "2026-08-12",
+   "title": "Grok 4.6公開、知能61で入力$2・出力$6",
+   "what": "SpaceXAI が Grok 4.6 (high) を公開。Artificial Analysis の計測では Intelligence Index 61 で、同価格帯の推論モデル中央値35を大きく上回る。一方で出力速度は57.9トークン/秒（同帯域の中央値74.0）、最初の1トークンまで37.49秒と遅い。コンテキストは50万トークン、重みは非公開。",
+   "numbers": [
+    {
+     "value": 61,
+     "unit": "点",
+     "note": "Artificial Analysis Intelligence Index（同価格帯の推論モデル中央値は35）"
+    },
+    {
+     "value": 2.0,
+     "unit": "USD/100万入力トークン",
+     "note": "SpaceXAI の API 価格。同帯域の中央値は$1.75"
+    },
+    {
+     "value": 6.0,
+     "unit": "USD/100万出力トークン",
+     "note": "同帯域の中央値は$10.00"
+    },
+    {
+     "value": 57.9,
+     "unit": "トークン/秒",
+     "note": "出力速度。同帯域の中央値は74.0 t/s"
+    },
+    {
+     "value": 37.49,
+     "unit": "秒",
+     "note": "time to first token（同帯域の中央値は2.77秒）"
+    },
+    {
+     "value": 500,
+     "unit": "千トークン",
+     "note": "コンテキストウィンドウ"
+    }
+   ],
+   "source_url": "https://artificialanalysis.ai/models/grok-4-6",
+   "source_name": "Artificial Analysis「Grok 4.6 (high)」モデルページ（リリース日 2026年8月12日、確認日2026年8月18日）",
+   "tier": 1,
+   "why": "「賢さは横並び、値段と速度で選ぶ」局面がさらに進んだ週。知能61でも初回応答に37秒かかるモデルは、対話用途と夜間バッチ用途で評価が真逆になる。社内の用途別ルーティング表を、価格だけでなく待ち時間で切り直す材料になる。"
+  },
+  {
+   "domain": "tech",
+   "date": "2026-08-13",
+   "title": "Gemini 3.7 Flash、導入価格は年末まで半額",
+   "what": "Google が Gemini 3.7 Flash を公開。3.6 Flash の3週間後で、コーディングと業務ワークフローの指標が軒並み上がった。導入価格は入力$0.75／出力$3.75（100万トークンあたり）だが、2027年1月1日から入力$1.50／出力$7.50の標準価格になる。",
+   "numbers": [
+    {
+     "value": 43.6,
+     "unit": "%",
+     "note": "FrontierCode 1.1 Main（3.6 Flash は34.4%）"
+    },
+    {
+     "value": 65.3,
+     "unit": "%",
+     "note": "DeepSWE v1.1（3.6 Flash は49.0%）"
+    },
+    {
+     "value": 34.0,
+     "unit": "%",
+     "note": "GDP.pdf ベンチマーク（3.6 Flash は22.0%）"
+    },
+    {
+     "value": 30.4,
+     "unit": "%",
+     "note": "AutomationBench（3.6 Flash は17.0%）"
+    },
+    {
+     "value": 1588,
+     "unit": "Elo",
+     "note": "Arena.ai WebDev Arena（3.6 Flash は1538）"
+    },
+    {
+     "value": 0.75,
+     "unit": "USD/100万入力トークン",
+     "note": "導入価格。2026年12月31日で終了"
+    },
+    {
+     "value": 3.75,
+     "unit": "USD/100万出力トークン",
+     "note": "導入価格。2026年12月31日で終了"
+    },
+    {
+     "value": 1.5,
+     "unit": "USD/100万入力トークン",
+     "note": "2027年1月1日からの標準価格"
+    },
+    {
+     "value": 7.5,
+     "unit": "USD/100万出力トークン",
+     "note": "2027年1月1日からの標準価格"
+    },
+    {
+     "value": 320.6,
+     "unit": "トークン/秒",
+     "note": "Artificial Analysis 計測の出力速度（high設定）"
+    },
+    {
+     "value": 56,
+     "unit": "点",
+     "note": "Artificial Analysis Intelligence Index（high設定）"
+    }
+   ],
+   "source_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-3-7-flash/",
+   "source_name": "Google公式ブログ「Introducing Gemini 3.7 Flash」（2026年8月13日）。速度・知能指数は Artificial Analysis（2026年8月18日確認）",
+   "tier": 1,
+   "why": "このモデルを前提に社内ワークフローを組むと、2027年1月1日にトークン単価が倍になる。期ずれの見積りをいま作っておかないと、来期の予算が静かに壊れる。"
+  },
+  {
+   "domain": "tech",
+   "date": "2026-08-18",
+   "title": "GLM-5.3公開、知能60を単価3分の2で出す",
+   "what": "Z AI が GLM-5.3 (max) を公開。Artificial Analysis の計測で Intelligence Index 60。同じ週に出た Grok 4.6 (high) の61とほぼ並びながら、入力単価は3割安く、最初の1トークンまでの時間は18分の1。",
+   "numbers": [
+    {
+     "value": 60,
+     "unit": "点",
+     "note": "Artificial Analysis Intelligence Index（同価格帯の推論モデル中央値は35）"
+    },
+    {
+     "value": 1.4,
+     "unit": "USD/100万入力トークン",
+     "note": "Z AI の API 価格"
+    },
+    {
+     "value": 4.4,
+     "unit": "USD/100万出力トークン",
+     "note": "Z AI の API 価格"
+    },
+    {
+     "value": 74.0,
+     "unit": "トークン/秒",
+     "note": "出力速度"
+    },
+    {
+     "value": 2.05,
+     "unit": "秒",
+     "note": "time to first token"
+    },
+    {
+     "value": 170,
+     "unit": "百万トークン",
+     "note": "Intelligence Index 評価時に生成した出力トークン量（同帯域の中央値は72M）"
+    }
+   ],
+   "source_url": "https://artificialanalysis.ai/models/glm-5-3",
+   "source_name": "Artificial Analysis「GLM-5.3 (max)」モデルページ（リリース日 2026年8月18日、確認日2026年8月18日）",
+   "tier": 1,
+   "why": "対象週だけで知能指数52〜61のモデルが4本出た。上位モデルの差は数ポイントで、値段は倍以上開く。「一番賢いのを全社標準に」という決め方がいちばん高くつく週だった。"
+  },
+  {
+   "domain": "tech",
+   "date": "2026-08-14",
+   "title": "Qwen3.8 27B公開、27Bで知能52という異常値",
+   "what": "Alibaba が オープンウェイトの Qwen3.8 27B を公開。Artificial Analysis の計測で Intelligence Index 52。同規模のオープンウェイトモデルの中央値9を大きく引き離した。ライセンスは商用可。",
+   "numbers": [
+    {
+     "value": 52,
+     "unit": "点",
+     "note": "Artificial Analysis Intelligence Index（同規模オープンウェイトモデルの中央値は9）"
+    },
+    {
+     "value": 27,
+     "unit": "Bパラメータ",
+     "note": "モデルサイズ"
+    },
+    {
+     "value": 160,
+     "unit": "百万トークン",
+     "note": "Intelligence Index 評価時に生成した出力トークン量（同規模帯の中央値は43M）"
+    }
+   ],
+   "source_url": "https://artificialanalysis.ai/models/qwen3-8-27b",
+   "source_name": "Artificial Analysis「Qwen3.8 27B」モデルページ（リリース日 2026年8月14日、確認日2026年8月18日）",
+   "tier": 1,
+   "why": "自社サーバに置ける大きさで、クラウドの中位モデルに迫る。データを外に出せない業務で「使えるものが無い」という言い訳が、今週また一段成り立たなくなった。"
+  },
+  {
+   "domain": "tech",
+   "date": "2026-08-13",
+   "title": "Anthropic、45体のエージェントを競わせて破綻を観測",
+   "what": "Anthropic の Frontier Red Team が、複数エージェントを同じ場に置いたときの挙動を公開。脆弱性探索では、45体が掲示板で協調する方式が、独立並列方式の21件に対し266件を発見した（ただしトークン消費は27M対6.5M）。一方、共同でゲームを作らせる12時間の実験では、世代の新しいモデルほど「衝突を避けるためにほとんど協働しない」方向に解いていた。",
+   "numbers": [
+    {
+     "value": 45,
+     "unit": "体",
+     "note": "脆弱性探索実験で走らせたエージェント数。各自に仮想マシンと共有掲示板を与えた"
+    },
+    {
+     "value": 15,
+     "unit": "件",
+     "note": "探索対象のオープンソースプロジェクト数"
+    },
+    {
+     "value": 266,
+     "unit": "件",
+     "note": "協調スウォームが発見した脆弱性（Mythos Preview、2,700万トークン）"
+    },
+    {
+     "value": 21,
+     "unit": "件",
+     "note": "独立並列エージェントが発見した脆弱性（Mythos Preview、650万トークン）"
+    },
+    {
+     "value": 12,
+     "unit": "件",
+     "note": "両方式で重複した脆弱性。残りは互いに補完的だった"
+    },
+    {
+     "value": 12,
+     "unit": "時間",
+     "note": "ゲーム共同制作シミュレーションの実行時間"
+    },
+    {
+     "value": 18,
+     "unit": "体",
+     "note": "初期実験で30体中、まったく同じブランチ名 mvp-game-loop を作った数"
+    },
+    {
+     "value": 2400000,
+     "unit": "件",
+     "note": "ジョブキュー実験で発生した要求数。うち受理されたのは117件"
+    }
+   ],
+   "source_url": "https://www.anthropic.com/research/multiagent-systems",
+   "source_name": "Anthropic Research「Patterns and problems in emerging multiagent systems」（2026年8月13日）",
+   "tier": 1,
+   "why": "社内でエージェントを増やすとき、人は「並べれば足し算」だと思っている。実測は逆で、同じモデルの個体は同じ失敗を同時にする。監視をエージェント単位ではなく全体の分散で見る、という設計指針がここから出る。"
+  },
+  {
+   "domain": "tech",
+   "date": "2026-08-15",
+   "title": "実行環境を作り込むだけで精度95%・費用38分の1",
+   "what": "モデルの重みを変えず、エージェントの実行環境（ハーネス）側だけを作り込む「harness scaling」の論文 StateM が arXiv に投稿された。Terminal-Bench 2.1 で95.3%を達成し、そのときのAPI費用は参照実装の574.68ドルに対し約15ドル。",
+   "numbers": [
+    {
+     "value": 95.3,
+     "unit": "%",
+     "note": "Terminal-Bench 2.1 の raw accuracy（GPT-5.6 Sol xhigh + StateM、445試行）"
+    },
+    {
+     "value": 15,
+     "unit": "USD",
+     "note": "最終スコア取得時のAPI費用。GPT参照実装は574.68ドル"
+    },
+    {
+     "value": 92.1,
+     "unit": "%",
+     "note": "GPT-5.5 xhigh + StateM。参照は83.1%"
+    },
+    {
+     "value": 85.4,
+     "unit": "%",
+     "note": "GPT-5.6 Luna（凍結プロファイル適用）。適用前は76.7%"
+    },
+    {
+     "value": 88.1,
+     "unit": "%",
+     "note": "DeepSeek-V4 Flash（38ドル未満の適応後）。適応前は82.7%"
+    },
+    {
+     "value": 89,
+     "unit": "タスク",
+     "note": "全89タスクで少なくとも1回は成功した"
+    }
+   ],
+   "source_url": "https://arxiv.org/abs/2608.15089",
+   "source_name": "arXiv:2608.15089「StateM: Reaching 95.3% Raw Accuracy, or a $15 Frontier Run, on Terminal-Bench 2.1 via Harness Scaling」（2026年8月15日投稿）",
+   "tier": 1,
+   "why": "「精度が足りないから上位モデルに替える」の前に、状態管理と手順書を作り込む道がある。同じ結果に費用が38分の1という数字は、AI予算の議論を「モデル選定」から「運用設計」に引き戻す。"
+  },
+  {
+   "domain": "tech",
+   "date": "2026-08-13",
+   "title": "7モデル36課題、エージェントは研究者ではなく最適化係",
+   "what": "長時間の実験を任せたときのエージェントの中身を、最終スコアではなく過程で測った評価論文が arXiv に投稿された。7つのフロンティアモデルを36の長時間タスクで比較し、いまのエージェントは「自律的な研究者」ではなく「工学的な最適化係」だと結論づけた。",
+   "numbers": [
+    {
+     "value": 7,
+     "unit": "モデル",
+     "note": "評価対象のフロンティアモデル数"
+    },
+    {
+     "value": 36,
+     "unit": "タスク",
+     "note": "long-horizon タスクの数"
+    },
+    {
+     "value": 3,
+     "unit": "軸",
+     "note": "実行中の挙動を Solution Framing / Execution / Feedback Control の3軸で規則ベースに計測"
+    }
+   ],
+   "source_url": "https://arxiv.org/abs/2608.13417",
+   "source_name": "arXiv:2608.13417「Beyond Final Scores: A Systematic Evaluation of Agents for Long-Horizon AI Research and Development」（2026年8月13日投稿）",
+   "tier": 1,
+   "why": "「エージェントに任せられるか」を最終スコアで判断すると、実行が同じ点数でも中身の失敗の仕方が違うことを見落とす。社内でPoCの合否を決めるときの物差しとして、そのまま使える整理。"
+  },
+  {
+   "domain": "tech",
+   "date": "2026-08-14",
+   "title": "研究を丸ごと任せる実験、800軌跡で45の失敗型",
+   "what": "仮説立案から論文執筆まで研究工程を丸ごとエージェントに任せる AutoResearch の評価基盤 AutoResearchEval が arXiv に投稿された。7分野100タスクを8つのハーネス×モデルの組で走らせ、800の実行軌跡から45の失敗パターンを抽出。すべての組み合わせで同じ失敗が再現したため、原因はハーネスではなくモデル側にあると結論づけた。",
+   "numbers": [
+    {
+     "value": 100,
+     "unit": "タスク",
+     "note": "実際に発表された最先端研究に基づくタスク数"
+    },
+    {
+     "value": 7,
+     "unit": "分野",
+     "note": "対象とした科学分野の数"
+    },
+    {
+     "value": 8,
+     "unit": "組",
+     "note": "評価したハーネスとモデルの組み合わせ数"
+    },
+    {
+     "value": 800,
+     "unit": "軌跡",
+     "note": "収集したエージェント実行軌跡の数"
+    },
+    {
+     "value": 45,
+     "unit": "パターン",
+     "note": "AutoResearch Failure Taxonomy（ARFT）として整理した実証的な失敗パターン数"
+    }
+   ],
+   "source_url": "https://arxiv.org/abs/2608.14905",
+   "source_name": "arXiv:2608.14905「How Do Agents Fail on AutoResearch: End-to-End Diagnostic Evaluation on 100 Real-World Frontier Research Tasks」（2026年8月14日投稿）",
+   "tier": 1,
+   "why": "失敗の共通因子は「自分の出したものを自分で照合し直さない」こと。人がレビューを外す判断をするとき、どこを外してはいけないかの根拠になる。"
+  },
+  {
+   "domain": "tech",
+   "date": "2026-08-14",
+   "title": "Qwen派生15万件、オープンモデルの土台が入れ替わった",
+   "what": "Hugging Face が2026年1〜8月のハブ活動を集計した半期レポートを公開。Qwen ベースの派生モデルが15万1,448件に達し、Meta 全体の2.6倍になった。また「注目（いいね）」と「実利用（ダウンロード）」がほぼ一致しないことをデータで示した。",
+   "numbers": [
+    {
+     "value": 151448,
+     "unit": "件",
+     "note": "ハブ上の Qwen ベース派生モデル数。Meta 全体の2.6倍、Llama リポジトリの4.7倍"
+    },
+    {
+     "value": 82506,
+     "unit": "件",
+     "note": "2位の Google の派生モデル数"
+    },
+    {
+     "value": "180-210",
+     "unit": "件/日",
+     "note": "2026年1〜7月の Qwen 派生リポジトリの増加ペース"
+    },
+    {
+     "value": 2960000,
+     "unit": "件",
+     "note": "公開モデルリポジトリ数（期首は243万件）"
+    },
+    {
+     "value": 85.6,
+     "unit": "%",
+     "note": "生涯ダウンロード200回未満のモデルの割合。1.5%のリポジトリが全ダウンロードの99.2%を占める"
+    },
+    {
+     "value": 1,
+     "unit": "件",
+     "note": "年内ダウンロード上位25と いいね上位25 の両方に入ったリポジトリ数"
+    },
+    {
+     "value": 44.4,
+     "unit": "%",
+     "note": "7月のエージェント経由トラフィックに占める Claude Code の比率。4月は67.8%、5月は64%"
+    },
+    {
+     "value": 2045,
+     "unit": "百万回",
+     "note": "Qwen の年内ダウンロード数。フロンティア専業の Moonshot は37M回で約55分の1"
+    }
+   ],
+   "source_url": "https://huggingface.co/blog/state-of-open-models-summer-2026",
+   "source_name": "Hugging Face Blog「State of Open Models: Summer 2026 Observations」（2026年8月14日）",
+   "tier": 1,
+   "why": "社内で「オープンモデルを試す」と決めたとき、事実上の標準がどれかが変わっている。いいね数の多さで選ぶと、現場が実際に依存しているものとずれる、という警告つき。"
+  },
+  {
+   "domain": "tech",
+   "date": "2026-08-13",
+   "title": "ICML論文2,226本をエージェントで再現、1,221人が参加",
+   "what": "Hugging Face が、ICML 2026 の採択論文をコーディングエージェントで再現するハッカソンの結果を公開。19日間で1,221人が参加し、6,816件の再現ログを公開、2,226本（会議全体の約3分の1）を検証した。学会側は同年23,918本の投稿を受け6,352本を採択しており、査読の処理能力が追いついていない現実が背景にある。",
+   "numbers": [
+    {
+     "value": 1221,
+     "unit": "人",
+     "note": "参加したコミュニティメンバー数"
+    },
+    {
+     "value": 6816,
+     "unit": "件",
+     "note": "公開された再現ログブック数"
+    },
+    {
+     "value": 2226,
+     "unit": "本",
+     "note": "再現を試みた論文数。会議全体の約3分の1"
+    },
+    {
+     "value": 19,
+     "unit": "日",
+     "note": "開催期間（2026年7月15日〜8月2日）"
+    },
+    {
+     "value": 23918,
+     "unit": "本",
+     "note": "ICML 2026 への投稿数。採択は6,352本で前年の約2倍"
+    },
+    {
+     "value": 2962,
+     "unit": "件",
+     "note": "参加者が起動したクラウドジョブ数。1人あたり20ドルの計算クレジットが配布された"
+    }
+   ],
+   "source_url": "https://huggingface.co/blog/icml-2026-open-reproductions",
+   "source_name": "Hugging Face Blog「What We Learned by Reproducing 2,200 papers from ICML」（2026年8月13日）",
+   "tier": 1,
+   "why": "「検証はコストが高いから省く」という前提が、エージェントで崩れつつある。社内資料や外注成果物の検算を機械に任せる発想の、実物大の先行事例になる。"
+  },
+  {
+   "domain": "tech",
+   "date": "2026-08-18",
+   "title": "Claudeがタンパク質を設計、15標的中14で成功",
+   "what": "Anthropic が、Claude にタンパク質のバインダーを一から設計させた実験の結果を公開。外部評価機関が実際に湿式実験で検証し、15標的のうち14で結合に成功した。個々の設計の成功率は22〜35%で、現在の一般的な設計キャンペーンの10〜15%を上回った。あわせて Opus 5 に NMR・LC-MS の生データを渡し、23分と19分で契約分析ラボと一致する結果を返した。",
+   "numbers": [
+    {
+     "value": 15,
+     "unit": "標的",
+     "note": "設計対象のタンパク質標的数。うち14で結合に成功"
+    },
+    {
+     "value": 26.7,
+     "unit": "%",
+     "note": "Mythos Preview の全標的同時設計時のヒット率（48時間セッション）"
+    },
+    {
+     "value": 22.6,
+     "unit": "%",
+     "note": "Opus 4.8 の同条件のヒット率"
+    },
+    {
+     "value": "10-15",
+     "unit": "%",
+     "note": "現在のタンパク質設計キャンペーンで一般的なヒット率"
+    },
+    {
+     "value": 23,
+     "unit": "分",
+     "note": "Opus 5 が分析化学タスクで結果を返すまでの時間（もう一方は19分）"
+    },
+    {
+     "value": 96.4,
+     "unit": "%",
+     "note": "Claude が算出した純度。ラボ自身の分析値は96.33%"
+    }
+   ],
+   "source_url": "https://www.anthropic.com/research/Claude-accelerates-protein-design",
+   "source_name": "Anthropic Research「How Claude is accelerating protein design and analytical chemistry」（2026年8月18日）",
+   "tier": 1,
+   "why": "「検証が速い領域から成果が出る」という順番がはっきりした。自社の業務でも、答え合わせが安い工程から任せるのが定石になる。"
+  },
+  {
+   "domain": "regulation",
+   "date": "2026-08-14",
+   "title": "Claudeの出力に透かし、EU AI法50条への実装が始まった",
+   "what": "Anthropic が、今後のClaudeが生成するテキストに電子透かしを入れることと、その仕組みの解説を公開。EU AI法への準拠が目的で、同社は「8月2日からEUはAI提供者に対し、市場に提供するAI生成コンテンツのマーキングを義務づけている」「他の主要な開発事業者も同じ行動規範に署名しており、それぞれの透かしを実装する」と明記した。透かしは追加トークンを消費せず、個人・組織・会話を特定する情報は含まないとしている。",
+   "numbers": [
+    {
+     "value": "2026-08-02",
+     "unit": "適用開始日",
+     "note": "EUがAI生成コンテンツのマーキングを求める時点として本文が挙げた日付"
+    },
+    {
+     "value": 0,
+     "unit": "追加トークン",
+     "note": "「Watermarking doesn't require extra tokens, and will not be more expensive」"
+    }
+   ],
+   "source_url": "https://www.anthropic.com/news/claude-text-watermark",
+   "source_name": "Anthropic「How Claude's text watermark works」（2026年8月14日）",
+   "tier": 1,
+   "why": "EU AI法第50条が、条文の話から自社が毎日使うツールの仕様変更として降りてきた最初の週。生成物を納品物に含める業務では、透かしの有無と検出可能性を取引先とどう合意するかが、いますぐの実務論点になる。"
+  },
+  {
+   "domain": "regulation",
+   "date": "2026-08-13",
+   "title": "米が迂回輸出報告書、AIで通関監視という構想",
+   "what": "米ホワイトハウスが8月13日、関税回避を目的とした迂回輸出を分析した報告書「The Great Transshipment Scam」を発表した。積み替えリスクがあるとした40超の国・地域を3グループに分類し、日本は「中国関連製品の取扱量が膨大で多様な産業基盤を有する」第1グループに分類された。提言として、貨物や輸送経路のデータをAIで分析し税関・国境警備局（CBP）の執行を支援する「ディテクティブ・ボーダー」構想を掲げている。",
+   "numbers": [
+    {
+     "value": 40,
+     "unit": "超の国・地域",
+     "note": "報告書が積み替えリスクありと分析した対象。3グループに分類し日本は第1グループ"
+    },
+    {
+     "value": 40,
+     "unit": "十億USD",
+     "note": "中国関連の違法な積み替えの年間総量の推計下限（ゴールドマン・サックス）"
+    },
+    {
+     "value": 303,
+     "unit": "十億USD",
+     "note": "同推計の上限（AIサプライチェーン分析の米スタートアップ Altana）"
+    },
+    {
+     "value": 5,
+     "unit": "件",
+     "note": "報告書が比較した推計の数。それぞれ手法とデータセットが異なる旨が前置きされている"
+    }
+   ],
+   "source_url": "https://www.jetro.go.jp/biznews/2026/08/3281e1b603d6621e.html",
+   "source_name": "ジェトロ ビジネス短信「米ホワイトハウス、迂回輸出報告書を発表、AI活用の監視構想を提唱」（2026年8月18日付、報告書発表は8月13日）",
+   "tier": 2,
+   "why": "AIが「使う道具」ではなく「自社の貨物を審査する側」に回る話。日本が名指しで第1グループに入っており、対米輸出のある企業は原産地の説明責任がAI審査を前提に上がると読んでおいた方がいい。"
+  },
+  {
+   "domain": "talent",
+   "date": "2026-08-12",
+   "title": "職業訓練の効果を56件のRCTで再検証、雇用は2〜3ポイント",
+   "what": "Anthropic の Economic Research チームが、独立研究者 David Roodman と共同で、職業再訓練プログラムの効果に関するレビューを公開。米国の無作為化比較試験56件を新たにメタ分析した結果、訓練枠を1人分提供するごとに雇用は2〜3ポイント、収入は年間およそ1,000ドル増える一方、費用は1人あたり約13,000ドルだった。「AIが大規模に雇用を置き換えるなら、既存の再訓練プログラムでは足りない」と結論づけている。",
+   "numbers": [
+    {
+     "value": 56,
+     "unit": "件",
+     "note": "メタ分析に用いた米国の無作為化比較試験の数。欧州の実験的証拠も併用"
+    },
+    {
+     "value": "2-3",
+     "unit": "パーセントポイント",
+     "note": "訓練枠を1人に提供したときの雇用の上昇幅"
+    },
+    {
+     "value": 1000,
+     "unit": "USD/年",
+     "note": "同じく収入の上昇幅（おおよそ）"
+    },
+    {
+     "value": 13000,
+     "unit": "USD",
+     "note": "1人あたりの費用（おおよそ）"
+    },
+    {
+     "value": 50,
+     "unit": "%超",
+     "note": "税収増と給付減で政府が回収できる割合。全体としてはほぼ収支均衡"
+    }
+   ],
+   "source_url": "https://www.anthropic.com/research/reviewing-the-evidence-on-worker-retraining-programs",
+   "source_name": "Anthropic Economic Research「Reviewing the evidence on worker retraining programs」（2026年8月12日）",
+   "tier": 1,
+   "why": "「リスキリングで吸収する」は、いま最も人気のある答えで、いちばん検証されていない答えでもある。自社の再教育投資を、雇用2〜3ポイント／費用1.3万ドルという実測値と突き合わせて設計し直す材料になる。"
+  },
+  {
+   "domain": "org",
+   "date": "2026-08-13",
+   "title": "IBMがOpenAIと提携、数万人のコンサルを再訓練",
+   "what": "IBM が OpenAI との提携を発表。IBM Consulting 内に OpenAI 専任部隊を設け、今後数か月で数万人規模のコンサルタントを訓練・認定する（主に既存社員の再訓練）。金融・政府・通信・小売など業種別ソリューションを共同開発し、GPT-5.6・Codex・ChatGPT Work を IBM Consulting Advantage に統合する。OpenAI の Partner Network を通じた「Forward Deployed Experts」も編成する。1年足らず前には IBM は Anthropic とも同種の提携を発表していた。",
+   "numbers": [
+    {
+     "value": "数万人",
+     "unit": "人",
+     "note": "訓練・認定するコンサルタント数（tens of thousands、主に既存社員の再訓練）"
+    },
+    {
+     "value": 4,
+     "unit": "業種",
+     "note": "共同開発の対象として挙げられた業種（金融サービス、政府、通信、小売）"
+    }
+   ],
+   "source_url": "https://techcrunch.com/2026/08/13/ibm-partners-with-openai-to-bolster-enterprise-ai-push/",
+   "source_name": "TechCrunch「IBM partners with OpenAI to bolster enterprise AI push」（2026年8月13日）",
+   "tier": 2,
+   "why": "モデル各社の競争軸が「賢さ」から「誰の手で導入させるか」に移った、その週の実例。発注側から見ると、同じ大手ベンダーがAnthropicともOpenAIとも組む以上、提携の有無はもう選定理由にならない。"
+  },
+  {
+   "domain": "org",
+   "date": "2026-08-18",
+   "title": "AWS、エージェントが自分で支払う機能を正式提供",
+   "what": "AWS が Amazon Bedrock AgentCore payments を一般提供（GA）に移行した。5月のプレビューから拡張し、Coinbase と Stripe Privy のステーブルコイン・ウォレットに対応。支払プロトコルは x402 に加え Stripe と Tempo が共同策定した Machine Payment Protocol（MPP）に対応した。固定額ではなく上限額を設定する x402 の「upto」方式も導入され、エージェントに与信枠を与える形の運用ができる。",
+   "numbers": [
+    {
+     "value": 2,
+     "unit": "社",
+     "note": "連携するウォレット提供者（Coinbase、Stripe Privy）"
+    },
+    {
+     "value": 2,
+     "unit": "種類",
+     "note": "GA時点で対応する支払プロトコル（x402、MPP）"
+    }
+   ],
+   "source_url": "https://aws.amazon.com/blogs/machine-learning/amazon-bedrock-agentcore-payments-is-now-generally-available-enabling-agents-to-transact-safely-and-autonomously-at-scale/",
+   "source_name": "AWS Machine Learning Blog「Amazon Bedrock AgentCore payments is now generally available」（2026年8月18日）",
+   "tier": 1,
+   "why": "エージェントに財布を持たせる仕組みが、実験ではなく本番機能になった。社内規程で「AIは発注できない」と書いていない会社は、購買権限の定義を今期中に見直す必要が出る。"
+  },
+  {
+   "domain": "org",
+   "date": "2026-08-12",
+   "title": "英OneAdvancedの事例、50超のエージェントを3週間で",
+   "what": "AWS が、英企業向けソフト会社 OneAdvanced の主権AI基盤の構築事例を公開した。英国外にデータを出さない要件のため、Llama 4 Maverick と Llama Guard 4 を SageMaker AI 上に自社ホストし、Strands Agents SDK で50超の専用エージェントを3週間で構築した。稼働開始は2025年7月で、記事はその1年余りの運用を経ての公開。",
+   "numbers": [
+    {
+     "value": 10000,
+     "unit": "社超",
+     "note": "OneAdvanced の顧客数"
+    },
+    {
+     "value": 50,
+     "unit": "体超",
+     "note": "構築した専用エージェント数（医療・法務・人事・マーケティング等）"
+    },
+    {
+     "value": 3,
+     "unit": "週間",
+     "note": "50超のエージェントを構築・出荷するまでの期間"
+    },
+    {
+     "value": 2,
+     "unit": "週間",
+     "note": "自社ホストに踏み切る前に Bedrock で行った試作の期間"
+    },
+    {
+     "value": "2025-07",
+     "unit": "稼働開始",
+     "note": "本番稼働の開始時期。記事公開は2026年8月12日"
+    }
+   ],
+   "source_url": "https://aws.amazon.com/blogs/machine-learning/how-oneadvanced-deployed-over-50-ai-agents-on-uk-sovereign-aws/",
+   "source_name": "AWS Machine Learning Blog「How OneAdvanced deployed over 50 AI agents on UK-sovereign AWS」（2026年8月12日公開）",
+   "tier": 1,
+   "why": "データを国外に出せない条件下で、規制業種向けに本番運用まで持っていった設計が全部書かれている。日本の金融・医療・公共で同じ制約に当たっている担当者が、そのまま設計図として読める。"
+  },
+  {
+   "domain": "society",
+   "date": "2026-08-18",
+   "title": "米18〜29歳、初めて過半数がAIに「期待より不安」",
+   "what": "Pew Research Center が、米成人3,488人への調査（2026年6月22〜28日実施）の分析を公開。AIの日常利用について「期待より不安が大きい」と答えた米成人は52%で、2021年の37%から上昇した。18〜29歳では初めて過半数の55%が不安と答え、前年の47%から8ポイント上がった。「今後20年でAIは米国の雇用を減らす」は71%（2024年は64%）。",
+   "numbers": [
+    {
+     "value": 52,
+     "unit": "%",
+     "note": "AIの利用について「期待より不安」と答えた米成人。2021年は37%"
+    },
+    {
+     "value": 55,
+     "unit": "%",
+     "note": "18〜29歳で「期待より不安」。2025年は47%、2022年は29%"
+    },
+    {
+     "value": 9,
+     "unit": "%",
+     "note": "全体で「不安より期待」と答えた割合。2021年は18%"
+    },
+    {
+     "value": 71,
+     "unit": "%",
+     "note": "「今後20年でAIは米国の雇用を減らす」。2024年は64%"
+    },
+    {
+     "value": 3488,
+     "unit": "人",
+     "note": "調査対象。2026年6月22〜28日、American Trends Panel"
+    }
+   ],
+   "source_url": "https://www.pewresearch.org/short-reads/2026/08/18/young-adults-in-the-us-are-increasingly-wary-of-ai-concerned-it-will-take-jobs/",
+   "source_name": "Pew Research Center「Young adults in the U.S. are increasingly wary of AI, concerned it will take jobs」（2026年8月18日）",
+   "tier": 1,
+   "why": "社内でAIを推す側は、若手ほど前向きだと思い込みがち。実測では逆に振れ始めている。導入の説明の仕方を、効率の話から「あなたの仕事がどう変わるか」に変える根拠になる。"
+  },
+  {
+   "domain": "capital",
+   "date": "2026-08-17",
+   "title": "NVIDIAが1,050億ドル保証、借主はOpenAI",
+   "what": "NVIDIA が8-Kを提出し、SB Energy とオハイオ州パイク郡の PORTS 技術キャンパスで多年提携を結んだと開示した。約4.25ギガワットのIT負荷に相当するリースについて残存価値保証を結び、支払義務の累計上限は1,050億ドル。借主は OpenAI の関連会社で、OpenAI が破綻または支払不履行に陥った場合に NVIDIA が差額を負担する。追加で約3.8ギガワット分の信用供与を、NVIDIA の裁量で行う余地も持つ。",
+   "numbers": [
+    {
+     "value": 105,
+     "unit": "十億USD",
+     "note": "NVIDIA の支払義務の累計上限（初期コミットメント）"
+    },
+    {
+     "value": 4.25,
+     "unit": "ギガワット",
+     "note": "残存価値保証の対象となるIT負荷の合計"
+    },
+    {
+     "value": 3.8,
+     "unit": "ギガワット",
+     "note": "NVIDIA が裁量で追加の信用供与を行える容量"
+    },
+    {
+     "value": 2028,
+     "unit": "年",
+     "note": "リースの ready-for-service 条件の充足開始見込み"
+    },
+    {
+     "value": 20,
+     "unit": "年",
+     "note": "保証義務が終了する期限のひとつ（各リース開始から20周年）"
+    },
+    {
+     "value": 1.5,
+     "unit": "十億USD",
+     "note": "あわせて発表された SB Energy への出資額（TechCrunch報）"
+    }
+   ],
+   "source_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000069/nvda-20260817.htm",
+   "source_name": "NVIDIA Corporation Form 8-K（SEC、報告事象日2026年8月17日）",
+   "tier": 1,
+   "why": "AIインフラの資金繰りが、売り手が買い手の債務を保証する形にまで進んだ。取引先の与信を見る立場なら、「AI関連の売上」がどこまで循環取引に支えられているかを、決算書の外側で確かめる必要が出てくる。"
+  },
+  {
+   "domain": "capital",
+   "date": "2026-08-18",
+   "title": "フィジカルAIに半年で474億ドル、前期比ほぼ4倍",
+   "what": "Crunchbase が、ロボティクス・自動運転・航空宇宙・ドローン・産業自動化・センサーを含む「フィジカルAI」への投資を集計。2026年上半期は521件で474億ドルとなり、2025年下半期の470件・120億ドルからほぼ4倍になった。2022〜2024年の3年間合計419億ドルを、半年で上回っている。",
+   "numbers": [
+    {
+     "value": 47.4,
+     "unit": "十億USD",
+     "note": "2026年上半期のフィジカルAI向け世界ベンチャー投資額（521件）"
+    },
+    {
+     "value": 12,
+     "unit": "十億USD",
+     "note": "2025年下半期の同投資額（470件）"
+    },
+    {
+     "value": 26.4,
+     "unit": "十億USD",
+     "note": "2025年上半期の同投資額（436件）"
+    },
+    {
+     "value": 41.9,
+     "unit": "十億USD",
+     "note": "2022〜2024年の3年間合計"
+    },
+    {
+     "value": 16,
+     "unit": "十億USD",
+     "note": "2月の Waymo シリーズD。評価額1,260億ドルで、上半期全体の約3分の1を1件で占めた"
+    }
+   ],
+   "source_url": "https://news.crunchbase.com/venture/physical-ai-funding-startups-robotics-aerospace-h1-2026/",
+   "source_name": "Crunchbase News「VCs Pour Billions Into Physical AI As The Next Wave Of AI Investing Takes Shape」（2026年8月18日）",
+   "tier": 1,
+   "why": "お金の向き先が、画面の中のAIから現場のAIへ動き始めた。製造・物流・建設を持つ会社にとっては、数年内に自社の現場へ来る技術の資金量が、いま可視化されたということ。"
+  },
+  {
+   "domain": "capital",
+   "date": "2026-08-14",
+   "title": "7月の新規ユニコーンは40社、4年ぶりの多さ",
+   "what": "Crunchbase の集計で、2026年7月に新たにユニコーンとなった企業が40社に達し、4年以上ぶりの月間最多となった。うち3社は評価額100億ドル超で参入。分野は金融サービス、ロボティクス、AIオーケストレーション、マルチモーダルAI、エネルギー、半導体が上位を占めた。米国が19社、中国が8社。新規ユニコーンのうち15社は創業3年未満だった。",
+   "numbers": [
+    {
+     "value": 40,
+     "unit": "社",
+     "note": "2026年7月に新たにユニコーンとなった企業数。4年以上ぶりの月間最多"
+    },
+    {
+     "value": 3,
+     "unit": "社",
+     "note": "評価額100億ドル超（デカコーン）で参入した企業数"
+    },
+    {
+     "value": 49,
+     "unit": "十億USD",
+     "note": "Crypto.com、Kling AI、Ant International の3社が1か月で追加した評価額"
+    },
+    {
+     "value": 19,
+     "unit": "社",
+     "note": "米国の新規ユニコーン数。中国8社、英国3社、シンガポール2社"
+    },
+    {
+     "value": 15,
+     "unit": "社",
+     "note": "創業3年未満の新規ユニコーン数。一方で創業10年超は7社"
+    },
+    {
+     "value": 195,
+     "unit": "社",
+     "note": "2026年上半期の新規ユニコーン数。2025年通年をすでに超えた"
+    }
+   ],
+   "source_url": "https://news.crunchbase.com/venture/unicorn-board-grows-40-companies-fintech-robotics-ai-july-2026/",
+   "source_name": "Crunchbase News「40 Companies Joined The Unicorn Board In July, The Highest Count In 4 Years」（2026年8月14日）",
+   "tier": 1,
+   "why": "創業3年未満が40社中15社。会社が10億ドル評価に届くまでの時間が、目に見えて短くなっている。競合の出現速度を、これまでの感覚で見積もると遅れる。"
+  },
+  {
+   "domain": "capital",
+   "date": "2026-08-17",
+   "title": "半導体大手が出資したラウンドは年初来2,500億ドル超",
+   "what": "Crunchbase の集計で、半導体の主要企業が2026年に参加したスタートアップの資金調達ラウンドは、合計評価額で2,500億ドルを超えた。ただしこのうち95%超は3月の OpenAI の1,220億ドルラウンド（Nvidia が8社の共同リード投資家の1社）で占められる。Nvidia は年初来59件に参加し、2025年通年の53件を超えた。",
+   "numbers": [
+    {
+     "value": 250,
+     "unit": "十億USD超",
+     "note": "半導体大手が2026年に参加したラウンドの合計額"
+    },
+    {
+     "value": 95,
+     "unit": "%超",
+     "note": "半導体企業がリードした調達額のうち、OpenAI の1件が占める割合"
+    },
+    {
+     "value": 122,
+     "unit": "十億USD",
+     "note": "3月の OpenAI のラウンド。Nvidia は8社の共同リードの1社"
+    },
+    {
+     "value": 59,
+     "unit": "件",
+     "note": "Nvidia が年初来で参加した調達ラウンド数（2025年通年は53件）"
+    },
+    {
+     "value": 60,
+     "unit": "件超",
+     "note": "半導体大手が参加した1億ドル以上のラウンド数。うち16件は評価額10億ドル以上"
+    },
+    {
+     "value": 19,
+     "unit": "件",
+     "note": "AMD の年初来参加件数。Samsung は17件"
+    }
+   ],
+   "source_url": "https://news.crunchbase.com/venture/semiconductor-giants-nvda-intc-backing-ai-robotics-starups-2026/",
+   "source_name": "Crunchbase News「Semiconductor Giants Are Busy Backing Startups This Year」（2026年8月17日）",
+   "tier": 1,
+   "why": "合計2,500億ドルの95%が1件、という構造をそのまま「AI投資が過熱」と読むと間違える。総額の記事を見たら分母の中身を割る、という読み方の実演になっている。"
+  },
+  {
+   "domain": "capital",
+   "date": "2026-08-13",
+   "title": "Databricksが50億ドル調達、評価額1,900億ドル",
+   "what": "Databricks が50億ドルの調達を発表し、評価額は1,900億ドルになった。CEO の Ali Ghodsi によれば当初は10億ドルの調達を想定していたが、報道をきっかけに投資家の関心が150億ドル分集まり、既存投資家との関係から発行株数を増やした。第2四半期の売上ランレートは70億ドルを超え、前年同期比80%超の成長。",
+   "numbers": [
+    {
+     "value": 5,
+     "unit": "十億USD",
+     "note": "今回の調達額。Coatue がリード"
+    },
+    {
+     "value": 190,
+     "unit": "十億USD",
+     "note": "調達後の評価額。7月の発表時点は1,880億ドル"
+    },
+    {
+     "value": 1,
+     "unit": "十億USD",
+     "note": "当初想定していた調達額"
+    },
+    {
+     "value": 15,
+     "unit": "十億USD",
+     "note": "集まった投資家の関心の総額"
+    },
+    {
+     "value": 7,
+     "unit": "十億USD",
+     "note": "第2四半期時点の売上ランレート。前年同期比80%超の成長"
+    },
+    {
+     "value": 134,
+     "unit": "十億USD",
+     "note": "2025年12月時点の評価額（当時のランレートは48億ドル）"
+    }
+   ],
+   "source_url": "https://techcrunch.com/2026/08/13/databricks-wanted-to-raise-1b-investors-wanted-15b-it-settled-on-5b-at-a-190b-valuation/",
+   "source_name": "TechCrunch「Databricks wanted to raise $1B, investors wanted $15B. It settled on $5B at a $190B valuation.」（2026年8月13日）",
+   "tier": 2,
+   "why": "AI基盤の売り手側は、資金を必要としているのではなく断り切れないから受け取っている。この需給が続く限り、ツール価格が競争で下がるという期待は当てにできない。"
+  },
+  {
+   "domain": "startup",
+   "date": "2026-08-18",
+   "title": "Etched、1か月で評価額が倍の210億ドルに",
+   "what": "推論専用ハードのEtchedが7億ドルを追加調達し、評価額210億ドルとなった。リードは、同社のハードを実際に検証・購入したクオンツファンドの Jane Street。2025年12月時点の評価額は50億ドル、7月のシリーズCは103億ドルで、1か月で約110億ドル上乗せされた計算になる。",
+   "numbers": [
+    {
+     "value": 700,
+     "unit": "百万USD",
+     "note": "今回の調達額。Jane Street がリード"
+    },
+    {
+     "value": 21,
+     "unit": "十億USD",
+     "note": "今回の評価額"
+    },
+    {
+     "value": 10.3,
+     "unit": "十億USD",
+     "note": "2026年7月のシリーズC時点の評価額（調達額3億ドル）"
+    },
+    {
+     "value": 5,
+     "unit": "十億USD",
+     "note": "2025年12月時点の評価額"
+    },
+    {
+     "value": 1,
+     "unit": "か月",
+     "note": "評価額が10.3→21十億USDに動くまでの期間"
+    }
+   ],
+   "source_url": "https://techcrunch.com/2026/08/18/etcheds-valuation-doubles-to-21b-in-a-month/",
+   "source_name": "TechCrunch「Etched's valuation doubles to $21B in a month」（2026年8月18日）",
+   "tier": 2,
+   "why": "金額よりも「1か月で倍」という時間の圧縮が情報。推論のコストを下げる側に、それだけの賭け金が集まっているということでもある。"
+  },
+  {
+   "domain": "startup",
+   "date": "2026-08-17",
+   "title": "Higgsfield、8か月で評価額4倍の54億ドル",
+   "what": "AI動画のHiggsfieldが4億ドルのシリーズBを調達し、評価額54億ドルとなった。8か月前の13億ドルから4倍。年間換算売上7億ドル、利用者3,000万人、200か国での提供を公表し、Fortune 500 のうち390社と取引していると説明している。創業は2023年。",
+   "numbers": [
+    {
+     "value": 400,
+     "unit": "百万USD",
+     "note": "シリーズBの調達額。DST Global がリード"
+    },
+    {
+     "value": 5.4,
+     "unit": "十億USD",
+     "note": "今回の評価額"
+    },
+    {
+     "value": 1.3,
+     "unit": "十億USD",
+     "note": "8か月前の評価額"
+    },
+    {
+     "value": 700,
+     "unit": "百万USD",
+     "note": "年間換算売上（同社発表）"
+    },
+    {
+     "value": 30,
+     "unit": "百万人",
+     "note": "利用者数（200か国）"
+    },
+    {
+     "value": 390,
+     "unit": "社",
+     "note": "取引のある Fortune 500 企業数"
+    },
+    {
+     "value": 2023,
+     "unit": "年",
+     "note": "創業年（元Snap幹部 Alex Mashrabov）"
+    }
+   ],
+   "source_url": "https://techcrunch.com/2026/08/17/higgsfield-raises-400m-series-b-quadrupling-its-valuation-in-8-months-to-5-4b/",
+   "source_name": "TechCrunch「Higgsfield raises $400M Series B, quadrupling its valuation in 8 months to $5.4B」（2026年8月17日）",
+   "tier": 2,
+   "why": "Fortune 500の390社が既に取引先、という数字が本題。AI動画は「試してみる」段階を越えて、マーケティング部門の常設ツールになりつつある。"
+  },
+  {
+   "domain": "startup",
+   "date": "2026-08-17",
+   "title": "Groqが3.5億ドル調達、評価額は前回から半減",
+   "what": "Groq が3.5億ドルを調達したが、評価額は35億ドルで、2025年9月の69億ドルから約半減した。同社は自社チップ（LPU）の開発から、NVIDIA製品を運用するクラウド・データセンター事業への転換を進めている。創業CEOらがNVIDIAに移籍した200億ドルのライセンス取引を経ており、会社側は「ダウンラウンドではなく、ライセンス取引後のGroqの新しい評価」と説明している。",
+   "numbers": [
+    {
+     "value": 350,
+     "unit": "百万USD",
+     "note": "今回の調達額。投資会社 Disruptive がリード、Nvidia の参加を予定"
+    },
+    {
+     "value": 3.5,
+     "unit": "十億USD",
+     "note": "今回の評価額"
+    },
+    {
+     "value": 6.9,
+     "unit": "十億USD",
+     "note": "2025年9月時点の評価額"
+    },
+    {
+     "value": 13,
+     "unit": "拠点",
+     "note": "運営中のデータセンター数（北米・欧州・中東・アジア太平洋）"
+    },
+    {
+     "value": 54,
+     "unit": "メガワット",
+     "note": "現在の規模。2027年に200メガワット超へ拡大する計画"
+    },
+    {
+     "value": 6,
+     "unit": "百万",
+     "note": "利用する開発者・企業の数"
+    }
+   ],
+   "source_url": "https://techcrunch.com/2026/08/17/groq-raises-350m-to-fuel-its-pivot-from-ai-chips-to-neocloud/",
+   "source_name": "TechCrunch「Groq raises $350M to fuel its pivot from AI chips to neocloud」（2026年8月17日）",
+   "tier": 2,
+   "why": "同じ週に評価額が倍になる会社と半分になる会社が並んだ。AI関連ならどこも上がる、という見方が今週はっきり否定されている。ベンダー選定でも「調達したか」ではなく「何で稼ぐ会社に変わったか」を見る必要がある。"
+  },
+  {
+   "domain": "startup",
+   "date": "2026-08-12",
+   "title": "Lovableが4億ドル調達、評価額133億ドル",
+   "what": "欧州のバイブコーディング企業 Lovable が4億ドルのシリーズCを調達し、評価額133億ドルを確認した。リードは Menlo Ventures と Scaleup Europe Fund。6月に年間換算売上5億ドルに到達し、2025年12月の前回ラウンド（3億3,000万ドル・評価額66億ドル）から8か月で評価額が2倍になった。",
+   "numbers": [
+    {
+     "value": 400,
+     "unit": "百万USD",
+     "note": "シリーズCの調達額"
+    },
+    {
+     "value": 13.3,
+     "unit": "十億USD",
+     "note": "今回の評価額"
+    },
+    {
+     "value": 6.6,
+     "unit": "十億USD",
+     "note": "2025年12月の前回ラウンド時点の評価額（調達額3億3,000万ドル）"
+    },
+    {
+     "value": 500,
+     "unit": "百万USD",
+     "note": "2026年6月時点の年間換算売上"
+    },
+    {
+     "value": 60,
+     "unit": "百万件",
+     "note": "ホストしているプロジェクト数。月間9億の訪問がある"
+    }
+   ],
+   "source_url": "https://techcrunch.com/2026/08/12/lovable-confirms-new-13-3b-valuation-raises-another-400m/",
+   "source_name": "TechCrunch「Lovable confirms new $13.3B valuation, raises another $400M」（2026年8月12日）",
+   "tier": 2,
+   "why": "欧州の会社が、EUの官製ファンド（Scaleup Europe Fund）と米VCの共同リードで調達した。ソブリンAIの議論が投資の形になって現れた例として読める。"
+  },
+  {
+   "domain": "startup",
+   "date": "2026-08-14",
+   "title": "River AI、創業同年に11億ドルをシードとAで調達",
+   "what": "Crunchbase の週次まとめによれば、2026年に創業したばかりの River AI が、シードとシリーズAで合わせて11億ドルを調達した。リードは AMP PBC と General Catalyst、戦略投資として Nvidia と AMD Ventures が参加。創業者の Igor Babuschkin は Google DeepMind・OpenAI・xAI を渡り歩いてきた人物で、企業や個人が達成したいことに直接学習させる、利用者側が制御を持つAIを掲げる。",
+   "numbers": [
+    {
+     "value": 1.1,
+     "unit": "十億USD",
+     "note": "シードとシリーズAの合計調達額"
+    },
+    {
+     "value": 0,
+     "unit": "年",
+     "note": "創業から調達までの経過年数（2026年内に創業）"
+    }
+   ],
+   "source_url": "https://news.crunchbase.com/ai/biggest-funding-rounds-databricks-river-ai-data-energy/",
+   "source_name": "Crunchbase News「The Week's 10 Biggest Funding Rounds」（2026年8月14日）",
+   "tier": 1,
+   "why": "創業から数か月で11億ドル。事業ではなく「誰が作るか」に値付けされている。人材の移動そのものが資本移動になっている、という今の市場の性格がいちばん短く出た例。"
+  }
+ ],
+ "quiet_domains": [],
+ "notes": "【7領域すべてで対象週の一次情報が取れたため quiet_domains は空。ただし領域内では明確に静かだった系統がある】\n・日本の法規制：経産省・総務省・個人情報保護委員会・デジタル庁・内閣官房・内閣府CSTI・金融庁・IPA・文化庁の新着を対象週で全件確認したが、AI関連の告示・指針・審議会資料の公表は1件も無かった。内閣府の人工知能基本計画（第II期）は2026年7月14日閣議決定、改正個人情報保護法の公布は令和8年7月17日で、いずれも対象週の外。\n・EU：digital-strategy.ec.europa.eu のニュース一覧の最新は2026年8月7日で、対象週の掲載はゼロ。AI Act 第50条の適用開始（8月2日）と透明性ガイドライン（7月20日）、AI生成コンテンツ透明性行動規範への約190団体の署名（7月31日）はいずれも対象週の前。今週のEU関連の動きは、規制そのものではなく事業者側の実装（Anthropicの透かし）として現れた。\n・米国：NIST のニュースに対象週のAI項目なし（8月13日は建設安全の会合案内）。whitehouse.gov は egress でブロックされており、迂回輸出報告書はジェトロ（tier 2）経由でのみ確認した。\n・世論調査：Gallup は AI トピック・ワークプレイスとも対象週の新規公表なし（最新は2026年5月）。今週の society は Pew の1本のみ。\n・人材：mhlw.go.jp・meti.go.jp に対象週の雇用/人材推計の公表なし。LinkedIn Economic Graph と Indeed Hiring Lab は許可ドメイン外で未到達。talent が1件しか無いのはそのため。\n\n【日付検証で落とした候補】\n・Qwen3.8-27B：ITmedia が2026年8月15日に「ウェイト公開」と報じ、Artificial Analysis も releaseDate を2026年8月14日としているが、Hugging Face API 上の Qwen/Qwen3.8-27B の createdAt は 2026-08-05 で食い違う。派生・量子化リポジトリの作成は8月12〜14日に集中しているため、対象週の出来事として Artificial Analysis の計測値を根拠に採用したが、原リポジトリの公開日は未確定として残す。\n・Microsoft MAI-Code-1.1 Flash は2026年8月11日、Anthropic の生物学セーフガード更新は8月7日、Google の AMIE 動画診療は8月11日で、いずれも対象週の1日〜数日前。今週の話として拾わなかった。\n・Sakana AI「Sakana Chat アップデート（Sakana Fugu 追加・Namazu 刷新・コード実行対応）」は2026年8月13日で対象週内かつ一次情報も取れたが、記事に数値がひとつも無いため numbers を埋められず候補から外した。国内の動きとしてここに記録しておく。\n・Anthropic の年間換算売上650億ドル（TechCrunch 8月17日）は Bloomberg 報道の孫引きで一次に届かないため落とした。Cognition の400億ドル評価や Stripe による OpenRouter 買収は「協議中との報道」段階なので同様に落とした。\n・Google が AI 生成物の可視透かしを任意化した件（2026年8月14日）は、SynthID と C2PA は維持という重要な対比だが、一次情報が Josh Woodward 氏の X 投稿で到達できないため候補にしていない。Anthropic の透かし（8月14日）と表裏なので、記事化する際は対比として触れる価値がある。\n\n【到達できなかった原典】\n・whitehouse.gov／newsroom.ibm.com：egress でブロック（CONNECT tunnel failed / EGRESS_BLOCKED）。ホワイトハウス報告書はジェトロ、IBM×OpenAI 提携は TechCrunch で代替し、いずれも tier 2 とした。\n・openai.com：従来どおり Cloudflare のボット遮断で403。GPT-5.6 Sol の Ultrafast モード（8月13日）は一次を取れず候補にしていない。\n・preferred.jp・x.ai：egress ブロックまたは403で未到達。ai.meta.com は 400 を返し、RSS も取れなかった。\n・PR TIMES は相対時刻表示のみで日付での絞り込みができず、国内企業の発表を対象週で網羅する経路にはならなかった。\n\n【今回わかった取り方】\n・artificialanalysis.ai は本文が JS で描かれるが、各モデルページに FAQPage 構造化データ（application/ld+json）が埋まっており、リリース日・知能指数・入出力単価・トークン毎秒・TTFT・コンテキスト長がプレーンテキストで取れる。egress-check.md が「C. 到達したが中身がJS」に分類していた問題は、この経路で解消する。\n・blog.google は一覧ページが JS だが、各カテゴリに /rss/ があり pubDate で対象週を機械的に切れる。deepmind.google は /blog/rss.xml。\n・efts.sec.gov の全文検索（forms・startdt・enddt 指定）が有効。今週いちばん重い一次情報（NVIDIA の 8-K）はこれで見つけた。"
+}

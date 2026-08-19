@@ -2,20 +2,71 @@
   "slug": "society-jobs",
   "domain": "society",
   "title": "働く人の側から見たAI ── 使用は半数、不安は上昇",
-  "watching": ["利用率", "雇用不安", "世論の変化", "世代差"],
+  "watching": [
+    "利用率",
+    "雇用不安",
+    "世論の変化",
+    "世代差"
+  ],
   "facts": [
-    {"date": "2026", "text": "Gallup：米国の従業員の47%が『自社が生産性・効率・品質のためにAIを導入した』と回答。前四半期の41%から6ポイント上昇", "src": "https://www.gallup.com/workplace/712736/organizational-adoption-jumps-six-points.aspx", "tier": 1},
-    {"date": "2026", "text": "米国の労働者の52%が業務でAIを使用。週に数回以上が30%、毎日が15%", "src": "https://www.gallup.com/workplace/704225/rising-adoption-spurs-workforce-changes.aspx", "tier": 1},
-    {"date": "2026", "text": "AIを導入した組織の従業員の27%が『この1年で職場が大きく、または非常に大きく破壊的に変化した』と回答", "src": "https://www.gallup.com/workplace/712976/ai-effect-workplace-culture.aspx", "tier": 1},
-    {"date": "2026-Q1", "text": "自分の仕事が今後5年で technological innovation により無くなる可能性が『非常に高い／やや高い』と答えたのは18%。AIを実装済みの組織に限ると23%", "src": "https://www.gallup.com/workplace/704225/rising-adoption-spurs-workforce-changes.aspx", "tier": 1},
-    {"date": "2026", "text": "米国人の79%が『今後10年でAIは米国の雇用を減らす』と回答。2025年の73%から上昇", "src": "https://news.gallup.com/poll/712751/americans-cool-toward.aspx", "tier": 1}
+    {
+      "date": "2026-08-18",
+      "text": "Pew Research Center：米成人3,488人への調査（2026年6月22〜28日、American Trends Panel）。AIの日常利用について『期待より不安が大きい』は52%で、2021年の37%から上昇。『不安より期待』は9%（2021年は18%）。18〜29歳では初めて過半数の55%が『期待より不安』と答え、2025年の47%、2022年の29%から上がった。年代別では18-29歳55%／30-49歳51%／50-64歳47%／65歳以上59%",
+      "src": "https://www.pewresearch.org/short-reads/2026/08/18/young-adults-in-the-us-are-increasingly-wary-of-ai-concerned-it-will-take-jobs/",
+      "tier": 1,
+      "checked": "2026-08-18",
+      "note": "若年層ほどAIに前向き、という思い込みが実測で否定された回"
+    },
+    {
+      "date": "2026-08-18",
+      "text": "同調査：『今後20年でAIは米国の雇用を減らす』は71%（2024年は64%）。『大きな違いはない』10%、『雇用は増える』5%、『わからない』14%",
+      "src": "https://www.pewresearch.org/short-reads/2026/08/18/young-adults-in-the-us-are-increasingly-wary-of-ai-concerned-it-will-take-jobs/",
+      "tier": 1,
+      "checked": "2026-08-18"
+    },
+    {
+      "date": "2026",
+      "text": "Gallup：米国の従業員の47%が『自社が生産性・効率・品質のためにAIを導入した』と回答。前四半期の41%から6ポイント上昇",
+      "src": "https://www.gallup.com/workplace/712736/organizational-adoption-jumps-six-points.aspx",
+      "tier": 1
+    },
+    {
+      "date": "2026",
+      "text": "米国の労働者の52%が業務でAIを使用。週に数回以上が30%、毎日が15%",
+      "src": "https://www.gallup.com/workplace/704225/rising-adoption-spurs-workforce-changes.aspx",
+      "tier": 1
+    },
+    {
+      "date": "2026",
+      "text": "AIを導入した組織の従業員の27%が『この1年で職場が大きく、または非常に大きく破壊的に変化した』と回答",
+      "src": "https://www.gallup.com/workplace/712976/ai-effect-workplace-culture.aspx",
+      "tier": 1
+    },
+    {
+      "date": "2026-Q1",
+      "text": "自分の仕事が今後5年で technological innovation により無くなる可能性が『非常に高い／やや高い』と答えたのは18%。AIを実装済みの組織に限ると23%",
+      "src": "https://www.gallup.com/workplace/704225/rising-adoption-spurs-workforce-changes.aspx",
+      "tier": 1
+    },
+    {
+      "date": "2026",
+      "text": "米国人の79%が『今後10年でAIは米国の雇用を減らす』と回答。2025年の73%から上昇",
+      "src": "https://news.gallup.com/poll/712751/americans-cool-toward.aspx",
+      "tier": 1
+    }
   ],
   "open": [
     "『使っている52%』と『不安18%』の重なりはどうなっているか（使う人ほど不安なのか、逆か）",
-    "日本の同種の調査で、同じ指標は取れるか"
+    "日本の同種の調査で、同じ指標は取れるか",
+    "18〜29歳の不安が2024年の39%から2026年の55%へ2年で16ポイント動いた要因は何か（就職市場か、教育現場か、SNSか）"
   ],
   "stance": "未記入（おざけんが書く）",
   "falsify": "利用率が上がっても不安の数字が下がっていけば、『使うほど不安になる』という読みは外れ",
-  "related": ["06_people/career-in-agent-era.html", "06_people/org-theory.html", "01_concept/use-to-delegate.html"],
-  "written": []
+  "related": [
+    "06_people/career-in-agent-era.html",
+    "06_people/org-theory.html",
+    "01_concept/use-to-delegate.html"
+  ],
+  "written": [],
+  "note": "2026-08-18のスイープで、対象週（8/12〜8/18）に Gallup のAI関連の新規公表は無いことを確認（AIトピックの最新は2026年5月）"
 }

@@ -1,20 +1,80 @@
 {
   "slug": "model-race",
   "title": "賢さの差が縮み、値段と速度が選択軸になる",
-  "watching": ["モデル価格", "推論速度", "Intelligence Index", "導入価格の切替日"],
+  "watching": [
+    "モデル価格",
+    "推論速度",
+    "Intelligence Index",
+    "導入価格の切替日"
+  ],
   "facts": [
-    {"date": "2026-08-13", "text": "Gemini 3.7 Flash がGA。導入価格は入力$0.75／出力$3.75（100万トークンあたり）だが、2026年12月31日を過ぎると標準価格の入力$1.50／出力$7.50になる。コンテキスト100万トークン、最大出力64k、thinkingレベルはlow/medium/highの3段", "src": "https://blog.google/intl/ja-jp/company-news/technology/gemini-37-flash/", "tier": 1},
-    {"date": "2026-08-18", "text": "Artificial Analysis の計測では Gemini 3.7 Flash (high) が Intelligence Index 56。GPT-5.6 Terra (max) 57、Muse Spark 1.2 (xhigh) 57 のすぐ下。出力速度は約340トークン/秒で、GPT-5.6 Terra や GLM-5.2 の約3倍", "src": "https://artificialanalysis.ai/models/gemini-3-7-flash", "tier": 1, "note": "確認日基準。ランキングは日々動く"},
-    {"date": "2026-08-12", "text": "Grok 4.6 (high) 公開。入力$2.00／出力$6.00", "src": "https://artificialanalysis.ai/models/grok-4-6", "tier": 1},
-    {"date": "2026-08-05", "text": "Muse Spark 1.2 (xhigh) 公開。入力$1.25／出力$4.25", "src": "https://artificialanalysis.ai/models/muse-spark-1-2", "tier": 1},
-    {"date": "2026-08-06", "text": "OpenAI が GPT-5.6 Sol を更新し、無料・Goユーザーの既定モデルを入れ替え。応答にかける手間を選ぶスライダーを追加。あわせて o3 は2026年8月26日、DALL·E GPT は8月30日に引退", "src": "https://openai.com/index/improving-gpt-5-6-sol-in-chatgpt/", "tier": 1}
+    {
+      "date": "2026-08-18",
+      "text": "Z AI が GLM-5.3 (max) を公開。Artificial Analysis の計測で Intelligence Index 60、入力$1.40／出力$4.40（100万トークンあたり）、出力74.0トークン/秒、time to first token 2.05秒。同じ週に出た Grok 4.6 (high) の知能61とほぼ並びながら、入力単価は3割安く、初回応答は18分の1の速さ",
+      "src": "https://artificialanalysis.ai/models/glm-5-3",
+      "tier": 1,
+      "checked": "2026-08-18",
+      "note": "モデルページの FAQPage 構造化データ（application/ld+json）から取得。JSで描かれる表は読めないが、この構造化データにはリリース日・知能指数・価格・速度が入っている"
+    },
+    {
+      "date": "2026-08-14",
+      "text": "Alibaba がオープンウェイトの Qwen3.8 27B を公開。Artificial Analysis の計測で Intelligence Index 52。同規模のオープンウェイトモデルの中央値9を大きく引き離した",
+      "src": "https://artificialanalysis.ai/models/qwen3-8-27b",
+      "tier": 1,
+      "checked": "2026-08-18",
+      "note": "Artificial Analysis の releaseDate は 2026-08-14。ただし Hugging Face API 上の Qwen/Qwen3.8-27B の createdAt は 2026-08-05 で食い違う。原リポジトリの公開日は未確定"
+    },
+    {
+      "date": "2026-08-18",
+      "text": "（確認日基準の横並び）Artificial Analysis の Intelligence Index は Grok 4.6 (high) 61、GLM-5.3 (max) 60、GPT-5.6 Terra (max) 57、Muse Spark 1.2 (xhigh) 57、Gemini 3.7 Flash (high) 56、Qwen3.8 27B 52。上位6本の差は9ポイントに収まる一方、入力単価は $0.75（Gemini 3.7 Flash 導入価格）から $2.00（Grok 4.6）まで開く",
+      "src": "https://artificialanalysis.ai/models/glm-5-3",
+      "tier": 1,
+      "checked": "2026-08-18",
+      "note": "ランキングは日々動く。確認日を必ず添えること"
+    },
+    {
+      "date": "2026-08-13",
+      "text": "Gemini 3.7 Flash がGA。導入価格は入力$0.75／出力$3.75（100万トークンあたり）だが、2027年1月1日から標準価格の入力$1.50／出力$7.50になる。3.6 Flash比で FrontierCode 1.1 Main 43.6%（vs 34.4%）、DeepSWE v1.1 65.3%（vs 49.0%）、GDP.pdf 34.0%（vs 22.0%）、AutomationBench 30.4%（vs 17.0%）、WebDev Arena Elo 1588（vs 1538）。3.6 Flash公開のわずか3週間後",
+      "src": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-3-7-flash/",
+      "tier": 1,
+      "checked": "2026-08-18",
+      "note": "英語版の一次記事で数値を確認。Artificial Analysis 計測では high 設定で Intelligence Index 56、出力320.6トークン/秒、TTFT 11.87秒"
+    },
+    {
+      "date": "2026-08-12",
+      "text": "SpaceXAI が Grok 4.6 (high) を公開。Artificial Analysis 計測で Intelligence Index 61（同価格帯の推論モデル中央値35）、入力$2.00／出力$6.00、出力57.9トークン/秒（同帯域中央値74.0）、time to first token 37.49秒（同中央値2.77秒）、コンテキスト50万トークン、重みは非公開",
+      "src": "https://artificialanalysis.ai/models/grok-4-6",
+      "tier": 1,
+      "checked": "2026-08-18",
+      "note": "リリース日を FAQPage 構造化データで独立に確認（August 12, 2026）"
+    },
+    {
+      "date": "2026-08-05",
+      "text": "Muse Spark 1.2 (xhigh) 公開。入力$1.25／出力$4.25",
+      "src": "https://artificialanalysis.ai/models/muse-spark-1-2",
+      "tier": 1
+    },
+    {
+      "date": "2026-08-06",
+      "text": "OpenAI が GPT-5.6 Sol を更新し、無料・Goユーザーの既定モデルを入れ替え。応答にかける手間を選ぶスライダーを追加。あわせて o3 は2026年8月26日、DALL·E GPT は8月30日に引退",
+      "src": "https://openai.com/index/improving-gpt-5-6-sol-in-chatgpt/",
+      "tier": 1
+    }
   ],
   "open": [
     "12月31日の価格切替で、Flash系を前提に組んだ社内ワークフローの費用は実際どれだけ増えるか",
-    "『賢さ3ポイント差・値段2倍』のとき、業務ごとにどちらを選ぶべきか"
+    "『賢さ3ポイント差・値段2倍』のとき、業務ごとにどちらを選ぶべきか",
+    "初回応答37秒（Grok 4.6）と2秒（GLM-5.3）の差は、対話用途と夜間バッチ用途で評価をどう逆転させるか",
+    "Qwen3.8 27B の原リポジトリの公開日（Hugging Face の createdAt は 2026-08-05、Artificial Analysis は 2026-08-14）"
   ],
   "stance": "未記入（おざけんが書く）",
   "falsify": "導入価格が延長されるか、標準価格が引き下げられたら、期ずれの警告は外れ",
-  "related": ["02_models/model-selection.html", "02_models/model-routing-16patterns.html", "05_drive/ai-budget.html", "03_tools/gemini-guide.html"],
-  "written": []
+  "related": [
+    "02_models/model-selection.html",
+    "02_models/model-routing-16patterns.html",
+    "05_drive/ai-budget.html",
+    "03_tools/gemini-guide.html"
+  ],
+  "written": [],
+  "note": "2026-08-18のスイープで、対象週（8/12〜8/18）だけで知能指数52〜61のモデルが4本出たことを確認。artificialanalysis.ai は本文がJSで描かれ数値が読めないとされていたが、各モデルページの FAQPage 構造化データからリリース日・知能指数・価格・速度・コンテキスト長が取れる"
 }

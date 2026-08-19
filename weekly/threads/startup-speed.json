@@ -1,0 +1,73 @@
+{
+  "slug": "startup-speed",
+  "domain": "startup",
+  "title": "金額ではなく、時間が縮んでいる",
+  "watching": [
+    "創業からの月数",
+    "前回評価額からの倍率",
+    "評価額が動くまでの期間",
+    "下がる会社",
+    "日本のスタートアップ"
+  ],
+  "facts": [
+    {
+      "date": "2026-08-18",
+      "text": "推論専用ハードの Etched が7億ドルを追加調達し評価額210億ドル。リードは同社のハードを実際に検証・購入したクオンツファンドの Jane Street。2025年12月時点は50億ドル、2026年7月のシリーズCは3億ドル調達で評価額103億ドル。1か月で約110億ドル上乗せされた",
+      "src": "https://techcrunch.com/2026/08/18/etcheds-valuation-doubles-to-21b-in-a-month/",
+      "tier": 2,
+      "checked": "2026-08-18",
+      "note": "一次情報は Etched と Jane Street のブログだが etched.com は許可ドメイン外"
+    },
+    {
+      "date": "2026-08-17",
+      "text": "AI動画の Higgsfield が4億ドルのシリーズBを調達し評価額54億ドル。8か月前の13億ドルから4倍。リードは DST Global。同社発表で年間換算売上7億ドル、利用者3,000万人（200か国）、Fortune 500 のうち390社と取引。創業は2023年、創業者は元Snap幹部の Alex Mashrabov",
+      "src": "https://techcrunch.com/2026/08/17/higgsfield-raises-400m-series-b-quadrupling-its-valuation-in-8-months-to-5-4b/",
+      "tier": 2,
+      "checked": "2026-08-18"
+    },
+    {
+      "date": "2026-08-17",
+      "text": "Groq が3.5億ドルを調達したが評価額は35億ドルで、2025年9月の69億ドルから約半減。創業CEO の Jonathan Ross ら中核人材が NVIDIA へ移った200億ドルのライセンス取引を経ており、会社側は『ダウンラウンドではなく、ライセンス取引後の Groq の新しい評価』と説明。自社チップ（LPU）から NVIDIA 製品を運用するクラウド事業への転換中で、データセンター13拠点、54メガワットを2027年に200メガワット超へ拡大する計画",
+      "src": "https://techcrunch.com/2026/08/17/groq-raises-350m-to-fuel-its-pivot-from-ai-chips-to-neocloud/",
+      "tier": 2,
+      "checked": "2026-08-18",
+      "note": "同じ週に評価額が倍になる会社と半分になる会社が並んだ"
+    },
+    {
+      "date": "2026-08-14",
+      "text": "2026年に創業したばかりの River AI が、シードとシリーズAで合計11億ドルを調達。リードは AMP PBC と General Catalyst、戦略投資として Nvidia と AMD Ventures。創業者の Igor Babuschkin は Google DeepMind・OpenAI・xAI を経てきた人物",
+      "src": "https://news.crunchbase.com/ai/biggest-funding-rounds-databricks-river-ai-data-energy/",
+      "tier": 1,
+      "checked": "2026-08-18",
+      "note": "創業からの経過は1年未満。事業ではなく『誰が作るか』に値付けされている例"
+    },
+    {
+      "date": "2026-08-12",
+      "text": "欧州のバイブコーディング企業 Lovable が4億ドルのシリーズCを調達し評価額133億ドル。リードは Menlo Ventures と欧州委員会が設立した Scaleup Europe Fund。2026年6月に年間換算売上5億ドルに到達。2025年12月の前回ラウンドは3億3,000万ドル・評価額66億ドルで、8か月で2倍。ホストするプロジェクトは6,000万件、月間9億訪問",
+      "src": "https://techcrunch.com/2026/08/12/lovable-confirms-new-13-3b-valuation-raises-another-400m/",
+      "tier": 2,
+      "checked": "2026-08-18",
+      "note": "欧州の官製ファンドと米VCの共同リード。ソブリンAIの議論が投資の形で現れた例"
+    },
+    {
+      "date": "2026-08-14",
+      "text": "Crunchbase 集計：2026年7月の新規ユニコーン40社のうち15社は創業3年未満、7社は創業10年超。上半期の新規ユニコーンは195社で2025年通年を超えた",
+      "src": "https://news.crunchbase.com/venture/unicorn-board-grows-40-companies-fintech-robotics-ai-july-2026/",
+      "tier": 1,
+      "checked": "2026-08-18"
+    }
+  ],
+  "open": [
+    "日本のスタートアップで、同じ週に『8か月で4倍』に相当する例はあるか（PR TIMES は相対時刻表示で日付での絞り込みができず、対象週の網羅ができていない）",
+    "評価額が1か月で倍になる会社と半減する会社を分けている条件は何か（顧客が実物を検証したか否か、という仮説）",
+    "『創業からの月数』を、日本の発注側は取引先審査でどう扱うべきか"
+  ],
+  "stance": "未記入（おざけんが書く）",
+  "falsify": "創業3年未満のユニコーン比率が下がり、評価額の上昇に年単位の時間がかかるようになれば、『時間が縮んでいる』という読みは外れ",
+  "related": [
+    "01_concept/business-model-shift.html",
+    "05_drive/ai-budget.html"
+  ],
+  "written": [],
+  "note": "2026-08-18のスイープで新設。watchlist の startup 領域は『金額だけを並べない。創業からの月数と前回評価額を必ず添える』という方針なので、そのための定点として立てた"
+}

@@ -2,18 +2,76 @@
   "slug": "ai-capital",
   "domain": "capital",
   "title": "お金は、上位2社に集まっている",
-  "watching": ["調達額", "集中度", "評価額", "設備投資"],
+  "watching": [
+    "調達額",
+    "集中度",
+    "評価額",
+    "設備投資"
+  ],
   "facts": [
-    {"date": "2026-H1", "text": "Crunchbase集計：2026年上半期の世界のベンチャー投資は過去最高の$510B。2025年通年の$440Bを半年で超えた。四半期別ではQ1 $305B、Q2 $205B（5,000社超）", "src": "https://news.crunchbase.com/venture/global-startup-exits-ipo-ma-soar-ai-q2-h1-2026/", "tier": 1},
-    {"date": "2026-H1", "text": "OpenAI と Anthropic の2社だけで $217B、上半期の全スタートアップ調達額の43%を占めた", "src": "https://news.crunchbase.com/venture/global-startup-exits-ipo-ma-soar-ai-q2-h1-2026/", "tier": 1}
+    {
+      "date": "2026-08-17",
+      "text": "NVIDIA が 8-K を提出。SB Energy とオハイオ州パイク郡の PORTS 技術キャンパスで多年提携を結び、約4.25ギガワットのIT負荷に相当するリースについて残存価値保証（residual value guaranties）を締結。支払義務の累計上限は1,050億ドル。借主は OpenAI の関連会社で、OpenAI の破綻または支払不履行が起きた場合に NVIDIA が保証最低額との差額を支払う。追加で約3.8ギガワット分の信用供与を NVIDIA の裁量で行う余地も持つ。ready-for-service 条件の充足は2028年開始見込み、義務の終了はリース開始から20年後などのいずれか早い時点。OpenAI は NVIDIA が支払った額を補償することに同意している",
+      "src": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000069/nvda-20260817.htm",
+      "tier": 1,
+      "checked": "2026-08-18",
+      "note": "efts.sec.gov の全文検索（forms=8-K, startdt/enddt指定）で発見。売り手が買い手の債務を保証する構造がSEC提出書類の文面で確認できる"
+    },
+    {
+      "date": "2026-08-18",
+      "text": "Crunchbase 集計：2026年上半期のフィジカルAI（ロボティクス・自動運転・航空宇宙・ドローン・産業自動化・センサー）への世界ベンチャー投資は521件で474億ドル。2025年下半期の470件・120億ドルからほぼ4倍、2025年上半期の436件・264億ドルから約80%増。2022〜2024年の3年間合計419億ドルを半年で上回った。2月の Waymo のシリーズD 160億ドル（評価額1,260億ドル）1件で上半期の約3分の1を占める",
+      "src": "https://news.crunchbase.com/venture/physical-ai-funding-startups-robotics-aerospace-h1-2026/",
+      "tier": 1,
+      "checked": "2026-08-18"
+    },
+    {
+      "date": "2026-08-17",
+      "text": "Crunchbase 集計：半導体の主要企業が2026年に参加したスタートアップの調達ラウンドは合計2,500億ドル超。ただし95%超は3月の OpenAI の1,220億ドルラウンド1件（Nvidia は8社の共同リードの1社）が占める。Nvidia は年初来59件に参加（2025年通年は53件）で11件以上をリード／共同リード。AMD は19件、Samsung は17件。1億ドル以上のラウンドへの参加は60件超、うち16件は評価額10億ドル以上",
+      "src": "https://news.crunchbase.com/venture/semiconductor-giants-nvda-intc-backing-ai-robotics-starups-2026/",
+      "tier": 1,
+      "checked": "2026-08-18",
+      "note": "『合計2,500億ドル』の95%が1件。総額の見出しを見たら分母の中身を割る、という読み方の実例"
+    },
+    {
+      "date": "2026-08-14",
+      "text": "Crunchbase 集計：2026年7月に新規ユニコーンとなった企業は40社で、4年以上ぶりの月間最多。うち3社は評価額100億ドル超で参入し、Crypto.com・Kling AI・Ant International の3社だけで1か月に490億ドルの評価額を追加。国別は米国19社、中国8社、英国3社、シンガポール2社。創業3年未満が15社、創業10年超が7社。2026年上半期の新規ユニコーンは195社で2025年通年をすでに超えた",
+      "src": "https://news.crunchbase.com/venture/unicorn-board-grows-40-companies-fintech-robotics-ai-july-2026/",
+      "tier": 1,
+      "checked": "2026-08-18"
+    },
+    {
+      "date": "2026-08-13",
+      "text": "Databricks が50億ドルを調達し評価額1,900億ドル。CEO の Ali Ghodsi によれば当初想定は10億ドルだったが、報道をきっかけに投資家の関心が150億ドル集まり発行株数を増やした。第2四半期の売上ランレートは70億ドル超で前年同期比80%超の成長。2025年12月時点は評価額1,340億ドル・ランレート48億ドル、7月の発表時点の評価額は1,880億ドル",
+      "src": "https://techcrunch.com/2026/08/13/databricks-wanted-to-raise-1b-investors-wanted-15b-it-settled-on-5b-at-a-190b-valuation/",
+      "tier": 2,
+      "checked": "2026-08-18",
+      "note": "一次情報は Databricks 自身のプレスだが databricks.com は許可ドメイン外。CEO のコメントは TechCrunch の直接取材"
+    },
+    {
+      "date": "2026-H1",
+      "text": "Crunchbase集計：2026年上半期の世界のベンチャー投資は過去最高の$510B。2025年通年の$440Bを半年で超えた。四半期別ではQ1 $305B、Q2 $205B（5,000社超）",
+      "src": "https://news.crunchbase.com/venture/global-startup-exits-ipo-ma-soar-ai-q2-h1-2026/",
+      "tier": 1
+    },
+    {
+      "date": "2026-H1",
+      "text": "OpenAI と Anthropic の2社だけで $217B、上半期の全スタートアップ調達額の43%を占めた",
+      "src": "https://news.crunchbase.com/venture/global-startup-exits-ipo-ma-soar-ai-q2-h1-2026/",
+      "tier": 1
+    }
   ],
   "open": [
     "『AI関連』に限定した上半期の合計額はいくらか（全体$510Bとの切り分けが未確定）",
-    "上位2社を除いた中央値の企業に、資金は届いているのか"
+    "上位2社を除いた中央値の企業に、資金は届いているのか",
+    "NVIDIA の1,050億ドル保証のように、売り手が買い手の債務を保証する取引は他にどれだけあるのか（AI関連売上のうち循環取引の比率）",
+    "フィジカルAIの474億ドルのうち、Waymo の160億ドルを除いた中央値の企業に資金は届いているのか"
   ],
   "stance": "未記入（おざけんが書く）",
   "falsify": "下半期に集中度が下がれば、『2社に集まる』という読みは弱まる",
-  "related": ["01_concept/business-model-shift.html", "05_drive/ai-budget.html"],
+  "related": [
+    "01_concept/business-model-shift.html",
+    "05_drive/ai-budget.html"
+  ],
   "written": [],
   "note": "二次情報では『AIスタートアップがH1で$407B』『通年で$120B超の見込み』という桁の割れた数字が同時に出回っていた。集計元に当たって解決した例"
 }

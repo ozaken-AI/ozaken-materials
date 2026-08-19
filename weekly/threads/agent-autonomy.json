@@ -1,18 +1,81 @@
 {
   "slug": "agent-autonomy",
   "title": "エージェントに、どこまで長い仕事を任せられるか",
-  "watching": ["long-horizon", "エージェント評価", "自律性", "メモリ", "人が関わる境界"],
+  "watching": [
+    "long-horizon",
+    "エージェント評価",
+    "自律性",
+    "メモリ",
+    "人が関わる境界"
+  ],
   "facts": [
-    {"date": "2026-08-07", "text": "サーベイ論文 The Horizon Gap が公開。2024〜2026年のarXiv論文1,547本を調査し、long-horizon（タスクの性質＝必要な手数）/ long-context（モデルの性質＝トークン容量）/ long-term memory（システムの性質＝セッションを跨ぐ永続性）の3つが混同されてきたと整理", "src": "https://arxiv.org/abs/2608.06663", "tier": 1},
-    {"date": "2026-06", "text": "Emergence World：LLMエージェント集団を共有空間で走らせ続ける評価基盤。15日間・5つの並列世界の実験で、結果が『安定した合議的統治』から『population collapse（集団の崩壊）』まで割れた", "src": "https://arxiv.org/html/2606.08367", "tier": 1},
-    {"date": "2026-03", "text": "EnterpriseArena：132か月ぶんのCFOシミュレータ。資金繰り・決算・資金調達を、変化する景気局面の中で長期に判断させる", "src": "https://arxiv.org/html/2603.23638v2", "tier": 1}
+    {
+      "date": "2026-08-13",
+      "text": "Anthropic Frontier Red Team が複数エージェントの相互作用を公開。脆弱性探索では、45体が共有掲示板で協調する方式が266件（2,700万トークン）、独立並列方式が21件（650万トークン）を発見。重複は12件で互いに補完的だった。一方12時間のゲーム共同制作では、世代の新しいモデルほど『ファイルの所有権を分けて衝突を避ける＝ほとんど協働しない』方向に解いており、共有資源を触りながらPRを通せたのは Sonnet 5 だけだった",
+      "src": "https://www.anthropic.com/research/multiagent-systems",
+      "tier": 1,
+      "checked": "2026-08-18"
+    },
+    {
+      "date": "2026-08-13",
+      "text": "同実験で『個体の低分散』が systemic failure を生むことを観測。初期実験では30体中18体が同じブランチ名 mvp-game-loop を作り、ジョブキュー実験では毎秒30回のポーリングデーモンが殺到して240万件の要求に対し受理は117件だった",
+      "src": "https://www.anthropic.com/research/multiagent-systems",
+      "tier": 1,
+      "checked": "2026-08-18"
+    },
+    {
+      "date": "2026-08-15",
+      "text": "論文 StateM：モデルの重みを変えずに実行環境（ハーネス）側だけを作り込む harness scaling で、Terminal-Bench 2.1 の raw accuracy 95.3%（445試行・全89タスクで少なくとも1回成功）。そのときのAPI費用は約15ドルで、GPT参照実装の574.68ドルの38分の1。GPT-5.5 xhigh は83.1%→92.1%、GPT-5.6 Luna は76.7%→85.4%、DeepSeek-V4 Flash は38ドル未満の適応で82.7%→88.1%",
+      "src": "https://arxiv.org/abs/2608.15089",
+      "tier": 1,
+      "checked": "2026-08-18"
+    },
+    {
+      "date": "2026-08-13",
+      "text": "論文 Beyond Final Scores：7つのフロンティアモデルを36の long-horizon タスクで、最終スコアではなく Solution Framing / Execution / Feedback Control の3軸で計測。現在のエージェントは『自律的な研究者』ではなく『工学的な最適化係』で、実行のばらつきが大きく、強い解も既存手法の組み合わせにとどまると結論",
+      "src": "https://arxiv.org/abs/2608.13417",
+      "tier": 1,
+      "checked": "2026-08-18"
+    },
+    {
+      "date": "2026-08-14",
+      "text": "論文 AutoResearchEval：7分野100タスクを8つのハーネス×モデルの組で走らせ、800の実行軌跡から45の失敗パターン（ARFT）を抽出。失敗は『自分が出したものを自分が調べたことと照合し直さない＝メタ認知ループの欠如』に収束し、同じパターンが8組すべてで再現したため、原因はスキャフォールドではなくモデル側にあると結論づけた",
+      "src": "https://arxiv.org/abs/2608.14905",
+      "tier": 1,
+      "checked": "2026-08-18"
+    },
+    {
+      "date": "2026-08-07",
+      "text": "サーベイ論文 The Horizon Gap が公開。2024〜2026年のarXiv論文1,547本を調査し、long-horizon（タスクの性質＝必要な手数）/ long-context（モデルの性質＝トークン容量）/ long-term memory（システムの性質＝セッションを跨ぐ永続性）の3つが混同されてきたと整理",
+      "src": "https://arxiv.org/abs/2608.06663",
+      "tier": 1
+    },
+    {
+      "date": "2026-06",
+      "text": "Emergence World：LLMエージェント集団を共有空間で走らせ続ける評価基盤。15日間・5つの並列世界の実験で、結果が『安定した合議的統治』から『population collapse（集団の崩壊）』まで割れた",
+      "src": "https://arxiv.org/html/2606.08367",
+      "tier": 1
+    },
+    {
+      "date": "2026-03",
+      "text": "EnterpriseArena：132か月ぶんのCFOシミュレータ。資金繰り・決算・資金調達を、変化する景気局面の中で長期に判断させる",
+      "src": "https://arxiv.org/html/2603.23638v2",
+      "tier": 1
+    }
   ],
   "open": [
     "『分単位のベンチマークで測った賢さ』と『週単位で運用したときの信頼性』は、どのくらい乖離するのか",
-    "運用中のドリフト（目標からのずれ）を、人はどの間隔で見れば止められるのか"
+    "運用中のドリフト（目標からのずれ）を、人はどの間隔で見れば止められるのか",
+    "『モデルを上げる』と『ハーネスを作り込む』は、同じ精度向上あたりの費用でどちらが安いのか（StateM は38分の1と主張している）",
+    "同じモデルの個体を並べたときの『低分散ゆえの同時失敗』を、運用側はどの指標で監視できるのか"
   ],
   "stance": "未記入（おざけんが書く）",
   "falsify": "長時間タスクの失敗が、メモリやプランニングの設計ではなくモデルの賢さだけで解消していったら、この見立ては外れ",
-  "related": ["01_concept/human-in-on-the-loop-v2.html", "04_practice/build-a-workflow.html", "01_concept/five-levels-copilot.html"],
-  "written": []
+  "related": [
+    "01_concept/human-in-on-the-loop-v2.html",
+    "04_practice/build-a-workflow.html",
+    "01_concept/five-levels-copilot.html"
+  ],
+  "written": [],
+  "note": "2026-08-18のスイープで、対象週（8/12〜8/18）に long-horizon エージェント関連の一次情報が5本出た。うち3本は arXiv 投稿日を abs ページで独立に確認"
 }
