@@ -1510,6 +1510,17 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
   border:1px solid rgba(46,84,150,.3);border-radius:999px;padding:.35rem .95rem;
   transition:background .2s ease,color .2s ease}
 .arc-lock-a a:hover{background:var(--azure);color:#fff}
+/* Weekly Trend ── 暗い面に置いた鍵の案内と、号を開くリンク */
+.sec-navy .arc-lock{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.16)}
+.sec-navy .arc-lock-t{color:#fff}
+.sec-navy .arc-lock-d{color:rgba(255,255,255,.72)}
+.sec-navy .arc-lock-a a{color:var(--azure-pale);border-color:rgba(216,228,240,.45)}
+.sec-navy .arc-lock-a a:hover{background:var(--azure-pale);color:var(--navy-deep)}
+.wk-open{display:inline-block;margin-top:1.1rem;font-family:var(--font-ja-sans);
+  font-size:.86rem;font-weight:700;text-decoration:none;color:var(--azure-pale);
+  border:1px solid rgba(216,228,240,.45);border-radius:999px;padding:.6em 1.35em;
+  transition:background .2s ease,color .2s ease}
+.wk-open:hover{background:var(--azure-pale);color:var(--navy-deep)}
 
 /* ============================================================
    資料アーカイブ 星座マップ（隠しコマンド ma）
@@ -1770,6 +1781,36 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
     </div>
   </div>
 </section>
+
+<!--WEEKLY:START-->
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Weekly Trend</span>
+    <h2 class="sec-title">今週のトレンド ─ 一次情報だけで、毎週まとめています</h2>
+    <p class="sec-sub">技術・法規制・人材・組織・社会・産業・スタートアップの7領域を定点で追い、数字と仕組みまで確かめたものだけを載せています。裏の取れなかった話は「今週は載せなかったもの」として理由ごと残しています。</p>
+    <div class="arc-lock">
+      <span class="arc-lock-i" aria-hidden="true">🔒</span>
+      <div class="arc-lock-b">
+        <p class="arc-lock-t">本文の閲覧には購読キーが必要です</p>
+        <p class="arc-lock-d">顧問先・研修先の方にお渡ししています。資料アーカイブとは別の鍵です。</p>
+        <div class="arc-lock-a">
+          <a href="https://ozaken-ai.studio.site/#contact" target="_blank" rel="noopener">フォームから問い合わせる →</a>
+          <a href="https://x.com/ozaken_AI" target="_blank" rel="noopener">X（@ozaken_AI）のDMへ →</a>
+        </div>
+      </div>
+    </div>
+
+      <div class="cards">
+        <div class="card">
+          <span class="card-tag">08/18</span>
+          <h3>割れていく ─ 使う人と使わない組織、余る職と足りない職</h3>
+          <p>米国の労働者の52%が業務でAIを使う一方、AI導入済み組織では23%が5年内の職の消滅を懸念。EU AI Actで8月2日に始まったのは第50条の透明性義務だけ。千葉の一エリアでは連系待ちが約40件・2,500MW。今週は9本すべてで、平均ではなく「幅」が動いていました。</p>
+          <a class="wk-open" href="weekly/2026-08-18.html">2026年8月18日号を開く →</a>
+        </div>
+      </div>
+  </div>
+</section>
+<!--WEEKLY:END-->
 
 <section class="sec-light">
   <div class="inner" data-reveal>
@@ -3215,6 +3256,10 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
       if(buf.slice(-2)==='mx'){ buf='';
         all.forEach(function(o){ if(o.el.classList.contains('show')) o.hide(); });
         if(window.ozGate) window.ozGate('matrix'); return; }
+      /* te はテンプレート便覧。図版カタログと、資料の型の台帳 */
+      if(buf.slice(-2)==='te'){ buf='';
+        all.forEach(function(o){ if(o.el.classList.contains('show')) o.hide(); });
+        if(window.ozGate) window.ozGate('template'); return; }
       if(buf.slice(-2)==='go'&&window.ozBoot){ buf='';
         all.forEach(function(o){ if(o.el.classList.contains('show')) o.hide(); });
         window.ozBoot(null,'start'); return; }
@@ -3243,6 +3288,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
       '#gate':   function(){ if(window.ozGate) window.ozGate('backstage'); },
       '#ledger': function(){ if(window.ozGate) window.ozGate('ledger'); },
       '#matrix': function(){ if(window.ozGate) window.ozGate('matrix'); },
+      '#template': function(){ if(window.ozGate) window.ozGate('template'); },
       '#boot':   function(){ if(window.ozBoot) window.ozBoot(null,'start'); },
       '#end':    function(){ if(window.ozBoot&&bySecret['th'])
                                window.ozBoot(function(){ bySecret['th'].show(); },'end'); }
@@ -3361,6 +3407,8 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
       lead:'スポット講演・パネルディスカッションの資料置き場です。<br>マスターパスワードを入力してください。' },
     ledger:{ dest:'passwords.html', title:'パスワード台帳',
       lead:'各資料の個別パスワードの記録です。<br>マスターパスワードを入力してください。' },
+    template:{ dest:'template.html', title:'テンプレート便覧',
+      lead:'資料の型・図版カタログ・レギュレーション・生成元の一覧です。<br>マスターパスワードを入力してください。' },
     matrix:{ dest:'matrix.html', title:'資料マトリクス',
       lead:'どの資料が、どの概念に触れているかの一覧です。<br>パスワードを入力してください。' }
   };

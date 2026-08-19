@@ -1,0 +1,103 @@
+# 週次トレンドの定点表
+#
+# 網羅性は「たくさん集める」では担保できない。集める前に領域を切っておき、
+# 毎週それぞれの領域から最低1件を必ず引く。そうしないと、
+# 面白い技術ニュースばかりが並び、法規制と社会の話が毎週こぼれる。
+#
+# 毎週の必達本数（下限）: 技術2 / 法規制1 / 人材1 / 組織1 / 社会1 / 産業1 / スタートアップ1
+# 上限は設けない。ただし「仕組み」と「外れる条件」が埋まらないものは載せない。
+
+domains:
+
+  - id: tech
+    label: 技術・モデル
+    question: いまAIは何ができるようになったか
+    primary:
+      - openai.com, anthropic.com, blog.google, deepmind.google, ai.meta.com
+      - ai.google.dev（モデルカードと価格）, platform.openai.com/docs
+      - arxiv.org（cs.AI / cs.CL / cs.LG）, huggingface.co/papers
+      - artificialanalysis.ai, lmarena.ai, vals.ai, epoch.ai
+    recipes:
+      - "allowed_domains を計測機関に絞ると、価格・スコア・トークン毎秒まで数値が取れる"
+      - "モデルの価格ページは毎週ハッシュを取り、差分が出た週だけ深掘りする"
+    watch: [モデル価格, 推論速度, コンテキスト長, エージェント性能, 引退スケジュール]
+
+  - id: regulation
+    label: 法規制・政策
+    question: 何が義務になり、何が禁じられたか
+    primary:
+      - meti.go.jp, soumu.go.jp, ppc.go.jp, digital.go.jp, cas.go.jp, cao.go.jp
+      - eur-lex.europa.eu, digital-strategy.ec.europa.eu（AI Act）
+      - nist.gov, whitehouse.gov
+      - 審議会・検討会の配布資料PDF、パブリックコメント
+    recipes:
+      - "省庁は『◯◯検討会 第N回 資料』で引くと原典PDFに当たる"
+      - "法令の施行日・条番号は、正文を見るまで書かない（二次情報は日付を落とす）"
+    watch: [AI事業者ガイドライン, 個人情報保護法, EU AI Act, 著作権, 調達ルール]
+
+  - id: talent
+    label: 人材・キャリア
+    question: どんな人が要るようになり、どんな人が余るのか
+    primary:
+      - meti.go.jp（就業構造推計・産業人材課）, mhlw.go.jp（雇用統計）
+      - jinzainews.net などの人材業界調査（二次だが調査元を辿る）
+      - LinkedIn Economic Graph, Indeed Hiring Lab
+    recipes:
+      - "『◯万人不足』の類は必ず推計の出典年と前提を添える。前提が変われば数字が動く"
+      - "求人倍率・年収は、調査主体と母集団を書かないと比較できない"
+    watch: [AI人材の需給, FDE, 職種別の求人, 賃金プレミアム, リスキリング]
+
+  - id: org
+    label: 組織・経営
+    question: 企業はどこまで実務に入れられているか
+    primary:
+      - jipdec.or.jp, smrj.go.jp, ipa.go.jp（国内の実態調査）
+      - 各社の導入事例プレスリリース、決算説明資料
+      - Anthropic / OpenAI / Google の企業向け発表とパートナー網
+    recipes:
+      - "『導入率』は定義で倍半分変わる。試用・PoC・本番のどれかを必ず確認する"
+      - "コンサルの認定者数は、導入成果とは別の指標として扱う"
+    watch: [導入率, ROI, AI CoE, 本番化の壁, パートナー網, 内製と外注]
+
+  - id: society
+    label: 社会・文化
+    question: 働く人と世の中は、それをどう受け止めているか
+    primary:
+      - gallup.com, pewresearch.org（世論・就業者調査）
+      - oecd.org, ilo.org
+      - 国内の世論調査（NHK・新聞社・内閣府）
+    recipes:
+      - "世論は前回調査との差分でしか意味を持たない。必ず前年比で書く"
+      - "『AIで仕事が減る』の類は、認識（不安）と実測（統計）を混ぜない"
+    watch: [雇用不安, 利用率, 世代差, 教育, 受容と反発]
+
+  - id: capital
+    label: 産業・資金
+    question: お金はどこへ流れているか
+    primary:
+      - news.crunchbase.com（四半期・半期の集計）
+      - sec.gov（8-K / 10-Q / S-1）, 各社IR
+      - release.tdnet.info（国内適時開示）
+    recipes:
+      - "資金調達の総額は二次情報だと桁が割れる。必ず集計元（Crunchbase等）に当たる"
+      - "『AI関連』の範囲定義を確認する。全体額とAI限定額は別物"
+    watch: [調達額, 評価額, 決算, 設備投資, 上場]
+
+  - id: startup
+    label: スタートアップ
+    question: 誰が、何を作ろうとして、いくら集めたか
+    primary:
+      - techcrunch.com, news.crunchbase.com（個社の調達）
+      - 各社の公式発表、プロダクトのローンチ告知
+      - 国内は日本経済新聞のスタートアップ面、PR TIMES、INITIAL
+    recipes:
+      - "金額だけを並べない。**創業からの月数**と**前回評価額**を必ず添える。
+         時間の圧縮こそが情報になる（創業2か月で$1.1B、10か月で評価額9倍）"
+      - "『AIスタートアップ』を名乗るかではなく、何を代替しているかで分類する"
+      - "国内と海外を同じ表に並べる。桁と速度の差が、そのまま示唆になる"
+    watch: [大型ラウンド, 評価額の変化, 創業からの期間, 買収, 日本のスタートアップ]
+
+# 人からの投げ込み口（領域を問わず最優先で深掘りする）
+inbox:
+  - Slack の専用チャンネルに貼られたURL
+  - ask.html に届いた読者の質問

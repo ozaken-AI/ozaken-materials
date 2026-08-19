@@ -96,11 +96,57 @@ import re as _re
 # 描画順に少しずつ遅らせると、図が組み上がっていくように見える。
 _TAG = _re.compile(r'<(rect|circle|line|path|text|ellipse|polygon|polyline)([^>]*)>')
 
+def _pos(tag, attrs):
+    """その要素が、図のどのあたりに置かれているか。段で遅らせるために使う"""
+    def num(name):
+        m = _re.search(r'\b%s="(-?[\d.]+)"' % name, attrs)
+        return float(m.group(1)) if m else None
+    if tag in ('circle', 'ellipse'):
+        return num('cx') or 0.0, num('cy') or 0.0
+    if tag == 'line':
+        return num('x1') or 0.0, num('y1') or 0.0
+    if tag in ('path', 'polygon', 'polyline'):
+        m = _re.search(r'(-?[\d.]+)[ ,]+(-?[\d.]+)', attrs)
+        return (float(m.group(1)), float(m.group(2))) if m else (0.0, 0.0)
+    return num('x') or 0.0, num('y') or 0.0
 
-def _animate(svg, window=1.05):
-    """SVGの各要素に、描画順の遅延つきで a-fade を振る。
-    すでに a-grow などが個別に付いている要素は、その指定を尊重して遅延だけ足す。"""
-    # defs の中（marker や pattern の定義）は動かさないので、いったん退避する
+
+def _kind(tag, attrs):
+    """何であるかを、形から見分ける。動き方はここで決まる"""
+    if 'marker-end' in attrs or 'marker-start' in attrs or 'stroke-dasharray' in attrs:
+        return 'a-flow'                       # 矢印・破線は流れ続ける
+    stroked = 'stroke="' in attrs and 'stroke="none"' not in attrs
+    hollow = 'fill="none"' in attrs or 'fill:none' in attrs or 'fill="' not in attrs
+    if tag in ('line', 'path', 'polyline') and stroked and hollow:
+        return 'a-draw'                       # **線は、引かれるように出す**
+    if tag == 'circle':
+        m = _re.search(r'\br="([\d.]+)"', attrs)
+        if m and not hollow:
+            return 'a-pulse' if float(m.group(1)) >= 13 else 'a-breathe'
+        return 'a-fade'
+    if tag == 'rect':
+        w = _re.search(r'\bwidth="([\d.]+)"', attrs)
+        h = _re.search(r'\bheight="([\d.]+)"', attrs)
+        wv = float(w.group(1)) if w else 0.0
+        hv = float(h.group(1)) if h else 0.0
+        if hv and hv <= 6 and 'rx=' in attrs:
+            return 'a-breathe'                # カード上端の細い色帯
+        if wv >= 90 and hv and hv <= 34:
+            return 'a-grow'                   # 棒・帯は、横に伸びる
+        if hv and hv > 34:
+            return 'a-rise'                   # 箱は、下からすっと上がる
+    return 'a-fade'
+
+
+def _animate(svg, window=0.85):
+    """SVGの各要素に、置かれている場所に応じた遅延と、形に応じた動きを振る。
+
+    **遅延は要素の順番ではなく、y座標の段で決める。**
+    順番で振ると、要素の多い図ほど間隔が詰まって一気に出てしまう。
+    段で振れば、図がどれだけ細かくても「上から順に組み上がる」ように見える。
+
+    すでに作図関数が a-grow などを指定している要素は、その指定を尊重する。
+    """
     defs = []
 
     def stash(m):
@@ -108,60 +154,72 @@ def _animate(svg, window=1.05):
         return '\x00%d\x00' % (len(defs) - 1)
 
     body = _re.sub(r'<defs>[\s\S]*?</defs>', stash, svg)
-    n = len(_TAG.findall(body)) or 1
-    step = min(0.045, window / n)
-    idx = [0]
+
+    # ── まず全部の位置を測って、段に割る ──
+    found = []
+    for m in _TAG.finditer(body):
+        found.append((m.start(), m.group(1), m.group(2)))
+    if not found:
+        return _re.sub(r'\x00(\d+)\x00', lambda mm: defs[int(mm.group(1))], body)
+
+    BAND = 26.0                                   # これより近い高さは同じ段とみなす
+    ys = sorted({round(_pos(t, a)[1] / BAND) for _, t, a in found})
+    rank = {y: i for i, y in enumerate(ys)}
+    nb = max(1, len(ys))
+    band_step = min(0.075, window / nb)
+
+    delay = {}
+    seen = {}
+    for off, tag, attrs in found:
+        x, y = _pos(tag, attrs)
+        b = rank[round(y / BAND)]
+        k = seen.get(b, 0)
+        seen[b] = k + 1
+        # 同じ段の中は、左から順にわずかにずらす。ずらしすぎると段が崩れる
+        delay[off] = b * band_step + min(k * 0.012, band_step * 0.7)
 
     def rewrite(m):
         tag, attrs = m.group(1), m.group(2)
         close = ''
-        if attrs.rstrip().endswith('/'):        # 自己終了タグの / は末尾へ戻す
+        if attrs.rstrip().endswith('/'):
             attrs = attrs.rstrip()[:-1]
             close = '/'
-        d = '%.3fs' % (idx[0] * step)
-        idx[0] += 1
         if '--d' in attrs:
             return m.group(0)
-        # 出たあとも動き続けるものを、形から判断して振り分ける。
-        # 投影中に気が散らないよう、動きはどれもゆっくり・小さくしてある
-        if 'class="a-' not in attrs:
-            r = _re.search(r'\br="([\d.]+)"', attrs)
-            hollow = 'fill="none"' in attrs or 'fill:none' in attrs
-            if 'marker-end' in attrs or 'stroke-dasharray' in attrs:
-                attrs += ' class="a-flow"'          # 矢印・破線は流れ続ける
-            elif tag == 'circle' and r and not hollow:
-                # 大きめの丸（VSの座や見出しの座）はゆっくり脈打つ。
-                # 小さな点は動かすと落ち着かないので、明るさだけ揺らす
-                attrs += ' class="a-pulse"' if float(r.group(1)) >= 13 else ' class="a-breathe"'
-            elif tag == 'rect' and _re.search(r'height="([2-6])"', attrs) and 'rx=' in attrs:
-                attrs += ' class="a-breathe"'       # カード上端の細い色帯は呼吸する
-        if 'class="a-' in attrs:               # 個別に指定済み。遅延だけ足す
-            if 'style="' in attrs:
-                attrs = attrs.replace('style="', 'style="--d:%s;' % d, 1)
-            else:
-                attrs += ' style="--d:%s"' % d
+        d = '%.3fs' % delay.get(m.start(), 0.0)
+        if 'class="a-' in attrs:               # 作図関数の指定を尊重し、遅延だけ足す
+            pass
         else:
-            # class や style がすでにあるなら、そこに混ぜる。属性を二重に書かない
+            cls = _kind(tag, attrs)
             if 'class="' in attrs:
-                attrs = attrs.replace('class="', 'class="a-fade ', 1)
+                attrs = attrs.replace('class="', 'class="%s ' % cls, 1)
             else:
-                attrs += ' class="a-fade"'
-            if 'style="' in attrs:
-                attrs = attrs.replace('style="', 'style="--d:%s;' % d, 1)
-            else:
-                attrs += ' style="--d:%s"' % d
+                attrs += ' class="%s"' % cls
+        if 'style="' in attrs:
+            attrs = attrs.replace('style="', 'style="--d:%s;' % d, 1)
+        else:
+            attrs += ' style="--d:%s"' % d
         return '<%s%s%s>' % (tag, attrs, close)
 
     body = _TAG.sub(rewrite, body)
-    return _re.sub(r'\x00(\d+)\x00', lambda m: defs[int(m.group(1))], body)
+    return _re.sub(r'\x00(\d+)\x00', lambda mm: defs[int(mm.group(1))], body)
 
 
 def _fig(title, cap, svg, anim=True):
+    """**図番号だけを切り出して、別の書体で置く。**
+
+    「Fig.12 ── 90日の進め方」を1本の文として組むと、番号と題が同じ強さになり、
+    投影したときに題のほうが読まれない。番号を明朝のイタリックへ逃がすと、
+    番号は番号として拾え、題はまっすぐ題として読める。
+    """
     if anim:
         svg = _animate(svg)
+    m = _re.match(r'^(Fig\.\d+)\s*(?:──|—|-)?\s*(.*)$', title)
+    head = ('<span class="fig-no">%s</span>%s' % (esc(m.group(1)), esc(m.group(2)))
+            if m else esc(title))
     return ('<div class="figure">\n  <p class="fig-title">%s</p>\n'
             '  <div class="figure-scroll">%s</div>\n'
-            '  <p class="figure-cap">%s</p>\n</div>' % (esc(title), svg, esc(cap)))
+            '  <p class="figure-cap">%s</p>\n</div>' % (head, svg, esc(cap)))
 
 
 # ------------------------------------------------------------------
@@ -284,16 +342,24 @@ ROLES = [('ストラテジスト', 'どこに置くかを決める', 'STRATEGIST
 
 
 def fig_roles(who, title, cap, dark=False):
-    """who: [ストラテジストの担当, アーキテクトの担当, オペレーターの担当]"""
+    """who: [ストラテジストの担当, アーキテクトの担当, オペレーターの担当]
+
+    **箱の高さは、いちばん行数の多い担当に合わせて伸ばす。**
+    固定にしていたので、担当の説明が4行になると最終行が
+    箱の下端に貼りついて読めなくなっていた。
+    """
     fg = WHITE if dark else INK
     sub = 'rgba(255,255,255,.62)' if dark else MUTED
     box = 'rgba(255,255,255,.06)' if dark else WHITE
     edge = 'rgba(255,255,255,.16)' if dark else 'rgba(46,84,150,.22)'
+    COLS, Y0 = 15, 156
+    nl = max(len(wrap(d, COLS)) for d in who)
+    H = (Y0 - 34) + (nl - 1) * 21 + 24
     parts = []
     for i, ((ja, verb, en), duty) in enumerate(zip(ROLES, who)):
         x = 16 + i * 296
-        parts.append('<rect x="%d" y="34" width="272" height="188" rx="10" '
-                     'fill="%s" stroke="%s" stroke-width="1"/>' % (x, box, edge))
+        parts.append('<rect x="%d" y="34" width="272" height="%d" rx="10" '
+                     'fill="%s" stroke="%s" stroke-width="1"/>' % (x, H, box, edge))
         parts.append('<rect x="%d" y="34" width="272" height="4" rx="2" fill="%s"/>'
                      % (x, AZURE))
         parts.append('<text x="%d" y="66" fill="%s" font-size="11" '
@@ -306,17 +372,17 @@ def fig_roles(who, title, cap, dark=False):
         parts.append('<line x1="%d" y1="132" x2="%d" y2="132" stroke="%s" '
                      'stroke-width="1" stroke-dasharray="3 4"/>'
                      % (x + 20, x + 268, edge))
-        parts.append(lines(duty, x + 20, 156, 15, 21, fill=fg, font_size='13'))
+        parts.append(lines(duty, x + 20, Y0, COLS, 21, fill=fg, font_size='13'))
         if i < 2:
             parts.append('<path d="M%d 128 L%d 128" stroke="%s" stroke-width="2" '
                          'fill="none" marker-end="url(#rlarrow)"/>'
                          % (x + 274, x + 292, AZURE))
     return _fig(title, cap,
-        '<svg viewBox="0 0 900 236" xmlns="http://www.w3.org/2000/svg" role="img">'
+        '<svg viewBox="0 0 900 %d" xmlns="http://www.w3.org/2000/svg" role="img">'
         '<defs><marker id="rlarrow" viewBox="0 0 10 10" refX="9" refY="5" '
         'markerWidth="6" markerHeight="6" orient="auto-start-reverse">'
         '<path d="M0 0L10 5L0 10z" fill="%s"/></marker></defs>%s</svg>'
-        % (AZURE, ''.join(parts)))
+        % (34 + H + 16, AZURE, ''.join(parts)))
 
 
 # ------------------------------------------------------------------
@@ -377,8 +443,10 @@ def fig_quad(xlab, ylab, cells, title, cap, dark=False, xpoles=None, ypoles=None
     sub = 'rgba(255,255,255,.6)' if dark else MUTED
     pol = 'rgba(255,255,255,.82)' if dark else INK
     edge = 'rgba(255,255,255,.16)' if dark else 'rgba(46,84,150,.22)'
-    tone = [('rgba(46,84,150,.16)', AZURE), ('rgba(226,55,68,.12)', '#c9762f'),
-            ('rgba(226,55,68,.18)', RED)]
+    # 地はごく薄く。塗りが濃いと、4つの升が4つの「主張」に見えてしまう。
+    # 強く出すのは上の帯の色だけで、面は静かに保つ
+    tone = [('rgba(46,84,150,.07)', AZURE), ('rgba(46,84,150,.05)', MUTED),
+            ('rgba(226,55,68,.07)', RED)]
     TOP = 76 if xpoles else 56          # 両端を出すぶん、盤面を1段下げる
     H = TOP + 340
     parts = []
@@ -430,30 +498,46 @@ def fig_quad(xlab, ylab, cells, title, cap, dark=False, xpoles=None, ypoles=None
 # F7  段（層を上に積む。手順にも、抽象度の階段にも使う）
 # ------------------------------------------------------------------
 def fig_ladder(items, title, cap, dark=False, asc=True):
-    """items: [(見出し, 補足)] を下から上へ／上から下へ並べる"""
+    """items: [(見出し, 補足)] を下から上へ／上から下へ並べる。
+
+    **段は右へずれるぶん、横幅が狭くなる。**
+    折り返し幅と箱の高さを固定にしていたので、補足が2行になる段では
+    文字が箱の下と右へはみ出していた（経産省WGの資料で実際に出た）。
+    ここでは段ごとに使える幅を計算し、行数から高さを決める。
+    """
     fg = WHITE if dark else INK
     sub = 'rgba(255,255,255,.6)' if dark else MUTED
     box = 'rgba(255,255,255,.06)' if dark else WHITE
     edge = 'rgba(255,255,255,.16)' if dark else 'rgba(46,84,150,.22)'
     n = len(items)
-    parts = []
+    LEFT, RIGHT, STEP, PAD, GAP = 16, 884, 40, 58, 14
+
+    # 先に寸法を決める。段ごとに幅が違うので、折り返しも段ごとに変わる
+    plan, y = [], 20
     for i, (h, note) in enumerate(items):
-        y = 20 + i * 84
-        ind = (n - 1 - i) * 40 if asc else i * 40
-        x = 16 + ind
-        parts.append('<rect x="%d" y="%d" width="%d" height="68" rx="10" fill="%s" '
-                     'stroke="%s" stroke-width="1"/>' % (x, y, 884 - x, box, edge))
-        parts.append('<rect x="%d" y="%d" width="4" height="68" rx="2" fill="%s" '
-                     'fill-opacity="%.2f"/>' % (x, y, AZURE, 1 - i * 0.15))
+        x = LEFT + ((n - 1 - i) * STEP if asc else i * STEP)
+        cols = max(14, int((RIGHT - x - PAD - 18) / 12))   # 12pxの和文1字＝1桁
+        ls = wrap(note, cols) if note else ['']
+        hgt = 34 + len(ls) * 18 + 16
+        plan.append((x, y, hgt, cols, h, note))
+        y += hgt + GAP
+
+    parts = []
+    for i, (x, yy, hgt, cols, h, note) in enumerate(plan):
+        parts.append('<rect x="%d" y="%d" width="%d" height="%d" rx="10" fill="%s" '
+                     'stroke="%s" stroke-width="1"/>' % (x, yy, RIGHT - x, hgt, box, edge))
+        parts.append('<rect x="%d" y="%d" width="4" height="%d" rx="2" fill="%s" '
+                     'fill-opacity="%.2f"/>' % (x, yy, hgt, AZURE, max(.25, 1 - i * 0.15)))
         parts.append('<text x="%d" y="%d" fill="%s" font-size="11" font-weight="700" '
                      'letter-spacing="1.2">%02d</text>'
-                     % (x + 22, y + 26, AZURE if not dark else PALE, i + 1))
+                     % (x + 22, yy + 26, AZURE if not dark else PALE, i + 1))
         parts.append('<text x="%d" y="%d" fill="%s" font-size="15" font-weight="700">%s</text>'
-                     % (x + 58, y + 28, fg, esc(h)))
-        parts.append(lines(note, x + 58, y + 52, 52, 18, fill=sub, font_size='12'))
+                     % (x + PAD, yy + 28, fg, esc(h)))
+        if note:
+            parts.append(lines(note, x + PAD, yy + 52, cols, 18, fill=sub, font_size='12'))
     return _fig(title, cap,
         '<svg viewBox="0 0 900 %d" xmlns="http://www.w3.org/2000/svg" role="img">'
-        '%s</svg>' % (20 + n * 84, ''.join(parts)))
+        '%s</svg>' % (y - GAP + 8, ''.join(parts)))
 
 
 # ------------------------------------------------------------------
@@ -480,20 +564,23 @@ def fig_sheet(headers, rows, widths, title, cap, dark=False, note=None,
     parts = []
     y = 34
     # 見出し行
-    parts.append('<rect x="%d" y="%d" width="%d" height="34" rx="6" fill="%s"/>'
-                 % (X0, y, W, AZURE if not dark else 'rgba(46,84,150,.72)'))
+    # **見出し行を塗りつぶさない。**濃い帯を敷くと、表そのものより帯が目立つ。
+    # 太い罫を1本引くだけで、見出しと中身は十分に分かれる
     for i, h in enumerate(headers):
         parts.append('<text x="%.1f" y="%d" fill="%s" font-size="11.5" '
-                     'font-weight="700">%s</text>' % (xs[i] + 10, y + 22, WHITE, esc(h)))
+                     'font-weight="700" letter-spacing="0.04em">%s</text>'
+                     % (xs[i] + 10, y + 22, fg, esc(h)))
+    parts.append('<line x1="%d" y1="%d" x2="%d" y2="%d" stroke="%s" stroke-width="1.6"/>'
+                 % (X0, y + 34, X0 + W, y + 34,
+                    'rgba(216,228,240,.42)' if dark else 'rgba(31,56,100,.55)'))
     y += 34
     for r, row in enumerate(rows):
         nl = max(len(wrap(str(c), cap_chars(i))) for i, c in enumerate(row))
         h = 20 + nl * 17
-        if r % 2:
-            parts.append('<rect x="%d" y="%.1f" width="%d" height="%.1f" fill="%s"/>'
-                         % (X0, y, W, h, zebra))
-        parts.append('<line x1="%d" y1="%.1f" x2="%d" y2="%.1f" stroke="%s" '
-                     'stroke-width="1"/>' % (X0, y, X0 + W, y, grid))
+        # 縞も引かない。行の区切りは、薄い罫が1本あれば足りる
+        if r:
+            parts.append('<line x1="%d" y1="%.1f" x2="%d" y2="%.1f" stroke="%s" '
+                         'stroke-width="1"/>' % (X0, y, X0 + W, y, grid))
         for i, c in enumerate(row):
             col = fg if i == 0 else sub
             wt = '700' if i == 0 else '400'
@@ -502,9 +589,8 @@ def fig_sheet(headers, rows, widths, title, cap, dark=False, note=None,
         y += h
     parts.append('<line x1="%d" y1="%.1f" x2="%d" y2="%.1f" stroke="%s" '
                  'stroke-width="1"/>' % (X0, y, X0 + W, y, grid))
-    for i in range(1, len(headers)):
-        parts.append('<line x1="%.1f" y1="34" x2="%.1f" y2="%.1f" stroke="%s" '
-                     'stroke-width="1"/>' % (xs[i], xs[i], y, grid))
+    # 縦の仕切りは引かない。列は字の位置がそろっていれば読める。
+    # 格子を全部引くと、中身より枠のほうが目に入る
     if badge:
         parts.append('<text x="%d" y="24" fill="%s" font-size="10.5" font-weight="700" '
                      'letter-spacing="2">%s</text>'
@@ -561,10 +647,17 @@ def fig_bars(items, title, cap, dark=False, unit='', note=None):
 
 AMBER = '#c9762f'
 TEAL = '#2f8f8a'
-ACCENTS = [AZURE, RED, AMBER, TEAL]
-# 紺地の上では AZURE が地に沈んで、番号も色帯もほとんど見えない。
-# 琥珀と青緑は紺の上でも立つので、青と赤だけ明るいほうに寄せる
-ACCENTS_ON_NAVY = ['#8fb0e0', '#ff5d6a', AMBER, TEAL]
+# **紺を基調に、赤だけを強調。**
+# 以前は [青, 赤, 琥珀, 青緑] の4色を同じ強さで回していた。
+# 4色あると、どれが「ふつう」でどれが「注意」なのかが決まらない。
+# **赤は最後に置く。**並べるためだけの2つ目が赤になると、警告に見えてしまう。
+# 0〜2番は紺の濃淡（基準・並び）、3番だけが赤（強調）。
+# 赤を使いたいときは、意識して index 3 を渡す。
+ACCENTS = [AZURE, '#24446f', MUTED, RED]
+# 紺地の上では AZURE が地に沈むので、青だけ明るいほうへ寄せる
+ACCENTS_ON_NAVY = ['#8fb0e0', PALE, 'rgba(216,228,240,.55)', '#ff5d6a']
+# 琥珀と青緑は、段階が3つ以上あって良し悪しの無い図にだけ使う（水位図など）
+ACCENTS_NEUTRAL = [AZURE, AMBER, TEAL, MUTED]
 
 
 def accents(dark):
@@ -827,41 +920,73 @@ def fig_orgs(items, title, cap, dark=False, unit='', note=None):
 # F14  階段（レベルが上がるほど高くなる）
 # ------------------------------------------------------------------
 def fig_stairs(steps, title, cap, dark=False, note=None):
-    """steps: [(レベル表記, 形, 名前, 製品, 説明, 差し色index)]"""
+    """steps: [(レベル表記, 形, 名前, 製品, 説明, 差し色index)]
+
+    **底から伸びる柱にしない。**
+    前の版は段ごとに高さの違う柱を底から立てていた。ところがこの図の中に
+    量は一つも無く、高さが表しているのは順番だけ。量を持たないものを棒で描くと、
+    読み手は高さの差を「大きさの差」として読んでしまう。棒グラフの見た目を
+    していながら、目盛りが無いので確かめようもない。
+
+    そこで柱をやめ、**同じ大きさの札を、段の位置だけ上げて並べる**形にした。
+    高さがそろっているので量には読めず、位置の上がり方だけが段階を示す。
+    札の下端どうしを結ぶ折れ線が、階段そのものになる。
+    """
     fg = WHITE if dark else INK
     sub = 'rgba(255,255,255,.62)' if dark else MUTED
+    acc = accents(dark)
+    line = 'rgba(255,255,255,.20)' if dark else 'rgba(46,84,150,.24)'
     n = len(steps)
-    gap = 12
+    gap = 14
     w = int((868 - (n - 1) * gap) / n)
-    BASE = 322
+    PH, RISE, TOP = 96, 34, 22
+    FLOOR = TOP + (n - 1) * RISE + PH
+    cols = max(10, int((w - 8) / 11.4))
+    pcols = max(10, int((w - 8) / 11))
+    pl = max(len(wrap(p, pcols)) for _, _, _, p, _, _ in steps)
+    dl = max(len(wrap(d, cols)) for _, _, _, _, d, _ in steps)
+    Y_NAME = FLOOR + 40
+    Y_PROD = Y_NAME + 24
+    Y_DESC = Y_PROD + pl * 16 + 12
+    H = Y_DESC + dl * 17 + 14
     parts = []
-    for i, (lv, shape, name, prod, desc, ai) in enumerate(steps):
-        c = ACCENTS[ai % len(ACCENTS)]
+    d = []
+    for i in range(n):
         x = 16 + i * (w + gap)
-        top = BASE - (66 + i * 52)
-        parts.append('<rect x="%d" y="%d" width="%d" height="%d" rx="8" fill="%s" '
-                     'fill-opacity="%.2f"/>' % (x, top, w, BASE - top, c, .18 + i * .1))
-        parts.append('<rect x="%d" y="%d" width="%d" height="4" rx="2" fill="%s"/>'
-                     % (x, top, w, c))
-        parts.append('<text x="%d" y="%d" fill="%s" font-size="10.5" '
-                     'font-weight="700" letter-spacing="1.6">%s</text>'
-                     % (x + 14, top + 26, c, esc(lv)))
-        parts.append('<text x="%d" y="%d" fill="%s" font-size="21" '
-                     'font-weight="700">%s</text>' % (x + 14, top + 54, fg, esc(shape)))
-        parts.append(lines(name, x + 2, BASE + 26, 11, 17, fill=fg, font_size='12.5',
+        y = TOP + (n - 1 - i) * RISE + PH
+        d.append('%s%d %d' % ('M' if i == 0 else 'L', x, y))
+        d.append('L%d %d' % (x + w, y))
+        if i < n - 1:
+            d.append('L%d %d' % (x + w, y - RISE))
+    parts.append('<path d="%s" stroke="%s" stroke-width="1.5" fill="none" '
+                 'stroke-linejoin="round" class="a-draw"/>' % (' '.join(d), line))
+    for i, (lv, shape, name, prod, desc, ai) in enumerate(steps):
+        # **渡された差し色は使わない。**段は並びであって、良し悪しではない。
+        # 段ごとに色が変わると、上の段が「危ない段」に見えてしまう
+        top = i == n - 1
+        c = acc[0] if not top else (RED if not dark else '#ff5d6a')
+        x = 16 + i * (w + gap)
+        y = TOP + (n - 1 - i) * RISE
+        parts.append('<rect x="%d" y="%d" width="%d" height="%d" rx="10" fill="%s" '
+                     'fill-opacity="%.3f" stroke="%s" stroke-width="1"/>'
+                     % (x, y, w, PH, c, 0.10 if top else 0.05, line))
+        parts.append('<rect x="%d" y="%d" width="%d" height="3" rx="1.5" fill="%s" '
+                     'fill-opacity="%.2f"/>' % (x, y, w, c, 1 if top else 0.5))
+        parts.append('<text x="%d" y="%d" fill="%s" font-size="10" font-weight="700" '
+                     'letter-spacing="1.6">%s</text>' % (x + 16, y + 28, c, esc(lv)))
+        parts.append('<text x="%d" y="%d" fill="%s" font-size="19" '
+                     'font-weight="700">%s</text>' % (x + 16, y + 58, fg, esc(shape)))
+        parts.append(lines(name, x + 2, Y_NAME, cols, 17, fill=fg, font_size='13',
                            font_weight='700'))
-        parts.append(lines(prod, x + 2, BASE + 64, 15, 15, fill=c, font_size='11',
+        parts.append(lines(prod, x + 2, Y_PROD, pcols, 16, fill=c, font_size='11',
                            font_weight='700'))
-        parts.append(lines(desc, x + 2, BASE + 106, 15, 15, fill=sub, font_size='10.5'))
-    parts.append('<line x1="16" y1="%d" x2="884" y2="%d" stroke="%s" '
-                 'stroke-width="1.5"/>'
-                 % (BASE, BASE, 'rgba(255,255,255,.2)' if dark else 'rgba(46,84,150,.25)'))
-    h = BASE + 196
+        parts.append(lines(desc, x + 2, Y_DESC, cols, 17, fill=sub, font_size='10.5'))
     if note:
-        parts.append(lines(note, 16, h - 30, 76, 17, fill=sub, font_size='11'))
+        parts.append(lines(note, 16, H - 4, 76, 17, fill=sub, font_size='11'))
+        H += 16
     return _fig(title, cap,
         '<svg viewBox="0 0 900 %d" xmlns="http://www.w3.org/2000/svg" role="img">'
-        '%s</svg>' % (h, ''.join(parts)))
+        '%s</svg>' % (H, ''.join(parts)))
 
 
 # ------------------------------------------------------------------
@@ -1062,7 +1187,13 @@ def fig_dims(steps, title, cap, dark=False, note=None, split=1, uid='dims',
 # F15  3カラム（並列の概念を、色分けして並べる）
 # ------------------------------------------------------------------
 def fig_cols(items, title, cap, dark=False):
-    """items: [(英字ラベル, 名前, 一言, 本文, 差し色index)]"""
+    """items: [(英字ラベル, 名前, 一言, 本文, 差し色index)]
+
+    **箱の高さも、区切りの破線の位置も、中身の行数から決める。**
+    以前は破線を y=122 に固定していたので、一言が2行に折り返した箱では
+    2行目の上を破線が横切っていた。「paper / navy / navy-deep」のように、
+    16字で収まらない一言はふつうに出てくる。
+    """
     fg = WHITE if dark else INK
     sub = 'rgba(255,255,255,.62)' if dark else MUTED
     box = 'rgba(255,255,255,.05)' if dark else WHITE
@@ -1071,7 +1202,14 @@ def fig_cols(items, title, cap, dark=False):
     n = len(items)
     gap = 20
     w = int((868 - (n - 1) * gap) / n)
-    H = 214
+    ocols = max(8, int((w - 36) / 12.4))          # 一言の折り返し
+    tcols = max(8, int((w - 36) / 11.4))          # 本文の折り返し
+    ol = max(len(wrap(one, ocols)) for _, _, one, _, _ in items)
+    tl = max(len(wrap(txt, tcols)) for _, _, _, txt, _ in items)
+    Y_ONE = 106
+    Y_RULE = Y_ONE + (ol - 1) * 17 + 16           # 一言の最終行の、少し下
+    Y_TXT = Y_RULE + 24
+    H = Y_TXT + (tl - 1) * 17 + 16 - 20
     parts = []
     for i, (en, ja, one, txt, ai) in enumerate(items):
         c = acc[ai % len(acc)]
@@ -1085,11 +1223,11 @@ def fig_cols(items, title, cap, dark=False):
                      % (x + 18, c, esc(en)))
         parts.append('<text x="%d" y="82" fill="%s" font-size="17" '
                      'font-weight="700">%s</text>' % (x + 18, fg, esc(ja)))
-        parts.append(lines(one, x + 18, 106, 16, 17, fill=c, font_size='12'))
-        parts.append('<line x1="%d" y1="122" x2="%d" y2="122" stroke="%s" '
-                     'stroke-width="1" stroke-dasharray="3 4"/>' % (x + 18, x + w - 18, edge))
-        parts.append(lines(txt, x + 18, 146, int((w - 36) / 11.4), 17,
-                           fill=sub, font_size='11.5'))
+        parts.append(lines(one, x + 18, Y_ONE, ocols, 17, fill=c, font_size='12'))
+        parts.append('<line x1="%d" y1="%d" x2="%d" y2="%d" stroke="%s" '
+                     'stroke-width="1" stroke-dasharray="3 4"/>'
+                     % (x + 18, Y_RULE, x + w - 18, Y_RULE, edge))
+        parts.append(lines(txt, x + 18, Y_TXT, tcols, 17, fill=sub, font_size='11.5'))
     return _fig(title, cap,
         '<svg viewBox="0 0 900 %d" xmlns="http://www.w3.org/2000/svg" role="img">'
         '%s</svg>' % (H + 36, ''.join(parts)))
@@ -1105,7 +1243,19 @@ def fig_cols(items, title, cap, dark=False):
 # F16  横一列のプロセス（汎用のフロー。fig_issues は「壁」固定なので別に持つ）
 # ------------------------------------------------------------------
 def fig_flow(steps, title, cap, dark=False, uid='', note=None):
-    """steps: [(見出し, 補足)] を矢印でつなぐ。3〜5個が読みやすい"""
+    """steps: [(見出し, 補足)] を矢印でつなぐ。3〜5個まで。
+
+    **6個以上は、ここでは組まない。**
+    横に割るので、増えるほど1枚の箱が狭くなる。折り返し桁数には
+    読めるだけの下限があるので、狭くなりすぎると下限が箱幅を追い越し、
+    文字が右へはみ出す（カナデビア様の資料で6個渡して実際に出た）。
+    6個以上を並べたいときは fig_ladder を使う。
+
+    高さも、いちばん行数の多い箱に合わせて伸ばす。
+    ここを固定にしていると、補足が長い箱だけ下へ溢れる。
+    """
+    if len(steps) > 5:
+        raise ValueError('fig_flow は5個まで。%d個なら fig_ladder を使ってください' % len(steps))
     fg = WHITE if dark else INK
     sub = 'rgba(255,255,255,.62)' if dark else MUTED
     box = 'rgba(255,255,255,.06)' if dark else WHITE
@@ -1113,7 +1263,13 @@ def fig_flow(steps, title, cap, dark=False, uid='', note=None):
     n = len(steps)
     gap = 40
     w = int((884 - 16 - (n - 1) * gap) / n)
-    H = 158
+    inner = w - 36
+    hc = max(4, int(inner / 15.4))          # 見出しの折り返し桁
+    nc = max(6, int(inner / 11.4))          # 補足の折り返し桁
+    hl = max(len(wrap(h, hc)) for h, _ in steps)
+    nl = max(len(wrap(t, nc)) if t else 1 for _, t in steps)
+    Y0, Y1 = 84, 84 + (hl - 1) * 22 + 34    # 見出しと補足の1行目のベースライン
+    H = (Y1 - 34) + (nl - 1) * 17 + 20
     parts = []
     for i, (h, note_) in enumerate(steps):
         x = 16 + i * (w + gap)
@@ -1122,18 +1278,19 @@ def fig_flow(steps, title, cap, dark=False, uid='', note=None):
         parts.append('<circle cx="%d" cy="34" r="15" fill="%s"/>' % (x + w // 2, AZURE))
         parts.append('<text x="%d" y="39" fill="%s" font-size="13" font-weight="700" '
                      'text-anchor="middle">%d</text>' % (x + w // 2, WHITE, i + 1))
-        parts.append(lines(h, x + 18, 84, max(6, int((w - 36) / 15.4)), 22,
-                           fill=fg, font_size='15', font_weight='700'))
-        parts.append(lines(note_, x + 18, 128, max(8, int((w - 36) / 11.4)), 17,
-                           fill=sub, font_size='11.5'))
+        parts.append(lines(h, x + 18, Y0, hc, 22, fill=fg, font_size='15',
+                           font_weight='700'))
+        if note_:
+            parts.append(lines(note_, x + 18, Y1, nc, 17, fill=sub, font_size='11.5'))
         if i < n - 1:
-            cx = x + w + 8
-            parts.append('<path d="M%d 112 L%d 112" stroke="%s" stroke-width="2" '
-                         'fill="none" marker-end="url(#flw%s)"/>' % (cx, cx + gap - 18, AZURE, uid))
-    h = H + 54
+            cx, cy = x + w + 8, 34 + H // 2
+            parts.append('<path d="M%d %d L%d %d" stroke="%s" stroke-width="2" '
+                         'fill="none" marker-end="url(#flw%s)"/>'
+                         % (cx, cy, cx + gap - 18, cy, AZURE, uid))
+    h = 34 + H + 20
     if note:
-        parts.append(lines(note, 16, h - 8, 76, 17, fill=sub, font_size='11'))
-        h += 18
+        parts.append(lines(note, 16, h + 6, 76, 17, fill=sub, font_size='11'))
+        h += 24
     return _fig(title, cap,
         '<svg viewBox="0 0 900 %d" xmlns="http://www.w3.org/2000/svg" role="img">'
         '<defs><marker id="flw%s" viewBox="0 0 10 10" refX="9" refY="5" '
@@ -1582,47 +1739,130 @@ def fig_tree(root, branches, title, cap, dark=False, uid=''):
 # ------------------------------------------------------------------
 # F24  2軸の位置づけ（点を置く。4象限より自由度が高い）
 # ------------------------------------------------------------------
-def fig_map(xlab, ylab, points, title, cap, dark=False, corners=None):
-    """points: [(名前, x0-100, y0-100, 差し色index, 補足)]"""
+def fig_map(xlab, ylab, points, title, cap, dark=False, corners=None,
+            xen=None, yen=None, legend=None, curve=False, uid='map'):
+    """2つの軸の上に、点を置く。
+
+      points  [(名前, x0-100, y0-100, 差し色index, 添え書き)]
+              添え書きは名前の**上**に、明朝のイタリックで小さく出る
+      xen/yen 軸の英字表記。日本語の下に、イタリックで添える
+      legend  [(見出し, 説明)] を2つまで。図の下に、細い罫で仕切って並べる
+      curve   点どうしを破線でつなぐ。「ここからここへ」の順番を出したいとき
+
+    **最後の点が到達点として扱われる。**背後に淡いにじみを敷くので、
+    いちばん言いたい場所を最後に置くこと。
+    """
     fg = WHITE if dark else INK
     sub = 'rgba(255,255,255,.62)' if dark else MUTED
-    edge = 'rgba(255,255,255,.16)' if dark else 'rgba(46,84,150,.2)'
-    grid = 'rgba(255,255,255,.07)' if dark else 'rgba(46,84,150,.07)'
-    X0, Y0, W, H = 96, 40, 700, 320
+    axis = 'rgba(255,255,255,.55)' if dark else AZURE
+    grid = 'rgba(255,255,255,.07)' if dark else 'rgba(46,84,150,.08)'
+    rule = 'rgba(255,255,255,.14)' if dark else 'rgba(46,84,150,.16)'
+    X0, Y0, W, H = 150, 46, 620, 300
+    BOT = Y0 + H
     parts = []
-    for i in range(1, 4):
+
+    # ── 目盛り。位置の手がかりなので、ぎりぎりまで薄く ──
+    for i in range(1, 3):
         parts.append('<line x1="%d" y1="%.1f" x2="%d" y2="%.1f" stroke="%s" '
-                     'stroke-width="1"/>' % (X0, Y0 + H * i / 4, X0 + W, Y0 + H * i / 4, grid))
+                     'stroke-width="1"/>' % (X0, Y0 + H * i / 3, X0 + W, Y0 + H * i / 3, grid))
         parts.append('<line x1="%.1f" y1="%d" x2="%.1f" y2="%d" stroke="%s" '
-                     'stroke-width="1"/>' % (X0 + W * i / 4, Y0, X0 + W * i / 4, Y0 + H, grid))
-    parts.append('<path d="M%d %d L%d %d L%d %d" stroke="%s" stroke-width="1.5" '
-                 'fill="none"/>' % (X0, Y0, X0, Y0 + H, X0 + W, Y0 + H, edge))
+                     'stroke-width="1"/>' % (X0 + W * i / 3, Y0, X0 + W * i / 3, BOT, grid))
+
+    # ── 軸。先端に矢印を付けて、進む向きを出す ──
+    # **class を先に付ける。**矢印を持つ線を _animate は「流れる破線」と見なすので、
+    # 何もしないと軸が点線になってしまう。引かれる線だと明示しておく
+    for x1, y1, x2, y2 in ((X0, BOT, X0, Y0 - 6), (X0, BOT, X0 + W + 6, BOT)):
+        parts.append('<line x1="%d" y1="%d" x2="%d" y2="%d" stroke="%s" stroke-width="2" '
+                     'class="a-draw" marker-end="url(#mpa%s)"/>'
+                     % (x1, y1, x2, y2, axis, uid))
+
     if corners:
         for (cx, cy, txt) in corners:
             parts.append(lines(txt, X0 + W * cx / 100, Y0 + H * (100 - cy) / 100, 14, 15,
                                fill=sub, font_size='10.5', text_anchor='middle'))
-    for name, px, py, ai, sup in points:
+
+    # ── 点をつなぐ道筋 ──
+    if curve and len(points) >= 2:
+        pts = [(X0 + W * p[1] / 100, Y0 + H * (100 - p[2]) / 100) for p in points]
+        d = 'M%.1f %.1f' % pts[0]
+        for (x, y), (px, py) in zip(pts[1:], pts[:-1]):
+            d += ' C%.1f %.1f %.1f %.1f %.1f %.1f' % (px + (x - px) * .55, py,
+                                                      x - (x - px) * .25, y, x, y)
+        parts.append('<path d="%s" stroke="%s" stroke-width="1.8" fill="none" '
+                     'stroke-dasharray="7 6" stroke-linecap="round"/>'
+                     % (d, 'rgba(255,255,255,.42)' if dark else 'rgba(46,84,150,.55)'))
+
+    # ── 点 ──
+    last = len(points) - 1
+    for i, (name, px, py, ai, sup) in enumerate(points):
         c = ACCENTS[ai % len(ACCENTS)]
         x = X0 + W * px / 100
         y = Y0 + H * (100 - py) / 100
-        parts.append('<circle class="a-pop" style="--o:%.1fpx %.1fpx" cx="%.1f" cy="%.1f" '
-                     'r="9" fill="%s" fill-opacity=".9"/>' % (x, y, x, y, c))
-        parts.append('<circle cx="%.1f" cy="%.1f" r="16" fill="%s" fill-opacity=".14"/>'
-                     % (x, y, c))
-        parts.append(lines(name, x, y - 24, 16, 16, fill=fg, font_size='12.5',
-                           font_weight='700', text_anchor='middle'))
+        if i == last:
+            # 到達点。背後のにじみで、どこが結論かを決める
+            parts.append('<circle cx="%.1f" cy="%.1f" r="62" fill="url(#mpg%s)"/>'
+                         % (x, y, uid))
+        if i == 0 and len(points) > 1:
+            # 起点は中を抜く。塗ると、到達点と同じ重さに見えてしまう
+            parts.append('<circle class="a-pop" style="--o:%.1fpx %.1fpx" cx="%.1f" cy="%.1f" '
+                         'r="7" fill="%s" stroke="%s" stroke-width="2"/>'
+                         % (x, y, x, y, NAVY_DEEP if dark else WHITE, c))
+        else:
+            parts.append('<circle class="a-pop" style="--o:%.1fpx %.1fpx" cx="%.1f" cy="%.1f" '
+                         'r="8" fill="%s"/>' % (x, y, x, y, c))
         if sup:
-            parts.append(lines(sup, x, y + 32, 18, 14, fill=sub, font_size='10.5',
-                               text_anchor='middle'))
-    parts.append('<text x="%d" y="%d" fill="%s" font-size="12" font-weight="700" '
-                 'text-anchor="middle">%s</text>' % (X0 + W // 2, Y0 + H + 34, sub, esc(xlab)))
-    ysafe = ''.join(c for c in ylab if c not in '↑↓←→')
-    parts.append('<text x="0" y="0" fill="%s" font-size="12" font-weight="700" '
-                 'text-anchor="middle" transform="translate(30 %d) rotate(-90)">%s</text>'
-                 % (sub, Y0 + H // 2, esc(ysafe)))
+            parts.append('<text x="%.1f" y="%.1f" fill="%s" font-size="10.5" '
+                         'font-style="italic" text-anchor="middle">%s</text>'
+                         % (x, y - 40, sub, esc(sup)))
+        parts.append(lines(name, x, y - 22, 16, 16, fill=fg, font_size='13',
+                           font_weight='700', text_anchor='middle'))
+
+    # ── 軸名。日本語で読ませ、英字で位置づける ──
+    parts.append('<text x="%d" y="%d" fill="%s" font-size="12.5" font-weight="700" '
+                 'text-anchor="middle">%s</text>'
+                 % (X0 + W // 2, BOT + 34, fg, esc(xlab)))
+    if xen:
+        parts.append('<text x="%d" y="%d" fill="%s" font-size="10" font-style="italic" '
+                     'letter-spacing="1.4" text-anchor="middle">%s</text>'
+                     % (X0 + W // 2, BOT + 52, sub, esc(xen)))
+    ysafe = ''.join(ch for ch in ylab if ch not in '↑↓←→')
+    parts.append('<text x="0" y="0" fill="%s" font-size="12.5" font-weight="700" '
+                 'text-anchor="middle" transform="translate(%d %d) rotate(-90)">%s</text>'
+                 % (fg, 62 if yen else 74, Y0 + H // 2, esc(ysafe)))
+    if yen:
+        parts.append('<text x="0" y="0" fill="%s" font-size="10" font-style="italic" '
+                     'letter-spacing="1.4" text-anchor="middle" '
+                     'transform="translate(84 %d) rotate(-90)">%s</text>'
+                     % (sub, Y0 + H // 2, esc(yen)))
+
+    # ── 凡例。軸の意味は、図の中ではなくここで説明する ──
+    h = BOT + (66 if xen else 50)
+    if legend:
+        h += 16
+        parts.append('<line x1="150" y1="%d" x2="770" y2="%d" stroke="%s" '
+                     'stroke-width="1"/>' % (h, h, rule))
+        cw = 620 // max(1, len(legend))
+        nl = 1
+        for i, (head, note) in enumerate(legend[:2]):
+            x = 150 + i * cw
+            parts.append('<text x="%d" y="%d" fill="%s" font-size="11.5" '
+                         'font-weight="700">%s</text>' % (x, h + 26, fg, esc(head)))
+            ls = wrap(note, int((cw - 24) / 11.2))
+            nl = max(nl, len(ls))
+            parts.append(lines(note, x, h + 48, int((cw - 24) / 11.2), 17,
+                               fill=sub, font_size='11'))
+        h += 48 + nl * 17
+    glow = RED if not dark else '#ff5d6a'
     return _fig(title, cap,
         '<svg viewBox="0 0 900 %d" xmlns="http://www.w3.org/2000/svg" role="img">'
-        '%s</svg>' % (Y0 + H + 52, ''.join(parts)))
+        '<defs>'
+        '<marker id="mpa%s" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" '
+        'markerHeight="5" orient="auto-start-reverse">'
+        '<path d="M0 0L10 5L0 10z" fill="%s"/></marker>'
+        '<radialGradient id="mpg%s"><stop offset="0" stop-color="%s" stop-opacity=".30"/>'
+        '<stop offset="1" stop-color="%s" stop-opacity="0"/></radialGradient>'
+        '</defs>%s</svg>'
+        % (h + 10, uid, axis, uid, glow, glow, ''.join(parts)))
 
 
 # ------------------------------------------------------------------

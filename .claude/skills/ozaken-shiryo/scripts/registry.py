@@ -148,6 +148,14 @@ def render(data):
               '<span class="val">%s</span>'
               '<span class="hint">この台帳だけは、このパスワードでは開きません</span></div>'
               % html.escape(common)) if common else ''
+    # 週次トレンドの購読キー。資料の共通パスワードとは別に持つ。
+    # 資料をまとめて渡した相手に週次まで渡らないようにするため
+    wk = meta.get('weekly') or ''
+    if wk:
+        shared += ('<div class="shared"><span class="lbl">週次トレンドの購読キー</span>'
+                   '<span class="val">%s</span>'
+                   '<span class="hint">全号に共通。四半期ごとに付け替える</span></div>'
+                   % html.escape(wk))
 
     out = TEMPLATE
     for k, v in (('__SHARED__', shared), ('__ROWS__', '\n'.join(rows)), ('__NPW__', str(n_pw)),

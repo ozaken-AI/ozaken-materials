@@ -1,0 +1,18 @@
+{
+  "slug": "talent-shift",
+  "domain": "talent",
+  "title": "余る職と、足りない職が、同時に増える",
+  "watching": ["就業構造推計", "AI人材の需給", "求人倍率", "賃金プレミアム"],
+  "facts": [
+    {"date": "2026-03", "text": "経産省『2040年の就業構造推計（改訂版）』。2040年に不足しうるのは AI・ロボット等利活用人材 約340万人／現場人材 約260万人／理系人材 約120万人。一方で余剰になりうるのは 事務職 約440万人／文系人材 約80万人", "src": "https://www.meti.go.jp/shingikai/sankoshin/shin_kijiku/pdf/030_s02_00.pdf", "tier": 1},
+    {"date": "2026-03", "text": "同推計では、就業者数は約6,700万人（2022年）から約6,300万人へ。ただし十分な国内投資と産業構造転換が実現する場合、AI・ロボット利活用とリスキリングで労働需要が効率化され、全体では大きな不足は生じないとされる", "src": "https://www.meti.go.jp/shingikai/sankoshin/shin_kijiku/pdf/030_s02_00.pdf", "tier": 1}
+  ],
+  "open": [
+    "『事務職440万人余剰』は、職が消えるのか、中身が入れ替わるのか（推計の前提を原典で確認する）",
+    "不足すると言われる340万人は、新卒採用で埋まるのか、既存社員の配置転換で埋まるのか"
+  ],
+  "stance": "未記入（おざけんが書く）",
+  "falsify": "余剰とされた職種で求人が減らなければ、この推計の読み方は外れ",
+  "related": ["06_people/career-in-agent-era.html", "06_people/jinji-seido.html", "09_role/keiri.html"],
+  "written": []
+}

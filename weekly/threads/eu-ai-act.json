@@ -1,0 +1,26 @@
+{
+  "slug": "eu-ai-act",
+  "title": "EU AI Act：2026年8月2日に本当に始まったもの",
+  "watching": ["EU AI Act", "透明性義務", "高リスク", "Digital Omnibus", "日本企業への影響"],
+  "facts": [
+    {"date": "2026-08-02", "text": "第50条（透明性義務）が適用開始。欧州委員会のFAQは「The AI Office will issue guidelines to provide further guidance for providers and deployers on the obligations in Article 50 which will become applicable on 2 August 2026」と明記", "src": "https://digital-strategy.ec.europa.eu/en/faqs/navigating-ai-act", "tier": 1, "checked": "2026-08-18"},
+    {"date": "2026-08-02", "text": "AI Office と加盟国当局が AI Act の実施・監督・執行の責任を負う。「From 2 August 2026, the AI Office and authorities of the Member States are responsible for implementing, supervising and enforcing the AI Act」", "src": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai", "tier": 1, "checked": "2026-08-18"},
+    {"date": "2026-08-02", "text": "第50条の中身は4つ。(1) 自然人と直接やり取りするAIシステムの提供者は、AIと対話していることを本人に知らせる設計にする (2) 生成AIの提供者は出力を機械可読な形式でマークし、人工的に生成・改変されたものとして検出可能にする (3) 画像・音声・映像を生成／改変してディープフェイクを作る生成AIの利用者（deployer）は、人工的に生成・改変された旨を可視的に開示する (4) 感情認識・生体分類システムの利用者は、対象となる個人に知らせる", "src": "https://digital-strategy.ec.europa.eu/en/faqs/navigating-ai-act", "tier": 1, "checked": "2026-08-18"},
+    {"date": "2026-08-02", "text": "日本企業への適用は域外適用の条文（第2条）で決まる。「The legal framework applies to both public and private actors inside and outside the EU, who place an AI system or general-purpose AI model on the EU market, or put an AI system into service or use it in the EU」。したがって、EU市場にAIシステム／汎用AIモデルを上市する、またはEU域内で提供・使用する日本企業は、その立場（provider か deployer か）に応じて上記(1)〜(4)を2026年8月2日から負う", "src": "https://digital-strategy.ec.europa.eu/en/faqs/navigating-ai-act", "tier": 1, "checked": "2026-08-18"},
+    {"date": "2026-07-27", "text": "AI Omnibus（AI Actの2024年成立以降で初の改正）が施行。欧州委員会のニュース「AI Omnibus enters into force」は2026年7月27日付。全文は官報 OJ:L_202601744（= Regulation (EU) 2026/1744）としてEUR-Lexにリンクされている", "src": "https://digital-strategy.ec.europa.eu/en/news/ai-omnibus-enters-force", "tier": 1, "checked": "2026-08-18"},
+    {"date": "2027-12-02", "text": "Annex III の高リスクAIシステム（生体認証、重要インフラ、教育、雇用、移民・庇護・国境管理等）の規則が適用開始。「Rules for systems used in certain high-risk areas — including biometrics, critical infrastructure, education, employment, migration, asylum and border control — will apply from 2 December 2027」", "src": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai", "tier": 1, "checked": "2026-08-18"},
+    {"date": "2028-08-02", "text": "Annex I の製品組込み型（機械、玩具、リフト等）の高リスク規則が適用開始。「For systems integrated into products such as lifts or toys, the rules will apply from 2 August 2028」", "src": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai", "tier": 1, "checked": "2026-08-18"},
+    {"date": "2025-11-19", "text": "Digital Omnibus パッケージの一部として提案。提案番号 COM(2025) 836（CELEX: 52025PC0836）。「adopted on 19 November 2025」", "src": "https://digital-strategy.ec.europa.eu/en/library/digital-omnibus-ai-regulation-proposal", "tier": 1, "checked": "2026-08-18"},
+    {"date": "2025-08-02", "text": "（前提）ガバナンス規定と汎用AI（GPAI）モデルの義務は2025年8月2日に適用開始済み。禁止行為とAIリテラシー義務は2025年2月2日から。AI Actの発効は2024年8月1日", "src": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai", "tier": 1, "checked": "2026-08-18"}
+  ],
+  "open": [
+    "正文の逐条確認が未了。EUR-Lex は AWS WAF のボット判定により curl・WebFetch とも到達できない（HTTP 202 でチャレンジページのみ）。Regulation (EU) 2024/1689（AI Act）の第113条を Regulation (EU) 2026/1744 がどの条番号でどう書き換えたか、という逐条レベルは未確認",
+    "官報（OJ L 2026/1744）の正確な公布日。委員会ニュースは施行日2026年7月27日のみを示しており、公布日そのものは未取得",
+    "第50条違反の制裁金額（第99条）。委員会FAQから確認できたのは汎用AIモデル義務違反の「Up to €15m or 3% of the total worldwide annual turnover of the preceding financial year」のみ"
+  ],
+  "stance": "未記入（おざけんが書く）",
+  "falsify": "EUR-Lex正文を確認して、条番号または適用日が委員会サイトの記述と食い違えば、この節は書き直す",
+  "related": ["07_risk/ai-guidelines.html", "07_risk/privacy-law.html"],
+  "written": [],
+  "note": "2026-08-18に一次情報（欧州委員会 digital-strategy.ec.europa.eu = AI Office所管サイト）で取り直し、tier 3 → tier 1 に昇格。保留を解除"
+}
