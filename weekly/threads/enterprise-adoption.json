@@ -1,0 +1,21 @@
+{
+  "slug": "enterprise-adoption",
+  "title": "売り物が『モデル』から『導入能力』に移っている",
+  "watching": ["FDE", "サービス提携", "認定者数", "Partner Network", "AIサービス会社"],
+  "facts": [
+    {"date": "2025-12-03", "text": "Snowflake と Anthropic が複数年・$200M の提携。Claudeが12,600社以上のSnowflake顧客に届く", "src": "https://www.snowflake.com/en/news/press-releases/snowflake-and-anthropic-announce-200-million-partnership-to-bring-agentic-ai-to-global-enterprises/", "tier": 1, "checked": "2026-08-18", "note": "当初『今週の話題』として拾ったが、検証で2025年12月と判明。降格して背景に置く。snowflake.com は現在の許可ドメインに入っておらず、今回も本文の再確認はできていない"},
+    {"date": "2025-12-09", "text": "Accenture と複数年提携（Accenture Anthropic Business Group）。「30,000 Accenture professionals」がClaudeの訓練を受ける。Claude Code は「over half of the AI coding market」、Anthropicのエンタープライズ市場シェアは「from 24% to 40%」へ", "src": "https://www.anthropic.com/news/anthropic-accenture-partnership", "tier": 1, "checked": "2026-08-18", "note": "発表日を確定。ページ表示は「Dec 9, 2025」。2026年の話ではなかったため、今週性は無い"},
+    {"date": "2026-05-04", "text": "Blackstone・Hellman & Friedman・Goldman Sachs と、中堅企業向けのAIサービス会社を新設。追加出資に General Atlantic、Leonard Green、Apollo Global Management、GIC、Sequoia Capital。Anthropic の Applied AI エンジニアが新会社のエンジニアリングチームと組む", "src": "https://www.anthropic.com/news/enterprise-ai-services-company", "tier": 1, "checked": "2026-08-18", "note": "発表日を確定。ページ表示は「May 4, 2026」。金額の記載は無い"},
+    {"date": "2026-05-14", "text": "PwC が Claude を全社展開。共同CoEと、「30,000 US professionals」（＝30,000 PwC professionals）の訓練・認定プログラム。PwC は数十万人規模の全従業員への拡大を計画", "src": "https://www.anthropic.com/news/pwc-expanded-partnership", "tier": 1, "checked": "2026-08-18", "note": "発表日を確定。ページ表示は「May 14, 2026」"},
+    {"date": "2026-06-03", "text": "Claude Partner Network に Services Track と Partner Hub を新設。$100M を partner の訓練・支援に投資。40,000社超が応募、10,000人超のコンサルタントがClaude認定を取得。ティアは Select（認定者10人以上／共同顧客2件以上／公開事例1件以上）、Preferred（100人以上／15件以上／3件以上）、Global Premier（1,000人以上／3地域以上で100件以上／15件以上）", "src": "https://www.anthropic.com/news/services-track-partner-hub", "tier": 1, "checked": "2026-08-18", "note": "発表日を確定。ページ表示は「Jun 3, 2026」。同ページに Cognizant 350,000人、Deloitte 470,000人、KPMG 276,000人超という各社の従業員規模も併記されている"}
+  ],
+  "open": [
+    "『認定者3万人』という単位が、実際の導入成果とどう結びついているか",
+    "各提携の導入事例側の数字（何社に入り、何が変わったか）。人数の発表は揃ったが、成果側の数値は各社ページに出ていない"
+  ],
+  "stance": "未記入（おざけんが書く）",
+  "falsify": "提携が人数の発表だけで終わり、導入事例の数字が出てこなければ、この読みは外れ",
+  "related": ["06_people/openai-fde.html", "05_drive/ai-coe.html", "01_concept/business-model-shift.html"],
+  "written": [],
+  "note": "2026-08-18に anthropic.com の各ページで発表日を確定（HTMLの表示日付を直接確認）。Accenture は2026年ではなく2025年12月9日で、Snowflakeと同じく今週の話ではない。降格の判断は維持しつつ、日付未確定の open は解消"
+}

@@ -162,6 +162,10 @@ def r_figref(html, text):
     # 区切り記号のどれかが続いていれば、その図はここにあるとみなす
     DEF = r'Fig\.(\d+)\s*[──—–‐\-:：]'
     have = set(re.findall(DEF, text))
+    # いまの組み方は図番号を <span class="fig-no"> に切り出すので、
+    # タグを落とした本文には区切り記号が残らない。ここを見ないと
+    # **新しく組んだ資料は、全部の図が「無い」と言われる**（実際に11件出た）
+    have |= set(re.findall(r'<span class="fig-no">Fig\.(\d+)</span>', html))
     errs = []
     for n in set(re.findall(r'Fig\.(\d+)(?!\s*[──—–‐\-:：])', text)):
         if n not in have:

@@ -1,0 +1,18 @@
+{
+  "slug": "agent-autonomy",
+  "title": "エージェントに、どこまで長い仕事を任せられるか",
+  "watching": ["long-horizon", "エージェント評価", "自律性", "メモリ", "人が関わる境界"],
+  "facts": [
+    {"date": "2026-08-07", "text": "サーベイ論文 The Horizon Gap が公開。2024〜2026年のarXiv論文1,547本を調査し、long-horizon（タスクの性質＝必要な手数）/ long-context（モデルの性質＝トークン容量）/ long-term memory（システムの性質＝セッションを跨ぐ永続性）の3つが混同されてきたと整理", "src": "https://arxiv.org/abs/2608.06663", "tier": 1},
+    {"date": "2026-06", "text": "Emergence World：LLMエージェント集団を共有空間で走らせ続ける評価基盤。15日間・5つの並列世界の実験で、結果が『安定した合議的統治』から『population collapse（集団の崩壊）』まで割れた", "src": "https://arxiv.org/html/2606.08367", "tier": 1},
+    {"date": "2026-03", "text": "EnterpriseArena：132か月ぶんのCFOシミュレータ。資金繰り・決算・資金調達を、変化する景気局面の中で長期に判断させる", "src": "https://arxiv.org/html/2603.23638v2", "tier": 1}
+  ],
+  "open": [
+    "『分単位のベンチマークで測った賢さ』と『週単位で運用したときの信頼性』は、どのくらい乖離するのか",
+    "運用中のドリフト（目標からのずれ）を、人はどの間隔で見れば止められるのか"
+  ],
+  "stance": "未記入（おざけんが書く）",
+  "falsify": "長時間タスクの失敗が、メモリやプランニングの設計ではなくモデルの賢さだけで解消していったら、この見立ては外れ",
+  "related": ["01_concept/human-in-on-the-loop-v2.html", "04_practice/build-a-workflow.html", "01_concept/five-levels-copilot.html"],
+  "written": []
+}

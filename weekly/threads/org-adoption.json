@@ -1,0 +1,19 @@
+{
+  "slug": "org-adoption",
+  "domain": "org",
+  "title": "日本企業のAI活用は、二極化している",
+  "watching": ["導入率", "成熟度", "本番化", "中小企業"],
+  "facts": [
+    {"date": "2026-03-25", "text": "JIPDEC『企業IT利活用動向調査2026』（AI活用編）。事業レベルでAIを活用できている企業は36%。プレスリリースの見出しは『AI活用成熟度は二極化、入出力データに関する課題感は導入後も継続』", "src": "https://www.jipdec.or.jp/news/pressrelease/20260325.html", "tier": 1},
+    {"date": "2026-03-25", "text": "業種差が大きい。情報通信・金融保険は積極活用、公共その他は半数以上が検討段階。DXの実践段階が進むほどAI活用も深化する傾向", "src": "https://www.jipdec.or.jp/library/it-resarch/it-resarch2026-02.html", "tier": 1},
+    {"date": "2026-03", "text": "中小機構『中小企業のAI等の利活用に係る実態調査』。情報不足が背景にあり、費用助成と並んで『活用事例などの情報提供』が高いニーズ", "src": "https://www.smrj.go.jp/research_case/questionnaire/fbrion0000002pjw-att/202603_AI_point.pdf", "tier": 1}
+  ],
+  "open": [
+    "36%の『事業レベル』の定義（試用・PoC・本番のどこからか）を原典で確認する",
+    "二極化の分かれ目になっている要因は、規模か、業種か、データ基盤か"
+  ],
+  "stance": "未記入（おざけんが書く）",
+  "falsify": "翌年の同調査で二極化が縮まれば、この読みは外れ",
+  "related": ["05_drive/five-walls.html", "05_drive/ai-drive-handbook.html", "05_drive/kiban-phase.html"],
+  "written": []
+}
