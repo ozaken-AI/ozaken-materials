@@ -111,6 +111,17 @@ EXTRA_CSS = """
 .gate-note{font-size:.72rem;color:var(--muted);margin-top:.9rem;line-height:1.65}
 .gate-close{position:absolute;top:.7rem;right:1rem;background:none;border:none;
   font-size:1.5rem;color:var(--muted);cursor:pointer;line-height:1}
+/* 出典。週次は「どこで確認したか」を読者が踏めることが要件なので、本文にURLを置く */
+.srcs{margin:1.6rem 0 0;padding-top:1rem;border-top:1px solid var(--azure-pale);
+  font-size:.78rem;line-height:2}
+.sec-navy .srcs{border-top-color:rgba(255,255,255,.18)}
+.srcs-h{display:inline-block;font-family:var(--font-en);font-size:.6rem;font-weight:700;
+  letter-spacing:.16em;color:var(--azure);margin-right:.8em;vertical-align:1px}
+.sec-navy .srcs-h{color:var(--azure-pale)}
+.srcs a{display:inline-block;color:var(--azure);text-decoration:none;
+  border-bottom:1px solid var(--azure-pale);margin-right:1.2em}
+.srcs a:hover{border-bottom-color:var(--azure)}
+.sec-navy .srcs a{color:var(--azure-pale);border-bottom-color:rgba(216,228,240,.4)}
 """
 
 # 表紙の奥に薄く敷く格子と星座。地の色そのものは apply_herofx が当てる
@@ -138,6 +149,18 @@ def dl(href, title, note, label='PDFをダウンロード', tag='FREE DOWNLOAD')
             '  <a class="dl-go" href="%s" download>%s</a>\n</div>\n'
             % (tag, esc(title), note, href, esc(label)))
 
+
+
+def srcs(items):
+    """出典。items: [(表示名, URL)]。**週次では各節に必ず置く。**
+
+    資料アーカイブには外部リンクを置いてこなかったが、週次は性質が違う。
+    「一次情報だけで書いた」と言う以上、読者がその場で原典を踏めないと確かめようがない。
+    """
+    from domain_fig import esc
+    return ('    <p class="srcs"><span class="srcs-h">SOURCE</span>'
+            + ''.join('<a href="%s" target="_blank" rel="noopener">%s</a>'
+                      % (u, esc(n)) for n, u in items) + '</p>')
 
 def cards(items, raw_head=True):
     """items: [(見出し, 本文)]。見出しに <span class="mth"> を入れたいときが多いので、

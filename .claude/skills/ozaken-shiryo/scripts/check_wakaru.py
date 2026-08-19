@@ -173,7 +173,43 @@ def r_figref(html, text):
     return errs
 
 
-RULES = (r_acronym, r_person, r_deictic, r_subject, r_figref)
+# 初見の読者が引っかかる書き方。略語（r_acronym）だけでは足りない。
+# 実際、EU AI Act の節で「第50条」「Annex III」「Regulation (EU) 2026/1744」が
+# 説明なしに並び、**図の中だけで6語**という状態になった。
+JARGON = (
+    (r'第\d+条', '条番号だけでは何を定めた条か分からない'),
+    (r'Annex\s*[IVX]+', '附属書の番号だけでは中身が分からない'),
+    (r'Regulation \(EU\)\s*[\d/]+', '法令番号だけでは何の法律か分からない'),
+    (r'\bprovider\b|\bdeployer\b', '英単語のままでは立場の違いが伝わらない'),
+)
+
+
+def r_jargon(html, text):
+    """**専門用語は、初出で日本語に開く。** 開いた形が本文のどこにも無ければ指摘する。
+
+    判定は「その語の直後40字以内に、日本語を含む丸括弧の言い換えがあるか」。
+    資料全体で一度でも開いていれば通す（毎回書くと読みにくくなる）。
+    """
+    errs = []
+    for pat, why in JARGON:
+        found = [m.group(0) for m in re.finditer(pat, text)]
+        if not found:
+            continue
+        opened = False
+        for m in re.finditer(pat, text):
+            tail = text[m.end():m.end() + 40]
+            # 開き方は2通りある。「Annex III（附属書III）」と「provider＝提供者」。
+            # どちらも読者には同じなので、両方通す
+            if (re.match(r'\s*[（(][^）)]*[ぁ-んァ-ン一-龥][^）)]*[）)]', tail)
+                    or re.match(r'\s*[＝=]\s*[ぁ-んァ-ン一-龥]', tail)):
+                opened = True
+                break
+        if not opened:
+            errs.append('専門用語「%s」に日本語の言い換えがない（%s）' % (found[0], why))
+    return errs
+
+
+RULES = (r_acronym, r_person, r_deictic, r_subject, r_figref, r_jargon)
 
 
 def check_wakaru(html):

@@ -13,7 +13,7 @@ S = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                  '../../.claude/skills/ozaken-shiryo/scripts')
 sys.path.insert(0, os.path.abspath(S))
 
-from page_parts import hero, sec, cards, close
+from page_parts import hero, sec, cards, close, srcs
 from domain_fig import (fig_stats, fig_sheet, fig_donut, fig_bars,
                         fig_cols, fig_check, fig_timeline)
 
@@ -74,7 +74,8 @@ A.append(sec(
         ('世論は先に動いている',
          '「AIは雇用を減らす」と答えた米国人は<span class="num">79%</span>。'
          '前年の73%から上昇した。実測の失業率より、<b>予期のほうが速く動く</b>。'),
-    ])))
+    ]),
+    after=srcs([('Gallup ─ 組織の導入率', 'https://www.gallup.com/workplace/712736/organizational-adoption-jumps-six-points.aspx'), ('Gallup ─ 労働者の利用と不安', 'https://www.gallup.com/workplace/704225/rising-adoption-spurs-workforce-changes.aspx'), ('Gallup ─ 職場文化への影響', 'https://www.gallup.com/workplace/712976/ai-effect-workplace-culture.aspx')])))
 
 # ── 03 組織 ─────────────────────────────────────────
 A.append(sec(
@@ -96,7 +97,8 @@ A.append(sec(
          '中小機構の調査では、費用助成と並んで'
          '<b>「活用事例などの情報提供」</b>が高いニーズに挙がった。'
          '現場が欲しがっているのは<b>手本</b>である。'),
-    ])))
+    ]),
+    after=srcs([('JIPDEC ─ 企業IT利活用動向調査2026', 'https://www.jipdec.or.jp/news/pressrelease/20260325.html'), ('同 ─ AIの活用状況と課題', 'https://www.jipdec.or.jp/library/it-resarch/it-resarch2026-02.html'), ('中小機構 ─ 中小企業のAI利活用実態調査', 'https://www.smrj.go.jp/research_case/questionnaire/fbrion0000002pjw-att/202603_AI_point.pdf')])))
 
 # ── 04 人材 ─────────────────────────────────────────
 A.append(sec(
@@ -122,7 +124,8 @@ A.append(sec(
          '経産省の<b>推計</b>であり、前提が変われば数字も動く。'
          '「440万人の事務職が消える」ではなく'
          '「その前提のとき、その規模の余剰が立つ」と読む。'),
-    ])))
+    ]),
+    after=srcs([('経済産業省 ─ 2040年の就業構造推計（改訂版）', 'https://www.meti.go.jp/shingikai/sankoshin/shin_kijiku/pdf/030_s02_00.pdf')])))
 
 # ── 05 技術・エージェント ────────────────────────────
 A.append(sec(
@@ -146,7 +149,8 @@ A.append(sec(
          'Emergence World は、エージェント集団を走らせ続ける評価基盤。'
          '<b>15日間・5つの並列世界</b>の結果は、安定した合議的統治から'
          '<b>集団の崩壊</b>まで割れた。数分のベンチと、週単位の運用は別物である。'),
-    ])))
+    ]),
+    after=srcs([('The Horizon Gap（arXiv:2608.06663）', 'https://arxiv.org/abs/2608.06663'), ('Emergence World', 'https://arxiv.org/html/2606.08367'), ('EnterpriseArena', 'https://arxiv.org/html/2603.23638v2')])))
 
 # ── 06 技術・価格 ───────────────────────────────────
 A.append(sec(
@@ -175,42 +179,49 @@ A.append(sec(
         ('12月31日を、予算の資料に書いておく',
          '導入価格で試算して通した予算は、<b>2027年1月1日に倍額</b>になる。'
          '半年後に「なぜ増えたのか」を説明する仕事を、先に消しておく。'),
-    ])))
+    ]),
+    after=srcs([('Google ─ Gemini 3.7 Flash', 'https://blog.google/intl/ja-jp/company-news/technology/gemini-37-flash/'), ('Artificial Analysis ─ Gemini 3.7 Flash', 'https://artificialanalysis.ai/models/gemini-3-7-flash'), ('同 ─ Grok 4.6', 'https://artificialanalysis.ai/models/grok-4-6')])))
 
 # ── 07 法規制 ───────────────────────────────────────
 A.append(sec(
-    'sec-light', 'Regulation', '8月2日に始まったのは、<br>高リスク義務ではなかった',
-    sub='欧州委員会（AI Office所管サイト）の一次情報で確認した。',
-    lede='「EU AI Actが本格施行」と読むと、逆になる。'
-         'この日始まったのは<b>第50条の透明性義務</b>で、'
-         '重い高リスク義務は<b>2027年12月と2028年8月へ延期された</b>。',
+    'sec-light', 'Regulation', '8月2日に始まったのは、<br>「重い規制」ではなかった',
+    sub='欧州委員会（EUの行政機関）の公式サイトで確認。2026年8月2日の話で、'
+        'この週に起きたことではない。',
+    lede='「EUのAI法がついに本格施行」と読むと、逆になる。'
+         'この日始まったのは<b>「AIだと分かるようにする」義務</b>だけで、'
+         '採用や入国審査のような重い用途の規制は、<b>2027年12月と2028年8月へ先送りされた</b>。',
     fig=fig_sheet(
-        ['日付', '何が適用されるか', '状態'],
-        [['2025年2月2日', '禁止行為と、AIリテラシー義務', '適用済み'],
-         ['2025年8月2日', 'ガバナンス規定と、汎用AI（GPAI）モデルの義務', '適用済み'],
-         ['2026年7月27日', 'AI Omnibus 施行（Regulation (EU) 2026/1744）', '成立以降で初の改正'],
-         ['2026年8月2日', '第50条の透明性義務', '今週から。AI Officeと加盟国当局が執行'],
-         ['2027年12月2日', 'Annex III の高リスク（生体認証・重要インフラ・教育・雇用・移民）', '当初は2026年8月2日の予定'],
-         ['2028年8月2日', 'Annex I の製品組込み型（機械・玩具・リフト等）', '当初は2027年8月2日の予定']],
+        ['日付', '何が始まるか', '状態'],
+        [['2025年2月2日', '使ってはいけないAIの禁止と、社員にAIの基礎を学ばせる義務', '適用済み'],
+         ['2025年8月2日', '国の監督体制と、汎用AIモデル（用途を限定しない大型のAI）を作る側の義務', '適用済み'],
+         ['2026年7月27日', 'AI法を手直しする改正法が施行（通称 AI Omnibus）', '成立以降で初の改正'],
+         ['2026年8月2日', '「これはAIです」と分かるようにする義務（第50条＝表示の義務）', '今週から。EUのAI当局が執行'],
+         ['2027年12月2日', '採用・教育・入国審査など、人生を左右する場面のAIへの規制（附属書III）', '当初は2026年8月2日の予定'],
+         ['2028年8月2日', '機械・玩具・エレベーターなど、製品に組み込まれたAIへの規制（附属書I）', '当初は2027年8月2日の予定']],
         [0.17, 0.53, 0.30],
-        'Fig.7 ── EU AI Act の適用スケジュール',
+        'Fig.7 ── EUのAI法は、いつ何が始まるのか',
         '出典：欧州委員会 digital-strategy.ec.europa.eu。確認日2026年8月18日。',
         badge='一次情報'),
     body=cards([
-        ('いま負うのは、この4つだけ',
-         '第50条の中身は、<b>(1)</b> 人と直接やり取りするAIは、AIと対話していると本人に知らせる設計にする　'
-         '<b>(2)</b> 生成AIの出力に機械可読な標識を付け、人工的に生成・改変されたと検出できるようにする　'
-         '<b>(3)</b> ディープフェイクを作る利用者は、その旨を可視的に開示する　'
-         '<b>(4)</b> 感情認識・生体分類の利用者は、対象となる個人に知らせる。'),
-        ('日本の会社も、立場に応じて対象になる',
-         '効いてくるのは域外適用の第2条。'
-         '<b>EU市場にAIシステムや汎用AIモデルを上市する、またはEU域内で提供・使用する</b>なら、'
-         'provider か deployer かに応じて上の義務を負う。EUに法人があるかどうかでは決まらない。'),
-        ('ここまでは、まだ確認できていない',
-         '正文（EUR-Lex）はボット判定で開けず、'
-         '<b>AI Act 第113条をどの条番号でどう書き換えたかという逐条レベルは未確認</b>。'
-         '官報の公布日と、第50条違反の制裁金額も取れていない。'),
-    ])))
+        ('いま始まったのは、「隠さない」義務',
+         '中身は4つ。<b>(1)</b> 人と直接やり取りするAIは、相手にAIだと分かるようにする　'
+         '<b>(2)</b> AIが作った文章や画像には、機械が読み取れる印を付ける　'
+         '<b>(3)</b> 本物そっくりの偽映像を作る人は、作り物だと見て分かる形で示す　'
+         '<b>(4)</b> 表情から感情を推定するAIを使う人は、対象の本人に知らせる。'
+         'いずれも<b>「使ってはいけない」ではなく「隠してはいけない」</b>という義務である。'),
+        ('日本の会社も、EUに出していれば対象になる',
+         'EUに法人があるかどうかでは決まらない。'
+         '<b>EU市場にAIの製品やサービスを出す、またはEUの中で使う</b>なら、'
+         '作って売る側（provider＝提供者）か、業務で使う側（deployer＝利用者）かに応じて、'
+         '上の義務を負う。'),
+        ('先送りは「気にしなくていい」ではない',
+         '重い規制の開始が1年半ずれただけで、対象になる用途は変わっていない。'
+         '採用・人事評価・教育でAIを使う計画があるなら、'
+         '<b>2027年12月から何を説明できる状態にしておくか</b>を、いま決めておく話になる。'),
+    ]),
+    after=srcs([('欧州委員会 ─ AI法のFAQ', 'https://digital-strategy.ec.europa.eu/en/faqs/navigating-ai-act'),
+         ('規制の枠組みと適用時期', 'https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai'),
+         ('改正法（AI Omnibus）の施行', 'https://digital-strategy.ec.europa.eu/en/news/ai-omnibus-enters-force')])))
 
 # ── 08 インフラ ─────────────────────────────────────
 A.append(sec(
@@ -244,7 +255,8 @@ A.append(sec(
          '充電側の系統容量を確保する必要があり、その増強が'
          '<b>データセンター等の需要側の接続にも影響する</b>構造になっている。'
          '接続検討の受付は2年で15倍以上に増えた。'),
-    ])))
+    ]),
+    after=srcs([('経済産業省 ─ 次世代電力系統ワーキンググループ資料', 'https://www.meti.go.jp/shingikai/enecho/denryoku_gas/jisedai_kiban/system_design_wg/pdf/005_05_00.pdf'), ('同 ─ 系統用蓄電池の受付状況', 'https://www.meti.go.jp/shingikai/enecho/denryoku_gas/saisei_kano/pdf/078_01_00.pdf'), ('RIETI ─ AI Data Centers and Electricity Demand', 'https://www.rieti.go.jp/jp/publications/dp/26e013.pdf')])))
 
 # ── 07 産業 ─────────────────────────────────────────
 A.append(sec(
@@ -265,7 +277,8 @@ A.append(sec(
         ('数字の裏取りで、桁が割れていた',
          '二次情報では「H1で$407B」「通年$120B超の見込み」が同時に出回っていた。'
          '<b>集計元に当たるまで、この種の総額は使えない</b>。'),
-    ])))
+    ]),
+    after=srcs([('Crunchbase ─ 2026年上半期の集計', 'https://news.crunchbase.com/venture/global-startup-exits-ipo-ma-soar-ai-q2-h1-2026/')])))
 
 # ── 08 スタートアップ ────────────────────────────────
 A.append(sec(
