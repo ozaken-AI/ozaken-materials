@@ -163,7 +163,8 @@ GROUPS = [
 ]
 
 # 資料そのものではない、置き場・索引のページ。マトリクスからは外す
-NOT_DOCS = {'backstage.html', 'matrix.html', 'passwords.html'}
+# 道具のページ。資料ではないので、本数にも関連づけにも数えない
+NOT_DOCS = {'backstage.html', 'matrix.html', 'passwords.html', 'console.html'}
 
 # **関連資料チップの行き先にしない資料。**
 #

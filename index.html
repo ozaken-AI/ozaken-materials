@@ -1426,6 +1426,19 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
   .bkgate-hud b{left:52px;bottom:20px}}
 @media (prefers-reduced-motion: reduce){.bkgate::before{animation:none}.bkgate.show{animation:none}}
 
+/* ══ 玄関の合図 ── 3つの要素を順に触ると、道具の部屋が開く ══════
+   **見た目は一切変えない。** 触れる範囲だけを広げる。
+   指で押せない大きさのものを目印にすると、合図そのものが成立しない
+   （CMSバッジの点は 7px しかない）。位置は動かさず、
+   透明な当たり判定だけを上に重ねる */
+[data-ozk]{position:relative}
+[data-ozk]::after{content:"";position:absolute;inset:-18px;
+  border-radius:8px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+/* 合図が1つ通ったことだけ、そっと返す。派手に光ると秘密でなくなる */
+[data-ozk].ozk-hit{animation:ozkHit .5s ease both}
+@keyframes ozkHit{0%{filter:none}35%{filter:brightness(1.9) drop-shadow(0 0 10px rgba(159,198,245,.8))}100%{filter:none}}
+@media (prefers-reduced-motion: reduce){[data-ozk].ozk-hit{animation:none}}
+
 /* ══ スマートフォン向けの秘密コマンド ══════════════════════════
    キーボードの2文字コマンドは、スマートフォンでは打てない。
    壇上や移動中に裏資料を開きたいのはむしろスマートフォンのほうなので、
@@ -1453,6 +1466,7 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
 .ozs-group{font-family:var(--font-en);font-size:.55rem;font-weight:700;letter-spacing:.26em;
   color:rgba(159,198,245,.5);margin:.9rem 0 .5rem}
 .ozs-list{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+.ozs-list.ozs-one{grid-template-columns:1fr}
 @media(max-width:380px){.ozs-list{grid-template-columns:1fr}}
 /* **札は1行に収める。** 2列に並べたとき、片方だけ2行になると
    その行の箱だけが高くなって、並びが崩れて見える。
@@ -1740,7 +1754,7 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
 </div>
 <section class="hero" data-net="dark">
   <div class="sys-badge" aria-label="おざけんコンテンツ管理システム">
-    <span class="dot" aria-hidden="true"></span>
+    <span class="dot" data-ozk="1" aria-hidden="true"></span>
     <span class="ja">おざけん コンテンツ管理システム</span>
     <span class="sep">/</span>
     <span>OZAKEN CMS</span>
@@ -1772,11 +1786,11 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
   </div>
   <div class="inner">
     <span class="eyebrow">Kensuke Ozawa ─ Profile &amp; Archive</span>
-    <h1 class="hero-title">人間とAIが<br><span class="hl">共存</span>する社会をつくる</h1>
+    <h1 class="hero-title">人間とAIが<br><span class="hl" data-ozk="2">共存</span>する社会をつくる</h1>
     <p class="hero-copy" id="heroCopy">小澤健祐（おざけん）。<br>AIエージェント時代に生きる、実装・活用の知見を。</p>
     <div class="hero-status" aria-hidden="true">
       <span class="hs-live"></span>SYSTEM ONLINE
-      <span class="hs-sep">／</span><span id="docCount">0</span> DOCUMENTS INDEXED<span class="hs-cur">_</span>
+      <span class="hs-sep">／</span><span id="docCount" data-ozk="3">0</span> DOCUMENTS INDEXED<span class="hs-cur">_</span>
     </div>
   </div>
   <div class="hero-scroll" aria-hidden="true"><span>SCROLL</span><span class="chev">⌄</span></div>
@@ -2770,11 +2784,8 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     <span class="ozs-eyebrow">OZAKEN CMS ／ QUICK ACCESS</span>
 
     <div class="ozs-group">RESTRICTED ／ 要パスワード</div>
-    <div class="ozs-list">
-      <button class="ozs-item" type="button" data-oz="ur" data-lock><span class="ozs-key">UR</span>裏資料置き場</button>
-      <button class="ozs-item" type="button" data-oz="te" data-lock><span class="ozs-key">TE</span>テンプレート便覧</button>
-      <button class="ozs-item" type="button" data-oz="pw" data-lock><span class="ozs-key">PW</span>パスワード台帳</button>
-      <button class="ozs-item" type="button" data-oz="mx" data-lock><span class="ozs-key">MX</span>資料マトリクス</button>
+    <div class="ozs-list ozs-one">
+      <button class="ozs-item" type="button" data-oz="cs" data-lock><span class="ozs-key">CS</span>道具の部屋（鍵の要るページ）</button>
     </div>
 
     <div class="ozs-group">STAGE ／ 投影</div>
@@ -2787,8 +2798,9 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
       <button class="ozs-item" type="button" data-oz="th"><span class="ozs-key">TH</span>お礼の画面</button>
     </div>
 
-    <p class="ozs-note">画面の右下の隅を長押しすると、いつでもここに戻れます。
-      パソコンでは、同じ行き先に2文字のキー（<b>ur</b>／<b>te</b> など）で移動できます。</p>
+    <p class="ozs-note">裏資料置き場・パスワード台帳・資料マトリクス・テンプレート便覧は、
+      すべて<b>道具の部屋</b>からたどれます。一度解錠すれば、その先は聞かれません。<br>
+      画面の右下の隅を長押しすると、いつでもここに戻れます。</p>
     <button class="ozs-close" type="button" data-ozs-close>閉じる</button>
   </div>
 </div>
@@ -3324,10 +3336,10 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
   function closeAll(){ all.forEach(function(o){ if(o.el.classList.contains('show')) o.hide(); }); }
   function run(code){
     if(code==='ma'){ if(!window.ozMap) return false; closeAll(); window.ozMap(); return true; }
-    if(code==='ur'||code==='pw'||code==='mx'||code==='te'){
+    if(code==='ur'||code==='pw'||code==='mx'||code==='te'||code==='cs'){
       if(!window.ozGate) return false;
       closeAll();
-      window.ozGate({ur:'backstage',pw:'ledger',mx:'matrix',te:'template'}[code]);
+      window.ozGate({ur:'backstage',pw:'ledger',mx:'matrix',te:'template',cs:'console'}[code]);
       return true; }
     if(code==='go'){ if(!window.ozBoot) return false; closeAll(); window.ozBoot(null,'start'); return true; }
     if(code==='en'){ if(!window.ozBoot||!bySecret['th']) return false; closeAll();
@@ -3367,7 +3379,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
       /* ma 星座マップ／ur 裏資料置き場／pw パスワード台帳／mx 資料マトリクス／
          te テンプレート便覧／go 開演の演出／en 終演の演出。
          鍵の要る行き先は、判定を遷移先の暗号化ページに任せる */
-      var CODES=['ma','ur','pw','mx','te','go','en'];
+      var CODES=['ma','ur','pw','mx','te','cs','go','en'];
       for(var ci=0;ci<CODES.length;ci++){
         if(buf.slice(-2)===CODES[ci]&&run(CODES[ci])){ buf=''; return; } }
       for(var sc in bySecret){ if(buf.slice(-sc.length)===sc){ buf=''; run(sc); break; } } }
@@ -3388,6 +3400,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
       '#ledger': function(){ if(window.ozGate) window.ozGate('ledger'); },
       '#matrix': function(){ if(window.ozGate) window.ozGate('matrix'); },
       '#template': function(){ if(window.ozGate) window.ozGate('template'); },
+      '#console': function(){ if(window.ozGate) window.ozGate('console'); },
       '#boot':   function(){ if(window.ozBoot) window.ozBoot(null,'start'); },
       '#end':    function(){ if(window.ozBoot&&bySecret['th'])
                                window.ozBoot(function(){ bySecret['th'].show(); },'end'); }
@@ -3396,6 +3409,49 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     try { history.replaceState(null, '', location.pathname + location.search); } catch(e){}
     setTimeout(open[h], 60);
   })();
+})();
+</script>
+
+<script>
+/* ══ 玄関の合図 ── 3つの要素を順に触ると、道具の部屋が開く ═══════════
+   スマートフォンには2文字のキーが打てない。長押しの一覧も入れてあるが、
+   **鍵の要るページへ行きたいだけなら、もっと直接な入口があっていい。**
+
+   順番は、この資料アーカイブが何でできているかの順に並べてある。
+
+     1  CMSバッジの赤い点   ── システムが動いていること
+     2  表題の「共存」       ── ここでやろうとしていること
+     3  資料の点数           ── 積み上がっているもの
+
+   1つ通るたびに、その要素がひと呼吸だけ明るくなる。
+   **派手に光らせない。**気づかれる合図は、秘密として機能しない。
+
+   順番を外したら最初から。8秒あいだが空いても最初から。
+   だから読んでいる途中にたまたま揃うことは、まず起きない */
+(function(){
+  var SEQ=['1','2','3'], GAP=8000;
+  var at=0, last=0;
+
+  function reset(){ at=0; }
+  document.addEventListener('click',function(e){
+    var t=e.target.closest?e.target.closest('[data-ozk]'):null;
+    if(!t) return;
+    var now=Date.now();
+    if(now-last>GAP) reset();
+    last=now;
+    var k=t.getAttribute('data-ozk');
+    if(k!==SEQ[at]){ reset();
+      /* 1つ目を押し直したときだけは、そこから数え直す */
+      if(k===SEQ[0]) at=1; else return;
+    } else { at++; }
+    t.classList.remove('ozk-hit');
+    void t.offsetWidth;               /* 連続で触れたときも、animationを鳴らし直す */
+    t.classList.add('ozk-hit');
+    if(at<SEQ.length) return;
+    reset();
+    if(navigator.vibrate) try{ navigator.vibrate([12,50,12]); }catch(err){}
+    setTimeout(function(){ if(window.ozOpen) window.ozOpen('cs'); },260);
+  });
 })();
 </script>
 
@@ -3585,7 +3641,10 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     template:{ dest:'template.html', title:'テンプレート便覧',
       lead:'資料の型・図版カタログ・レギュレーション・生成元の一覧です。<br>マスターパスワードを入力してください。' },
     matrix:{ dest:'matrix.html', title:'資料マトリクス',
-      lead:'どの資料が、どの概念に触れているかの一覧です。<br>パスワードを入力してください。' }
+      lead:'どの資料が、どの概念に触れているかの一覧です。<br>パスワードを入力してください。' },
+    /* 鍵の要るページを1枚に集めた部屋。ここを解錠すれば、先はもう聞かれない */
+    console:{ dest:'console.html', title:'道具の部屋',
+      lead:'鍵の要るページを、ここに集めています。<br>マスターパスワードを入力してください。' }
   };
   var DEST=DESTS.backstage.dest;
   window.ozGate=function(which){
