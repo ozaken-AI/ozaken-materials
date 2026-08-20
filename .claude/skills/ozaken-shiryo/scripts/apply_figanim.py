@@ -143,7 +143,10 @@ TRIGGER = """
     es.forEach(function(e){
       if (e.isIntersecting){ play(e.target); fo.unobserve(e.target); }
     });
-  }, { threshold: 0.18 });
+  /* **高さで測らない。** threshold は「要素の何割が見えたか」なので、
+     要素が画面の何倍も高いと、永久に満たされない。実際、玄関の資料一覧が
+     スマートフォンでだけ出てこなくなった */
+  }, { threshold: 0, rootMargin: '0px 0px -18% 0px' });
   figs.forEach(function(f){ fo.observe(f); });
 })();
 </script>
