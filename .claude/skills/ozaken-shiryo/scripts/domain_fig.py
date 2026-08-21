@@ -1333,6 +1333,117 @@ def fig_cols(items, title, cap, dark=False):
         '%s</svg>' % (H + 36, ''.join(parts)))
 
 
+# ------------------------------------------------------------------
+# F15b  AI型化モデル（2軸4象限＋引き上げの矢印）
+# ------------------------------------------------------------------
+def fig_katagata(title, cap, dark=False, uid='', note=None):
+    """AI型化モデル。**正典は 06_people/org-theory.html の Fig.6。**
+
+    縦は「AIエージェントをつくる／つかう」、横は「業務知識が少ない／多い」。
+    4象限のうち右上（AIエージェント・アーキテクト）が目的地で、
+    そこへ**プロからは生成AI教育で、オペからは型の提供で**引き上げる。
+
+    fig_quad では組めない。あれは升に見出しと補足を1行ずつ置く形で、
+    象限ごとに箇条書きが4行入り、しかも象限をまたいで矢印が伸びる、
+    という構造を持てない。この形はこのモデル専用に組んである。
+
+    **中身は動かさない。** 同じモデルが資料ごとに違う言葉で書かれると、
+    どれが正しいのか分からなくなる。呼び出し側で変えられるのは
+    題とキャプションだけにしてある。
+    """
+    m = 'kg' + (uid or '')
+    q = []
+
+    def cap_pill(x, y, w, h, t, fs=14):
+        return ('<rect x="%d" y="%d" width="%d" height="%d" rx="%d" fill="%s"/>'
+                '<text x="%d" y="%d" text-anchor="middle" font-size="%s" fill="%s" '
+                'font-weight="700">%s</text>'
+                % (x, y, w, h, h // 2, INK, x + w // 2, y + h - 12, fs, WHITE, esc(t)))
+
+    # 軸の呼び名
+    q.append(cap_pill(380, 12, 220, 34, 'AIエージェントをつくる'))
+    q.append(cap_pill(380, 554, 220, 34, 'AIエージェントをつかう'))
+    q.append(cap_pill(8, 292, 150, 34, '業務知識 少ない', 13))
+    q.append(cap_pill(822, 292, 150, 34, '業務知識 多い', 13))
+    q.append('<line x1="490" y1="70" x2="490" y2="548" stroke="%s" '
+             'stroke-dasharray="4 5"/>' % PALE)
+    q.append('<line x1="170" y1="309" x2="810" y2="309" stroke="%s" '
+             'stroke-dasharray="4 5"/>' % PALE)
+
+    # 4つの升。右上だけ、目的地として塗りと縁を変える
+    CELLS = [
+        (168, 66, 300, 212, WHITE, PALE, 1, INK, MUTED, 'ビルダー',
+         ['AIエージェントの技術的な高い知見',
+          '組織変革／業務変革の視点も必要（現場に入る技術者に近い）',
+          '業務の理解は浅い／限定的'], None),
+        (512, 66, 300, 212, '#eef3fa', AZURE, 2, NAVY, AZURE, 'AIエージェント・アーキテクト',
+         ['自分のロジックをAIに落とし込み、設計・構築できる',
+          'AIエージェントの思考の道筋を誘導できる',
+          '会社の理念や文化まで理解している',
+          '高い言語化力を持っている'], None),
+        (168, 340, 300, 196, WHITE, PALE, 1, INK, MUTED, 'オペレーター',
+         ['AIエージェントで定型業務を行う',
+          '作る指示は具体さに欠けがち',
+          '単純な検索や文章作成に利用',
+          'AIの力を限定的にしか引き出せない'],
+         ('プロフェッショナルになる優先度が高い', '#eef3fa', AZURE)),
+        (512, 340, 300, 196, WHITE, PALE, 1, INK, MUTED, 'プロフェッショナル',
+         ['豊富な業務知識と地頭でAIを高度に使う',
+          '個人の業務効率・思考力を最大化',
+          '仕組み化の技がなく、効果は属人的',
+          '抜本的な変革は生み出せない'],
+         ('属人化：優れているが、エンジンは作れない', '#fde8ea', RED)),
+    ]
+    for (x, y, w, h, bg, edge, sw, hc, tc, name, rows, pill) in CELLS:
+        q.append('<rect x="%d" y="%d" width="%d" height="%d" rx="12" fill="%s" '
+                 'stroke="%s" stroke-width="%d"/>' % (x, y, w, h, bg, edge, sw))
+        q.append('<text x="%d" y="%d" font-size="17" fill="%s" font-weight="700">%s</text>'
+                 % (x + 24, y + 38, hc, esc(name)))
+        # **箇条書きは、行数から積む。** 以前は y を1行ずつ手で置いていたので、
+        # 一行が折り返した升だけが下へずれ、下の帯と重なっていた
+        yy = y + 72
+        for r in rows:
+            ls = wrapw(r, 40)
+            q.append('<text x="%d" y="%d" font-size="11" fill="%s">'
+                     '<tspan x="%d" dy="0">・%s</tspan>%s</text>'
+                     % (x + 38, yy, tc, x + 38, esc(ls[0]),
+                        ''.join('<tspan x="%d" dy="16">%s</tspan>' % (x + 48, esc(l))
+                                for l in ls[1:])))
+            yy += 22 + (len(ls) - 1) * 16
+        if pill:
+            t, pbg, pfg = pill
+            pw = 22 + int(len(t) * 11.2)
+            q.append('<rect x="%d" y="%d" width="%d" height="26" rx="13" fill="%s"/>'
+                     '<text x="%d" y="%d" text-anchor="middle" font-size="10.5" '
+                     'fill="%s" font-weight="700">%s</text>'
+                     % (x + 24, y + h - 40, pw, pbg,
+                        x + 24 + pw // 2, y + h - 23, pfg, esc(t)))
+
+    # 引き上げの矢印。プロからは生成AI教育、オペからは型の提供
+    q.append('<path d="M604 338 V282" stroke="%s" stroke-width="2" '
+             'stroke-dasharray="5 4" marker-end="url(#%s)"/>' % (RED, m))
+    q.append('<rect x="561" y="298" width="86" height="24" rx="12" fill="%s"/>'
+             '<text x="604" y="314" text-anchor="middle" font-size="10.5" fill="%s" '
+             'font-weight="700">生成AI教育</text>' % (RED, WHITE))
+    q.append('<path d="M512 250 L470 300" stroke="%s" stroke-width="2" '
+             'stroke-dasharray="5 4" marker-end="url(#%s)"/>' % (RED, m))
+    q.append('<rect x="404" y="236" width="80" height="24" rx="12" fill="%s"/>'
+             '<text x="444" y="252" text-anchor="middle" font-size="10.5" fill="%s" '
+             'font-weight="700">型の提供</text>' % (RED, WHITE))
+
+    h = 600
+    if note:
+        q.append(lines(note, 8, h + 14, 82, 17, fill=MUTED, font_size='11'))
+        h += 20 + 17 * len(wrap(note, 82))
+    return _fig(title, cap,
+        '<svg viewBox="0 0 980 %d" xmlns="http://www.w3.org/2000/svg" role="img" '
+        'aria-label="縦軸はAIエージェントをつくる／つかう、横軸は業務知識の少ない／多い。'
+        'ビルダー・アーキテクト・オペレーター・プロフェッショナルの4象限に分ける図。">'
+        '<defs><marker id="%s" markerWidth="9" markerHeight="9" refX="7" refY="4.5" '
+        'orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="%s"/></marker></defs>'
+        '%s</svg>' % (h, m, RED, ''.join(q)))
+
+
 # ==================================================================
 # ここから F16〜F25。既存の15種に無い「形」を埋める。
 # 投影資料では、同じ形が続くと内容の違いが見えなくなる。

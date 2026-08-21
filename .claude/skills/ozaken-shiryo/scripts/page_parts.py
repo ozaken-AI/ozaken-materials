@@ -233,34 +233,54 @@ def hero(eyebrow, title, copy, cat=None, meta=BYLINE, toc=None):
       copy     リード文。3〜4行で収める
       cat      右上に置く区分（「AI Transformation ／ 解説」など）。省略可
       meta     著者と所属の行。既定でおざけんの署名が入る。None で消せる
-      toc      表紙の目次。[(番号, 見出し, 時間の目安)] または [(番号, 見出し)]
+      toc      目次。[(番号, 見出し, 時間の目安)] または [(番号, 見出し)]
 
-    **目次は、節の一覧ではない。**
+    **目次は、扉の中には置かない。**
+    扉は、投影して最初に映る一枚。題とリード文と署名だけで埋まっていて、
+    そこへ6行の目次を足すと、画面の低いパソコンでは題が上へ押し出される。
+    だから目次は扉の**外**に、独立した帯として置く。
+    一度スクロールしたところに出るので、扉の一枚は最初のまま保たれる。
+
+    **並べるのは、節ではない。**
     長い時間を続けて聴く資料では、いま全体のどこにいるのかが分からなくなる。
-    表紙で大枠の流れを渡しておくと、途中の1節が長くても迷子にならない。
-    だから並べるのは節ではなく、**4〜6の塊に畳んだ流れ**にする。
-    節をそのまま全部並べると、読み上げの一覧に見えて地図として働かない。
+    先に大枠の流れを渡しておくと、途中の1節が長くても迷子にならない。
+    だから並べるのは**4〜6の塊に畳んだ流れ**にする。節をそのまま全部並べると、
+    読み上げの一覧に見えて地図として働かない。
     短い資料には要らない。120分の登壇のような、長い資料のための部品。
+
+    **帯は <section> にしない。** 面の明暗の交互と本数は機械が数えている。
+    ここを section にすると、目次を付けただけで本文が偶数本になって公開が止まる。
 
     稼働の読み出しとスクロール誘導は apply_herofx が入れるので、ここでは書かない。
     """
     top = '  <span class="hero-cat">%s</span>\n' % esc(cat) if cat else ''
     mt = '    <p class="hero-meta">%s</p>\n' % meta if meta else ''
-    tc = ''
-    if toc:
-        items = []
-        for row in toc:
-            no, label, mins = (row + ('',))[:3] if len(row) < 3 else row
-            items.append('      <li><b>%s</b><span>%s</span>%s</li>'
-                         % (esc(no), esc(label),
-                            '<i>%s</i>' % esc(mins) if mins else ''))
-        tc = ('    <ol class="hero-toc" aria-label="本日の流れ">\n%s\n    </ol>\n'
-              % '\n'.join(items))
-    return ('<section class="hero">\n%s%s  <div class="inner" data-reveal>\n'
+    page = ('<section class="hero">\n%s%s  <div class="inner" data-reveal>\n'
             '    <span class="eyebrow">%s</span>\n'
             '    <h1 class="hero-title">%s</h1>\n'
-            '    <p class="hero-copy">%s</p>\n%s%s  </div>\n</section>\n'
-            % (HERO_TEXTURE, top, eyebrow, title, esc(copy), tc, mt))
+            '    <p class="hero-copy">%s</p>\n%s  </div>\n</section>\n'
+            % (HERO_TEXTURE, top, eyebrow, title, esc(copy), mt))
+    if toc:
+        page += toc_band(toc)
+    return page
+
+
+def toc_band(toc, title='本日の流れ', eyebrow='Contents'):
+    """扉の下に置く、目次の帯。hero(toc=…) から呼ばれる。
+
+    単体でも使える。扉を持たないページや、途中で全体像を挟みたいときに。
+    """
+    items = []
+    for row in toc:
+        no, label, mins = (tuple(row) + ('',))[:3]
+        items.append('      <li><b>%s</b><span>%s</span>%s</li>'
+                     % (esc(no), esc(label), '<i>%s</i>' % esc(mins) if mins else ''))
+    return ('<div class="oz-toc">\n  <div class="inner" data-reveal>\n'
+            '    <span class="eyebrow">%s</span>\n'
+            '    <p class="oz-toc-ttl">%s</p>\n'
+            '    <ol class="oz-toc-list" aria-label="%s">\n%s\n    </ol>\n'
+            '  </div>\n</div>\n'
+            % (esc(eyebrow), esc(title), esc(title), '\n'.join(items)))
 
 
 def close(title, copy):
