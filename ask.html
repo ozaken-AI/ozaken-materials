@@ -390,7 +390,7 @@ html.past-hero .site-frame{opacity:0}
   <div class="done" id="qDone">
     <p class="mark">RECEIVED</p>
     <p class="ttl">お預かりしました</p>
-    <p class="sub">ありがとうございます。<br>会場のタイムラインに流れます。<br>質問は、可能であればこの講演の中でお答えします。</p>
+    <p class="sub">ありがとうございます。<br>会場のスクリーンに流れます。<br>質問は、可能であればこの講演の中でお答えします。</p>
     <button class="again" type="button" id="qAgain">もうひとこと送る</button>
   </div>
 
@@ -398,13 +398,14 @@ html.past-hero .site-frame{opacity:0}
   <section class="tl" id="tl" hidden>
     <div class="tl-head">
       <span class="tl-live" aria-hidden="true"></span>
-      <span class="tl-ttl">みんなの質問・コメント</span>
-      <span class="tl-en">TIMELINE</span>
+      <span class="tl-ttl">あなたが送ったもの</span>
+      <span class="tl-en">YOUR POSTS</span>
       <span class="tl-count" id="tlCount">0</span>
     </div>
     <ul class="tl-list" id="tlList"></ul>
     <button class="tl-more" type="button" id="tlMore" hidden>もっと見る</button>
-    <p class="tl-note">直近3時間に届いたものを表示しています。会場のスクリーンにも同じ内容が流れます。</p>
+    <p class="tl-note">ここに出るのは、この端末から送った分だけです。
+      ほかの方が送ったものは表示されません。届いた質問は会場のスクリーンにまとめて流れます。</p>
   </section>
 
   <p class="foot">
@@ -456,7 +457,7 @@ html.past-hero .site-frame{opacity:0}
       .catch(function(){})
       .finally(function(){
         try{ localStorage.setItem('ozaken_ask_name', nameEl.value.trim()); }catch(e){}
-        if (window.ozAskSent) window.ozAskSent(text);
+        if (window.ozAskSent) window.ozAskSent(text, nameEl.value.trim());
         send.disabled=false; send.textContent='送信する';
         body.value=''; count();
         form.style.display='none'; done.classList.add('on');
@@ -473,65 +474,59 @@ html.past-hero .site-frame{opacity:0}
 
 
 <script>
-/* みんなの声：直近3時間に届いた質問・コメントを流す。
-   多人数が同時に開くページなので、読みにいく間隔は投影ページより長くとる。 */
+/* あなたが送ったもの。**この端末から送った分だけを出す。**
+
+   以前はサーバに届いている全件を「みんなの質問・コメント」として流していた。
+   ところがこのQRは登壇ごとに配り直すものではないので、
+   直近3時間という窓の中に別の会社の回が入ると、
+   参加者の画面に**他社の質問がそのまま表示される**。
+   実際、同じ日に2社の登壇が続けば普通に起きる。
+
+   そこで一覧の取得そのものをやめた。絞り込みで隠すのではなく、
+   **他の人の書いたものが、この端末に届かない形**にしてある。
+   ここに出るのは、送信のたびに手元へ書き留めた分だけ。
+   全体を見るのは会場のスクリーン（登壇者の画面）の役目にする。 */
 (function(){
-  var LIST_URL = "https://script.google.com/macros/s/AKfycbwvf6VRQsjfiXulHOPAQ_Uren7ewTS3LTp9sp7XMf3H4yDsMhQIO1f41NPs1FfaTz1P/exec";
-  var EVERY = 30000;                 /* 読みにいく間隔 */
-  var RANGE = 3 * 3600000;           /* 表示する範囲 */
-  var STEP  = 8;                     /* 最初に見せる件数 */
+  var KEY = 'ozaken_ask_mine_v2';
+  var STEP = 20;
   var sec = document.getElementById('tl');
   var list = document.getElementById('tlList');
   var count = document.getElementById('tlCount');
   var more = document.getElementById('tlMore');
   if (!sec || !list || !count) return;
-  var seq = 0, timer = 0, shown = STEP, cache = [];
+  var shown = STEP, mine = [];
 
-  /* 自分が送ったものは印を付ける。他の人の投稿と見分けられるように */
-  var mine = {};
-  try { mine = JSON.parse(sessionStorage.getItem('ozaken_ask_mine') || '{}'); } catch(e){}
+  /* 端末に残す。以前は sessionStorage だったので、
+     送ったあとに画面を読み込み直すと自分の分まで消えていた */
+  function read(){
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (raw) return JSON.parse(raw) || [];
+    } catch(e){}
+    return [];
+  }
+  function write(){
+    try { localStorage.setItem(KEY, JSON.stringify(mine.slice(-50))); } catch(e){}
+  }
+  mine = read();
 
   function esc(t){ return String(t == null ? '' : t)
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
   function stamp(ms){
     if (!ms) return '';
-    var d = new Date(ms);
-    return ('0'+d.getHours()).slice(-2) + ':' + ('0'+d.getMinutes()).slice(-2);
-  }
-
-  function jsonp(cb){
-    var name = 'ozTl' + (++seq);
-    var el = document.createElement('script');
-    var fired = false;
-    function drop(){
-      if (el.parentNode) el.parentNode.removeChild(el);
-      setTimeout(function(){ try{ delete window[name]; }catch(e){ window[name] = undefined; } }, 60000);
-    }
-    window[name] = function(d){ fired = true; drop(); cb(d); };
-    el.onerror = function(){ if (!fired){ fired = true; drop(); cb(null); } };
-    el.src = LIST_URL + '?list=1&callback=' + name + '&_=' + Date.now();
-    document.head.appendChild(el);
-    setTimeout(function(){ if (!fired) cb(null); }, 8000);
-  }
-  /* Cookie を付けずに取りにいく。複数のGoogleアカウントにログインしていると
-     Cookie付きでは所有者と違うアカウントで解決されてしまうため */
-  function load(cb){
-    if (!window.fetch){ jsonp(cb); return; }
-    fetch(LIST_URL + '?list=1&_=' + Date.now(),
-          { method:'GET', mode:'cors', credentials:'omit', cache:'no-store' })
-      .then(function(r){ return r.ok ? r.json() : null; })
-      .then(function(d){ if (d && typeof d.ok !== 'undefined') cb(d); else jsonp(cb); })
-      .catch(function(){ jsonp(cb); });
+    var d = new Date(ms), now = new Date();
+    var hm = ('0'+d.getHours()).slice(-2) + ':' + ('0'+d.getMinutes()).slice(-2);
+    var sameDay = d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth()
+               && d.getDate() === now.getDate();
+    return sameDay ? hm : ((d.getMonth()+1) + '/' + d.getDate() + ' ' + hm);
   }
 
   function render(){
-    var cut = Date.now() - RANGE;
-    var items = [];
-    for (var i = 0; i < cache.length; i++)
-      if (!cache[i].t || cache[i].t >= cut) items.push(cache[i]);
+    var items = mine.slice().reverse();          /* 新しいものが上 */
     count.textContent = items.length;
     if (!items.length){
-      list.innerHTML = '<li class="tl-empty">まだ投稿はありません。最初のひとことをどうぞ。</li>';
+      list.innerHTML = '<li class="tl-empty">まだ送っていません。'
+        + '送ったものは、ここに残ります。</li>';
       if (more) more.hidden = true;
       sec.hidden = false;
       return;
@@ -539,9 +534,8 @@ html.past-hero .site-frame{opacity:0}
     var html = '';
     for (var k = 0; k < Math.min(shown, items.length); k++){
       var it = items[k];
-      var isMine = mine[it.q.slice(0, 24)] ? ' class="mine"' : '';
       var who = (it.n ? '<span class="ja">' + esc(it.n) + '</span> ／ ' : '') + stamp(it.t);
-      html += '<li' + isMine + '><span class="who">' + who + '</span>' + esc(it.q) + '</li>';
+      html += '<li class="mine"><span class="who">' + who + '</span>' + esc(it.q) + '</li>';
     }
     list.innerHTML = html;
     if (more){
@@ -552,25 +546,14 @@ html.past-hero .site-frame{opacity:0}
     sec.hidden = false;
   }
 
-  function pull(){
-    load(function(d){
-      if (d && d.ok && d.items){ cache = d.items; render(); }
-    });
-  }
-
   if (more) more.addEventListener('click', function(){ shown += STEP; render(); });
+  render();
 
-  pull();
-  timer = setInterval(pull, EVERY);
-
-  /* 送信直後に自分の投稿を拾いにいく */
-  window.ozAskSent = function(text){
-    try {
-      mine[text.slice(0, 24)] = 1;
-      sessionStorage.setItem('ozaken_ask_mine', JSON.stringify(mine));
-    } catch(e){}
-    setTimeout(pull, 1200);
-    setTimeout(pull, 4000);
+  window.ozAskSent = function(text, name){
+    mine.push({ q: text, n: name || '', t: Date.now() });
+    write();
+    shown = STEP;
+    render();
   };
 })();
 </script>

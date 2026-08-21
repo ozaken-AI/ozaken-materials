@@ -24,7 +24,7 @@ sys.path.insert(0, S)
 from page_parts import hero, sec, cards, close, take
 from domain_fig import (fig_gap, fig_versus, fig_check, fig_sheet, fig_context,
                         fig_ladder, fig_flow, fig_stats, fig_bars, fig_quad,
-                        fig_issues, fig_cols, fig_matrix, fig_ranges)
+                        fig_issues, fig_cols, fig_matrix, fig_ranges, fig_sides)
 
 B = []
 A = B.append
@@ -287,15 +287,22 @@ A(sec('sec-navy', 'Section 06 ─ Talent',
            '<span class="fw-bold text-red">余るのは事務職</span>。'
            'つまり総数の問題ではなく、'
            '<span class="fw-bold">どこに人がいるかの問題</span>だということです。',
-      fig=fig_gap([
-          ('AI・ロボット等利活用人材 約340万人が不足', '事務職 約440万人が余剰'),
-          ('現場人材 約260万人が不足', '文系人材 約80万人が余剰'),
-          ('理系人材 約120万人が不足', ''),
-      ], 'Fig.11 ── 2040年に、足りない職と余る職',
-         '出典：経済産業省『2040年の就業構造推計（改訂版）』2026年3月。'
-         '就業者数は約6,700万人（2022年）から約6,300万人へ減ると見込まれています',
-         dark=True, uid='jpjob',
-         left_label='足りなくなる', right_label='余ってしまう')
+      # **fig_gap は「左が右へ変わる」図なので、ここには使えない。**
+      # 不足が3件で余剰が2件。行が対にならないので、余った側に中身のない箱が残り、
+      # 対でないもの同士が矢印で結ばれて「不足が余剰に変わる」と読めてしまう。
+      # この推計が言っているのは、不足と余剰が別の場所で同時に起きること
+      fig=fig_sides(
+          ['AI・ロボット等利活用人材 約340万人が不足',
+           '現場人材 約260万人が不足',
+           '理系人材 約120万人が不足'],
+          ['事務職 約440万人が余剰',
+           '文系人材 約80万人が余剰'],
+          'Fig.11 ── 2040年に、足りない職と余る職',
+          '出典：経済産業省『2040年の就業構造推計（改訂版）』2026年3月。'
+          '就業者数は約6,700万人（2022年）から約6,300万人へ減ると見込まれています',
+          left_label='足りなくなる', right_label='余ってしまう',
+          note='左右の行は対応していません。余った人がそのまま足りない場所へ移る、'
+               'という推計ではなく、別の場所で同時に起きるという推計です')
       + fig_check([
           (True, '十分な国内投資と産業構造の転換があれば、大きな不足は生じない',
            '同推計は、AI・ロボット利活用とリスキリングで労働需要が効率化される場合を置いている'),

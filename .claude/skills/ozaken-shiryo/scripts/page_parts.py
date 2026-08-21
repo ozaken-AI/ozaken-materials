@@ -221,7 +221,7 @@ BYLINE = ('<b>小澤健祐（おざけん）</b>'
           '<span>一般社団法人AICX協会 代表理事</span>')
 
 
-def hero(eyebrow, title, copy, cat=None, meta=BYLINE):
+def hero(eyebrow, title, copy, cat=None, meta=BYLINE, toc=None):
     """資料の扉。**中央揃えではなく左揃え。**
 
     投影したときも、あとから読んだときも、視線は左上から始まる。
@@ -233,16 +233,34 @@ def hero(eyebrow, title, copy, cat=None, meta=BYLINE):
       copy     リード文。3〜4行で収める
       cat      右上に置く区分（「AI Transformation ／ 解説」など）。省略可
       meta     著者と所属の行。既定でおざけんの署名が入る。None で消せる
+      toc      表紙の目次。[(番号, 見出し, 時間の目安)] または [(番号, 見出し)]
+
+    **目次は、節の一覧ではない。**
+    長い時間を続けて聴く資料では、いま全体のどこにいるのかが分からなくなる。
+    表紙で大枠の流れを渡しておくと、途中の1節が長くても迷子にならない。
+    だから並べるのは節ではなく、**4〜6の塊に畳んだ流れ**にする。
+    節をそのまま全部並べると、読み上げの一覧に見えて地図として働かない。
+    短い資料には要らない。120分の登壇のような、長い資料のための部品。
 
     稼働の読み出しとスクロール誘導は apply_herofx が入れるので、ここでは書かない。
     """
     top = '  <span class="hero-cat">%s</span>\n' % esc(cat) if cat else ''
     mt = '    <p class="hero-meta">%s</p>\n' % meta if meta else ''
+    tc = ''
+    if toc:
+        items = []
+        for row in toc:
+            no, label, mins = (row + ('',))[:3] if len(row) < 3 else row
+            items.append('      <li><b>%s</b><span>%s</span>%s</li>'
+                         % (esc(no), esc(label),
+                            '<i>%s</i>' % esc(mins) if mins else ''))
+        tc = ('    <ol class="hero-toc" aria-label="本日の流れ">\n%s\n    </ol>\n'
+              % '\n'.join(items))
     return ('<section class="hero">\n%s%s  <div class="inner" data-reveal>\n'
             '    <span class="eyebrow">%s</span>\n'
             '    <h1 class="hero-title">%s</h1>\n'
-            '    <p class="hero-copy">%s</p>\n%s  </div>\n</section>\n'
-            % (HERO_TEXTURE, top, eyebrow, title, esc(copy), mt))
+            '    <p class="hero-copy">%s</p>\n%s%s  </div>\n</section>\n'
+            % (HERO_TEXTURE, top, eyebrow, title, esc(copy), tc, mt))
 
 
 def close(title, copy):

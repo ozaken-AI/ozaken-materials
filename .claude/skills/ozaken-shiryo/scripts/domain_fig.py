@@ -89,6 +89,20 @@ def lines(text, x, y, n, lh, **kw):
     return '<text x="%s" y="%s" %s>%s</text>' % (x, y, attrs, ts)
 
 
+def linesw(text, x, y, cols, lh, **kw):
+    """lines() の、**表示幅で折り返す**版。
+
+    和文に半角の数字や年月日が混じる欄は、文字数で数えると必ずずれる。
+    「50〜340分が10分に（自社発表・2026年2月19日）」のような添え書きは
+    こちらで折る。cols は全角を2、半角を1として数えた幅。
+    """
+    attrs = ' '.join('%s="%s"' % (k.replace('_', '-'), v) for k, v in kw.items())
+    ls = wrapw(text, cols)
+    ts = ''.join('<tspan x="%s" dy="%s">%s</tspan>'
+                 % (x, 0 if i == 0 else lh, esc(l)) for i, l in enumerate(ls))
+    return '<text x="%s" y="%s" %s>%s</text>' % (x, y, attrs, ts)
+
+
 import re as _re
 
 # 図版に動きを与える。スタイル側に a-fade / a-pop / a-grow / a-draw の仕掛けが
@@ -259,6 +273,67 @@ def fig_gap(pairs, title, cap, dark=False, uid='',
         '%s</svg>' % (h, uid, AZURE, sub, esc(left_label),
                       AZURE if not dark else PALE, esc(right_label),
                       stroke, stroke, ''.join(rows)))
+
+
+# ------------------------------------------------------------------
+# F1b  対になっていない2つの並び（左右に振り分けるだけ。矢印は引かない）
+# ------------------------------------------------------------------
+def fig_sides(lefts, rights, title, cap, dark=False,
+              left_label='足りなくなる', right_label='余ってしまう',
+              lc=0, rc=3, note=None):
+    """lefts / rights: それぞれ [文字列]。**数が揃っていなくてよい。**
+
+    fig_gap は「左が右へ変わる」図で、行が対になっていることが前提になる。
+    ところが「足りない職が3つ、余る職が2つ」のように**数の揃わない並び**を
+    そこへ流し込むと、余った側に中身のない箱が残り、対でないもの同士が
+    矢印で結ばれる。読む側には「不足が余剰に変わる」と見えてしまい、
+    推計が言っていないことを図が言い出す。
+
+    こちらは矢印を引かず、箱の数も高さも左右で別に数える。
+    並んでいるが対応してはいない、という関係をそのまま描くための形。
+    """
+    fg = WHITE if dark else INK
+    sub = 'rgba(255,255,255,.62)' if dark else MUTED
+    edge = 'rgba(255,255,255,.18)' if dark else 'rgba(46,84,150,.25)'
+    box = 'rgba(255,255,255,.06)' if dark else '#eef1f6'
+    acc = accents(dark)
+    CW, LX, RX = 420, 16, 464
+    cols = int((CW - 52) / 6.6)                   # 14px。表示幅で数える
+    Y0 = 78
+
+    def column(items, x, c):
+        out, y = [], Y0
+        for t in items:
+            ls = wrapw(t, cols)
+            bh = max(56, 26 + len(ls) * 21)
+            out.append('<rect x="%d" y="%d" width="%d" height="%d" rx="9" '
+                       'fill="%s"/>' % (x, y, CW, bh, box))
+            out.append('<rect x="%d" y="%d" width="4" height="%d" rx="2" '
+                       'fill="%s"/>' % (x, y, bh, c))
+            out.append(linesw(t, x + 22, y + int((bh - (len(ls) - 1) * 21) / 2) + 5,
+                              cols, 21, fill=fg, font_size='14',
+                              font_weight='600'))
+            y += bh + 14
+        return out, y - 14
+
+    lparts, ly = column(lefts, LX, acc[lc % len(acc)])
+    rparts, ry = column(rights, RX, acc[rc % len(acc)])
+    h = max(ly, ry) + 26
+    head = []
+    for x, label, c in ((LX, left_label, acc[lc % len(acc)]),
+                        (RX, right_label, acc[rc % len(acc)])):
+        head.append('<text x="%d" y="34" fill="%s" font-size="13" '
+                    'font-weight="700" letter-spacing="1.5">%s</text>'
+                    % (x, c, esc(label)))
+        head.append('<line x1="%d" y1="52" x2="%d" y2="52" stroke="%s" '
+                    'stroke-width="1"/>' % (x, x + CW, edge))
+    if note:
+        h += 8
+        head.append(lines(note, 16, h, 76, 17, fill=sub, font_size='11'))
+        h += 16 * len(wrap(note, 76))
+    return _fig(title, cap,
+        '<svg viewBox="0 0 900 %d" xmlns="http://www.w3.org/2000/svg" role="img">'
+        '%s%s%s</svg>' % (h, ''.join(head), ''.join(lparts), ''.join(rparts)))
 
 
 # ------------------------------------------------------------------
@@ -1638,14 +1713,29 @@ def fig_matrix(cols, rows, title, cap, dark=False, note=None):
 # F21  大きな数字（3〜4個。投影でいちばん効く形）
 # ------------------------------------------------------------------
 def fig_stats(items, title, cap, dark=False, note=None):
-    """items: [(数値, 単位, 何の数字か, 出典や補足, 差し色index)]"""
+    """items: [(数値, 単位, 何の数字か, 出典や補足, 差し色index)]
+
+    **箱の高さは、中身の行数から決める。**
+    以前は H=176 の決め打ちだった。添え書きが2行に収まるうちは
+    問題にならないが、社名・何をしたか・出典と確認日まで書くと
+    3行4行はふつうに出る。そのとき字だけが角丸の枠から垂れ下がり、
+    下の面に重なって見えた。fig_cols や fig_timeline と同じく、
+    先に全部の箱の行数を数えてから、いちばん高いものに揃える。
+    """
     fg = WHITE if dark else INK
     sub = 'rgba(255,255,255,.62)' if dark else MUTED
     edge = 'rgba(255,255,255,.16)' if dark else 'rgba(46,84,150,.2)'
     n = len(items)
     gap = 20
     w = int((868 - (n - 1) * gap) / n)
-    H = 176
+    wcols = max(8, int((w - 40) / 14.4))          # 見出し（14px・太字）は字数で
+    scols = max(14, int((w - 40) / 5.7))          # 添え書き（11px）は表示幅で
+    wl = max(len(wrap(what, wcols)) for _, _, what, _, _ in items)
+    sl = max([len(wrapw(sup, scols)) for _, _, _, sup, _ in items if sup] or [0])
+    Y_WHAT = 118
+    Y_SUP = Y_WHAT + (wl - 1) * 20 + 26
+    bottom = (Y_SUP + (sl - 1) * 15 + 14) if sl else (Y_WHAT + (wl - 1) * 20 + 16)
+    H = bottom - 16
     parts = []
     for i, (num, unit, what, sup, ai) in enumerate(items):
         c = ACCENTS[ai % len(ACCENTS)]
@@ -1661,15 +1751,15 @@ def fig_stats(items, title, cap, dark=False, note=None):
             parts.append('<text x="%d" y="86" fill="%s" font-size="15" '
                          'font-weight="700">%s</text>'
                          % (x + 24 + int(len(str(num)) * size * 0.56), sub, esc(unit)))
-        parts.append(lines(what, x + 20, 118, max(8, int((w - 40) / 14.4)), 20,
+        parts.append(lines(what, x + 20, Y_WHAT, wcols, 20,
                            fill=fg, font_size='14', font_weight='700'))
         if sup:
-            parts.append(lines(sup, x + 20, 158, max(10, int((w - 40) / 11.4)), 15,
-                               fill=sub, font_size='11'))
+            parts.append(linesw(sup, x + 20, Y_SUP, scols, 15,
+                                fill=sub, font_size='11'))
     h = H + 42
     if note:
         parts.append(lines(note, 16, h - 6, 76, 17, fill=sub, font_size='11'))
-        h += 16
+        h += 16 * len(wrap(note, 76))
     return _fig(title, cap,
         '<svg viewBox="0 0 900 %d" xmlns="http://www.w3.org/2000/svg" role="img">'
         '%s</svg>' % (h, ''.join(parts)))

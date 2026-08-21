@@ -3971,17 +3971,23 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
   if (!box || !list || !count || !feed) return;
   var seq = 0, timer = 0, seen = {}, first = true, latest = null;
 
-  /* 前の講演の質問まで出てこないよう、既定では直近の分だけを映す。
-     見出しの表示を押すと範囲が切り替わる */
+  /* 前の講演の質問まで出てこないよう、直近の分だけを映す。
+     見出しの表示を押すと範囲が切り替わる。
+
+     **「今日」と「すべて」は外してある。** この画面は会場に投影される。
+     同じ日に別の会社の登壇が入っていると、その会社の質問が
+     そのままスクリーンに出てしまう。窓を数時間に閉じておけば、
+     操作を間違えても他社の分は届かない。
+     過去の分を読み返すのは、スプレッドシート側の仕事にする */
   var RANGES = [
     { label:'直近1時間', ms: 3600000 },
-    { label:'直近3時間', ms: 3 * 3600000 },
-    { label:'今日',      ms: 'today'    },
-    { label:'すべて',    ms: 0          }
+    { label:'直近2時間', ms: 2 * 3600000 },
+    { label:'直近3時間', ms: 3 * 3600000 }
   ];
-  var ri = 1;
+  var ri = 2;
   try { var save = parseInt(localStorage.getItem('ozaken_qa_range'), 10);
         if (!isNaN(save) && RANGES[save]) ri = save; } catch(e){}
+  if (!RANGES[ri]) ri = RANGES.length - 1;      /* 外した範囲が保存されていたとき */
 
   function cutoff(){
     var r = RANGES[ri];
@@ -4071,7 +4077,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     if (!ms) return '';
     var d = new Date(ms), now = new Date();
     var hm = ('0'+d.getHours()).slice(-2) + ':' + ('0'+d.getMinutes()).slice(-2);
-    /* 今日以外は日付も出す。範囲を「すべて」にしたとき、前の講演の分と混ざらないように */
+    /* 今日以外は日付も出す。日をまたいで残っている分と混ざらないように */
     var sameDay = d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth()
                && d.getDate() === now.getDate();
     return sameDay ? hm : ((d.getMonth()+1) + '/' + d.getDate() + ' ' + hm);

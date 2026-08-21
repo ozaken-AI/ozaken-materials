@@ -79,12 +79,30 @@ def compose(body_path, extra=''):
         for w in warn:
             print('   ・' + w)
 
+    # **ここに並べ忘れると、作り直すたびに静かに古い見た目へ戻る。**
+    # 新しい体裁（normalize_style）と出現の判定の直し（fix_reveal）は、
+    # 公開したあとに全資料へ配ったものだった。ところが publish を通していないので、
+    # 生成元から作り直した資料だけが、その前の姿で上書きされていた。
+    # 実際、経営層向けほか8本が、republish のたびに新デザインを失っていた。
+    # **資料に当てるものは、必ずこの列に足す。**
     import apply_spacing, apply_herofx, apply_keynav, apply_bgcycle, apply_figanim
-    for mod in (apply_spacing, apply_bgcycle, apply_herofx, apply_keynav, apply_figanim):
+    import normalize_style
+    for mod in (apply_spacing, apply_bgcycle, apply_herofx, apply_keynav, apply_figanim,
+                normalize_style):
         got = mod.patch(page)
         if got is None:
             sys.exit('%s の注入に失敗しました' % mod.__name__)
         page = got
+
+    # 出現の判定を、要素の高さに依存しない形に直す（fix_reveal と同じ置き換え）。
+    # 背の高い塊が、画面の10倍を超えると永久に出てこなくなる
+    import fix_reveal
+    page, _ = fix_reveal.patch(page)
+
+    # 暗い地に白字で描かれた古い図版がある面には、白い箱を当てない印を付ける。
+    # 生成元から作った図はすべて明るい組みなので、ふつうは何も付かない
+    import mark_figdark
+    page, _ = mark_figdark.patch(page)
     # 持ち帰りキットと確認テストは、印がある資料にだけ入る（裏資料限定）。
     # 無ければ None が返るので、そのときは何もしない
     import apply_kit, apply_quiz
