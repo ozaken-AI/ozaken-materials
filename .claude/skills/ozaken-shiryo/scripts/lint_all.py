@@ -19,7 +19,7 @@ import lockbox
 import registry
 from build_page import check, check_tokens
 from check_wakaru import check_wakaru
-from crossref_data import NOT_DOCS
+from crossref_data import NOT_DOCS, NOT_DECKS
 
 PW = os.environ.get('OZAKEN_PW') or sys.exit('OZAKEN_PW を設定してください')
 DETAIL = '--detail' in sys.argv
@@ -55,7 +55,11 @@ def main():
     if WAKARU:
         return wakaru()
     # 置き場・索引・台帳は資料ではない。道具としてのページなので規定の外
-    files = [f for f in registry.docs() if os.path.basename(f) not in NOT_DOCS]
+    # **板（ダッシュボード）は、投影して話す資料ではない。**
+    # 面の交互も図版主導も当てはまらないので、型の検査からは外す
+    files = [f for f in registry.docs()
+             if os.path.basename(f) not in NOT_DOCS
+             and os.path.relpath(f, registry.ROOT) not in NOT_DECKS]
     colors, issues, clean = Counter(), [], 0
     for f in files:
         rel = os.path.relpath(f, registry.ROOT)

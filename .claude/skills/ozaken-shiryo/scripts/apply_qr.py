@@ -112,11 +112,18 @@ def targets(pw):
 
     道具のページ（台帳・裏資料置き場・資料マトリクス）はマスターだけで開き、
     個別パスワードを持たないので、ここで自然に外れる。
+
+    **板（ダッシュボード）も外す。** QR画面は `qr` と2文字打つと開く仕掛けで、
+    それを拾っているのは apply_keynav が入れた仕組みのほう。
+    板にはそれが入っていないので、入れても開かない升目が末尾に残るだけになる。
     """
+    from crossref_data import NOT_DECKS
     led = registry.load(pw)
     out = []
     for f in registry.docs():
         rel = os.path.relpath(f, ROOT)
+        if rel in NOT_DECKS:
+            continue
         if (led.get(rel) or {}).get('pw'):
             out.append(rel)
     return sorted(out)
