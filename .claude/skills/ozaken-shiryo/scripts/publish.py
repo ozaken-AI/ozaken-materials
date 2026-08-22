@@ -141,17 +141,65 @@ def check_pw_word(pw, m):
     return pw
 
 
+# 分類フォルダ → 玄関に出す見出しと説明。**新しい分類はここに足す。**
+# 書いていない分類は、フォルダ名から仮の見出しを作って通す（後で直せる）
+CATEGORIES = {
+    '01_concept':  ('コンセプト', 'AIとは何か。前提を揃えるための土台になる話。'),
+    '02_models':   ('モデル・技術', 'モデルの選び方、仕組み、使い分け。'),
+    '03_tools':    ('ツール', '実際の製品。料金・機能・向き不向き。'),
+    '04_practice': ('実践', '手を動かすための手順。作り方と、書き方。'),
+    '05_drive':    ('推進', '組織でAIを進めるための、体制・予算・順番。'),
+    '06_people':   ('キャリア・人材', '人と組織。職種、育成、評価、キャリア。'),
+    '07_risk':     ('リスク・法務', '事故を起こさないための線引き。'),
+    '08_industry': ('業界別', '業界ごとの活用余地と、詰まるところ。'),
+    '09_role':     ('職種別', '職種ごとに、1週間の中身がどう入れ替わるか。'),
+    '10_policy':   ('政策・国家戦略',
+                    '国は何を決め、何を決めなかったか。日本・米国・中国・EUの戦略と、その比較。'),
+    '11_stats':    ('統計調査',
+                    '数字で見るAI。導入率・雇用・投資・電力。一次情報だけを、確認日つきで。'),
+    '12_jobs':     ('雇用・労働',
+                    '日本と米国の雇用統計を、同じ物差しで並べる。'
+                    '新しい発表が出るたびに差し替えます。'),
+}
+
+
 def add_to_index(rel, label):
-    """同じ分類のリストの末尾に足す。分類が無ければ何もしない"""
+    """同じ分類のリストの末尾に足す。
+
+    **分類そのものが無いときは、分類のカードごと作る。**
+    以前はここで黙って False を返していたので、新しい分類の1本目は
+    毎回「index に載らなかった」となり、手でカードを書いていた。
+    手で書くと必ず番号や体裁がずれるので、道具の側で作る。
+    """
     cat = rel.split('/')[0]
     s = open(INDEX, encoding='utf-8').read()
     items = re.findall(r'^ *<li><a href="%s/[^"]+">.*?</a></li>$' % re.escape(cat),
                        s, re.M)
-    if not items:
-        return False
-    last = items[-1]
     new = '          <li><a href="%s">%s</a></li>' % (rel, label)
-    s = s.replace(last, last + '\n' + new, 1)
+    if items:
+        s = s.replace(items[-1], items[-1] + '\n' + new, 1)
+        open(INDEX, 'w', encoding='utf-8').write(s)
+        return True
+
+    # ここから、分類のカードごと作る。**いちばん番号の大きいカードの後ろに置く。**
+    cards = list(re.finditer(
+        r'      <div class="card">\n'
+        r'        <span class="card-tag">(\d+)</span>[\s\S]*?\n      </div>\n', s))
+    if not cards:
+        return False
+    last = max(cards, key=lambda m: int(m.group(1)))
+    n = cat.split('_')[0]
+    title, note = CATEGORIES.get(
+        cat, (cat.split('_', 1)[-1].replace('-', ' '), ''))
+    block = ('\n      <div class="card">\n'
+             '        <span class="card-tag">%s</span>\n'
+             '        <h3>%s</h3>\n'
+             '        <p>%s</p>\n'
+             '        <ul class="doc-list">\n'
+             '%s\n'
+             '        </ul>\n'
+             '      </div>\n' % (n, title, note, new))
+    s = s[:last.end()] + block + s[last.end():]
     open(INDEX, 'w', encoding='utf-8').write(s)
     return True
 
