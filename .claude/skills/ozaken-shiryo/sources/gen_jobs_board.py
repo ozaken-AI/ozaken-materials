@@ -70,6 +70,51 @@ ENTRY = [
     ('日本', '大卒の平均初任給（月額）', '23.7万円', '2026年4月入社', '4年続けて増加', 'plain'),
 ]
 
+# AI ─ どれだけ使われているか。
+# **日米を並べて大小を語らない。** 対象も設問も違う調査なので、
+# 同じ物差しの上に乗せると、そこにない差を読ませてしまう
+AI_KPI = [
+    ('52', '%', '業務でAIを使っている労働者', '米国・2026年',
+     '週に数回以上が30%、毎日が15%（Gallup）', 'azure'),
+    ('47', '%', '「自社がAIを導入した」と答えた従業員', '米国・2026年',
+     '前四半期の41%から6ポイント上昇（Gallup）', 'azure'),
+    ('79', '%', '「今後10年でAIが雇用を減らす」', '米国・2026年',
+     '前年の73%から上昇。実測より予期のほうが速く動く（Gallup）', 'red'),
+    ('36', '%', '事業レベルでAIを活用できている企業', '日本・2026年3月',
+     '調査の見出しは「二極化」。全体が少しずつ進む形ではない（JIPDEC）', 'amber'),
+]
+
+# AIは、どこに効いているか（入口に出ている数字）
+AI_ENTRY = [
+    ('エントリー求人（ナレッジワーク）', '-35%', '2023年1月→2025年後半',
+     '新卒が入っていた入口の求人。Goldman Sachs推計'),
+    ('22〜25歳ソフト開発者の雇用', '-20%', '2024年のピーク比',
+     'スタンフォード大学人間中心AI研究所「AI Index 2026」'),
+    ('ジュニア求人が求めるシニア級スキル', '7倍', '2026年6月',
+     '求人数ではなく要件が上へ飛んだ。PwC「2026 Global AI Jobs Barometer」'),
+    ('フリーランスのライティング案件', '-32%', '前年比',
+     '一方で、専門記事の単価は上がっている'),
+    ('IBMのエントリー採用', '3倍', '一度絞ったあとに戻した',
+     '減少は運命ではなく、経営判断の結果'),
+    ('ソフト開発職の10年見通し', '+15%', '2024〜34年',
+     '全職業平均は+3%。需要そのものは強い。米労働統計局'),
+]
+
+# どこまでAIで説明できるか。○＝主に効いている／△＝要因の1つ／×＝別の要因が大きい
+EXPLAIN = [
+    ('失業率の低さ', '足りない', '細っている', 'x'),
+    ('求人の量', '増えている', '減っている', 'tri'),
+    ('若手の入口', 'やや細い', '細い', 'tri'),
+    ('賃金', '上昇', '上昇', 'x'),
+    ('事務・定型の仕事', '2040年に余剰の推計', '入口から縮小', 'o'),
+]
+EXPLAIN_NOTE = (
+    'ニューヨーク連邦準備銀行の分析（2026年6月）では、'
+    '<b>若年大卒の失業率悪化のうち約64%は在宅勤務の定着で説明できる</b>とされ、'
+    'しかも悪化は生成AIが広く使われるより前から始まっていました。'
+    'AIを1行目に置くと、金利・移民政策・在宅の定着が見えなくなります。'
+    'ただし同行自身、今後は生成AIの効きがより大きくなる可能性も認めています。')
+
 # 2040年の推計（経済産業省）
 SHORT = [('AI・ロボット等利活用人材', '約340万人'),
          ('現場人材', '約260万人'),
@@ -95,6 +140,10 @@ SOURCES = [
     'ニューヨーク連邦準備銀行「The Labor Market for Recent College Graduates」2026年第2四半期まで',
     'リクルートワークス研究所「第43回 ワークス大卒求人倍率調査（2027年卒）」',
     '経済産業省「2040年の就業構造推計（改訂版）」2026年3月',
+    'Gallup（2026年・米国）の各調査',
+    'JIPDEC「企業IT利活用動向調査2026」2026年3月',
+    'PwC「2026 Global AI Jobs Barometer」2026年6月15日',
+    'スタンフォード大学人間中心AI研究所「AI Index 2026」',
 ]
 
 # ══════════════════════════════════════════════════════════════
@@ -125,6 +174,28 @@ def table(head, rows):
             '<div class="td">%s</div>' % E(c) for c in r) + '</div>'
     return ('<div class="tbl" style="--cols:%d"><div class="tr th-row">%s</div>%s</div>'
             % (len(head), th, tr))
+
+
+MARK = {'o': ('○', 'm-o'), 'tri': ('△', 'm-t'), 'x': ('×', 'm-x')}
+
+
+def explain_rows():
+    """指標ごとに、AIでどこまで説明できるかを1行で置く"""
+    out = ('<div class="xr xr-head">'
+           '<span class="xr-w">指標</span>'
+           '<span class="xr-c">日本</span>'
+           '<span class="xr-c">米国</span>'
+           '<span class="xr-m">AIで説明</span>'
+           '</div>')
+    for what, jp, us, m in EXPLAIN:
+        g, cls = MARK[m]
+        out += ('<div class="xr">'
+                '<span class="xr-w">%s</span>'
+                '<span class="xr-c"><i>日本</i>%s</span>'
+                '<span class="xr-c"><i>米国</i>%s</span>'
+                '<span class="xr-m %s">%s</span>'
+                '</div>' % (E(what), E(jp), E(us), cls, g))
+    return out
 
 
 def entry_rows():
@@ -207,6 +278,8 @@ h1{font-family:var(--font-ja-sans);font-weight:800;color:#fff;
 .p-head span{font-family:var(--font-en);font-size:.6rem;font-weight:700;
   letter-spacing:.2em;color:rgba(159,198,245,.6)}
 .kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem}
+.kpis-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:900px){.kpis-4{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .kpi{background:rgba(19,28,51,.4);border:1px solid var(--line);
   border-radius:10px;padding:.8rem .85rem .85rem;position:relative;overflow:hidden}
 .kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
@@ -259,6 +332,30 @@ h1{font-family:var(--font-ja-sans);font-weight:800;color:#fff;
 .er-t{font-family:var(--font-en);font-size:.6rem;letter-spacing:.06em;
   color:rgba(159,198,245,.6)}
 .er-n{color:rgba(216,228,240,.62);line-height:1.6}
+
+/* ── AIとの関係 ─────────────────────────── */
+.xr{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) minmax(0,1fr) 2.4rem;
+  gap:.8rem;align-items:baseline;font-size:.76rem;
+  padding:.6rem .8rem;margin-bottom:.4rem;border-radius:9px;
+  background:rgba(19,28,51,.36)}
+.xr-w{font-weight:700;color:#fff}
+.xr-c{color:rgba(216,228,240,.8);display:flex;gap:.6em;align-items:baseline;min-width:0}
+.xr-c i{font-family:var(--font-en);font-style:normal;font-size:.56rem;font-weight:700;
+  letter-spacing:.14em;color:rgba(159,198,245,.55);flex:none}
+.xr-m{justify-self:end;font-size:1rem;font-weight:700;line-height:1}
+.xr-head{background:none;padding-bottom:.2rem;margin-bottom:.15rem;
+  border-bottom:1px solid rgba(159,198,245,.22);border-radius:0}
+.xr-head span{font-family:var(--font-en);font-size:.56rem;font-weight:700;
+  letter-spacing:.14em;color:rgba(159,198,245,.6)}
+.xr-head .xr-m{font-size:.56rem;white-space:nowrap}
+.m-o{color:#46c98a}.m-t{color:var(--amber)}.m-x{color:var(--red-bright)}
+.legend{font-size:.66rem;color:rgba(216,228,240,.55);margin:.7rem 0 0;line-height:1.8}
+.legend b{color:rgba(216,228,240,.85)}
+.xnote{margin-top:.8rem;padding:.75rem .9rem;border-radius:9px;
+  background:rgba(46,84,150,.16);border-left:3px solid var(--azure);
+  font-size:.72rem;line-height:1.85;color:rgba(255,255,255,.85)}
+.xnote b{color:var(--sky)}
+.caution{font-size:.68rem;line-height:1.8;color:rgba(216,228,240,.55);margin-top:.75rem}
 
 /* ── 2040年 ─────────────────────────────── */
 .gap2040{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.1rem}
@@ -349,6 +446,26 @@ h1{font-family:var(--font-ja-sans);font-weight:800;color:#fff;
   </section>
 
   <section class="block">
+    <div class="b-head"><h2>AI ─ どれだけ使われているか</h2><span>AI ADOPTION</span></div>
+    <div class="kpis kpis-4">__AI_KPI__</div>
+    <p class="caution">日本と米国の数字は、<b>並べて大小を比べられません</b>。
+      対象も設問も違う調査です（米国はGallup、日本はJIPDEC）。
+      それぞれの国の中での動きとして読んでください。</p>
+  </section>
+
+  <section class="block">
+    <div class="b-head"><h2>AIは、どこに効いているか</h2><span>WHERE IT SHOWS</span></div>
+    __AI_ENTRY__
+    <p class="legend">上は、入口（新卒・若手）に出ている数字です。
+      <b>職が消えたのではなく、入口の一段目だけが細っています。</b></p>
+    <div class="xtbl">__EXPLAIN__</div>
+    <p class="legend"><b class="m-o">○</b> AIの影響が主に効いていると見られる ／
+      <b class="m-t">△</b> 要因の1つ ／
+      <b class="m-x">×</b> 別の要因のほうが大きい</p>
+    <p class="xnote">__EXPLAIN_NOTE__</p>
+  </section>
+
+  <section class="block">
     <div class="b-head"><h2>2040年の推計 ─ 日本</h2><span>OUTLOOK 2040</span></div>
     <div class="gap2040">
       <div class="side short"><h3>足りなくなる</h3><ul>__SHORT__</ul></div>
@@ -396,6 +513,10 @@ def build():
         ('__ENTRY__', entry_rows()),
         ('__SHORT__', ''.join('<li>%s<b>%s</b></li>' % (E(a), E(b)) for a, b in SHORT)),
         ('__SURPLUS__', ''.join('<li>%s<b>%s</b></li>' % (E(a), E(b)) for a, b in SURPLUS)),
+        ('__AI_KPI__', kpi(AI_KPI)),
+        ('__AI_ENTRY__', table(['何の数字か', '値', 'いつの分', '注記'], AI_ENTRY)),
+        ('__EXPLAIN__', explain_rows()),
+        ('__EXPLAIN_NOTE__', EXPLAIN_NOTE),
         ('__WATCH__', table(['何を見るか', 'どこが出すか', 'いつ出るか', 'なぜ先に見るか'], WATCH)),
         ('__SOURCES__', ''.join('<li>%s</li>' % E(x) for x in SOURCES)),
     ):
