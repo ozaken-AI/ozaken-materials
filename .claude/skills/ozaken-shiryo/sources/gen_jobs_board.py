@@ -32,18 +32,38 @@ LEAD = ('日本は<b>人が足りないから</b>低く、'
         '失業率は「いま仕事を探している人」しか数えないので、'
         'まったく逆の状態が、同じ数字として出てきます。')
 
-# (数値, 単位, 何の数字か, いつの分, ひとこと, 色 azure|red|plain)
+# (数値, 単位, 何の数字か, いつの分, ひとこと, 色 azure|red|amber|plain, 系列)
+#
+# **系列は、確認できた月だけを入れる。埋めない。**
+# 抜けている月は抜けたまま並べる（ラベルを見れば飛んでいることが分かる）。
+# 点が3つに満たないものは線を描かず、ひとことのほうで補う。
 JP_KPI = [
-    ('2.5', '%', '完全失業率', '2026年6月', '4月・5月・6月と同じ水準', 'azure'),
-    ('1.18', '倍', '有効求人倍率', '2026年6月', '1人に1.18件。前月から+0.01', 'azure'),
-    ('6,880', '万人', '就業者数', '2026年4〜6月期', '前年同期から+44万人', 'azure'),
-    ('+3.4', '%', '現金給与総額（前年同月比）', '2026年6月', '5か月続けて3%以上', 'azure'),
+    ('2.5', '%', '完全失業率', '2026年6月', '2025年平均も2.5%。動いていない', 'azure',
+     [('26/04', 2.5), ('26/05', 2.5), ('26/06', 2.5)]),
+    ('1.18', '倍', '有効求人倍率', '2026年6月', '1.17〜1.19の幅で動いている（3月は未確認）', 'azure',
+     [('26/01', 1.18), ('26/02', 1.19), ('26/04', 1.18), ('26/05', 1.17), ('26/06', 1.18)]),
+    ('6,880', '万人', '就業者数', '2026年4〜6月期', '前年同期から+44万人', 'azure', []),
+    ('+3.4', '%', '現金給与総額（前年同月比）', '2026年6月', '5か月続けて3%以上（5月は未確認）', 'azure',
+     [('26/03', 2.7), ('26/04', 3.5), ('26/06', 3.4)]),
 ]
 US_KPI = [
-    ('4.1', '%', '失業率', '2026年7月', '前月から低下。ただし下は見てください', 'azure'),
-    ('-2.3', '万人', '雇用者数の増減（非農業）', '2026年7月', '6月も-2.0万人。2か月続けて減少', 'red'),
-    ('61.4', '%', '労働参加率', '2026年7月', '5年を超えて最も低い', 'red'),
-    ('+3.4', '万人', '雇用の増加ペース（12か月平均）', '2026年7月まで', '月あたり。1年前より大きく低下', 'plain'),
+    ('4.1', '%', '失業率', '2026年7月', '3か月で0.3ポイント下がった', 'azure',
+     [('26/01', 4.3), ('26/02', 4.4), ('26/03', 4.3), ('26/04', 4.3),
+      ('26/05', 4.3), ('26/06', 4.2), ('26/07', 4.1)]),
+    ('-2.3', '万人', '雇用者数の増減（非農業）', '2026年7月', '2か月続けて減少。失業率とは逆を向いた', 'red',
+     [('26/04', 14.8), ('26/05', 6.3), ('26/06', -2.0), ('26/07', -2.3)]),
+    ('61.4', '%', '労働参加率', '2026年7月', '6月の61.5%が2021年3月以来の低さ。さらに下げた', 'red',
+     [('26/06', 61.5), ('26/07', 61.4)]),
+    ('+3.4', '万人', '雇用の増加ペース（12か月平均）', '2026年7月まで', '月あたり。1年前より大きく低下', 'plain', []),
+]
+
+# **速報値は、あとから大きく動く。** 同じ月が、発表のたびに書き換わる。
+# 1か月の数字だけで判断すると、翌月に前提が変わる
+REVISION = [
+    ('2026年4月', '+11.5万人', '+14.8万人', '上方 +3.3万人'),
+    ('2026年5月', '+12.9万人', '+6.3万人', '下方 -6.6万人'),
+    ('2026年6月', '+5.7万人', '-2.0万人', '下方 -7.7万人'),
+    ('2026年7月', '-2.3万人', '（まだ改定なし）', '─'),
 ]
 
 JP_ROWS = [
@@ -75,13 +95,15 @@ ENTRY = [
 # 同じ物差しの上に乗せると、そこにない差を読ませてしまう
 AI_KPI = [
     ('52', '%', '業務でAIを使っている労働者', '米国・2026年',
-     '週に数回以上が30%、毎日が15%（Gallup）', 'azure'),
+     '週に数回以上が30%、毎日が15%（Gallup）', 'azure', []),
     ('47', '%', '「自社がAIを導入した」と答えた従業員', '米国・2026年',
-     '前四半期の41%から6ポイント上昇（Gallup）', 'azure'),
+     '前四半期の41%から6ポイント上昇（Gallup）', 'azure',
+     [('前四半期', 41), ('2026年', 47)]),
     ('79', '%', '「今後10年でAIが雇用を減らす」', '米国・2026年',
-     '前年の73%から上昇。実測より予期のほうが速く動く（Gallup）', 'red'),
+     '実測より、予期のほうが速く動く（Gallup）', 'red',
+     [('2025年', 73), ('2026年', 79)]),
     ('36', '%', '事業レベルでAIを活用できている企業', '日本・2026年3月',
-     '調査の見出しは「二極化」。全体が少しずつ進む形ではない（JIPDEC）', 'amber'),
+     '調査の見出しは「二極化」。全体が少しずつ進む形ではない（JIPDEC）', 'amber', []),
 ]
 
 # AIは、どこに効いているか（入口に出ている数字）
@@ -153,16 +175,79 @@ SOURCES = [
 E = html.escape
 
 
+W, H, PAD = 168, 40, 4          # スパークラインの大きさ
+
+
+def spark(series, tone):
+    """推移を、小さな折れ線で置く。
+
+    **点が3つに満たないときは線を描かない。** 2点を結んだ線は、
+    傾きだけが目に入って、根拠より強く見えてしまう。
+    値が0をまたぐ系列（雇用者数の増減）には、0の線を薄く引く。
+    """
+    if len(series) < 3:
+        return ''
+    vals = [v for _, v in series]
+    lo, hi = min(vals), max(vals)
+    if hi == lo:                      # 動いていない系列も、真ん中に平らな線で出す
+        lo, hi = lo - 1, hi + 1
+    span = hi - lo
+
+    def y(v):
+        return PAD + (H - PAD * 2) * (1 - (v - lo) / span)
+
+    def x(i):
+        return PAD + (W - PAD * 2) * (i / (len(series) - 1))
+
+    pts = ' '.join('%.1f,%.1f' % (x(i), y(v)) for i, (_, v) in enumerate(series))
+    zero = ''
+    if lo < 0 < hi:
+        zero = ('<line x1="%d" y1="%.1f" x2="%d" y2="%.1f" stroke="rgba(216,228,240,.28)" '
+                'stroke-width="1" stroke-dasharray="2 3"/>' % (PAD, y(0), W - PAD, y(0)))
+    lx, ly = x(len(series) - 1), y(series[-1][1])
+    return ('<div class="spark">'
+            '<svg viewBox="0 0 %d %d" width="%d" height="%d" aria-hidden="true">'
+            '%s'
+            '<polyline points="%s" fill="none" stroke="currentColor" stroke-width="1.6" '
+            'stroke-linejoin="round" stroke-linecap="round" opacity=".85"/>'
+            '<circle cx="%.1f" cy="%.1f" r="2.8" fill="currentColor"/>'
+            '</svg>'
+            '<span class="sp-lab"><i>%s</i><i>%s</i></span>'
+            '</div>' % (W, H, W, H, zero, pts, lx, ly,
+                        E(series[0][0]), E(series[-1][0])))
+
+
+def trend(series, unit=''):
+    """はじめの点から、いまの点へ。どれだけ動いたかを1行で。
+
+    **「ほぼ横ばい」と丸めない。** 労働参加率の0.1ポイントは横ばいではない。
+    まったく同じ値のときだけ横ばいと書き、それ以外は差をそのまま出す。
+    率の差は「ポイント」なので、単位を書き分ける。
+    """
+    if len(series) < 2:
+        return ''
+    a, b = series[0][1], series[-1][1]
+    d = round(b - a, 4)
+    if d == 0:
+        return '<span class="tr-f">→ 横ばい</span>'
+    suf = 'pt' if unit == '%' else unit
+    fmt = ('%+.1f' % d) if abs(d) < 100 else ('%+.0f' % d)
+    return '<span class="tr-%s">%s %s%s</span>' % ('u' if d > 0 else 'd',
+                                                   '↑' if d > 0 else '↓', fmt, E(suf))
+
+
 def kpi(rows):
     out = []
-    for v, u, what, when, note, tone in rows:
+    for v, u, what, when, note, tone, series in rows:
         out.append(
             '<div class="kpi t-%s">'
             '<p class="k-what">%s</p>'
             '<p class="k-v">%s<span>%s</span></p>'
-            '<p class="k-when">%s</p>'
+            '<p class="k-when">%s%s</p>'
+            '%s'
             '<p class="k-note">%s</p>'
-            '</div>' % (tone, E(what), E(v), E(u), E(when), E(note)))
+            '</div>' % (tone, E(what), E(v), E(u), E(when), trend(series, u),
+                        spark(series, tone), E(note)))
     return '\n'.join(out)
 
 
@@ -295,8 +380,24 @@ h1{font-family:var(--font-ja-sans);font-weight:800;color:#fff;
 .k-v span{font-family:var(--font-ja-sans);font-size:.62rem;font-weight:700;
   margin-left:.3em;color:rgba(216,228,240,.72);letter-spacing:0}
 .k-when{font-family:var(--font-en);font-size:.6rem;letter-spacing:.08em;
-  color:rgba(159,198,245,.65)}
+  color:rgba(159,198,245,.65);display:flex;justify-content:space-between;
+  align-items:baseline;gap:.5em}
+.tr-u,.tr-d,.tr-f{font-family:var(--font-en);font-size:.6rem;font-weight:700;
+  letter-spacing:.04em}
+.tr-u{color:#46c98a}.tr-d{color:var(--red-bright)}.tr-f{color:rgba(159,198,245,.6)}
+.kpi.t-red .tr-u{color:var(--red-bright)}
 .k-note{font-size:.66rem;line-height:1.65;color:rgba(216,228,240,.6);margin-top:.3rem}
+
+/* 推移。**折れ線は小さくてよい。** 水準を読むためではなく、
+   向きと形（山か谷か平らか）を一目で見るために置いている */
+.spark{margin:.5rem 0 .1rem;color:var(--sky)}
+.kpi.t-red .spark{color:var(--red-bright)}
+.kpi.t-amber .spark{color:var(--amber)}
+.kpi.t-plain .spark{color:rgba(159,198,245,.6)}
+.spark svg{display:block;width:100%;height:auto;overflow:visible}
+.sp-lab{display:flex;justify-content:space-between;margin-top:.1rem}
+.sp-lab i{font-family:var(--font-en);font-style:normal;font-size:.54rem;
+  letter-spacing:.06em;color:rgba(159,198,245,.5)}
 
 /* ── 表 ─────────────────────────────────── */
 .block{background:rgba(159,198,245,.05);border:1px solid var(--line);
@@ -435,10 +536,19 @@ h1{font-family:var(--font-ja-sans);font-weight:800;color:#fff;
       __JP_TBL__
     </section>
     <section class="block">
-      <div class="b-head"><h2>米国 ─ 月ごとの雇用者数</h2><span>MONTHLY</span></div>
-      __US_TBL__
+      <div class="b-head"><h2>米国 ─ 速報値は、あとから動く</h2><span>REVISIONS</span></div>
+      __REVISION__
+      <p class="legend">同じ月の数字が、発表のたびに書き換わります。
+        <b>6月は+5.7万人と出たあと、-2.0万人まで下がりました。</b>
+        1か月の速報値だけで判断すると、翌月に前提が変わります。
+        この板では、月ごとの数字より12か月平均を先に見ています。</p>
     </section>
   </div>
+
+  <section class="block">
+    <div class="b-head"><h2>米国 ─ 月ごとの数字</h2><span>MONTHLY</span></div>
+    __US_TBL__
+  </section>
 
   <section class="block">
     <div class="b-head"><h2>入口 ─ 新卒と若手</h2><span>ENTRY LEVEL</span></div>
@@ -488,6 +598,11 @@ h1{font-family:var(--font-ja-sans);font-weight:800;color:#fff;
       統計機関のサイトへ直接到達できない環境で作っているため、
       各機関の発表を伝える報道にもとづく数字が含まれます。
       重要な判断に使う前は、各機関の原典で確かめてください。確認日 __STAMP__。</p>
+    <p class="caution"><b>推移は、確認できた月だけを並べています。</b>
+      抜けている月は埋めずに飛ばしてあるので、
+      折れ線の目盛りは等間隔ですが、月は等間隔ではありません
+      （日本の有効求人倍率は3月、現金給与総額は5月が抜けています）。
+      点が3つに満たない指標には、線を描いていません。</p>
   </section>
 
   <footer class="foot">
@@ -513,6 +628,7 @@ def build():
         ('__ENTRY__', entry_rows()),
         ('__SHORT__', ''.join('<li>%s<b>%s</b></li>' % (E(a), E(b)) for a, b in SHORT)),
         ('__SURPLUS__', ''.join('<li>%s<b>%s</b></li>' % (E(a), E(b)) for a, b in SURPLUS)),
+        ('__REVISION__', table(['月', '初回の発表', '直近の値', '動き'], REVISION)),
         ('__AI_KPI__', kpi(AI_KPI)),
         ('__AI_ENTRY__', table(['何の数字か', '値', 'いつの分', '注記'], AI_ENTRY)),
         ('__EXPLAIN__', explain_rows()),
