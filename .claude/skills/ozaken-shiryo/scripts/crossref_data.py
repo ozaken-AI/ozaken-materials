@@ -109,6 +109,10 @@ CONCEPTS = {
     'FDE': ('06_people/openai-fde.html',
         ['FDE', 'Forward Deployed'], 'AIを現場で動かす変革人材'),
 
+    'Gemini Spark': ('03_tools/gemini-spark.html',
+        ['Gemini Spark', 'Spark'],
+        '眠っているあいだも動く自律エージェント。法人アカウントでは使えない'),
+
     # ── 雇用・労働 ───────────────────────────────
     # **数字の正典は、更新される板のほうに置く。**
     # 失業率も求人倍率も毎月動くので、解説資料に焼き込むと必ず古くなる。

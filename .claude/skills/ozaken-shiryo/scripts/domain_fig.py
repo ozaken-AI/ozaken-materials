@@ -46,6 +46,11 @@ def _cw(c):
     return 2 if ord(c) > 0x2E7F else 1
 
 
+def wid(text):
+    """表示幅。全角を2、半角を1として数える。はみ出しの見積もりに使う"""
+    return sum(_cw(c) for c in text)
+
+
 def wrapw(text, cols):
     """**表示幅で折り返す。全角を2、半角を1として数える。**
 
@@ -549,17 +554,23 @@ def fig_quad(xlab, ylab, cells, title, cap, dark=False, xpoles=None, ypoles=None
         return ''.join(c for c in t if c not in '↑↓←→')
     parts.append('<text x="0" y="0" fill="%s" font-size="12" font-weight="700" '
                  'text-anchor="middle" transform="translate(%d %d) rotate(-90)">%s</text>'
-                 % (sub, 26 if ypoles else 28, TOP + 170, esc(_ysafe(ylab))))
+                 % (sub, 30 if ypoles else 30, TOP + 170, esc(_ysafe(ylab))))
     if ypoles:
-        # 縦は回転させて、下端＝下の意味／上端＝上の意味。読みは下から上へ。
-        # **rotate(-90) では字が下から上へ進む。** だから下の札は始点を下端に置き、
-        # 上の札は終点を上端に置く。逆にすると、どちらも枠の外へ出て頭が切れる
+        # 縦の両端。**端に寄せて置かない。それぞれの半分の、まんなかに置く。**
+        #
+        # 以前は下の札を下端から、上の札を上端から書き出していた。
+        # rotate(-90) では字の長さが縦にのびるので、札が長いほど端からはみ出す。
+        # 実際、Gemini Spark の資料で下の札が17px下へ、上の札が6px左へ出た。
+        # まんなか揃えにすれば、長さが変わってもはみ出す向きが片方に偏らない。
+        # 横位置も内側へ寄せて、左端に触れないようにしている。
+        lo, hi = TOP + 170, H - 16                    # 下半分の範囲
         parts.append('<text x="0" y="0" fill="%s" font-size="12" font-weight="700" '
-                     'transform="translate(50 %d) rotate(-90)">%s</text>'
-                     % (pol, H - 22, esc(_ysafe(ypoles[0]))))
+                     'text-anchor="middle" transform="translate(58 %d) rotate(-90)">%s</text>'
+                     % (pol, (lo + hi) // 2, esc(_ysafe(ypoles[0]))))
+        lo, hi = TOP - 16, TOP + 170                  # 上半分の範囲
         parts.append('<text x="0" y="0" fill="%s" font-size="12" font-weight="700" '
-                     'text-anchor="end" transform="translate(50 %d) rotate(-90)">%s</text>'
-                     % (pol, TOP + 6, esc(_ysafe(ypoles[1]))))
+                     'text-anchor="middle" transform="translate(58 %d) rotate(-90)">%s</text>'
+                     % (pol, (lo + hi) // 2, esc(_ysafe(ypoles[1]))))
     parts.append('<path d="M96 %d L96 %d" stroke="%s" stroke-width="1" fill="none"/>'
                  % (H - 16, TOP - 16, edge))
     parts.append('<path d="M96 %d L884 %d" stroke="%s" stroke-width="1" fill="none"/>'
@@ -701,9 +712,20 @@ def fig_bars(items, title, cap, dark=False, unit='', note=None):
         w = max(6, W * v / mx)
         parts.append('<rect class="a-grow" x="%d" y="%d" width="%.1f" height="26" rx="5" '
                      'fill="%s" fill-opacity="%.2f"/>' % (X, y + 4, w, tone[lv], .9 if lv else .8))
-        parts.append('<text x="%.1f" y="%d" fill="%s" font-size="13" '
-                     'font-weight="700">%s</text>'
-                     % (X + w + 12, y + 23, fg, esc(disp)))
+        # **棒の右に置いた表示値が、図版の外へ出ることがある。**
+        # 表示値はふつう「7.8%」のような短い数字だが、
+        # 言葉を入れる呼び出しもある（4極比較の「数値目標＋産業への降ろし」）。
+        # いちばん長い棒に長い言葉が付くと、右端を越えて外まで伸びる。
+        # **入りきらないときは、棒の中に右そろえで置く。** 棒グラフのふつうの逃がし方
+        room = 900 - 16 - (X + w + 12)
+        if wid(disp) * 6.6 <= room:
+            parts.append('<text x="%.1f" y="%d" fill="%s" font-size="13" '
+                         'font-weight="700">%s</text>'
+                         % (X + w + 12, y + 23, fg, esc(disp)))
+        else:
+            parts.append('<text x="%.1f" y="%d" fill="%s" font-size="13" '
+                         'font-weight="700" text-anchor="end">%s</text>'
+                         % (X + w - 12, y + 23, WHITE, esc(disp)))
         if sup:
             parts.append(lines(sup, 14, y + 40, 30, 16, fill=sub, font_size='11'))
             y += 62
@@ -952,7 +974,13 @@ def fig_ranges(phases, rows, title, cap, dark=False, note=None):
         parts.append('<rect class="a-grow" x="%.1f" y="%d" width="%.1f" height="26" rx="6" '
                      'fill="%s" fill-opacity=".85"/>' % (X + cw * a, y + 4, cw * (bmax - a + 1), c))
         if sup:
-            parts.append(lines(sup, X + cw * a + 12, y + 22, 30, 15, fill=WHITE,
+            # **折り返す幅は、帯の幅から決める。** 30字の決め打ちだったので、
+            # 右のほうから始まる短い帯に添え書きを付けると、
+            # 字が帯を突き抜けて図版の外まで出ていた（4極比較の Fig.12 で実際に出た）。
+            # 帯からはみ出した白い字は、明るい地に乗って読めなくもなる。
+            bw = cw * (bmax - a + 1)
+            parts.append(lines(sup, X + cw * a + 12, y + 22,
+                               max(6, int((bw - 24) / 11.2)), 15, fill=WHITE,
                                font_size='11'))
         y += 52
     if note:
