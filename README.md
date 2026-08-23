@@ -1,6 +1,6 @@
 # ozaken-materials
 
-小澤健祐（おざけん）のAI関連解説資料アーカイブ。トップページは [`index.html`](./index.html)（GitHub Pages 公開中: https://ozaken-ai.github.io/ozaken-materials/ ）。
+小澤健祐（おざけん）のAI関連解説資料アーカイブ。トップページは [`index.html`](./index.html)（公開中: https://content.ozaken.ai/ ）。
 
 資料は「AIを組織で使えるようにするまでの問いの連鎖」を軸に、**知る → 選ぶ → 動かす** の流れでMECEに分類しています。
 
@@ -43,9 +43,36 @@ URLをそのまま人に渡すので、パスは英語だけで書きます。
 [`404.html`](./404.html) が対応表を持っていて、新しい場所へ送り届けます。
 資料を移動・改名したときは、この対応表にも足してください。
 
+## 配信
+
+**Cloudflare Pages** が `ozaken-AI/ozaken-materials` の `main` を見ています。
+ビルドはありません（静的HTMLをそのまま配る）。
+
+| | |
+|---|---|
+| 公開URL | `https://content.ozaken.ai/` |
+| Pages プロジェクト | `ozaken-materials`（`ozaken-materials.pages.dev` でも開く） |
+| ビルドコマンド | なし |
+| 出力ディレクトリ | `/` |
+
+**`.claude/` は配信されません。** ドット始まりのフォルダは Cloudflare Pages が
+対象外にするので、生成元とスクリプトは配信物から自然に外れます。
+
+**引っ越すときは `.claude/skills/ozaken-shiryo/scripts/oz_site.py` を直して、
+`retarget.py` を通します。** URLはQRの升目としてSVGに焼き込まれているので、
+文字を置き換えるだけでは直りません。
+
+```bash
+cd .claude/skills/ozaken-shiryo/scripts
+# oz_site.py の SITE を新しいURLに直してから
+OZAKEN_PW=… python3 retarget.py https://content.ozaken.ai/ --apply
+OZAKEN_PW=… python3 apply_ogp.py cards
+```
+
 ## 更新方法
 
-ファイルを追加・修正して以下を実行すると、数分後に GitHub Pages に反映されます。
+ファイルを追加・修正して以下を実行すると、1〜2分で反映されます。
+Cloudflare Pages が `main` を見ていて、push のたびに自動で配信し直します。
 
 ```bash
 git add .
