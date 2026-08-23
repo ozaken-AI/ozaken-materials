@@ -34,7 +34,7 @@ import lockbox
 import oz_root
 
 ROOT = oz_root.root(HERE)
-SITE = 'https://ozaken-ai.github.io/ozaken-materials/'
+from oz_site import SITE          # 引っ越すときは oz_site.py だけを直す
 OGP_DIR = os.path.join(ROOT, '99_assets', 'ogp')
 MANIFEST = os.path.join(OGP_DIR, 'manifest.json')
 

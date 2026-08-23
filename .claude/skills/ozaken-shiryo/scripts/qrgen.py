@@ -330,10 +330,10 @@ if __name__ == '__main__':
         import cv2                                  # 検証用。実行時には要らない
         import numpy as np
         samples = [
-            'https://ozaken-ai.github.io/ozaken-materials/',
-            'https://ozaken-ai.github.io/ozaken-materials/Training/msa-life-training.html',
-            'https://ozaken-ai.github.io/ozaken-materials/AX_Table/s4-setsumei-dekiru-seika.html',
-            'https://ozaken-ai.github.io/ozaken-materials/05_drive/keiei-data-kiban.html',
+            'https://content.ozaken.ai/',
+            'https://content.ozaken.ai/Training/msa-life-training.html',
+            'https://content.ozaken.ai/AX_Table/s4-setsumei-dekiru-seika.html',
+            'https://content.ozaken.ai/05_drive/keiei-data-kiban.html',
             'a', 'x' * 60, 'y' * 120, 'z' * 200,
             'https://example.com/?q=' + 'ab' * 40,
         ]

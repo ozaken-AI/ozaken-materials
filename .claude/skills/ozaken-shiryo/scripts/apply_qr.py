@@ -34,7 +34,7 @@ import qrgen
 import registry
 
 ROOT = oz_root.root(HERE)
-SITE = 'https://ozaken-ai.github.io/ozaken-materials/'
+from oz_site import SITE          # 引っ越すときは oz_site.py だけを直す
 BACKSTAGE = os.path.join(ROOT, 'backstage.html')
 MARK = '<!-- OZ-QR v1 -->'
 
