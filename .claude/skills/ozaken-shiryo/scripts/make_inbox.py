@@ -92,7 +92,7 @@ h1{font-family:var(--font-ja-sans);font-weight:800;line-height:1.34;
 .lead{font-size:.86rem;color:rgba(216,228,240,.66);margin:0 0 1.6rem}
 .lead b{color:rgba(216,228,240,.86)}
 
-.nums{display:grid;grid-template-columns:repeat(5,1fr);gap:.5rem;margin-bottom:1.4rem}
+.nums{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-bottom:1.4rem}
 .num{border:1px solid rgba(159,198,245,.18);border-radius:10px;
   background:rgba(159,198,245,.06);padding:.7rem .5rem;text-align:center}
 .num b{display:block;font-family:var(--font-en);font-size:1.5rem;font-weight:700;
@@ -140,12 +140,6 @@ ul.items li.hit{border-color:rgba(240,180,41,.4)}
 .meta .nm{font-size:.74rem;font-weight:700;color:rgba(216,228,240,.85)}
 .meta .wh{font-size:.66rem;color:rgba(216,228,240,.45);
   border:1px solid rgba(159,198,245,.2);border-radius:99px;padding:.05rem .55rem}
-/* いいねの数。**0のときは出さない。**0が並ぶと、押されていないことのほうが目立つ */
-.meta .lk{display:inline-flex;align-items:center;gap:.25em;
-  font-family:var(--font-en);font-size:.72rem;font-weight:700;color:#ff5d6a}
-.meta .lk i{font-style:normal;font-size:1.05em}
-li.top .lk{color:#ff8f98}
-ul.items li.top{border-color:rgba(255,93,106,.38);background:rgba(255,93,106,.07)}
 .q{font-size:.92rem;line-height:1.85;color:#fff;white-space:pre-wrap;word-break:break-word;margin:0}
 mark{background:rgba(240,180,41,.28);color:#fff;border-radius:2px}
 
@@ -159,7 +153,6 @@ mark{background:rgba(240,180,41,.28);color:#fff;border-radius:2px}
   color:rgba(159,198,245,.7);text-decoration:none}
 .stamp{font-family:var(--font-en);font-size:.58rem;letter-spacing:.2em;
   color:rgba(159,198,245,.35);margin-top:2rem}
-@media(max-width:760px){.nums{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:520px){.nums{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
@@ -176,7 +169,6 @@ mark{background:rgba(240,180,41,.28);color:#fff;border-radius:2px}
     <div class="num"><b id="nToday">–</b><i>今日</i></div>
     <div class="num"><b id="nHour">–</b><i>直近1時間</i></div>
     <div class="num"><b id="nShown">–</b><i>表示中</i></div>
-    <div class="num"><b id="nLike">–</b><i>♥ の合計</i></div>
   </div>
 
   <div class="bar">
@@ -195,9 +187,6 @@ mark{background:rgba(240,180,41,.28);color:#fff;border-radius:2px}
     <b>期間のしぼりを外してある</b>のが違いです。
     参加者の質問箱（ask.html）には一覧そのものが無く、
     自分が送った分だけが端末に残ります。<br>
-    <b>♥</b> は、会場の方が「これも聞きたい」と押した数です。
-    質問箱は<b>場（QRの ?s=）で区切って</b>いて、同じ会場の分しか出ません。
-    ひとつの質問に押せるのは1人1回までです。<br>
     <b>コピー</b>は、いま表示している分だけを日付つきの文章にして写します。
     議事メモや、あとから回答をまとめるときに。</p>
 
@@ -218,15 +207,7 @@ mark{background:rgba(240,180,41,.28);color:#fff;border-radius:2px}
 (function(){
   var LIST_URL = "https://script.google.com/macros/s/AKfycbwvf6VRQsjfiXulHOPAQ_Uren7ewTS3LTp9sp7XMf3H4yDsMhQIO1f41NPs1FfaTz1P/exec";
   var EVERY = 30000;                 /* 読み直す間隔。投影より長くていい */
-  /* 並び順。**「聞きたい順」を足した。**会場でいいねが集まった質問から
-     答えていきたいので、時刻順とは別の軸が要る */
-  var ORDERS = [
-    { label:'新しい順', by:'new' },
-    { label:'古い順',   by:'old' },
-    { label:'聞きたい順', by:'like' }
-  ];
-  var oi = 0;
-  var seq = 0, items = [], where = '', timer = 0, misses = 0, first = true;
+  var seq = 0, items = [], where = '', newest = true, timer = 0, misses = 0, first = true;
   var el = function(id){ return document.getElementById(id); };
   var stateEl = el('state'), bodyEl = el('body'), qEl = el('q'), chipsEl = el('chips');
 
@@ -259,9 +240,6 @@ mark{background:rgba(240,180,41,.28);color:#fff;border-radius:2px}
   }
   function hm(ms){ var d = new Date(ms);
     return ('0'+d.getHours()).slice(-2) + ':' + ('0'+d.getMinutes()).slice(-2); }
-  /* 聞きたい順のときは日の見出しが出ないので、行のほうに日付を出す */
-  function dayStamp(ms){ var d = new Date(ms);
-    return (d.getMonth()+1) + '/' + d.getDate() + ' ' + hm(ms); }
 
   function match(it, word){
     if (!word) return true;
@@ -286,14 +264,7 @@ mark{background:rgba(240,180,41,.28);color:#fff;border-radius:2px}
       if (!match(it, word)) continue;
       out.push(it);
     }
-    var by = ORDERS[oi].by;
-    out.sort(function(a, b){
-      if (by === 'like'){
-        var d = (b.l || 0) - (a.l || 0);
-        if (d) return d;
-      }
-      return by === 'old' ? (a.t||0) - (b.t||0) : (b.t||0) - (a.t||0);
-    });
+    out.sort(function(a, b){ return newest ? (b.t||0) - (a.t||0) : (a.t||0) - (b.t||0); });
     return out;
   }
 
@@ -326,28 +297,22 @@ mark{background:rgba(240,180,41,.28);color:#fff;border-radius:2px}
       return;
     }
     stateEl.style.display = 'none';
-    var byLike = ORDERS[oi].by === 'like';
     var html = '', day = null;
-    if (byLike) html += '<ul class="items">';   /* 日付がばらばらに並ぶので、日の見出しは出さない */
     for (var i = 0; i < list.length; i++){
       var it = list[i], k = it.t ? dayKey(it.t) : 0;
-      if (!byLike && k !== day){
+      if (k !== day){
         if (day !== null) html += '</ul>';
         html += '<div class="day">' + (it.t ? dayLabel(it.t) : '日時なし') + '</div><ul class="items">';
         day = k;
       }
-      var p = place(it), cls = [];
-      if (word) cls.push('hit');
-      if (byLike && (it.l || 0) > 0 && i < 3) cls.push('top');
-      html += '<li' + (cls.length ? ' class="' + cls.join(' ') + '"' : '') + '><div class="meta">'
-            + '<span class="tm">'
-            + (it.t ? (byLike ? dayStamp(it.t) : hm(it.t)) : '--:--') + '</span>'
+      var p = place(it);
+      html += '<li' + (word ? ' class="hit"' : '') + '><div class="meta">'
+            + '<span class="tm">' + (it.t ? hm(it.t) : '--:--') + '</span>'
             + (it.n ? '<span class="nm">' + hi(it.n, word) + '</span>' : '')
             + (p ? '<span class="wh">' + esc(p) + '</span>' : '')
-            + ((it.l || 0) > 0 ? '<span class="lk"><i>♥</i>' + (it.l | 0) + '</span>' : '')
             + '</div><p class="q">' + hi(it.q || '', word) + '</p></li>';
     }
-    if (byLike || day !== null) html += '</ul>';
+    if (day !== null) html += '</ul>';
     bodyEl.innerHTML = html;
   }
 
@@ -359,12 +324,9 @@ mark{background:rgba(240,180,41,.28);color:#fff;border-radius:2px}
       if (t >= t0.getTime()) today++;
       if (t >= now - 3600000) hour++;
     }
-    var likes = 0;
-    for (var j = 0; j < items.length; j++) likes += (items[j].l | 0);
     el('nAll').textContent = items.length;
     el('nToday').textContent = today;
     el('nHour').textContent = hour;
-    el('nLike').textContent = likes;
   }
 
   /* ── 受け取り。fetch → だめなら script タグ ── */
@@ -421,13 +383,9 @@ mark{background:rgba(240,180,41,.28);color:#fff;border-radius:2px}
     where = b.getAttribute('data-w') || '';
     chips(); draw();
   });
-  try { var so = parseInt(localStorage.getItem('ozaken_inbox_order'), 10);
-        if (!isNaN(so) && ORDERS[so]) oi = so; } catch(e){}
-  el('order').textContent = ORDERS[oi].label;
   el('order').addEventListener('click', function(){
-    oi = (oi + 1) % ORDERS.length;
-    this.textContent = ORDERS[oi].label;
-    try { localStorage.setItem('ozaken_inbox_order', String(oi)); } catch(e){}
+    newest = !newest;
+    this.textContent = newest ? '新しい順' : '古い順';
     draw();
   });
   el('reload').addEventListener('click', function(){
@@ -444,7 +402,6 @@ mark{background:rgba(240,180,41,.28);color:#fff;border-radius:2px}
                        + ' ' + hm(it.t)) : '日時なし');
       if (it.n) head += '　' + it.n;
       var p = place(it); if (p) head += '　[' + p + ']';
-      if ((it.l || 0) > 0) head += '　♥' + (it.l | 0);
       out.push(head + '\n' + (it.q || ''));
     }
     var text = out.join('\n\n');
