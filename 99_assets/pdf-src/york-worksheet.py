@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""労働組合（副店長・マネージャークラス）向け講演のワークシート（A4縦・5ページ）。
+"""『AIエージェントの教科書 ─ 小売はどう変わるのか』のワークシート（A4縦・5ページ）。
+
+  労働組合（副店長・マネージャークラス）向けの講演で配るもの。
 
   python3 99_assets/pdf-src/york-worksheet.py
   node …/make_pdf.mjs /tmp/ozaken-ogp-fonts/york-worksheet.html    公開版.pdf a4p
@@ -32,7 +34,7 @@ OUT_PW = os.path.join(FONTS, 'york-worksheet-pw.html')
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from worksheet_style import CSS  # noqa: E402
 
-FOOT = ('<div class="foot"><span>AIは、売場と厨房に何をしに来るのか ─ ワークシート</span>'
+FOOT = ('<div class="foot"><span>AIエージェントの教科書 ─ ワークシート</span>'
         '<span>OZAKEN / AICX %s</span></div>')
 
 
@@ -256,7 +258,7 @@ def work3():
 
 def build(with_pw):
     return ('<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">'
-            '<title>AIは、売場と厨房に何をしに来るのか ワークシート</title>'
+            '<title>AIエージェントの教科書 ─ ワークシート</title>'
             '<style>%s\n.plan td.n span{display:block;font-size:7pt;'
             'font-weight:400;color:var(--muted);line-height:1.5;margin-top:.6mm}\n'
             '.plan tr.exr td{background:rgba(46,84,150,.05);font-size:7.5pt;'

@@ -1078,7 +1078,13 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
   padding:.22em .7em;border-radius:999px;background:rgba(255,255,255,.06);
   border:1px solid rgba(216,228,240,.22);transition:background .2s ease,color .2s ease}
 .aq-range:hover{background:rgba(255,255,255,.14);color:#fff}
-.aq-range + .aq-count{margin-left:.7rem}
+.aq-range + .aq-sort{margin-left:.4rem}
+.aq-count{margin-left:.7rem}
+/* いいねの数。**0のときは出さない。**0が並ぶと、押されていないことのほうが目立つ */
+.aq-lk{display:inline-flex;align-items:center;gap:.25em;margin-left:.7em;
+  font-family:var(--font-en);font-size:.82em;font-weight:700;color:#ff8f98;
+  vertical-align:baseline}
+.aq-lk i{font-style:normal;font-size:1.05em}
 .aq-count{margin-left:auto;font-family:var(--font-en);font-weight:700;
   font-size:clamp(.9rem,2.4vh,1.4rem);letter-spacing:.04em;color:#9fc6f5;
   font-variant-numeric:tabular-nums}
@@ -2563,6 +2569,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
             <span class="aq-ttl">みなさんの質問・コメント</span>
             <span class="aq-en">TIMELINE</span>
             <button class="aq-range" id="aqRange" type="button" title="表示する範囲を切り替える">直近3時間</button>
+            <button class="aq-range aq-sort" id="aqSort" type="button" title="並び順を切り替える">届いた順</button>
             <span class="aq-count" id="aqCount">0</span>
           </div>
           <ul class="aq-list" id="aqList">
@@ -3988,6 +3995,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
   var feed = document.querySelector('#askqr .aq-feed');
   var count = document.getElementById('aqCount');
   var rangeBtn = document.getElementById('aqRange');
+  var sortBtn = document.getElementById('aqSort');
   if (!box || !list || !count || !feed) return;
   var seq = 0, timer = 0, seen = {}, first = true, latest = null;
 
@@ -4022,6 +4030,31 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     for (var i = 0; i < items.length; i++) if (!items[i].t || items[i].t >= c) out.push(items[i]);
     return out;
   }
+  /* 並び順。会場で「これも聞きたい」が集まった質問を上に出したいときのために。
+     **既定は届いた順のまま。**投影中に勝手に並びが変わると、
+     いま読んでいた行がどこかへ飛ぶ */
+  var SORTS = [{ label:'届いた順', by:'time' }, { label:'聞きたい順', by:'like' }];
+  var si = 0;
+  try { var ss = parseInt(localStorage.getItem('ozaken_qa_sort'), 10);
+        if (!isNaN(ss) && SORTS[ss]) si = ss; } catch(e){}
+  function ordered(items){
+    if (SORTS[si].by !== 'like') return items;
+    return items.slice().sort(function(a, b){
+      var d = (b.l || 0) - (a.l || 0);
+      return d ? d : (b.t || 0) - (a.t || 0);
+    });
+  }
+  if (sortBtn){
+    sortBtn.textContent = SORTS[si].label;
+    sortBtn.addEventListener('click', function(){
+      si = (si + 1) % SORTS.length;
+      sortBtn.textContent = SORTS[si].label;
+      try { localStorage.setItem('ozaken_qa_sort', String(si)); } catch(e){}
+      seen = {}; first = true;
+      if (latest) render(latest.items, latest.total); else pull();
+    });
+  }
+
   if (rangeBtn){
     rangeBtn.textContent = RANGES[ri].label;
     rangeBtn.addEventListener('click', function(){
@@ -4105,7 +4138,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
 
   function render(all, total){
     latest = { items: all, total: total };
-    var items = inRange(all);
+    var items = ordered(inRange(all));
     if (!items.length){
       list.innerHTML = '<li class="aq-empty">'
         + (all.length ? 'この範囲にはまだありません。' : '最初のひとことを待っています。')
@@ -4122,6 +4155,8 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
       if (isNew) fresh = true;
       seen[key] = 1;
       var who = (it.n ? '<span class="ja">' + esc(it.n) + '</span> ／ ' : '') + stamp(it.t);
+      /* いいねは0のときは出さない。0が並ぶと、押されていないことのほうが目立つ */
+      if (it.l > 0) who += '<span class="aq-lk"><i>♥</i>' + (it.l | 0) + '</span>';
       html += '<li' + (isNew ? ' class="is-new"' : '') + '>'
             + '<span class="who">' + who + '</span>' + esc(it.q) + '</li>';
     }
