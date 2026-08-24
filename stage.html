@@ -268,9 +268,12 @@ h2 span{font-family:var(--font-en);font-size:.6rem;font-weight:700;letter-spacin
   </div>
 
   <p class="note">この画面は、鍵をかけていません。<b>会場のパソコンでも、借りた端末でも開けます。</b>
-    中身は試験画面と音だけなので、人に見られて困るものは何もありません。<br>
-    資料アーカイブのトップから、<b>ck</b> と2文字打つか、
-    右下の隅を長押しして<b>CK 会場チェック</b>でも来られます。</p>
+    中身は試験画面と音だけなので、人に見られて困るものは何もありません。<br><br>
+    <b>ここへ来る</b>　トップや資料のページで <b>ck</b> と2文字。
+    スマートフォンなら、トップの右下の隅を長押しして <b>CK 会場チェック</b>。<br>
+    <b>ここから移る</b>　<b>pt</b> で試験画面（画面を3回たたいても開きます）、
+    <b>st</b> 待機画面／<b>ti</b> タイトル／<b>qa</b> 質問箱のQR／<b>th</b> お礼の画面。
+    <b>go</b> で開演の演出、<b>en</b> で終演。<b>cs</b> 道具の部屋／<b>in</b> 受信箱。</p>
 
   <a class="back" href="index.html">← ARCHIVE TOP</a>
 </div>
@@ -619,7 +622,43 @@ h2 span{font-family:var(--font-en);font-size:.6rem;font-weight:700;letter-spacin
   });
 })();
 
-/* ══ 6. 開演前の確認 ═══════════════════════════════════════════ */
+/* ══ 6. 隠しコマンド ═══════════════════════════════════════════
+   資料や index.html と同じ2文字で、同じ画面へ飛べるようにしておく。
+   **会場では、ここから待機画面へ移りたい。**
+   確かめ終わったあと、いちいちトップへ戻ってから打ち直すのは無駄が多い。
+
+   このページだけの2文字：
+     pt   見切れの試験画面をすぐ開く（ボタンを探さなくていい）
+   スマートフォンでは、**画面を3回たたく**と同じところが開く。 */
+(function(){
+  var GO = { th:'#thanks', st:'#standby', pr:'#profile', ti:'#title',
+             qa:'#ask',    ma:'#map',     ur:'#gate',    go:'#boot', en:'#end',
+             pw:'#ledger', mx:'#matrix',  cs:'#console', 'in':'#inbox' };
+  var buf = '';
+  document.addEventListener('keydown', function(e){
+    var t = e.target;
+    if (t && (/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) || t.isContentEditable)) return;
+    if (!e.key || e.key.length !== 1 || e.metaKey || e.ctrlKey || e.altKey) return;
+    buf = (buf + e.key.toLowerCase()).slice(-4);
+    var k = buf.slice(-2);
+    if (k === 'pt'){ buf = ''; document.getElementById('btnPat').click(); return; }
+    if (GO[k]){ buf = ''; location.href = 'index.html' + GO[k]; }
+  });
+
+  /* 画面を3回たたく。**試験画面が出ているあいだは数えない。**
+     閉じようとした指で、そのまま開き直してしまう */
+  var taps = 0, last = 0;
+  document.addEventListener('click', function(e){
+    if (document.getElementById('pat').classList.contains('on')) return;
+    if (e.target.closest && e.target.closest('button, a, input, audio')) return;
+    var now = Date.now();
+    taps = (now - last > 900) ? 1 : taps + 1;
+    last = now;
+    if (taps >= 3){ taps = 0; document.getElementById('btnPat').click(); }
+  });
+})();
+
+/* ══ 7. 開演前の確認 ═══════════════════════════════════════════ */
 (function(){
   var KEY = 'ozaken_stage_checks_v1';
   var ITEMS = [
@@ -655,6 +694,44 @@ h2 span{font-family:var(--font-en);font-size:.6rem;font-weight:700;letter-spacin
     done = {}; save(); draw();
   });
   draw();
+})();
+</script>
+
+<script>
+/* OZ-KEYNAV v5 */
+/* 資料ページのショートカット。index.html と同じ2文字で、同じ画面が開く。
+   全画面の中身は index が持っているので、ここでは行き先を渡すだけ。 */
+(function(){
+  var GO = { th:'#thanks', st:'#standby', pr:'#profile', ti:'#title',
+             qa:'#ask',    ma:'#map',     ur:'#gate',    go:'#boot', en:'#end',
+             pw:'#ledger', mx:'#matrix',  cs:'#console', 'in':'#inbox',
+             ck:'#stage' };
+  /* **te（テンプレート便覧）は、ここには置けない。**
+     test と打ち始めた瞬間に te で拾われて、確認テストが永久に開けなくなる。
+     下の LONG は打ち終わりしか見ていないので、途中では守れない */
+  /* トップへの行き方。フッターのリンクが階層を知っているので、あればそれを借りる。
+     無い資料もあるので、その場合は置き場所（01_… / AX_Table / Training）から判断する */
+  function home(){
+    var a = document.querySelector('a[href$="index.html"]');
+    if (a) return a.getAttribute('href');
+    var seg = location.pathname.split('/');
+    var dir = decodeURIComponent(seg[seg.length - 2] || '');
+    return /^(0\d_|AX_Table|Training|Udemy)/.test(dir) ? '../index.html' : 'index.html';
+  }
+  /* 裏資料の隠しコマンドは、この2文字を内側に含んでしまう。
+     test の st で待機画面へ飛ばれると、テストが永久に開けない。
+     長いほうを打ち終えたときは、2文字のショートカットを見送る */
+  var LONG = /(test|quiz)$/;
+  var buf = '';
+  document.addEventListener('keydown', function(e){
+    var t = e.target;
+    if (t && (/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) || t.isContentEditable)) return;
+    if (!e.key || e.key.length !== 1 || e.metaKey || e.ctrlKey || e.altKey) return;
+    buf = (buf + e.key.toLowerCase()).slice(-4);
+    if (LONG.test(buf)){ buf = ''; return; }
+    var k = buf.slice(-2);
+    if (GO[k]){ buf = ''; location.href = home() + GO[k]; }
+  });
 })();
 </script>
 </body>

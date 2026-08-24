@@ -5,6 +5,10 @@
 起動演出・裏資料のゲート）は index.html が持っている。
 資料側に同じものを複製すると保守が破綻するので、資料でキーを打ったら
 index.html の該当画面へ飛ばす。着地の受け口は index 側に用意してある。
+
+**会場では、開いているのは資料のほう。**
+つないだ直後に画面と音を確かめたくなるのは、トップに戻る前なので、
+会場チェック（ck）もここから飛べるようにしてある。
 """
 import glob
 import os
@@ -18,7 +22,7 @@ import lockbox
 
 ROOT = oz_root.root(HERE)
 PW = os.environ.get('OZAKEN_PW') or sys.exit('OZAKEN_PW を設定してください')
-MARK = '/* OZ-KEYNAV v4 */'
+MARK = '/* OZ-KEYNAV v5 */'
 
 JS = """
 <script>
@@ -28,7 +32,11 @@ JS = """
 (function(){
   var GO = { th:'#thanks', st:'#standby', pr:'#profile', ti:'#title',
              qa:'#ask',    ma:'#map',     ur:'#gate',    go:'#boot', en:'#end',
-             pw:'#ledger', mx:'#matrix' };
+             pw:'#ledger', mx:'#matrix',  cs:'#console', 'in':'#inbox',
+             ck:'#stage' };
+  /* **te（テンプレート便覧）は、ここには置けない。**
+     test と打ち始めた瞬間に te で拾われて、確認テストが永久に開けなくなる。
+     下の LONG は打ち終わりしか見ていないので、途中では守れない */
   /* トップへの行き方。フッターのリンクが階層を知っているので、あればそれを借りる。
      無い資料もあるので、その場合は置き場所（01_… / AX_Table / Training）から判断する */
   function home(){
@@ -62,7 +70,7 @@ def patch(html):
         return None
     # 旧版が入っていたら、そっくり外してから入れ直す。
     # 二重に置くと同じキーが2回走る
-    html = re.sub(r'\n?<script>\n/\* OZ-KEYNAV v[123] \*/[\s\S]*?</script>\n?', '\n', html)
+    html = re.sub(r'\n?<script>\n/\* OZ-KEYNAV v[1234] \*/[\s\S]*?</script>\n?', '\n', html)
     i = html.rfind('</body>')
     if i < 0:
         return None
