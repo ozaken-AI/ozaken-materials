@@ -44,8 +44,9 @@ LOCK_TITLE = '<title>🔒 資料アーカイブ ─ おざけん</title>'
 SITE_NAME = 'おざけん 資料アーカイブ'
 DESC_MAX = 120
 
-# 台帳は中身が中身なので、題も概要も出さない
-SKIP = {'passwords.html'}
+# 台帳と受信箱は中身が中身なので、題も概要も出さない。
+# どちらも人に渡すページではないので、共有カードを作る意味もない
+SKIP = {'passwords.html', 'inbox.html'}
 
 # フォルダ名 → カードに出す小見出し
 CATS = {

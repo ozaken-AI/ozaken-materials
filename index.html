@@ -2821,6 +2821,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     <div class="ozs-group">RESTRICTED ／ 要パスワード</div>
     <div class="ozs-list ozs-one">
       <button class="ozs-item" type="button" data-oz="cs" data-lock><span class="ozs-key">CS</span>道具の部屋（鍵の要るページ）</button>
+      <button class="ozs-item" type="button" data-oz="in" data-lock><span class="ozs-key">IN</span>受信箱（質問・コメントを全部見る）</button>
     </div>
 
     <div class="ozs-group">STAGE ／ 投影</div>
@@ -2835,6 +2836,8 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
 
     <p class="ozs-note">裏資料置き場・パスワード台帳・資料マトリクス・テンプレート便覧は、
       すべて<b>道具の部屋</b>からたどれます。一度解錠すれば、その先は聞かれません。<br>
+      <b>受信箱</b>は、届いた質問・コメントを期間を切らずに全部出す登壇者用の画面です。
+      会場に映す<b>質問箱のQR（QA）</b>とは別なので、投影中は開かないでください。<br>
       画面の右下の隅を長押しすると、いつでもここに戻れます。</p>
     <button class="ozs-close" type="button" data-ozs-close>閉じる</button>
   </div>
@@ -3371,10 +3374,11 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
   function closeAll(){ all.forEach(function(o){ if(o.el.classList.contains('show')) o.hide(); }); }
   function run(code){
     if(code==='ma'){ if(!window.ozMap) return false; closeAll(); window.ozMap(); return true; }
-    if(code==='ur'||code==='pw'||code==='mx'||code==='te'||code==='cs'){
+    if(code==='ur'||code==='pw'||code==='mx'||code==='te'||code==='cs'||code==='in'){
       if(!window.ozGate) return false;
       closeAll();
-      window.ozGate({ur:'backstage',pw:'ledger',mx:'matrix',te:'template',cs:'console'}[code]);
+      window.ozGate({ur:'backstage',pw:'ledger',mx:'matrix',te:'template',
+                     cs:'console','in':'inbox'}[code]);
       return true; }
     if(code==='go'){ if(!window.ozBoot) return false; closeAll(); window.ozBoot(null,'start'); return true; }
     if(code==='en'){ if(!window.ozBoot||!bySecret['th']) return false; closeAll();
@@ -3425,9 +3429,10 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     if(map&&map.classList.contains('show')) return;   /* 星座マップ表示中は他のコマンドを拾わない */
     if(e.key&&e.key.length===1&&!e.metaKey&&!e.ctrlKey&&!e.altKey){ buf=(buf+e.key.toLowerCase()).slice(-8);
       /* ma 星座マップ／ur 裏資料置き場／pw パスワード台帳／mx 資料マトリクス／
-         te テンプレート便覧／go 開演の演出／en 終演の演出。
+         te テンプレート便覧／cs 道具の部屋／in 受信箱／
+         go 開演の演出／en 終演の演出。
          鍵の要る行き先は、判定を遷移先の暗号化ページに任せる */
-      var CODES=['ma','ur','pw','mx','te','cs','go','en'];
+      var CODES=['ma','ur','pw','mx','te','cs','in','go','en'];
       for(var ci=0;ci<CODES.length;ci++){
         if(buf.slice(-2)===CODES[ci]&&run(CODES[ci])){ buf=''; return; } }
       for(var sc in bySecret){ if(buf.slice(-sc.length)===sc){ buf=''; run(sc); break; } } }
@@ -3449,6 +3454,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
       '#matrix': function(){ if(window.ozGate) window.ozGate('matrix'); },
       '#template': function(){ if(window.ozGate) window.ozGate('template'); },
       '#console': function(){ if(window.ozGate) window.ozGate('console'); },
+      '#inbox':  function(){ if(window.ozGate) window.ozGate('inbox'); },
       '#boot':   function(){ if(window.ozBoot) window.ozBoot(null,'start'); },
       '#end':    function(){ if(window.ozBoot&&bySecret['th'])
                                window.ozBoot(function(){ bySecret['th'].show(); },'end'); }
@@ -3692,7 +3698,11 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
       lead:'どの資料が、どの概念に触れているかの一覧です。<br>パスワードを入力してください。' },
     /* 鍵の要るページを1枚に集めた部屋。ここを解錠すれば、先はもう聞かれない */
     console:{ dest:'console.html', title:'道具の部屋',
-      lead:'鍵の要るページを、ここに集めています。<br>マスターパスワードを入力してください。' }
+      lead:'鍵の要るページを、ここに集めています。<br>マスターパスワードを入力してください。' },
+    /* **登壇者だけの受信箱。**投影のQ&Aは会場に映すので直近数時間しか出さないが、
+       こちらは期間を切らずに全部出す。だから鍵はマスターだけ */
+    inbox:{ dest:'inbox.html', title:'受信箱 ─ 質問とコメント',
+      lead:'届いた質問・コメントを、期間を切らずにすべて表示します。<br>マスターパスワードを入力してください。' }
   };
   var DEST=DESTS.backstage.dest;
   window.ozGate=function(which){

@@ -182,7 +182,8 @@ GROUPS = [
 
 # 資料そのものではない、置き場・索引のページ。マトリクスからは外す
 # 道具のページ。資料ではないので、本数にも関連づけにも数えない
-NOT_DOCS = {'backstage.html', 'matrix.html', 'passwords.html', 'console.html'}
+NOT_DOCS = {'backstage.html', 'matrix.html', 'passwords.html', 'console.html',
+            'inbox.html'}
 
 # **資料ではあるが、投影して話す資料ではないもの。**
 #

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """道具の部屋（console.html）を組む。
 
-**鍵の要るページが4枚に増えて、入口を覚えていられなくなった。**
-裏資料置き場・パスワード台帳・資料マトリクス・テンプレート便覧。
+**鍵の要るページが増えて、入口を覚えていられなくなった。**
+裏資料置き場・パスワード台帳・資料マトリクス・テンプレート便覧・受信箱。
 パソコンなら2文字のキーで飛べるが、スマートフォンでは打てない。
 
 そこで、鍵の要るページだけを1枚に集めた。ここを開ければ、
@@ -43,6 +43,9 @@ DOORS = [
      'どの資料が、どの概念に触れているか。手薄なテーマを見つける道具。'),
     ('template.html', 'TE', 'テンプレート便覧',
      '資料の型・図版カタログ・レギュレーション・生成元の一覧。'),
+    ('inbox.html', 'IN', '受信箱 ─ 質問とコメント',
+     '届いたものを、期間を切らずに全部。投影のQ&Aは会場に映すので'
+     '直近数時間しか出さない。読み返すのはこちら。'),
 ]
 
 
@@ -71,8 +74,10 @@ def build(pw):
         % (html.escape(h), html.escape(k), html.escape(t), html.escape(d))
         for h, k, t, d in DOORS)
     out = TEMPLATE
+    keys = '／'.join('<b>%s</b>' % k.lower() for _, k, _, _ in DOORS)
     for a, b in (('__DOORS__', doors), ('__NDOC__', str(n_doc)),
                  ('__NCAT__', str(n_cat)), ('__NPW__', str(n_pw)),
+                 ('__NDOOR__', str(len(DOORS))), ('__KEYS__', keys),
                  ('__STAMP__', datetime.date.today().isoformat())):
         out = out.replace(a, b)
     return out
@@ -162,7 +167,7 @@ h1{font-family:var(--font-ja-sans);font-weight:800;line-height:1.34;
 __DOORS__
   </div>
 
-  <p class="note">パソコンでは、この4枚に<b>2文字のキー</b>（<b>ur</b>／<b>pw</b>／<b>mx</b>／<b>te</b>）でも飛べます。
+  <p class="note">パソコンでは、この__NDOOR__枚に<b>2文字のキー</b>（__KEYS__）でも飛べます。
     スマートフォンでは、玄関の<b>3つの要素を順にタップ</b>すると、この部屋が開きます。</p>
 
   <a class="back" href="index.html">← ARCHIVE TOP</a>

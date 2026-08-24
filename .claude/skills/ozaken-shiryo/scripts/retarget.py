@@ -34,7 +34,7 @@ ROOT = oz_root.root(HERE)
 
 # 暗号の外にある、URLを焼き込んでいるファイル
 PLAIN = ['index.html', 'ask.html', '404.html', 'console.html', 'backstage.html',
-         'matrix.html', 'template.html', 'passwords.html']
+         'matrix.html', 'template.html', 'passwords.html', 'inbox.html']
 
 
 def swaps(old):
