@@ -4,6 +4,7 @@
 SVGのtextは折り返さないため、ラベルは短く保ち、必要な場合だけ
 wrap() で明示的に行を分ける。色はデザインシステムのトークンに揃える。
 """
+import re
 
 INK = '#1a1a2e'
 NAVY = '#1f3864'
@@ -15,7 +16,22 @@ RED = '#e23744'
 MUTED = '#6b7a99'
 
 
+# **図版の文字に、HTMLの太字タグは書けない。**
+# SVGの <text> の中では <b> は効かず、esc() を通って
+# 「&lt;b&gt;」の6文字がそのまま画面に出る。
+# 本文カードと同じ気持ちで <b> を書いてしまう事故が、実際に4本の資料で出た。
+# ここで落としておけば、渡してしまっても壊れない。
+# **折り返しの前に落とす。** あとで落とすと、タグの文字数が
+# 折り返しの桁数を食ってしまい、行がその分だけ早く折れる。
+_HTML_TAG = re.compile(r'</?(?:b|strong|em|i|span)\b[^>]*>')
+
+
+def detag(t):
+    return _HTML_TAG.sub('', t) if isinstance(t, str) else t
+
+
 def esc(t):
+    t = detag(t)
     return (t.replace('&', '&amp;').replace('<', '&lt;')
              .replace('>', '&gt;').replace('"', '&quot;'))
 
@@ -27,6 +43,7 @@ def _isw(c):
 
 def wrap(text, n):
     """n文字ごとに折り返す。ただし英数字の途中では切らない"""
+    text = detag(text)
     out, i, L = [], 0, len(text)
     while i < L:
         j = min(i + n, L)
@@ -60,6 +77,7 @@ def wrapw(text, cols):
     「応募受付から書類整理・日程調整まで流す」（18字＝幅36）は溢れる。
     製品名と実例のように、和文と欧文のどちらも来る欄はこちらを使う。
     """
+    text = detag(text)
     out, cur, w = [], [], 0
     for i, ch in enumerate(text):
         cw = _cw(ch)

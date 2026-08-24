@@ -118,6 +118,19 @@ def check(page):
     ids = re.findall(r'<marker id="([^"]+)"', page)
     if len(ids) != len(set(ids)):
         errs.append('marker id重複: %s' % ids)
+    # **SVGの文字の中に、HTMLのタグや実体参照を書いてしまっていないか。**
+    # 図版の文字は esc() を通るので、<b> は太字にならずそのまま画面に出る。
+    # 同じ理由で、&amp; と書くと「&amp;」の6文字がそのまま出てしまう
+    #（「セブン&アイ」を「セブン&amp;アイ」と書いて、実際に出た）。
+    # 本文カードでは <b> も &amp; も正しいので、SVGの中だけを見る
+    leak = set()
+    for s_ in svgs:
+        leak |= {m for m in re.findall(r'&lt;/?\w+&gt;', s_)}
+        leak |= {m for m in re.findall(r'&amp;(?:amp|lt|gt|quot|#\d+);', s_)}
+    if leak:
+        errs.append('図版の文字にタグ・実体参照が混入: %s'
+                    '（SVGの中では太字にできない。素の & をそのまま渡す）'
+                    % ' '.join(sorted(leak)))
     errs += check_tokens(page)
     figs = page.count('class="figure"')
     return errs, '本文%d本 / 図版%d点 / SVG%d個' % (len(body), figs, len(svgs))
