@@ -61,6 +61,7 @@ def main():
              if os.path.basename(f) not in NOT_DOCS
              and os.path.relpath(f, registry.ROOT) not in NOT_DECKS]
     colors, issues, clean = Counter(), [], 0
+    kinds = Counter()
     for f in files:
         rel = os.path.relpath(f, registry.ROOT)
         html = lockbox.decrypt(f, PW)
@@ -68,10 +69,11 @@ def main():
             errs, _ = check(html)
         except Exception as e:            # 構成が特殊で検査器が通らない資料もある
             errs = ['検査器が通らない: %s' % e]
-        # 演出の注入で本文の並びは変わらないが、AX Tableなど構成が特殊な資料もある。
-        # ここでは色と書体だけを見て、構成の指摘は参考に留める
         tok = check_tokens(html)
-        if not tok:
+        # **色と書体の指摘は、check() の戻りにも入っている。**
+        # 両方を足すと同じものを二度数えるので、ここで落とす
+        errs = [m for m in errs if m not in tok]
+        if not tok and not errs:
             clean += 1
         else:
             issues.append((rel, tok, errs))
@@ -79,21 +81,32 @@ def main():
                 if m.startswith('規定外の色'):
                     for c in m.split(': ', 1)[1].split('（')[0].split():
                         colors[c] += 1
+            for m in errs:
+                kinds[m.split(':')[0].split('（')[0].strip()[:28]] += 1
 
+    # **「規定どおり」は、色と書体だけの話ではない。**
+    # 以前はここで check() の結果を捨てていて、色さえ合っていれば
+    # 「104本すべて規定どおり」と出ていた。図のキャプションに残った
+    # マークダウンも、扉の長すぎる題も、この数には出てこなかった。
+    # 出ない指摘は、無いのと同じ
     print('資料 %d 本 ／ 規定どおり %d 本 ／ 要修正 %d 本\n' % (len(files), clean, len(issues)))
     if colors:
         print('規定外の色（多い順）')
         for c, n in colors.most_common(20):
             print('  %-9s %2d 本' % (c, n))
+        print()
+    if kinds:
+        print('型の指摘（多い順）')
+        for k, n in kinds.most_common(20):
+            print('  %-42s %3d 本' % (k, n))
     if DETAIL:
         print('\n資料ごとの指摘')
         for rel, tok, errs in issues:
             print('\n■ %s' % rel)
             for m in tok:
-                print('   ', m)
+                print('    （色・書体）', m)
             for m in errs:
-                if m not in tok:
-                    print('    （構成）', m)
+                print('    （型）    ', m)
     else:
         print('\n要修正の資料（先頭20本）')
         for rel, _, _ in issues[:20]:

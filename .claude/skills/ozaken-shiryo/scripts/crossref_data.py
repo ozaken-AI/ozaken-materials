@@ -202,7 +202,12 @@ NOT_DOCS = {'backstage.html', 'matrix.html', 'passwords.html', 'console.html',
 #
 # これらは index には並ぶ（読者に渡す資料である）が、
 # 型の検査（build_page.check）からは外す。put_board.py で差し替える。
-NOT_DECKS = {'12_jobs/us-jp-employment.html'}
+# 記事の体裁で組んだページと、施策を引くための一覧も同じ。
+# どちらも <section class="sec-light"> を持たないので、
+# 型の検査にかけると「面が1本も無い」で例外になっていた
+NOT_DECKS = {'12_jobs/us-jp-employment.html',
+             '01_concept/ax-article.html',
+             '05_drive/ai-51-master.html'}
 
 # **関連資料チップの行き先にしない資料。**
 #

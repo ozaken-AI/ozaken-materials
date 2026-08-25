@@ -148,11 +148,24 @@ def check_hero(page):
 def check(page):
     import xml.etree.ElementTree as ET
     errs = []
-    if page.count('<table'):
+    # **数えるのは書いた中身だけ。CSSとJSは数えない。**
+    # 公開後のページには演出のCSSが入っていて、その中に
+    # 「.hero .btn-primary は畳む」という打ち消しの規則がある。
+    # 素で数えると、それを禁止のボタンとして拾ってしまい、
+    # lint_all では101本すべてが「CTAボタンが混入」と出ていた
+    mark = re.sub(r'<style[\s\S]*?</style>', '', page)
+    mark = re.sub(r'<script[\s\S]*?</script>', '', mark)
+    if mark.count('<table'):
         errs.append('tableタグが混入')
-    if page.count('btn-primary') + page.count('btn-secondary'):
+    if mark.count('btn-primary') + mark.count('btn-secondary'):
         errs.append('CTAボタンが混入')
     order = re.findall(r'<section class="(hero|sec-light|sec-navy)"', page)
+    # **面が1本も無いページは、そもそも講演資料ではない。**
+    # 記事の体裁のページや一覧のページを検査にかけると、
+    # ここで order[-1] が例外になって「検査器が通らない」と出ていた。
+    # 例外ではなく、何が足りないのかを言う
+    if not order:
+        return ['講演資料の面（hero / sec-light / sec-navy）が1本も無い'], '面0本'
     body = order[1:-1]
     if len(body) % 2 == 0:
         errs.append('本文セクションが偶数本: %d' % len(body))
@@ -160,7 +173,7 @@ def check(page):
         errs.append('同じ背景が連続: %s' % order)
     if order[-1] != 'sec-navy':
         errs.append('末尾がネイビーでない')
-    if page.count('class="take"') > 2:
+    if mark.count('class="take"') > 2:
         errs.append('takeが3回以上')
     errs += check_hero(page)
     svgs = re.findall(r'<svg[\s\S]*?</svg>', page)
@@ -184,10 +197,31 @@ def check(page):
     for s_ in svgs:
         leak |= {m for m in re.findall(r'&lt;/?\w+&gt;', s_)}
         leak |= {m for m in re.findall(r'&amp;(?:amp|lt|gt|quot|#\d+);', s_)}
+        # `**強調**` も同じ事故。マークダウンはSVGでは効かないので、
+        # `**` の2文字がそのまま画面に出る。1本の資料で7か所やった
+        for t_ in re.findall(r'<(?:text|tspan)[^>]*>([^<]*)<', s_):
+            if '**' in t_:
+                leak.add('マークダウン「%s」' % t_.strip()[:20])
     if leak:
         errs.append('図版の文字にタグ・実体参照が混入: %s'
                     '（SVGの中では太字にできない。素の & をそのまま渡す）'
                     % ' '.join(sorted(leak)))
+
+    # **図の題とキャプションも、SVGの文字と同じ扱い。**
+    # `_fig()` が esc() を通すので、ここに書いた <b> も &lt; も
+    # そのまま文字として画面に出る。SVGの外なので上の走査では拾えず、
+    # 便覧そのものに7か所の `**` と `&lt;table&gt;` が残っていた
+    capleak = set()
+    for cls in ('fig-title', 'figure-cap', 'fig-note'):
+        for t_ in re.findall(r'class="[^"]*\b%s\b[^"]*"[^>]*>([\s\S]*?)</' % cls, page):
+            t_ = re.sub(r'<[^>]+>', '', t_)
+            if '**' in t_:
+                capleak.add('マークダウン「%s」' % t_.strip()[:20])
+            capleak |= set(re.findall(r'&amp;(?:amp|lt|gt|quot|#\d+);', t_))
+    if capleak:
+        errs.append('図の題・キャプションにマークダウンか二重の実体参照: %s'
+                    '（esc() を通るので、書いたとおりの文字が画面に出る）'
+                    % ' '.join(sorted(capleak)))
     errs += check_tokens(page)
     figs = page.count('class="figure"')
     return errs, '本文%d本 / 図版%d点 / SVG%d個' % (len(body), figs, len(svgs))
