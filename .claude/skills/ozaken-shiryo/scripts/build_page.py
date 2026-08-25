@@ -27,9 +27,13 @@ HEAD = """<!DOCTYPE html>
 <body>
 """
 
+# トップページへの行き先は、サイトの根から書く。
+# 資料は 09_role/ の下にも根の直下にもあるので、`../index.html` と書くと
+# 根の直下の資料が行き止まりになる（template.html が実際にそうだった）。
+# 扉に重ねる上の動線と、この下の帯は apply_home が入れる
 FOOT = """
 <footer>
-  <p>&copy; 2026 小澤健祐（おざけん）/ 一般社団法人AICX協会 &nbsp;｜&nbsp; <a href="../index.html">← AI資料アーカイブに戻る</a></p>
+  <p>&copy; 2026 小澤健祐（おざけん）/ 一般社団法人AICX協会 &nbsp;｜&nbsp; <a href="/index.html">← AI資料アーカイブに戻る</a></p>
 </footer>
 {tail}
 </body>

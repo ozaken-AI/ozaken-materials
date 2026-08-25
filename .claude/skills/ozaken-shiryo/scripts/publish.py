@@ -86,9 +86,13 @@ def compose(body_path, extra=''):
     # 実際、経営層向けほか8本が、republish のたびに新デザインを失っていた。
     # **資料に当てるものは、必ずこの列に足す。**
     import apply_spacing, apply_herofx, apply_keynav, apply_bgcycle, apply_figanim
-    import normalize_style
+    import apply_home, normalize_style, normalize_hero
+    # **normalize_hero がここに無かった。**
+    # 扉の大きさを全資料でそろえたCSSは、この列を通らないので、
+    # 生成元から作り直すたびに静かに剥がれていた（実際に2本で剥がれた）。
+    # 扉の並びを決めるCSSなので、herofx より後ろに積む
     for mod in (apply_spacing, apply_bgcycle, apply_herofx, apply_keynav, apply_figanim,
-                normalize_style):
+                apply_home, normalize_style, normalize_hero):
         got = mod.patch(page)
         if got is None:
             sys.exit('%s の注入に失敗しました' % mod.__name__)

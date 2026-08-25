@@ -24,7 +24,7 @@ import oz_root
 ROOT = oz_root.root(HERE)
 
 # 積む順番。CSSはこの順で `<style>` の末尾に並ぶ
-ORDER = ['spacing', 'bg', 'herofx', 'keynav', 'figanim', 'xref']
+ORDER = ['spacing', 'bg', 'herofx', 'keynav', 'figanim', 'home', 'herosize', 'xref']
 
 # name: (モジュール, CSSの始まりの印, CSSの終わりの印, JSの見出しコメント)
 JOBS = {
@@ -34,6 +34,8 @@ JOBS = {
                 '/* ファーストビューの演出パーツを組み立てる。'),
     'keynav':  ('apply_keynav', None, None, '/* 資料ページのショートカット。'),
     'figanim': ('apply_figanim', '/* OZ-FIGFLOW ', '/* /OZ-FIGFLOW */', None),
+    'home':    ('apply_home', '/* ══ OZ-HOME ', '/* /OZ-HOME */', None),
+    'herosize': ('normalize_hero', '/* ══ OZ-HEROSIZE ', '/* /OZ-HEROSIZE */', None),
     'xref':    (None, '/* ══ 関連資料チップ', '/* /OZ-XREFCSS */', None),
 }
 

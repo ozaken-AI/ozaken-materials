@@ -132,6 +132,15 @@ def strip(html):
     return html[:i] + html[j + len(MARK) + 1:]
 
 
+def targets():
+    """reapply から呼ばれる。台帳に載っている資料が対象。
+
+    これが無かったので reapply の列にも入れられず、
+    publish で作り直した資料から静かに剥がれていた
+    """
+    return registry.docs()
+
+
 def patch(html):
     if MARK in html:
         return None

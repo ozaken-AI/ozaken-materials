@@ -248,6 +248,8 @@ html.past-hero .site-frame{opacity:0}
   .hero .texture > svg > path{stroke-dashoffset:0}
   .oz-sweep,.sf-edge i,.oz-net{display:none}
   .sf-c{opacity:.5}}/* /OZ-HEROFX */
+
+
 </style>
 </head>
 <body>
@@ -257,16 +259,19 @@ html.past-hero .site-frame{opacity:0}
   <h1>そのページは、いまここにはありません</h1>
   <p>資料のURLをすべて英語に付け替えました。<br>古いリンクは、この画面が新しい置き場所へ送り届けます。</p>
   <div class="go" id="go"></div>
-  <a class="btn" href="/ozaken-materials/">資料アーカイブへ</a>
+  <a class="btn" href="/index.html">資料アーカイブへ</a>
   <p style="margin-top:1.2rem"><code id="was"></code></p>
 </div>
 <script>
 // 旧URL → 新URL。2026年8月に日本語のパスを英語へ移したときの対応表
 var FILES = {"01_概念・思想/5レベル_Copilot.html": "01_concept/five-levels-copilot.html","01_概念・思想/5レベル_Gemini.html": "01_concept/five-levels-gemini.html","01_概念・思想/5レベル_copilot.pdf": "01_concept/five-levels-copilot.pdf","01_概念・思想/5レベル_gemini.pdf": "01_concept/five-levels-gemini.pdf","01_概念・思想/AIエージェントとは.html": "01_concept/what-is-ai-agent.html","01_概念・思想/AXとは.pdf": "01_concept/what-is-ax.pdf","01_概念・思想/AXとは何か.pdf": "01_concept/what-is-ax-full.pdf","01_概念・思想/使うAIから任せるAIへ_AIエージェント実装の5レベル.pdf": "01_concept/five-levels-of-delegation.pdf","01_概念・思想/日本再興戦略.html": "01_concept/japan-revival-strategy.html","01_概念・思想/生成AIとDX.html": "01_concept/genai-and-dx.html","01_概念・思想/生成AIとは.html": "01_concept/what-is-genai.html","02_技術・モデル動向/AI音声.html": "02_models/ai-voice.html","02_技術・モデル動向/Mythos1.html": "02_models/mythos-1.html","02_技術・モデル動向/Mythos2.html": "02_models/mythos-2.html","02_技術・モデル動向/Mythosが公開.pdf": "02_models/mythos-release.pdf","02_技術・モデル動向/ハイブリッドAI_適材適所のモデル使い分け.html": "02_models/hybrid-ai-model-routing.html","02_技術・モデル動向/モデル使い分け.html": "02_models/model-selection.html","03_ツール・製品/ChatGPT_Work_解説資料.html": "03_tools/chatgpt-work.html","03_ツール・製品/Claude大全.html": "03_tools/claude-guide.html","03_ツール・製品/Copilot大全.html": "03_tools/copilot-guide.html","03_ツール・製品/Cowork.html": "03_tools/cowork.html","03_ツール・製品/Gemini大全.html": "03_tools/gemini-guide.html","04_活用・実践/業務変革大全.pdf": "04_practice/business-transformation-guide.pdf","04_活用・実践/資料作成.html": "04_practice/deck-design.html","05_推進/AIエージェント_予算.html": "05_drive/agent-budget-v1.html","05_推進/AIエージェント予算.html": "05_drive/agent-budget-v2.html","05_推進/AIエージェント予算_タクシー.html": "05_drive/agent-budget-taxi.html","05_推進/AIエージェント・ストラテジスト.html": "05_drive/agent-strategist.html","05_推進/AI推進51施策マスター.pdf": "05_drive/ai-51-measures.pdf","05_推進/推進フェーズ.html": "05_drive/drive-phase.html","05_推進/発展フェーズ.html": "05_drive/growth-phase.html","06_キャリア・人材/AIエージェント時代のキャリア.html": "06_people/career-in-agent-era.html","06_キャリア・人材/AIエージェント時代のキャリア.pdf": "06_people/career-in-agent-era.pdf","06_キャリア・人材/人事.html": "06_people/hr-role.html","06_キャリア・人材/人事.pdf": "06_people/hr-role.pdf","06_キャリア・人材/任せるAI時代の人事変革.html": "06_people/hr-transformation-v1.html","06_キャリア・人材/生成AI時代の組織論.html": "06_people/org-theory.html","07_リスク・法務/個人情報保護法.html": "07_risk/privacy-law.html","パスワード台帳.html": "passwords.html","裏資料置き場.html": "backstage.html","資料マトリクス.html": "matrix.html","99_assets/AICX_AIエージェント人材基準_v0.5.pdf": "99_assets/aicx-agent-talent-standard-v0.5.pdf","99_assets/AICX協会_ホワイトペーパー2026.pdf": "99_assets/aicx-whitepaper-2026.pdf"};
 var DIRS  = {"01_概念・思想": "01_concept","02_技術・モデル動向": "02_models","03_ツール・製品": "03_tools","04_活用・実践": "04_practice","05_推進": "05_drive","06_キャリア・人材": "06_people","07_リスク・法務": "07_risk","08_業界別": "08_industry","09_職種別": "09_role"};
-var BASE = '/ozaken-materials/';
-
+// **置き場所は、開かれ方から決める。**
+// 昔は GitHub Pages の /ozaken-materials/ の下だったが、いまは
+// content.ozaken.ai の根に置いてある。BASE を固定で書いていたので、
+// 古いリンクの行き先が /ozaken-materials/… という無い場所になっていた
 var path = decodeURIComponent(location.pathname);
+var BASE = path.indexOf('/ozaken-materials/') === 0 ? '/ozaken-materials/' : '/';
 var rel  = path.indexOf(BASE) === 0 ? path.slice(BASE.length) : path.replace(/^\//, '');
 document.getElementById('was').textContent = rel ? '/' + rel : '';
 
@@ -479,5 +484,8 @@ if (dest) {
   requestAnimationFrame(frame);
 })();
 </script>
+<footer>
+  <p>&copy; 2026 小澤健祐（おざけん）/ 一般社団法人AICX協会 &nbsp;｜&nbsp; <a href="/index.html">← AI資料アーカイブに戻る</a></p>
+</footer>
 </body>
 </html>
