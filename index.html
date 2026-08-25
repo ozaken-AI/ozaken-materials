@@ -249,14 +249,6 @@ a { color: inherit; text-decoration: none; }
   font-size: 0.74rem; letter-spacing: 0.05em; color: rgba(216,228,240,0.55);
   animation: heroRise 1s 0.8s both;
 }
-.hero-seal {
-  position: absolute; left: 2.1rem; bottom: 2rem; z-index: 3;
-  width: 2.1rem; height: 2.1rem; border-radius: 4px; background: var(--red);
-  color: #fff; font-family: var(--font-ja-serif); font-size: 1.02rem; font-weight: 600;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 10px 26px -10px rgba(226,55,68,0.7);
-  animation: heroRise 1s 0.9s both;
-}
 /* 足元に沈む、輪郭だけの局名 */
 .hero-giant {
   position: absolute; left: 50%; bottom: -0.06em; transform: translateX(-50%);
@@ -273,7 +265,7 @@ a { color: inherit; text-decoration: none; }
 }
 @keyframes twblink { 0%,50% { opacity: 1; } 50.01%,100% { opacity: 0; } }
 .hero-scroll {
-  position: absolute; bottom: 2.45rem; left: 4.85rem; z-index: 3;
+  position: absolute; bottom: 2.45rem; left: 2.1rem; z-index: 3;
   display: flex; flex-direction: row; align-items: center; gap: 0.55rem;
   font-family: var(--font-en); font-size: 0.64rem; font-weight: 600; letter-spacing: 0.28em;
   color: rgba(216,228,240,0.6); animation: heroRise 1s 0.85s both;
@@ -294,12 +286,11 @@ a { color: inherit; text-decoration: none; }
     mask-image: linear-gradient(to bottom, rgba(0,0,0,.92) 20%, rgba(0,0,0,.5) 55%, transparent 92%); }
   .hero-title { font-size: clamp(2.05rem, 9.4vw, 2.6rem); letter-spacing: 0.02em; }
   .hero-copy { font-size: 0.95rem; }
-  .hero-seal { left: 1.1rem; bottom: 1.55rem; }
-  .hero-scroll { left: 3.7rem; bottom: 2rem; }
+  .hero-scroll { left: 1.1rem; bottom: 2rem; }
 }
 @media (prefers-reduced-motion: reduce) {
   .texture, .hero .eyebrow, .hero-vision, .hero-title, .hero-copy, .hero-cred,
-  .hero-rail, .hero-note, .hero-seal, .hero-scroll, .hero-scroll .chev { animation: none; }
+  .hero-rail, .hero-note, .hero-scroll, .hero-scroll .chev { animation: none; }
 }
 .hero-glyph { position: relative; max-width: 640px; margin: 0 auto; }
 .hero-glyph svg { width: 100%; height: auto; display: block; }
@@ -2007,7 +1998,6 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
     </div>
   </div>
   <div class="hero-note" aria-hidden="true">経済産業省「AX時代におけるスキルのあり方検討WG」委員</div>
-  <div class="hero-seal" aria-hidden="true">健</div>
   <div class="hero-giant" aria-hidden="true">OZAKEN</div>
   <div class="hero-scroll" aria-hidden="true"><span>SCROLL</span><span class="chev">⌄</span></div>
 </section>
