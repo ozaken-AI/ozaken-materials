@@ -35,7 +35,9 @@ from publish import compose, check_pw_word, TPL
 
 INDEX = os.path.join(ROOT, 'index.html')
 START, END = '<!--WEEKLY:START-->', '<!--WEEKLY:END-->'
-ANCHOR = '<span class="eyebrow">Section 01</span>'
+# トップの節番号に添え書きを足したので、目印もそれに追随する。
+# 完全一致で探しているため、index 側の eyebrow を変えるときはここも変える
+ANCHOR = '<span class="eyebrow">Section 01 ─ Archive</span>'
 SHOW = 4          # トップページに出す号数。古い号は一覧ページへ送る
 
 

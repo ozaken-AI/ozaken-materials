@@ -154,44 +154,117 @@ a { color: inherit; text-decoration: none; }
 @media (prefers-reduced-motion: reduce) { .sys-badge .dot { animation: none; } }
 
 .hero {
-  min-height: 100vh; padding: 7rem 1.5rem 5rem;
+  min-height: 100vh; padding: 7rem 1.5rem 7.5rem;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  text-align: center; color: var(--white);
+  text-align: left; color: var(--white);
   position: relative; overflow: hidden;
   background:
-    radial-gradient(ellipse 70% 55% at 50% -5%, rgba(46,84,150,0.60), transparent 62%),
-    radial-gradient(ellipse 55% 45% at 88% 94%, rgba(255,93,106,0.16), transparent 60%),
-    linear-gradient(165deg, #1f3864 0%, #182a52 42%, #141d35 100%);
-}
-.hero::before {
-  content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background: radial-gradient(ellipse at 50% 40%, rgba(46,84,150,0.35) 0%, transparent 55%);
+    radial-gradient(ellipse 60% 52% at 76% 28%, rgba(46,84,150,0.30), transparent 64%),
+    radial-gradient(ellipse 46% 40% at 10% 90%, rgba(255,93,106,0.10), transparent 60%),
+    linear-gradient(168deg, #131c33 0%, #0a0f1c 55%, #0a0f1c 100%);
 }
 .hero::after {
   content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none;
-  background: radial-gradient(ellipse at center, transparent 46%, rgba(8,12,26,0.58) 100%);
+  background: radial-gradient(ellipse at 38% 42%, transparent 48%, rgba(8,12,26,0.5) 100%);
 }
-.texture { position: absolute; inset: -8%; z-index: 1; opacity: 0.22; pointer-events: none;
+/* 舞台写真の代わりに、ポートレートを黒に沈めて右半分へ。
+   左端と足元をグラデーションで地に溶かし、題の白が写真の上でも立つ明るさまで落とす */
+.hero-photo {
+  position: absolute; top: 0; right: 0; bottom: 0; width: min(58vw, 900px);
+  z-index: 1; pointer-events: none;
+  background-image: url('99_assets/ozaken-portrait.jpg');
+  background-size: cover; background-position: center 16%;
+  filter: grayscale(1) brightness(0.42) contrast(1.16);
+  -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,.95) 52%, transparent 97%);
+  mask-image: linear-gradient(to left, rgba(0,0,0,.95) 52%, transparent 97%);
+}
+.hero-photo::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(to top, #0a0f1c 3%, transparent 50%),
+              linear-gradient(to left, rgba(10,15,28,.12) 40%, rgba(10,15,28,.6) 100%),
+              rgba(19,28,51,0.28);
+}
+.texture { position: absolute; inset: -8%; z-index: 1; opacity: 0.12; pointer-events: none;
   animation: heroPan 34s ease-in-out infinite alternate; }
 .texture svg { width: 100%; height: 100%; }
-.hero .inner { position: relative; z-index: 3; }
+.hero .inner { position: relative; z-index: 3; width: 100%; max-width: 1160px; }
 .hero .eyebrow {
-  color: var(--white); background: rgba(255,255,255,0.10);
-  border: 1px solid rgba(216,228,240,0.22);
+  color: rgba(216,228,240,0.55); background: none; border: 0; padding: 0;
+  font-size: 0.68rem; letter-spacing: 0.3em;
   animation: heroRise 0.9s 0.1s both;
 }
+.hero-vision {
+  display: flex; align-items: center; gap: 0.7rem;
+  font-family: var(--font-en); font-size: 0.66rem; font-weight: 600;
+  letter-spacing: 0.32em; color: rgba(216,228,240,0.8);
+  margin: 1.3rem 0 1.6rem; animation: heroRise 0.9s 0.18s both;
+}
+.hero-vision::before { content: ''; width: 2.3rem; height: 1px; background: var(--red); }
 .hero-title {
   font-family: var(--font-ja-serif);
-  font-size: clamp(2.15rem, 6.2vw, 3.7rem);
-  font-weight: 600; line-height: 1.34; margin-bottom: 1.4rem; position: relative;
-  letter-spacing: 0.01em; text-shadow: 0 6px 44px rgba(46,84,150,0.55);
+  font-size: clamp(2.3rem, 6.4vw, 4.35rem);
+  font-weight: 600; line-height: 1.28; margin-bottom: 1.7rem; position: relative;
+  letter-spacing: 0.04em; text-wrap: balance;
+  text-shadow: 0 8px 50px rgba(8,12,26,0.8);
   animation: heroRise 1s 0.25s both;
 }
 .hero-title .hl { color: var(--red-bright); }
 .hero-copy {
-  font-size: 1.03rem; color: rgba(255,255,255,0.80);
-  max-width: 600px; margin: 0 auto; line-height: 1.95; position: relative;
-  min-height: 4em; animation: heroRise 1s 0.45s both;
+  font-size: 1.05rem; color: rgba(255,255,255,0.82);
+  max-width: 620px; margin: 0; line-height: 2.05; position: relative;
+  min-height: 4.1em; letter-spacing: 0.02em;
+  animation: heroRise 1s 0.45s both;
+}
+.hero-copy b { color: #fff; }
+.hero-cred {
+  text-wrap: pretty;
+  margin-top: 0.9rem; font-size: 0.86rem; color: rgba(216,228,240,0.62);
+  letter-spacing: 0.03em; animation: heroRise 1s 0.6s both;
+}
+.hero-cred b { font-family: var(--font-en); font-weight: 700; font-size: 1.08em; color: #fff; }
+/* 縦の帯。左は名乗り、右はミッション。狭い画面では畳む */
+.hero-rail {
+  position: absolute; z-index: 3; top: 50%; transform: translateY(-50%);
+  display: flex; align-items: center; gap: 1.05rem; pointer-events: none;
+  animation: heroRise 1.2s 0.7s both;
+}
+.hero-rail .hr-en { writing-mode: vertical-rl; font-family: var(--font-en);
+  font-weight: 600; line-height: 1; }
+.hero-rail .hr-ja { width: 1.2em; text-align: center; word-break: break-all;
+  line-height: 1.62; letter-spacing: 0; }
+.hero-rail-l { left: 2.1rem; }
+.hero-rail-l .hr-en { font-size: 0.64rem; letter-spacing: 0.42em; color: rgba(216,228,240,0.5); }
+.hero-rail-l .hr-ja { font-size: 0.66rem; line-height: 2.05; color: rgba(216,228,240,0.34); }
+.hero-rail-r { right: 2.1rem; flex-direction: row; }
+.hero-rail-r .hr-en { order: 2; font-size: 0.6rem; letter-spacing: 0.42em;
+  color: rgba(216,228,240,0.55); }
+.hero-rail-r .hr-en::after { content: ''; display: block; height: 2.6rem; width: 1px;
+  background: rgba(216,228,240,0.35); margin: 1.1rem auto 0; }
+.hero-rail-r .hr-ja { order: 1; font-family: var(--font-ja-serif); font-size: 1.06rem;
+  font-weight: 500; line-height: 1.68; color: rgba(255,255,255,0.92);
+  text-shadow: 0 2px 18px rgba(8,12,26,0.9); }
+/* 右下の肩書きと、左下の落款 */
+.hero-note {
+  position: absolute; right: 2.2rem; bottom: 2.1rem; z-index: 3;
+  font-size: 0.74rem; letter-spacing: 0.05em; color: rgba(216,228,240,0.55);
+  animation: heroRise 1s 0.8s both;
+}
+.hero-seal {
+  position: absolute; left: 2.1rem; bottom: 2rem; z-index: 3;
+  width: 2.1rem; height: 2.1rem; border-radius: 4px; background: var(--red);
+  color: #fff; font-family: var(--font-ja-serif); font-size: 1.02rem; font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 10px 26px -10px rgba(226,55,68,0.7);
+  animation: heroRise 1s 0.9s both;
+}
+/* 足元に沈む、輪郭だけの局名 */
+.hero-giant {
+  position: absolute; left: 50%; bottom: -0.06em; transform: translateX(-50%);
+  z-index: 2; pointer-events: none; user-select: none;
+  font-family: var(--font-en); font-weight: 700; line-height: 0.78;
+  font-size: clamp(6rem, 16.5vw, 14.5rem); letter-spacing: 0.05em;
+  color: transparent; -webkit-text-stroke: 1px rgba(159,198,245,0.13);
+  white-space: nowrap;
 }
 .tw-cursor {
   display: inline-block; width: 2px; height: 1.05em; margin-left: 1px;
@@ -200,17 +273,33 @@ a { color: inherit; text-decoration: none; }
 }
 @keyframes twblink { 0%,50% { opacity: 1; } 50.01%,100% { opacity: 0; } }
 .hero-scroll {
-  position: absolute; bottom: 1.9rem; left: 50%; transform: translateX(-50%); z-index: 3;
-  display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
+  position: absolute; bottom: 2.45rem; left: 4.85rem; z-index: 3;
+  display: flex; flex-direction: row; align-items: center; gap: 0.55rem;
   font-family: var(--font-en); font-size: 0.64rem; font-weight: 600; letter-spacing: 0.28em;
   color: rgba(216,228,240,0.6); animation: heroRise 1s 0.85s both;
 }
-.hero-scroll .chev { font-size: 1.15rem; line-height: 0.6; animation: heroBob 1.9s ease-in-out infinite; }
+.hero-scroll::before { content: ''; width: 2rem; height: 1px; background: rgba(216,228,240,0.35); }
+.hero-scroll .chev { font-size: 1.05rem; line-height: 0.6; animation: heroBob 1.9s ease-in-out infinite; }
 @keyframes heroRise { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: none; } }
 @keyframes heroPan { from { transform: translate3d(-1.4%, -1%, 0) scale(1.04); } to { transform: translate3d(1.6%, 1.6%, 0) scale(1.09); } }
 @keyframes heroBob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(7px); } }
+@media (max-width: 1100px) {
+  .hero-rail-l, .hero-rail-r, .hero-note { display: none; }
+}
+@media (max-width: 640px) {
+  .hero { padding: 5.5rem 1.2rem 6.5rem; }
+  .hero-photo { width: 100%; opacity: 0.55;
+    background-position: center 8%;
+    -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,.9) 25%, transparent 80%);
+    mask-image: linear-gradient(to top, rgba(0,0,0,.9) 25%, transparent 80%); }
+  .hero-title { font-size: clamp(2.05rem, 9.4vw, 2.6rem); letter-spacing: 0.02em; }
+  .hero-copy { font-size: 0.95rem; }
+  .hero-seal { left: 1.1rem; bottom: 1.55rem; }
+  .hero-scroll { left: 3.7rem; bottom: 2rem; }
+}
 @media (prefers-reduced-motion: reduce) {
-  .texture, .hero .eyebrow, .hero-title, .hero-copy, .hero-scroll, .hero-scroll .chev { animation: none; }
+  .texture, .hero .eyebrow, .hero-vision, .hero-title, .hero-copy, .hero-cred,
+  .hero-rail, .hero-note, .hero-seal, .hero-scroll, .hero-scroll .chev { animation: none; }
 }
 .hero-glyph { position: relative; max-width: 640px; margin: 0 auto; }
 .hero-glyph svg { width: 100%; height: auto; display: block; }
@@ -445,6 +534,39 @@ footer {
   .profile-lead .kicker { text-align: left; }
 }
 
+/* プロフィール：紺のエディトリアル */
+.sec-profile .sec-sub { color: rgba(216,228,240,0.72); }
+.pro-grid { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
+  gap: clamp(2rem, 4.5vw, 3.8rem); align-items: start; margin-top: 2.4rem; }
+.pro-photo { position: relative; margin: 0; }
+.pro-photo img { width: 100%; height: auto; display: block; border-radius: 6px;
+  filter: grayscale(0.35) contrast(1.05) brightness(0.94);
+  box-shadow: 0 26px 64px -26px rgba(0,0,0,0.65); }
+.pro-photo::before { content: ''; position: absolute; left: -11px; top: 11px; right: 11px; bottom: -11px;
+  border: 1px solid rgba(216,228,240,0.26); border-radius: 6px; pointer-events: none; }
+.pro-photo figcaption { margin-top: 1.2rem; font-family: var(--font-en); font-size: 0.66rem;
+  letter-spacing: 0.18em; color: rgba(216,228,240,0.55); line-height: 1.8; }
+.pro-photo figcaption b { display: block; font-family: var(--font-ja-serif); font-size: 1.18rem;
+  font-weight: 600; letter-spacing: 0.14em; color: #fff; margin-bottom: 0.3rem; }
+.pro-lede { font-family: var(--font-ja-serif); font-size: clamp(1.22rem, 2.5vw, 1.6rem);
+  font-weight: 600; line-height: 1.85; color: #fff; margin-bottom: 1.5rem; letter-spacing: 0.03em; }
+.pro-body > p:not(.pro-lede) { font-size: 0.94rem; line-height: 2.05; color: rgba(255,255,255,0.76); }
+.pro-body > p + p { margin-top: 1.05rem; }
+.pro-body b { color: #fff; font-weight: 700; }
+.pro-nums { display: flex; flex-wrap: wrap; gap: 1.6rem 2rem; margin-top: 1.9rem;
+  padding-top: 1.5rem; border-top: 1px solid rgba(216,228,240,0.16); }
+.pro-nums span { display: flex; align-items: baseline; gap: 0.28rem;
+  font-size: 0.8rem; color: rgba(216,228,240,0.6); }
+.pro-nums b { font-family: var(--font-en); font-weight: 700; font-size: 1.75rem;
+  color: #fff; letter-spacing: 0.02em; }
+.pro-nums i { font-style: normal; margin-left: 0.4rem; }
+.profile-link-navy { color: #fff; border-color: rgba(216,228,240,0.42); }
+.profile-link-navy:hover { background: #fff; color: var(--navy); border-color: #fff; }
+@media (max-width: 720px) {
+  .pro-grid { grid-template-columns: 1fr; }
+  .pro-photo { max-width: 300px; }
+}
+
 /* AICX / ストラテジスト訴求 */
 .aicx-logo { display: block; width: 230px; max-width: 62%; margin-bottom: 1.3rem; }
 .aicx-logo img { width: 100%; height: auto; }
@@ -502,6 +624,14 @@ footer {
 .offer-list { list-style: none; margin-top: 0.85rem; display: flex; flex-direction: column; gap: 0.42rem; }
 .offer-list li { position: relative; padding-left: 1rem; font-size: 0.83rem; line-height: 1.7; color: rgba(255,255,255,0.74); }
 .offer-list li::before { content: "―"; position: absolute; left: 0; color: var(--azure-pale); }
+
+/* ご相談：明の面での見え方 */
+.sec-advisory .offer-list li { color: var(--muted); }
+.sec-advisory .offer-list li::before { color: var(--azure); }
+.sec-advisory .lead-cta { background: var(--white); border-color: rgba(46,84,150,0.14);
+  box-shadow: 0 18px 44px -22px rgba(20,29,53,0.25); }
+.sec-advisory .lead-cta-text { color: var(--ink); }
+.sec-advisory .lead-sub { color: var(--muted); }
 
 /* リード獲得ゲート（モーダル） */
 .gate-overlay {
@@ -1804,15 +1934,23 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
       <circle cx="200" cy="560" r="3" fill="#8fb0e0" opacity="0.6"/>
     </svg>
   </div>
+  <div class="hero-photo" aria-hidden="true"></div>
+  <div class="hero-rail hero-rail-l" aria-hidden="true"><span class="hr-en">OZAKEN.AI</span><span class="hr-ja">小澤健祐</span></div>
+  <div class="hero-rail hero-rail-r" aria-hidden="true"><span class="hr-en">MISSION</span><span class="hr-ja">分断を超えてつなぐ</span></div>
   <div class="inner">
-    <span class="eyebrow">Kensuke Ozawa ─ Profile &amp; Archive</span>
-    <h1 class="hero-title">人間とAIが<br><span class="hl" data-ozk="2">共存</span>する社会をつくる</h1>
-    <p class="hero-copy" id="heroCopy">小澤健祐（おざけん）。<br>AIエージェント時代に生きる、実装・活用の知見を。</p>
+    <span class="eyebrow">Kensuke Ozawa ── Ozaken</span>
+    <span class="hero-vision" aria-hidden="true">VISION</span>
+    <h1 class="hero-title">人間とAIが<br><span class="hl" data-ozk="2">共存</span>する社会を<br>つくる。</h1>
+    <p class="hero-copy" id="heroCopy">技術のことばを、経営の意思決定に。<br>経営のことばを、現場の手順に。</p>
+    <p class="hero-cred">年間<b>300</b>回を超える登壇と、<b>1,500</b>本超の執筆。</p>
     <div class="hero-status" aria-hidden="true">
       <span class="hs-live"></span>SYSTEM ONLINE
       <span class="hs-sep">／</span><span id="docCount" data-ozk="3">0</span> DOCUMENTS INDEXED<span class="hs-cur">_</span>
     </div>
   </div>
+  <div class="hero-note" aria-hidden="true">経済産業省「AX時代におけるスキルのあり方検討WG」委員</div>
+  <div class="hero-seal" aria-hidden="true">健</div>
+  <div class="hero-giant" aria-hidden="true">OZAKEN</div>
   <div class="hero-scroll" aria-hidden="true"><span>SCROLL</span><span class="chev">⌄</span></div>
 </section>
 
@@ -1897,7 +2035,7 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
 
 <section class="sec-light">
   <div class="inner" data-reveal>
-    <span class="eyebrow">Section 01</span>
+    <span class="eyebrow">Section 01 ─ Archive</span>
     <h2 class="sec-title"><span class="kbr">資料アーカイブ ──</span><br><span class="kbr">AIエージェント・</span><span class="kbr">生成AI活用の解説資料</span></h2>
     <p class="sec-sub">「知る → 選ぶ → 動かす」の流れで、登壇・執筆用の解説資料をテーマ別に整理しています。</p>
     <div class="arc-lock">
@@ -2069,18 +2207,10 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
 
       <div class="card">
         <span class="card-tag">11</span>
-        <h3>統計調査</h3>
-        <p>数字で見るAI。導入率・雇用・投資・電力。一次情報だけを、確認日つきで。</p>
+        <h3>統計・雇用</h3>
+        <p>数字で見るAI。導入率・投資・電力から、日米の雇用統計まで。一次情報だけを確認日つきで載せ、新しい発表が出るたびに差し替えます。</p>
         <ul class="doc-list">
           <li><a href="11_stats/ai-stats-2026.html">AI統計・調査 2026年8月版 ─ 出どころ付きの数字だけを、一枚に</a></li>
-        </ul>
-      </div>
-
-      <div class="card">
-        <span class="card-tag">12</span>
-        <h3>雇用・労働</h3>
-        <p>日本と米国の雇用統計を、同じ物差しで並べる。新しい発表が出るたびに差し替えます。</p>
-        <ul class="doc-list">
           <li><a href="12_jobs/us-jp-employment.html">日米 雇用統計ダッシュボード ─ 同じ「低い失業率」が、正反対の意味を持つ</a></li>
         </ul>
       </div>
@@ -2089,70 +2219,55 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
   </div>
 </section>
 
-<section class="sec-light">
+<section class="sec-navy sec-profile">
   <div class="inner" data-reveal>
-    <span class="eyebrow">Section 02</span>
+    <span class="eyebrow">Section 02 ─ Profile</span>
     <h2 class="sec-title">おざけん プロフィール</h2>
-    <p class="sec-sub">発信し続けることが、活動の軸になっている。書籍・記事・登壇という3つの形で、AIの可能性と実践知を届けてきた。</p>
+    <p class="sec-sub">書籍・記事・登壇という3つの形で、AIの可能性と実践知を届けてきた。</p>
 
-    <div class="profile-lead">
-      <div class="portrait-wrap">
-        <img class="portrait" src="99_assets/ozaken-portrait.jpg" alt="小澤健祐（おざけん）のポートレート" width="1100" height="1649" loading="lazy">
-        <p class="portrait-cap"><b>小澤健祐（おざけん）</b>Kensuke Ozawa ／ AICX協会 代表理事</p>
+    <div class="pro-grid">
+      <figure class="pro-photo">
+        <img src="99_assets/ozaken-portrait.jpg" alt="小澤健祐（おざけん）のポートレート" width="1100" height="1649" loading="lazy">
+        <figcaption><b>小澤健祐</b>KENSUKE OZAWA ── OZAKEN<br>一般社団法人AICX協会 代表理事</figcaption>
+      </figure>
+      <div class="pro-body">
+        <p class="pro-lede">発信し続けることが、<br>現場を掴む、いちばんの手段になる。</p>
+        <p>『生成AI導入の教科書』『AIエージェントの教科書』に続き、3冊目となる『40代・50代でもよくわかる 宇宙一やさしいAIの教科書』が<b>2026年9月17日に発売</b>。AI関連記事の執筆は<b>1,500本</b>を超え、登壇は<b>年間300回</b>を超える。発信量そのものが、現場で何が起きているかを掴む手段になっている。</p>
+        <p><b>一般社団法人AICX協会 代表理事</b>として、企業のAIエージェント実装を業界横断で牽引。複数のAI企業の経営・アドバイザーに参画し、日本HP、NTTデータグループなど大手の実装現場にも伴走している。</p>
+        <p>NewsPicksのAI番組「AI DIVE」メインMC、千葉県船橋市 生成AIアドバイザーとして行政のDX推進にも携わる。NewsPicksプロピッカー、Udemyベストセラー講師、SHIFT AI公式モデレーター。AI領域以外では、2022年にCinematoricoを創業しCOOに就任。</p>
+        <div class="pro-nums" aria-label="活動の数字">
+          <span><b>300</b>回+<i>年間登壇</i></span>
+          <span><b>1,500</b>本+<i>AI関連記事</i></span>
+          <span><b>3</b>冊目<i>9.17 発売</i></span>
+        </div>
+        <p class="profile-link-wrap">
+          <a class="profile-link profile-link-navy" href="https://ozaken-ai.studio.site/" target="_blank" rel="noopener">ポートフォリオサイトを見る →</a>
+        </p>
       </div>
-      <p class="kicker">
-        『生成AI導入の教科書』『AIエージェントの教科書』の刊行、<span class="fw-bold text-azure">1500本以上</span>のAI関連記事執筆、
-        年間<span class="fw-bold text-azure">300回以上</span>の登壇。発信量そのものが、現場で何が起きているかを掴む手段になっている。
-      </p>
     </div>
-
-    <div class="stats">
-      <div class="stat"><div class="stat-num">2<small>冊</small></div><div class="stat-label">書籍刊行<br>『生成AI導入の教科書』『AIエージェントの教科書』</div></div>
-      <div class="stat"><div class="stat-num">1500<small>本+</small></div><div class="stat-label">AI関連記事の執筆本数</div></div>
-      <div class="stat"><div class="stat-num">300<small>回+</small></div><div class="stat-label">年間登壇回数</div></div>
-    </div>
-
-    <div class="bare">
-      <p>
-        <span class="fw-bold text-azure">一般社団法人AICX協会 代表理事</span>として、企業のAIエージェント実装を業界横断で牽引。
-        あわせて複数のAI企業の経営・アドバイザーに参画し、日本HP、NTTデータグループなど大手の実装現場にも伴走している。
-      </p>
-      <p>
-        NewsPicksのAI番組「AI DIVE」メインMC、千葉県船橋市 生成AIアドバイザーとして行政のDX推進にも携わる。
-        NewsPicksプロピッカー、Udemyベストセラー講師、SHIFT AI公式モデレーターとしても活動中。
-      </p>
-      <p>
-        AI領域以外では、2022年にCinematoricoを創業しCOOに就任。PRやフリーカメラマン、
-        日本大学文理学部次世代社会研究センターのプロボノなど、多彩な経験を活かして活動している。
-      </p>
-    </div>
-
-    <p class="profile-link-wrap">
-      <a class="profile-link" href="https://ozaken-ai.studio.site/" target="_blank" rel="noopener">ポートフォリオサイトを見る →</a>
-    </p>
   </div>
 </section>
 
-<section class="sec-navy">
+<section class="sec-light">
   <div class="inner" data-reveal>
-    <span class="eyebrow">Track Record ─ 実績</span>
+    <span class="eyebrow">Section 03 ─ Track Record</span>
     <h2 class="sec-title">書籍・記事・登壇・政策まで ── 現場に立ち続ける</h2>
-    <p class="sec-sub">「人間とAIが共存する社会をつくる」をビジョンに、書籍2冊・AI関連記事1,500本以上・年間300回超の登壇を通じて、AIの可能性と実践的活用法を発信しています。メディア出演から行政アドバイザーまで、活動は多岐にわたります。</p>
+    <p class="sec-sub">「人間とAIが共存する社会をつくる」をビジョンに、著書3冊（3冊目は2026年9月17日発売）・AI関連記事1,500本以上・年間300回超の登壇を通じて、AIの可能性と実践的活用法を発信しています。メディア出演から行政アドバイザーまで、活動は多岐にわたります。</p>
     <div class="cards">
       <div class="card">
         <span class="card-tag">01</span>
         <h3>メディア出演・取材</h3>
-        <p style="margin-bottom:.55rem"><b style="color:var(--azure-pale)">テレビ・映像：</b>ABEMA Prime（レギュラー）、BS-TBS「報道1930」、テレビ東京「AIアカデミー」、日本テレビ「午前0時の森」ほか</p>
-        <p style="margin-bottom:.55rem"><b style="color:var(--azure-pale)">ネット番組：</b>NewsPicks「AI DIVE」メインMC、「The UPDATE」、RehacQ、ホリエモンチャンネル、Schoo ほか</p>
-        <p style="margin-bottom:.55rem"><b style="color:var(--azure-pale)">ラジオ・音声：</b>J-WAVE、ニッポン放送、Voicy「ながら日経」</p>
-        <p><b style="color:var(--azure-pale)">新聞・雑誌・Web：</b>日経・読売新聞、東洋経済／ダイヤモンド／プレジデント各オンライン、ITmedia、DIME、宣伝会議 ほか</p>
+        <p style="margin-bottom:.55rem"><b style="color:var(--azure)">テレビ・映像：</b>ABEMA Prime（レギュラー）、BS-TBS「報道1930」、テレビ東京「AIアカデミー」、日本テレビ「午前0時の森」ほか</p>
+        <p style="margin-bottom:.55rem"><b style="color:var(--azure)">ネット番組：</b>NewsPicks「AI DIVE」メインMC、「The UPDATE」、RehacQ、ホリエモンチャンネル、Schoo ほか</p>
+        <p style="margin-bottom:.55rem"><b style="color:var(--azure)">ラジオ・音声：</b>J-WAVE、ニッポン放送、Voicy「ながら日経」</p>
+        <p><b style="color:var(--azure)">新聞・雑誌・Web：</b>日経・読売新聞、東洋経済／ダイヤモンド／プレジデント各オンライン、ITmedia、DIME、宣伝会議 ほか</p>
       </div>
       <div class="card">
         <span class="card-tag">02</span>
         <h3>登壇・講演（年間300回超）</h3>
-        <p style="margin-bottom:.55rem"><b style="color:var(--azure-pale)">主要カンファレンス：</b>AI Agent Day（主催・登壇）、IVS 2024／2025、AI・人工知能EXPO（特別講演）、Dell Technologies 基調講演、HP Future of Work、Startup JAPAN 2025、慶應「生成AIラボ」ほか</p>
-        <p style="margin-bottom:.55rem"><b style="color:var(--azure-pale)">企業・自治体：</b>ソフトバンク社内講演、船橋市役所、鹿児島県商工会議所、電通インターンシップ（基調講演・審査員）</p>
-        <p><b style="color:var(--azure-pale)">大手企業の社内講演（社名非公開）：</b>大手電力会社／大手自動車メーカー／大手半導体製造装置メーカー ほか</p>
+        <p style="margin-bottom:.55rem"><b style="color:var(--azure)">主要カンファレンス：</b>AI Agent Day（主催・登壇）、IVS 2024／2025、AI・人工知能EXPO（特別講演）、Dell Technologies 基調講演、HP Future of Work、Startup JAPAN 2025、慶應「生成AIラボ」ほか</p>
+        <p style="margin-bottom:.55rem"><b style="color:var(--azure)">企業・自治体：</b>ソフトバンク社内講演、船橋市役所、鹿児島県商工会議所、電通インターンシップ（基調講演・審査員）</p>
+        <p><b style="color:var(--azure)">大手企業の社内講演（社名非公開）：</b>大手電力会社／大手自動車メーカー／大手半導体製造装置メーカー ほか</p>
       </div>
       <div class="card">
         <span class="card-tag">03</span>
@@ -2162,15 +2277,15 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
           <img src="99_assets/book-ai-agent.jpg" alt="『AIエージェントの教科書』書影" loading="lazy">
           <img src="99_assets/book-seisei-ai.jpg" alt="『生成AI導入の教科書』書影" loading="lazy">
         </div>
-        <p><b style="color:var(--azure-pale)">著書：</b>『40代・50代でもよくわかる 宇宙一やさしいAIの教科書』（2026年9月17日発売）／『AIエージェントの教科書』（2025年8月・ワン・パブリッシング）／『生成AI導入の教科書』（2023年9月）</p>
+        <p><b style="color:var(--azure)">著書：</b>『40代・50代でもよくわかる 宇宙一やさしいAIの教科書』（2026年9月17日発売）／『AIエージェントの教科書』（2025年8月・ワン・パブリッシング）／『生成AI導入の教科書』（2023年9月）</p>
       </div>
       <div class="card">
         <span class="card-tag">04</span>
         <h3>委員・アドバイザー</h3>
-        <p style="margin-bottom:.55rem"><b style="color:var(--azure-pale)">経済産業省：</b>「AX時代におけるスキルのあり方検討ワーキンググループ」委員（2026年4月〜）</p>
-        <p style="margin-bottom:.55rem"><b style="color:var(--azure-pale)">自治体：</b>大分県 フェロー、千葉県船橋市 生成AIアドバイザー</p>
-        <p style="margin-bottom:.55rem"><b style="color:var(--azure-pale)">企業顧問・アドバイザー：</b>日本HP 顧問、NTTデータグループ アドバイザー、Lightblue 顧問、THA 顧問、Google Gemini アドバイザー（旧）ほか</p>
-        <p><b style="color:var(--azure-pale)">その他：</b>NewsPicks プロピッカー、Udemy ベストセラー講師、SHIFT AI 公式モデレーター</p>
+        <p style="margin-bottom:.55rem"><b style="color:var(--azure)">経済産業省：</b>「AX時代におけるスキルのあり方検討ワーキンググループ」委員（2026年4月〜）</p>
+        <p style="margin-bottom:.55rem"><b style="color:var(--azure)">自治体：</b>大分県 フェロー、千葉県船橋市 生成AIアドバイザー</p>
+        <p style="margin-bottom:.55rem"><b style="color:var(--azure)">企業顧問・アドバイザー：</b>日本HP 顧問、NTTデータグループ アドバイザー、Lightblue 顧問、THA 顧問、Google Gemini アドバイザー（旧）ほか</p>
+        <p><b style="color:var(--azure)">その他：</b>NewsPicks プロピッカー、Udemy ベストセラー講師、SHIFT AI 公式モデレーター</p>
       </div>
     </div>
     <p class="note">主な講演テーマ：AIエージェントが変えるビジネスの未来／生成AI活用術／AI時代のリスキリング戦略／AIがもたらすCX革命／経営者が知るべきAIの本質／AI×地方創生／メディア業界のAI活用／AIエージェント時代の働き方改革　など</p>
@@ -2179,7 +2294,7 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
 
 <section class="sec-navy">
   <div class="inner" data-reveal>
-    <span class="eyebrow">Section 03 ─ AICX</span>
+    <span class="eyebrow">Section 04 ─ AICX</span>
     <h2 class="sec-title">AIを「使う組織」から「設計する組織」へ。AICX協会が、その転換を担う。</h2>
     <p class="sec-sub">軸足を置く業界団体はAICX協会ひとつ。評論ではなく実装で、日本のAIエージェント活用を前に進める。</p>
 
@@ -2275,9 +2390,9 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
   </div>
 </section>
 
-<section class="sec-navy">
+<section class="sec-light sec-advisory">
   <div class="inner" data-reveal>
-    <span class="eyebrow">Advisory &amp; Speaking ─ ご相談</span>
+    <span class="eyebrow">Section 05 ─ Advisory &amp; Speaking</span>
     <h2 class="sec-title">企業顧問・社内講演・研修のご相談を承っています</h2>
     <p class="sec-sub">「どのツールを入れるか」ではなく、「どの業務を、どの順番で任せるか」から一緒に設計します。経営層向けの戦略講演から、現場のハンズオンまで、フェーズに合わせて構成します。</p>
 
@@ -2304,10 +2419,10 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
       </div>
     </div>
 
-    <div class="stats stats-navy">
+    <div class="stats">
       <div class="stat"><div class="stat-num">300<small>回+</small></div><div class="stat-label">年間の講演・企業研修</div></div>
       <div class="stat"><div class="stat-num">1500<small>本+</small></div><div class="stat-label">執筆したAI関連記事</div></div>
-      <div class="stat"><div class="stat-num">2<small>冊</small></div><div class="stat-label">著書『生成AI導入の教科書』『AIエージェントの教科書』</div></div>
+      <div class="stat"><div class="stat-num">3<small>冊目</small></div><div class="stat-label">『宇宙一やさしいAIの教科書』9月17日発売</div></div>
     </div>
 
     <div class="lead-cta">
