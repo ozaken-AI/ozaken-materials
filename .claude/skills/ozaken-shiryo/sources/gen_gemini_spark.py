@@ -39,7 +39,9 @@ A('<!--META title=Gemini Spark ─ 眠っているあいだも動く。ただし
 
 A(hero(
     'Google Gemini ─ Autonomous Agent',
-    'Gemini Spark<br>眠っているあいだも動く。<br>ただし「会社のアカウント」では使えない',
+    # 表紙の題は <br> で2行まで（build_page.check_hero が見ている）。
+    # 「法人では使えない」は META とリード文で言う
+    'Gemini Spark<br>眠っているあいだも動く自律エージェント',
     'パソコンを閉じても、スマートフォンがロックされていても動き続ける。'
     'Googleのクラウド側で走るからです。'
     '2026年7月末に月額2,900円のプランまで降りてきて、日本でも順に使えるようになりました。'

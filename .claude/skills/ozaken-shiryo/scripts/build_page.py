@@ -89,6 +89,41 @@ def check_tokens(page):
     return errs
 
 
+# 表紙の題に使える幅。**実測から決めた値。**
+# `.hero > .inner` は max-width:min(1160px,94vw)、左右の余白が24pxずつ、
+# 題は clamp(2rem,5.2vw,3.05rem) なので 1440px幅の画面では49px。
+# 1112 / 49 ≒ 22.7全角 ── 45（半角単位）まで入るので、1字ぶん余らせて44を上限にする。
+# 全資料を描画して測った実際の最大は42だった
+HERO_W = 44
+
+
+def check_hero(page):
+    """表紙の題が、テンプレートの形に収まっているか。
+
+    **題は `<br>` で2行まで。**page_parts.hero の規約そのもの。
+    3行に割ると、リード文と署名が下へ押し出されて、
+    背の低い画面では署名が画面から消える。
+    さらに1行が長すぎると勝手に折り返して、結局3行になる。
+
+    幅は字数ではなく**表示幅**で見る。半角の混ざった題（`Gemini Spark` など）を
+    字数で切ると、実際には入るものを弾いてしまう。
+    """
+    from domain_fig import wid
+    m = re.search(r'<h1 class="hero-title">([\s\S]*?)</h1>', page)
+    if not m:
+        return []
+    parts = re.split(r'<br\s*/?>', m.group(1))
+    errs = []
+    if len(parts) > 2:
+        errs.append('表紙の題が%d行: <br>で2行までにする' % len(parts))
+    for t in parts:
+        t = re.sub(r'<[^>]+>', '', t).replace('&amp;', '&').strip()
+        if wid(t) > HERO_W:
+            errs.append('表紙の題の1行が長すぎる（表示幅%d / 上限%d）: %s'
+                        % (wid(t), HERO_W, t))
+    return errs
+
+
 def check(page):
     import xml.etree.ElementTree as ET
     errs = []
@@ -106,6 +141,7 @@ def check(page):
         errs.append('末尾がネイビーでない')
     if page.count('class="take"') > 2:
         errs.append('takeが3回以上')
+    errs += check_hero(page)
     svgs = re.findall(r'<svg[\s\S]*?</svg>', page)
     for i, s in enumerate(svgs):
         try:

@@ -51,13 +51,23 @@ import registry
 
 ROOT = oz_root.root(HERE)
 MARK = '/* /OZ-HEROSIZE */'
-HEAD = '/* ══ OZ-HEROSIZE v1'
+HEAD = '/* ══ OZ-HEROSIZE v2'
+# 版が上がっても剥がせるように、頭は版番号の手前まででも探す
+HEAD_ANY = '/* ══ OZ-HEROSIZE v'
 
 CSS = """
-/* ══ OZ-HEROSIZE v1 ── 表紙の題とリードの大きさを、全資料でそろえる ══ */
+/* ══ OZ-HEROSIZE v2 ── 表紙の題とリードの大きさを、全資料でそろえる ══ */
 /* 表紙の段だけ広げる。中の .hero-copy は自前の max-width を持っているので、
-   広げても本文が間延びすることはなく、題だけがゆったり組める */
-.hero > .inner{max-width:min(1160px,94vw)}
+   広げても本文が間延びすることはなく、題だけがゆったり組める。
+
+   **v2：段に width:100% を足す。**
+   `.hero` は縦中央そろえのため flex になっていて、`.inner` はその子。
+   flex の子は既定で「中身なりの幅」に縮むので、max-width を広げても効かず、
+   いちばん広い子である `.hero-copy`（max-width:620px）が段の幅を決めていた。
+   つまり**題に使える幅が620pxしかなく**、12文字ほどで折り返していた。
+   資料によって段の幅が520〜986pxとばらついていたのも、これが理由。
+   width:100% を足すと、段は max-width まで伸びて、全資料で幅がそろう */
+.hero > .inner{max-width:min(1160px,94vw);width:100%}
 .hero-title{font-size:clamp(2rem,5.2vw,3.05rem);line-height:1.35;text-wrap:balance;
   max-width:none}     /* 資料ごとに違う幅指定が残っているので、ここで外す */
 .hero-copy{font-size:1.02rem;line-height:1.9;text-wrap:pretty}
@@ -84,7 +94,7 @@ def master():
 
 
 def strip(html):
-    i = html.find(HEAD)
+    i = html.find(HEAD_ANY)
     if i < 0:
         return html
     j = html.find(MARK, i)
