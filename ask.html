@@ -192,7 +192,8 @@ button.send:disabled{opacity:.55;cursor:default;transform:none}
   .figure + *,.take + *,.deep + *,.cards + *,.two-col + *,
   .stepper + *,.stats + *,.note + *,.bare + *{margin-top:1.9rem}
 }/* /OZ-SPACING */
-/* OZ-HEROFX v6 */
+
+/* OZ-HEROFX v7 */
 /* ══ ファーストビューの演出（index.html と同じ語彙） ══ */
 /* 地の色は index.html とまったく同じ組み合わせにする。
    単色の紺だと平坦に見えるが、上からの光・右下の赤み・斜めの三段グラデを
@@ -670,6 +671,7 @@ html.past-hero .site-frame{opacity:0}
 
 
 
+
 <script>
 /* ファーストビューの演出パーツを組み立てる。
    資料の中身から本数を数えるので、加筆しても読み出しは自動で追従する。 */
@@ -750,9 +752,13 @@ html.past-hero .site-frame{opacity:0}
   st.innerHTML = html;
   (hero.querySelector('.inner') || hero).appendChild(st);
 
-  var sc = mk('div','oz-scroll');
-  sc.innerHTML = '<span>SCROLL</span><span class="oz-chev">&#8964;</span>';
-  hero.appendChild(sc);
+  /* **資料が自前でスクロールの合図を持っているなら、足さない。**
+     二重に出て、SCROLL が2つ縦に並んでいた（AI音声の講演資料で実際に出た） */
+  if (!hero.querySelector('.hero-scroll,.oz-scroll')){
+    var sc = mk('div','oz-scroll');
+    sc.innerHTML = '<span>SCROLL</span><span class="oz-chev">&#8964;</span>';
+    hero.appendChild(sc);
+  }
 
   /* ── 漂う点と、近い点をつなぐ線（index と同じ挙動） ── */
   if (reduce) return;

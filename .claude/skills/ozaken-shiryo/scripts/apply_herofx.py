@@ -9,6 +9,7 @@ index のヒーローが持っている語彙をそのまま持ち込む：
 """
 import glob
 import os
+import re
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -18,7 +19,9 @@ import lockbox
 
 ROOT = oz_root.root(HERE)
 PW = os.environ.get('OZAKEN_PW') or sys.exit('OZAKEN_PW を設定してください')
-MARK = '/* OZ-HEROFX v6 */'
+MARK = '/* OZ-HEROFX v7 */'
+# 版が上がっても剥がせるように、版番号の手前まででも探せるようにしておく
+MARK_ANY = re.compile(r'/\* OZ-HEROFX v\d+ \*/')
 MARK_END = '/* /OZ-HEROFX */'
 
 CSS = MARK + """
@@ -266,9 +269,13 @@ JS = """
   st.innerHTML = html;
   (hero.querySelector('.inner') || hero).appendChild(st);
 
-  var sc = mk('div','oz-scroll');
-  sc.innerHTML = '<span>SCROLL</span><span class="oz-chev">&#8964;</span>';
-  hero.appendChild(sc);
+  /* **資料が自前でスクロールの合図を持っているなら、足さない。**
+     二重に出て、SCROLL が2つ縦に並んでいた（AI音声の講演資料で実際に出た） */
+  if (!hero.querySelector('.hero-scroll,.oz-scroll')){
+    var sc = mk('div','oz-scroll');
+    sc.innerHTML = '<span>SCROLL</span><span class="oz-chev">&#8964;</span>';
+    hero.appendChild(sc);
+  }
 
   /* ── 漂う点と、近い点をつなぐ線（index と同じ挙動） ── */
   if (reduce) return;
@@ -333,9 +340,28 @@ JS = """
 """
 
 
+def strip(html):
+    """前の版を、CSSもJSもろとも剥がす。
+
+    **入れ直せるようにしておく。**MARK があるだけで諦めていたので、
+    演出を1文字直しても、既に入っている資料には二度と届かなかった。
+    """
+    m = MARK_ANY.search(html)
+    if not m:
+        return html
+    j = html.find(MARK_END, m.end())
+    if j < 0:
+        return html
+    html = html[:m.start()] + html[j + len(MARK_END):]
+    # JS のほうは <script> ごと落とす
+    return re.sub(r'\n?<script>\n/\* ファーストビューの演出パーツを組み立てる。'
+                  r'[\s\S]*?</script>\n?', '\n', html)
+
+
 def patch(html):
     if MARK in html:
         return None
+    html = strip(html)
     i = html.rfind('</style>')
     if i < 0:
         return None

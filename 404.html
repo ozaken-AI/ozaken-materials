@@ -85,7 +85,8 @@ code{font-family:var(--fe);font-size:.76rem;color:rgba(216,228,240,.55);word-bre
 .sec-navy[data-bg]+.sec-light[data-bg]::before{content:"";position:absolute;
   top:0;left:0;right:0;height:2px;pointer-events:none;
   background:linear-gradient(90deg,transparent,rgba(226,55,68,.55),transparent)}/* /OZ-BG */
-/* OZ-HEROFX v6 */
+
+/* OZ-HEROFX v7 */
 /* ══ ファーストビューの演出（index.html と同じ語彙） ══ */
 /* 地の色は index.html とまったく同じ組み合わせにする。
    単色の紺だと平坦に見えるが、上からの光・右下の赤み・斜めの三段グラデを
@@ -290,6 +291,46 @@ if (dest) {
 
 
 
+
+
+<script>
+/* OZ-KEYNAV v5 */
+/* 資料ページのショートカット。index.html と同じ2文字で、同じ画面が開く。
+   全画面の中身は index が持っているので、ここでは行き先を渡すだけ。 */
+(function(){
+  var GO = { th:'#thanks', st:'#standby', pr:'#profile', ti:'#title',
+             qa:'#ask',    ma:'#map',     ur:'#gate',    go:'#boot', en:'#end',
+             pw:'#ledger', mx:'#matrix',  cs:'#console', 'in':'#inbox',
+             ck:'#stage' };
+  /* **te（テンプレート便覧）は、ここには置けない。**
+     test と打ち始めた瞬間に te で拾われて、確認テストが永久に開けなくなる。
+     下の LONG は打ち終わりしか見ていないので、途中では守れない */
+  /* トップへの行き方。フッターのリンクが階層を知っているので、あればそれを借りる。
+     無い資料もあるので、その場合は置き場所（01_… / AX_Table / Training）から判断する */
+  function home(){
+    var a = document.querySelector('a[href$="index.html"]');
+    if (a) return a.getAttribute('href');
+    var seg = location.pathname.split('/');
+    var dir = decodeURIComponent(seg[seg.length - 2] || '');
+    return /^(0\d_|AX_Table|Training|Udemy)/.test(dir) ? '../index.html' : 'index.html';
+  }
+  /* 裏資料の隠しコマンドは、この2文字を内側に含んでしまう。
+     test の st で待機画面へ飛ばれると、テストが永久に開けない。
+     長いほうを打ち終えたときは、2文字のショートカットを見送る */
+  var LONG = /(test|quiz)$/;
+  var buf = '';
+  document.addEventListener('keydown', function(e){
+    var t = e.target;
+    if (t && (/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) || t.isContentEditable)) return;
+    if (!e.key || e.key.length !== 1 || e.metaKey || e.ctrlKey || e.altKey) return;
+    buf = (buf + e.key.toLowerCase()).slice(-4);
+    if (LONG.test(buf)){ buf = ''; return; }
+    var k = buf.slice(-2);
+    if (GO[k]){ buf = ''; location.href = home() + GO[k]; }
+  });
+})();
+</script>
+
 <script>
 /* ファーストビューの演出パーツを組み立てる。
    資料の中身から本数を数えるので、加筆しても読み出しは自動で追従する。 */
@@ -370,9 +411,13 @@ if (dest) {
   st.innerHTML = html;
   (hero.querySelector('.inner') || hero).appendChild(st);
 
-  var sc = mk('div','oz-scroll');
-  sc.innerHTML = '<span>SCROLL</span><span class="oz-chev">&#8964;</span>';
-  hero.appendChild(sc);
+  /* **資料が自前でスクロールの合図を持っているなら、足さない。**
+     二重に出て、SCROLL が2つ縦に並んでいた（AI音声の講演資料で実際に出た） */
+  if (!hero.querySelector('.hero-scroll,.oz-scroll')){
+    var sc = mk('div','oz-scroll');
+    sc.innerHTML = '<span>SCROLL</span><span class="oz-chev">&#8964;</span>';
+    hero.appendChild(sc);
+  }
 
   /* ── 漂う点と、近い点をつなぐ線（index と同じ挙動） ── */
   if (reduce) return;
@@ -432,45 +477,6 @@ if (dest) {
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
-})();
-</script>
-
-
-<script>
-/* OZ-KEYNAV v5 */
-/* 資料ページのショートカット。index.html と同じ2文字で、同じ画面が開く。
-   全画面の中身は index が持っているので、ここでは行き先を渡すだけ。 */
-(function(){
-  var GO = { th:'#thanks', st:'#standby', pr:'#profile', ti:'#title',
-             qa:'#ask',    ma:'#map',     ur:'#gate',    go:'#boot', en:'#end',
-             pw:'#ledger', mx:'#matrix',  cs:'#console', 'in':'#inbox',
-             ck:'#stage' };
-  /* **te（テンプレート便覧）は、ここには置けない。**
-     test と打ち始めた瞬間に te で拾われて、確認テストが永久に開けなくなる。
-     下の LONG は打ち終わりしか見ていないので、途中では守れない */
-  /* トップへの行き方。フッターのリンクが階層を知っているので、あればそれを借りる。
-     無い資料もあるので、その場合は置き場所（01_… / AX_Table / Training）から判断する */
-  function home(){
-    var a = document.querySelector('a[href$="index.html"]');
-    if (a) return a.getAttribute('href');
-    var seg = location.pathname.split('/');
-    var dir = decodeURIComponent(seg[seg.length - 2] || '');
-    return /^(0\d_|AX_Table|Training|Udemy)/.test(dir) ? '../index.html' : 'index.html';
-  }
-  /* 裏資料の隠しコマンドは、この2文字を内側に含んでしまう。
-     test の st で待機画面へ飛ばれると、テストが永久に開けない。
-     長いほうを打ち終えたときは、2文字のショートカットを見送る */
-  var LONG = /(test|quiz)$/;
-  var buf = '';
-  document.addEventListener('keydown', function(e){
-    var t = e.target;
-    if (t && (/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) || t.isContentEditable)) return;
-    if (!e.key || e.key.length !== 1 || e.metaKey || e.ctrlKey || e.altKey) return;
-    buf = (buf + e.key.toLowerCase()).slice(-4);
-    if (LONG.test(buf)){ buf = ''; return; }
-    var k = buf.slice(-2);
-    if (GO[k]){ buf = ''; location.href = home() + GO[k]; }
-  });
 })();
 </script>
 </body>
