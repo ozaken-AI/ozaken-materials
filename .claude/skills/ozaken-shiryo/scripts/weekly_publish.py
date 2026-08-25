@@ -109,7 +109,7 @@ def index_section(m):
             '        <p class="arc-lock-d">顧問先・研修先の方にお渡ししています。'
             '資料アーカイブとは別の鍵です。</p>\n'
             '        <div class="arc-lock-a">\n'
-            '          <a href="https://ozaken-ai.studio.site/#contact" target="_blank" rel="noopener">フォームから問い合わせる →</a>\n'
+            '          <a href="https://ozaken.ai/contact/" target="_blank" rel="noopener">フォームから問い合わせる →</a>\n'
             '          <a href="https://x.com/ozaken_AI" target="_blank" rel="noopener">X（@ozaken_AI）のDMへ →</a>\n'
             '        </div>\n'
             '      </div>\n'
