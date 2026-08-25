@@ -96,6 +96,13 @@ def check_tokens(page):
 # 全資料を描画して測った実際の最大は42だった
 HERO_W = 44
 
+# 扉のリード文に使える長さ。**これも実測から決めた値。**
+# `.hero-copy` は max-width:620px なので、1行に入るのは38全角ほど。
+# 規約は「3〜4行で収める」（page_parts.hero）なので、4行ぶんが上限になる。
+# 全資料を描画して測ると、4行に収まっているものの最大が196、
+# 5行になってしまうものの最小が252だった。あいだを取って210にする
+HERO_COPY_W = 210
+
 
 def check_hero(page):
     """表紙の題が、テンプレートの形に収まっているか。
@@ -109,7 +116,9 @@ def check_hero(page):
     字数で切ると、実際には入るものを弾いてしまう。
     """
     from domain_fig import wid
-    m = re.search(r'<h1 class="hero-title">([\s\S]*?)</h1>', page)
+    # 題の class も `hero-title rise d2` のように足されていることがある。
+    # 完全一致だと、そういう資料では検査そのものが素通りしていた
+    m = re.search(r'<h1 class="[^"]*\bhero-title\b[^"]*">([\s\S]*?)</h1>', page)
     if not m:
         return []
     parts = re.split(r'<br\s*/?>', m.group(1))
@@ -121,6 +130,18 @@ def check_hero(page):
         if wid(t) > HERO_W:
             errs.append('表紙の題の1行が長すぎる（表示幅%d / 上限%d）: %s'
                         % (wid(t), HERO_W, t))
+
+    # リード文。**長い扉は、題が正しくても形が崩れる。**
+    # 3〜4行で収める規約なので、5行に届く長さは弾く
+    # class は `hero-copy rise d4` のように足されていることがある。
+    # 完全一致で探すと、そういう資料だけ検査をすり抜ける（実際に1本あった）
+    c = re.search(r'<p class="[^"]*\bhero-copy\b[^"]*">([\s\S]*?)</p>', page)
+    if c:
+        t = re.sub(r'<[^>]+>', '', c.group(1)).replace('&amp;', '&').strip()
+        if wid(t) > HERO_COPY_W:
+            errs.append('表紙のリード文が長すぎる（表示幅%d / 上限%d）。'
+                        '3〜4行に収める。並べたい項目は目次（toc）へ'
+                        % (wid(t), HERO_COPY_W))
     return errs
 
 
