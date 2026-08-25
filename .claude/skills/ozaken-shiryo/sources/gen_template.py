@@ -22,7 +22,7 @@ import sys
 
 S = '/home/user/ozaken-materials/.claude/skills/ozaken-shiryo/scripts'
 sys.path.insert(0, S)
-from page_parts import hero, sec, cards, close, take, toc_band, HERO_TEXTURE, BYLINE
+from page_parts import hero, sec, cards, close, take
 from domain_fig import (fig_gap, fig_versus, fig_check, fig_matrix, fig_quad, fig_map,
                         fig_ladder, fig_flow, fig_stairs, fig_dims, fig_ranges,
                         fig_timeline, fig_cycle, fig_context, fig_pyramid, fig_tree,
@@ -38,128 +38,24 @@ A('<!--META title=テンプレート便覧 ─ 資料の型は、ここにまと
   '図版30種類の見本、部品、レギュレーション、生成元の一覧。'
   '見本は説明文ではなく実物の部品で描いてあるので、部品を直せば見本も一緒に変わる。-->')
 
-# ══ 扉 ══════════════════════════════════════════════════════════
-# この便覧だけは、既製の hero() を使わず、扉を手で組む。
-#
-# **扉は「資料の主役を1枚で見せる」場所**、という設計をここで実演する。
-#   ・左＝ことば（eyebrow・題・リード・署名）。規約はそのまま
-#     （題は<br>2行・表示幅44、リードは表示幅210。check_hero が見ている）
-#   ・右＝スポット（.tpl-spot）。資料の主役を1つだけ置く枠。
-#     この便覧の主役は「30種類の図版」なので、中心に 30 FIGURES、
-#     まわりを設計システムの6要素が周回している
-#   ・足元＝輪郭だけの英字（.tpl-giant）。資料の題の英字1語を沈める
-#
-# スポットの中身は資料ごとに替える想定：
-#   数字が主役の資料   → 中心に大きな数（例: 51施策 → 51）
-#   概念が主役の資料   → 中心にキーワード1語（明朝・特大）
-#   構造が主役の資料   → 中心にミニ図版
-# 全資料へ配るときは、この一式を page_parts.hero(spot=…) へ持ち上げて、
-# apply系と同じく printf でなく部品として注入する。**いまは便覧だけ。**
-#
-# 動きの規範もここで実演する：
-#   ・周回は60秒/一周。読める速さではなく「生きている」と分かる速さ
-#   ・環の破線は逆回りに90秒。二層がずれて、奥行きが出る
-#   ・中心の数字は6秒で呼吸（光量だけ。大きさは動かさない）
-#   ・prefers-reduced-motion では全部止める
-# 色は PALETTE の範囲だけ（#9fc6f5 / #d8e4f0 / #2e5496 / #182c55）。
-# 赤は題の「資料の型」に既に1箇所使っているので、スポットには使わない。
-
-TPL_HERO_CSS = """<style>
-/* ══ TPL-HERO ── 便覧だけの扉。全資料へ配るときは normalize_hero へ ══ */
-.hero .inner{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,400px);
-  gap:clamp(1.6rem,4vw,3.6rem);align-items:center}
-.hero .inner > .oz-status{grid-column:1/-1}
-.tpl-head{min-width:0}
-/* 右のスポット。資料の主役を1つだけ置く枠 */
-.tpl-spot{position:relative;justify-self:center;width:min(380px,88vw)}
-.tpl-orbit{position:relative;width:100%;aspect-ratio:1/1}
-.tpl-orbit svg{position:absolute;inset:0;width:100%;height:100%}
-.tpl-ring-a{animation:tplSpinR 90s linear infinite;transform-origin:50% 50%}
-.tpl-ring-b{animation:tplSpin 140s linear infinite;transform-origin:50% 50%}
-.tpl-core{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-  width:44%;aspect-ratio:1/1;border-radius:50%;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.15rem;
-  background:radial-gradient(circle at 50% 38%, rgba(46,84,150,.55), rgba(24,44,85,.92) 72%);
-  border:1px solid rgba(159,198,245,.4);
-  box-shadow:0 0 44px rgba(46,84,150,.55), inset 0 0 30px rgba(159,198,245,.14);
-  animation:tplBreath 6s ease-in-out infinite}
-.tpl-core b{font-family:var(--font-en);font-weight:700;line-height:1;
-  font-size:clamp(2.6rem,6vw,3.6rem);color:#fff;letter-spacing:.02em}
-.tpl-core span{font-family:var(--font-en);font-size:.6rem;font-weight:600;
-  letter-spacing:.3em;color:#9fc6f5}
-.tpl-sat{position:absolute;left:50%;top:50%;margin:-1.15em 0 0 -2.6em;width:5.2em;
-  text-align:center;padding:.42em 0;border-radius:999px;
-  font-size:.72rem;letter-spacing:.14em;color:#d8e4f0;
-  background:rgba(24,44,85,.85);border:1px solid rgba(159,198,245,.32);
-  animation:tplOrbit 60s linear infinite}
-.tpl-spot-cap{margin-top:1rem;text-align:center;font-family:var(--font-en);
-  font-size:.62rem;font-weight:600;letter-spacing:.26em;color:rgba(216,228,240,.55)}
-@keyframes tplOrbit{from{transform:rotate(0deg) translateX(9.6em) rotate(0deg)}
-  to{transform:rotate(360deg) translateX(9.6em) rotate(-360deg)}}
-@keyframes tplSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-@keyframes tplSpinR{from{transform:rotate(360deg)}to{transform:rotate(0deg)}}
-@keyframes tplBreath{0%,100%{box-shadow:0 0 34px rgba(46,84,150,.45), inset 0 0 26px rgba(159,198,245,.1)}
-  50%{box-shadow:0 0 60px rgba(46,84,150,.75), inset 0 0 36px rgba(159,198,245,.2)}}
-/* 足元に沈む英字。演出が子のtransformを触るので、寄せはtext-alignで行う */
-.tpl-giant{position:absolute;left:0;right:0;bottom:-.08em;z-index:2;text-align:center;
-  pointer-events:none;user-select:none;white-space:nowrap;
-  font-family:var(--font-en);font-weight:700;line-height:.8;letter-spacing:.06em;
-  font-size:clamp(4.6rem,13vw,11.5rem);color:transparent;
-  -webkit-text-stroke:1px rgba(159,198,245,.13)}
-/* 図版は、触れたときだけ浮く。常時揺らすと本文が読めない */
-.figure{transition:transform .35s ease, box-shadow .35s ease}
-.figure:hover{transform:translateY(-5px);
-  box-shadow:0 26px 54px -24px rgba(20,29,53,.44)}
-@media (max-width:900px){
-  .hero .inner{grid-template-columns:1fr}
-  .tpl-spot{width:min(300px,80vw);margin-top:.6rem}
-  .tpl-giant{font-size:clamp(3.6rem,15vw,6rem)}}
-@media (prefers-reduced-motion: reduce){
-  .tpl-ring-a,.tpl-ring-b,.tpl-sat,.tpl-core{animation:none}}
-</style>"""
-
-# 周回する6要素。設計システムの部品そのもの
-_SATS = ['色', '書体', '図版', '動き', '検査', '鍵']
-_sat_html = '\n'.join(
-    '      <span class="tpl-sat" style="animation-delay:-%ds" aria-hidden="true">%s</span>'
-    % (i * 10, t) for i, t in enumerate(_SATS))
-
-A(TPL_HERO_CSS)
-A("""<section class="hero">
-""" + HERO_TEXTURE + """  <span class="hero-cat">Design System ／ 便覧</span>
-  <div class="inner" data-reveal>
-    <div class="tpl-head">
-      <span class="eyebrow">Ozaken Template ・ 便覧</span>
-      <h1 class="hero-title"><span class="hl">資料の型</span>は、<br>ここにまとめてある</h1>
-      <p class="hero-copy">図版は30種類、面の並びには決まりがあり、資料は生成元から焼き直せる。このページ自体が、その型で組んである。</p>
-      <p class="hero-meta">""" + BYLINE + """</p>
-    </div>
-    <aside class="tpl-spot" aria-hidden="true">
-      <div class="tpl-orbit">
-        <svg viewBox="0 0 360 360" xmlns="http://www.w3.org/2000/svg">
-          <g class="tpl-ring-a"><circle cx="180" cy="180" r="150" fill="none" stroke="#9fc6f5" stroke-opacity="0.28" stroke-width="1" stroke-dasharray="3 7"/></g>
-          <g class="tpl-ring-b"><circle cx="180" cy="180" r="118" fill="none" stroke="#d8e4f0" stroke-opacity="0.16" stroke-width="1" stroke-dasharray="1 6"/></g>
-          <circle cx="180" cy="30" r="2.4" fill="#9fc6f5" fill-opacity="0.7"/>
-          <circle cx="330" cy="180" r="1.8" fill="#d8e4f0" fill-opacity="0.5"/>
-        </svg>
-""" + _sat_html + """
-        <div class="tpl-core"><b>30</b><span>FIGURES</span></div>
-      </div>
-      <p class="tpl-spot-cap">FIGURE-FIRST ── 扉は、資料の主役を見せる</p>
-    </aside>
-  </div>
-  <div class="tpl-giant" aria-hidden="true">TEMPLATE</div>
-</section>
-""")
-
-# 表紙の目次。長い資料でだけ使う部品なので、ここでも実物を出しておく
-A(toc_band([
-    ('01', '色と書体・面の並び', 'Tokens / Order'),
-    ('02', '図版カタログ 30種類', 'Catalogue'),
-    ('03', '図版以外の部品', 'Parts'),
-    ('04', '機械が見ている決まり', 'Regulation'),
-    ('05', '生成元からの焼き直し', 'Sources'),
-]))
+# ── 扉 ──
+# 一度、右側に「資料の主役を見せるスポット」（周回する6要素と30 FIGURES）を
+# 置いてみたが、実機のスマートフォンで文字の並びが崩れ、
+# 他の資料が同じ形を再現できない特注にもなるので、やめて標準の hero() に戻した。
+# 扉は全資料と同じ部品で組む。特注は、扉ではなく図版でやる。
+A(hero('Ozaken Template ・ 便覧',
+       '<span class="hl">資料の型</span>は、<br>ここにまとめてある',
+       '図版は30種類、面の並びには決まりがあり、資料は生成元から焼き直せる。'
+       'このページ自体が、その型で組んである。',
+       cat='Design System ／ 便覧',
+       # 表紙の目次。長い資料でだけ使う部品なので、ここでも実物を出しておく
+       toc=[
+           ('01', '色と書体・面の並び', 'Tokens / Order'),
+           ('02', '図版カタログ 30種類', 'Catalogue'),
+           ('03', '図版以外の部品', 'Parts'),
+           ('04', '機械が見ている決まり', 'Regulation'),
+           ('05', '生成元からの焼き直し', 'Sources'),
+       ]))
 
 # ── 01 ─────────────────────────────────────────────── トークン
 A(sec('sec-light', 'Section 01 ─ Tokens',
