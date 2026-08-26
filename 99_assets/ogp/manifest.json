@@ -240,6 +240,14 @@
   "cat": "PRODUCT"
  },
  {
+  "rel": "03_tools/copilot-brand-kit.html",
+  "file": "3eb0292db1.jpg",
+  "title": "Copilot Brand Kit ─ ブランドを、AIに渡す",
+  "desc": "Microsoft 365 Copilot の Brand Kit の解説。何が登録できるのか、誰が作れるのか、SharePoint の Brand Center とどう違うのか。そして「ブランドブックを持っていない会社では空のまま動く」という限界まで。",
+  "card": "Microsoft 365 Copilot の Brand Kit の解説。何が登録できるのか、誰が作れるのか、SharePoint の Brand Center と…",
+  "cat": "PRODUCT"
+ },
+ {
   "rel": "03_tools/copilot-credits.html",
   "file": "6cee09c626.jpg",
   "title": "Copilot Credits 完全ガイド ─ 「使った分だけ」が始まった",

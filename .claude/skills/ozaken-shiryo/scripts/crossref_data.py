@@ -162,6 +162,9 @@ CONCEPTS = {
         ['ChatGPT Work'], '実務での使いどころと他との違い'),
     'Copilot Cowork': ('03_tools/cowork.html',
         ['Cowork'], 'エージェントが組織で使える段階へ'),
+    'Brand Kit': ('03_tools/copilot-brand-kit.html',
+        ['Brand Kit', 'ブランドキット', 'ブランドマネージャー', '組織資産ライブラリ'],
+        'ブランドを、AIに渡せる形で組織に一度だけ置く仕組み'),
     'Copilot Credits': ('03_tools/copilot-credits.html',
         ['Copilot Credit', 'クレジット'], '使った分だけ課金される仕組み'),
 }
@@ -217,5 +220,12 @@ NOT_DECKS = {'12_jobs/us-jp-employment.html',
 #
 # チップの「行き先」にならないだけで、その資料自身にチップは入る。
 # 資料どうしの整合を見る check / map / matrix でも、ふつうに扱われる。
+#
+# テンプレート便覧も行き先にしない。**これは道具のページで、
+# マスターでしか開かない。** 公開資料からチップで送ると、読者は
+# パスワードの壁に当たる（Brand Kit の資料で「書体」の語が重なって、
+# 実際に行き先に出た）。NOT_DOCS に入れないのは、便覧は publish で
+# 焼く普通の資料でもあり、lint_all の検査からは外したくないため。
 NO_CHIP_TO = {'Training/msa-life-training.html',
-              '09_role/kanadevia-ict.html'}
+              '09_role/kanadevia-ict.html',
+              'template.html'}

@@ -68,7 +68,7 @@ h1{font-family:'OZ Mincho',serif;font-weight:700;line-height:1.42;
 </div>
 <div class="rule"></div>
 <div class="foot"><span><b>おざけん</b>　小澤健祐</span>
-  <span class="u">ozaken-ai.github.io/ozaken-materials</span></div>
+  <span class="u">content.ozaken.ai</span></div>
 </body></html>`;
 
 /* 題は長さがまちまちなので、枠に収まるまで少しずつ小さくする。
