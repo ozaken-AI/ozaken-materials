@@ -38,6 +38,70 @@ A('<!--META title=テンプレート便覧 ─ 資料の型は、ここにまと
   '図版30種類の見本、部品、レギュレーション、生成元の一覧。'
   '見本は説明文ではなく実物の部品で描いてあるので、部品を直せば見本も一緒に変わる。-->')
 
+# ══ 本文の意匠（便覧だけ） ═══════════════════════════════════════
+# 扉より下の面に、5つの意匠を足す。どれもCSSと小さなJSだけで、
+# 部品のHTMLには触れていないので、全資料へ配るときは
+# このまま normalize_style の次の版へ移せば同じ見た目になる。
+#
+#   1. 面の番号の透かし ── 各面の右上に、輪郭だけの数字。
+#      eyebrow の「Section N」は公開時に振り直されるので、
+#      CSSカウンタと必ず一致する。締めの面には置かない
+#   2. 図版の四隅 ── 製図の枠のような小さなL字。触れると図版が浮く
+#   3. カードの上端 ── 青のヘアラインが左から差す
+#   4. 引用（take）── 輪郭だけの大きな「 を背に置く
+#   5. 読みの現在地 ── 上端に読了バー、右下に「いま何面目か」。
+#      現在地は herofx が付ける html.past-hero を借りて、扉では隠す
+#
+# 色は PALETTE の範囲だけ。赤は使わない（面ごとの1箇所は本文が使う）。
+A("""<style>
+/* ══ TPL-BODY ── 便覧の本文の意匠。配るときは normalize_style へ ══ */
+body{counter-reset:ozsec}
+section.sec-light,section.sec-navy{counter-increment:ozsec}
+section.sec-light > .inner,section.sec-navy > .inner{position:relative}
+section.sec-light > .inner::before,section.sec-navy > .inner::before{
+  content:counter(ozsec,decimal-leading-zero);
+  position:absolute;top:-1.2rem;right:0;z-index:0;pointer-events:none;user-select:none;
+  font-family:var(--font-en);font-weight:700;line-height:1;letter-spacing:.02em;
+  font-size:clamp(4.2rem,8.5vw,7.5rem);
+  color:transparent;-webkit-text-stroke:1px rgba(46,84,150,.15)}
+section.sec-navy > .inner::before{-webkit-text-stroke:1px rgba(159,198,245,.13)}
+section.sec-navy:last-of-type > .inner::before{content:none}
+.figure{position:relative;transition:transform .35s ease,box-shadow .35s ease}
+.figure:hover{transform:translateY(-4px);box-shadow:0 26px 56px -24px rgba(20,29,53,.42)}
+.figure::before,.figure::after{content:'';position:absolute;width:13px;height:13px;
+  pointer-events:none;opacity:.5}
+.figure::before{top:8px;left:8px;border-top:1.5px solid #2e5496;border-left:1.5px solid #2e5496}
+.figure::after{bottom:8px;right:8px;border-bottom:1.5px solid #2e5496;border-right:1.5px solid #2e5496}
+.sec-navy .figure::before{border-color:#9fc6f5}
+.sec-navy .figure::after{border-color:#9fc6f5}
+.card{transition:transform .3s ease,box-shadow .3s ease}
+.card:hover{transform:translateY(-4px)}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  border-radius:2px 2px 0 0;
+  background:linear-gradient(90deg,#2e5496,rgba(46,84,150,0) 65%)}
+.sec-navy .card::before{background:linear-gradient(90deg,#9fc6f5,rgba(159,198,245,0) 65%)}
+.take{position:relative;overflow:hidden}
+.take::after{content:'\u300c';position:absolute;top:-.18em;right:.05em;z-index:0;
+  pointer-events:none;user-select:none;font-family:var(--font-ja-serif);font-weight:600;
+  font-size:5.5rem;line-height:1;color:transparent;
+  -webkit-text-stroke:1px rgba(46,84,150,.2)}
+.sec-navy .take::after{-webkit-text-stroke:1px rgba(216,228,240,.2)}
+.tplbar{position:fixed;top:0;left:0;right:0;height:2px;z-index:95;pointer-events:none;
+  background:rgba(46,84,150,.14)}
+.tplbar i{display:block;height:100%;width:0;
+  background:linear-gradient(90deg,#2e5496,#9fc6f5)}
+.tplhud{position:fixed;right:1.35rem;bottom:1.25rem;z-index:95;pointer-events:none;
+  display:inline-flex;align-items:baseline;gap:.4rem;padding:.5em .95em;border-radius:999px;
+  background:rgba(20,29,53,.6);border:1px solid rgba(216,228,240,.22);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+  font-family:var(--font-en);font-size:.6rem;font-weight:600;letter-spacing:.22em;
+  color:rgba(216,228,240,.65);opacity:0;transition:opacity .4s ease}
+html.past-hero .tplhud{opacity:1}
+.tplhud b{font-size:.95rem;color:#9fc6f5;letter-spacing:.06em}
+@media (max-width:900px){.tplhud{display:none}
+  section.sec-light > .inner::before,section.sec-navy > .inner::before{
+    font-size:3.2rem;top:-.9rem}}
+</style>""")
 # ── 扉 ──
 # 一度、右側に「資料の主役を見せるスポット」（周回する6要素と30 FIGURES）を
 # 置いてみたが、実機のスマートフォンで文字の並びが崩れ、
@@ -629,6 +693,33 @@ A(close('型があるから、中身に時間を使える',
         'そして型そのものが古くなったときは、'
         'この便覧の生成元を直せば、92本すべてに一度で行き渡ります。'))
 
+# 読みの現在地。バーは読了率、右下はいま映している面の番号。
+# 講演の途中で「あとどれくらいか」を、口で言わずに画面が持っておく
+A("""<div class="tplbar" aria-hidden="true"><i></i></div>
+<div class="tplhud" aria-hidden="true"><b>01</b>／<span>09</span></div>
+<script>
+(function(){
+  var bar=document.querySelector('.tplbar i');
+  var hud=document.querySelector('.tplhud'); if(!bar) return;
+  var secs=[].slice.call(document.querySelectorAll('section.sec-light,section.sec-navy'));
+  if(secs.length>1) secs.pop();   /* 締めの面は、透かしの番号にも入れていない */
+  var cur=hud?hud.querySelector('b'):null, tot=hud?hud.querySelector('span'):null;
+  if(tot) tot.textContent=('0'+secs.length).slice(-2);
+  function upd(){
+    var h=document.documentElement, max=h.scrollHeight-window.innerHeight;
+    bar.style.width=(max>0?Math.min(100,window.scrollY/max*100):0)+'%';
+    if(!cur) return;
+    var n=1;
+    for(var i=0;i<secs.length;i++){
+      if(secs[i].getBoundingClientRect().top<window.innerHeight*0.5) n=i+1; }
+    cur.textContent=('0'+n).slice(-2);
+  }
+  window.addEventListener('scroll',upd,{passive:true});
+  window.addEventListener('resize',upd,{passive:true});
+  upd();
+})();
+</script>""")
+
 # **図版の番号は、最後に振り直す。**
 # カタログに1種類足すたびに、うしろの Fig.N を手で全部ずらしていた。
 # 1つでも直し忘れると同じ番号が2つ並ぶ（実際、fig_sides を足した日に出た）。
@@ -641,6 +732,7 @@ def _no(m):
     _f[0] += 1
     return 'class="fig-no">Fig.%d</span>' % _f[0]
 _body = _re.sub(r'class="fig-no">Fig\.\d+</span>', _no, _body)
+
 
 open('/tmp/body_template.html', 'w', encoding='utf-8').write(_body)
 print('書きました: %d 文字 / 図版 %d 点' % (len(_body), _f[0]))
