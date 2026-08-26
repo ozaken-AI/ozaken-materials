@@ -27,6 +27,22 @@ page_parts は「資料の骨格」（扉・節・締め・カード）を持つ
 
 **色は PALETTE の中だけ。** ここを外すと check_tokens が公開を止める。
 書体も3つの変数だけ。CSSは tpl_style.html の末尾に置いてある。
+
+── 押せる部品について ──────────────────────────────────
+
+**常時の動きは足さない。触れたときだけ返す。**
+投影中に動くものが増えると、本文が読めなくなる。だから
+下の7つは、指かマウスが触れるまで完全に止まっている。
+
+押されることが本当に起きるのは、**講演のあとに渡したURLを
+参加者が自分の端末で開いたとき**。そこで効くものだけを置いた。
+`copyable`（依頼文をその場でコピー）と `flip`（考えてから開く）が
+その代表で、どちらも紙の資料では成立しない。
+
+押した感触は ripple ひとつに統一してある。部品ごとに違う
+返し方をすると、押せるものと押せないものの区別が学習できない。
+JSは tpl_tail.html にあり、**document への委譲で動く**ので、
+暗号化された本文が後から差し込まれても効く。
 """
 from domain_fig import esc
 
@@ -280,3 +296,131 @@ def wave(label=None, n=9):
     return ('<div class="wave" data-reveal>'
             '<span class="wv-b" aria-hidden="true">%s</span>%s</div>\n'
             % (bars, lb))
+
+
+# ══════════════════════════════════════════════════ 押せる部品
+#
+# **どれも、触れるまでは完全に止まっている。**
+# 投影中に動くものが増えると本文が読めなくなるので、
+# 常時のアニメーションはここには置かない。
+
+def copyable(text, label='この依頼文をコピー', note=None):
+    """押すと、中の文をクリップボードに写す。
+
+    **紙の資料では成立しない部品。** 講演のあとにURLを渡すと、
+    参加者はその場で依頼文を自分のAIに貼れる。
+    プロンプトの例・設定値・コマンドを載せるときに使う。
+
+    改行を含めたいときは text に \n を入れる（そのまま写る）。
+    """
+    return ('<div class="copyable" data-reveal>\n'
+            '  <pre class="cp-t">%s</pre>\n'
+            '  <button class="cp-b oz-press" type="button" data-copy>'
+            '<span class="cp-i" aria-hidden="true"></span>%s</button>\n%s</div>\n'
+            % (esc(text), esc(label),
+               '  <p class="cp-n">%s</p>\n' % esc(note) if note else ''))
+
+
+def flip(front, back, hint='押すと、答えが出ます'):
+    """押すと裏返る。表に問い、裏に答えを置く。
+
+    **講演で「どう思いますか」と投げてから開くための部品。**
+    先に答えが見えていると、聴いている人は考えない。
+
+    表と裏は同じ升目に重ねてある（grid-area を揃える）。
+    位置合わせに絶対配置を使うと、片方の高さが変わったときに崩れる。
+    """
+    return ('<div class="flip oz-press" data-flip data-reveal tabindex="0" role="button">\n'
+            '  <div class="fl-in">\n'
+            '    <div class="fl-f"><p>%s</p><span class="fl-h">%s</span></div>\n'
+            '    <div class="fl-b"><p>%s</p></div>\n'
+            '  </div>\n</div>\n' % (front, esc(hint), back))
+
+
+def toggle_pair(a_label, a_body, b_label, b_body, label=None):
+    """2つを1枚の場所で切り替える。Before / After に。
+
+    横に並べる `split` と違い、**同じ場所で入れ替わる**ので
+    差分そのものが見える。並べると目が左右に動いて、
+    どこが変わったのかを自分で探すことになる。
+    """
+    lb = '  <span class="tg-lb">%s</span>\n' % esc(label) if label else ''
+    return ('<div class="togglepair" data-toggle data-reveal>\n%s'
+            '  <div class="tg-sw" role="tablist">'
+            '<button class="tg-k oz-press is-on" type="button" role="tab">%s</button>'
+            '<button class="tg-k oz-press" type="button" role="tab">%s</button>'
+            '<span class="tg-ink" aria-hidden="true"></span></div>\n'
+            '  <div class="tg-st"><div class="tg-p is-on">%s</div>'
+            '<div class="tg-p">%s</div></div>\n</div>\n'
+            % (lb, esc(a_label), esc(b_label), a_body, b_body))
+
+
+def tabs(items):
+    """立場ごとに中身を切り替える。items: [(見出し, 中身)]。2〜4個。
+
+    **1つの面で、3倍の内容を持てる。** 経営・現場・情シスのように
+    聞き手によって刺さる話が違うとき、その場で切り替えて見せられる。
+    下の線が押した札へ滑って移る。
+    """
+    keys = ''.join(
+        '<button class="tb-k oz-press%s" type="button" role="tab">%s</button>'
+        % (' is-on' if i == 0 else '', esc(t)) for i, (t, _) in enumerate(items))
+    panes = ''.join(
+        '<div class="tb-p%s">%s</div>' % (' is-on' if i == 0 else '', b)
+        for i, (_, b) in enumerate(items))
+    return ('<div class="tabs" data-tabs data-reveal>\n'
+            '  <div class="tb-ks" role="tablist">%s'
+            '<span class="tb-ink" aria-hidden="true"></span></div>\n'
+            '  <div class="tb-st">%s</div>\n</div>\n' % (keys, panes))
+
+
+def accordion(items, note=None):
+    """押すと開く一覧。items: [(見出し, 中身)]。
+
+    **投影では使わない。** 閉じている中身は、会場の後ろからは
+    存在しないのと同じ。これは**渡したあとに読む人**のための部品で、
+    参照用の長い一覧（施策・用語・FAQの詳細）を畳んでおくときに使う。
+    投影して話す内容なら `faq` か `steps` を使う。
+    """
+    rows = ''.join(
+        '  <div class="ac-i"><button class="ac-h oz-press" type="button" '
+        'aria-expanded="false">%s<span class="ac-x" aria-hidden="true"></span></button>'
+        '<div class="ac-b"><div class="ac-c">%s</div></div></div>\n'
+        % (esc(h), b) for h, b in items)
+    return ('<div class="accordion" data-acc data-reveal>\n%s%s</div>\n'
+            % (rows, '  <p class="ac-n">%s</p>\n' % esc(note) if note else ''))
+
+
+def counter(items, note=None):
+    """数字が、0から回って止まる。items: [(数値, 単位, 何の数字か)]。
+
+    `statgrid` は置いた瞬間から数字が見えている。こちらは
+    **画面に入ってから回る**ので、数の大きさが時間として伝わる。
+    押すともう一度回るので、講演で「もう一度見せて」に応えられる。
+
+    数値は整数で渡す（回すために数として扱う）。
+    """
+    cells = ''.join(
+        '  <div class="ct-i"><div class="ct-v">'
+        '<b data-to="%d">0</b><i>%s</i></div><p>%s</p></div>\n'
+        % (int(v), esc(u), esc(l)) for v, u, l in items)
+    return ('<div class="counter oz-press" data-count data-reveal>\n%s%s</div>\n'
+            % (cells, '  <p class="ct-n">%s</p>\n' % esc(note) if note else ''))
+
+
+def poll(question, options, answer, why=None):
+    """選ばせてから、正解を返す。options: [文, ...]、answer は 0 始まりの番号。
+
+    **確認テスト（quiz）との違いは、置き場所と目的。**
+    quiz は隠しコマンドで開く、裏資料限定の理解度チェック。
+    こちらは本文に置いて、**その場の1問**で聴衆の手を動かす。
+    表の資料にも置ける。
+    """
+    opts = ''.join(
+        '<button class="pl-o oz-press" type="button" data-i="%d">'
+        '<span class="pl-m" aria-hidden="true"></span>%s</button>' % (i, esc(o))
+        for i, o in enumerate(options))
+    w = '  <p class="pl-w">%s</p>\n' % why if why else ''
+    return ('<div class="poll" data-poll data-a="%d" data-reveal>\n'
+            '  <p class="pl-q">%s</p>\n  <div class="pl-os">%s</div>\n%s</div>\n'
+            % (int(answer), esc(question), opts, w))

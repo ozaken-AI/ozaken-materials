@@ -125,3 +125,165 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
   requestAnimationFrame(frame);
 })();
 </script>
+
+<script>
+/* ══ 押せる部品（blocks.py）══════════════════════════════════════
+   **document への委譲だけで書く。** 資料は暗号化されていて、
+   本文は復号のあとから差し込まれる。読み込み時に
+   querySelectorAll で拾う書き方だと、そのとき本文はまだ無い。
+
+   常時動くものは一つも作らない。触れたときだけ返す。 */
+(function(){
+  var reduce = window.matchMedia &&
+               window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ── 押した点から広がる円。押された座標を CSS 変数で渡す ── */
+  document.addEventListener('pointerdown', function(e){
+    var t = e.target.closest && e.target.closest('.oz-press');
+    if (!t || reduce) return;
+    var r = t.getBoundingClientRect();
+    t.style.setProperty('--px', (e.clientX - r.left) + 'px');
+    t.style.setProperty('--py', (e.clientY - r.top) + 'px');
+    t.classList.remove('is-press');
+    void t.offsetWidth;              /* 連続で押しても鳴り直す */
+    t.classList.add('is-press');
+  }, {passive: true});
+
+  /* ── 滑る下線。札の位置と幅を測って、印を動かす ── */
+  function ink(box, on){
+    var bar = box.querySelector('.tg-ink, .tb-ink');
+    if (!bar || !on) return;
+    bar.style.width = on.offsetWidth + 'px';
+    bar.style.transform = 'translateX(' + on.offsetLeft + 'px)';
+  }
+  function swap(root, keySel, paneSel, key){
+    var keys = [].slice.call(root.querySelectorAll(keySel));
+    var panes = [].slice.call(root.querySelectorAll(paneSel));
+    var i = keys.indexOf(key);
+    if (i < 0) return;
+    keys.forEach(function(k, n){ k.classList.toggle('is-on', n === i); });
+    panes.forEach(function(p, n){ p.classList.toggle('is-on', n === i); });
+    ink(key.parentNode, key);
+  }
+
+  document.addEventListener('click', function(e){
+    var el = e.target;
+    if (!el.closest) return;
+
+    /* コピー */
+    var cb = el.closest('[data-copy]');
+    if (cb){
+      var box = cb.closest('.copyable');
+      var txt = box && box.querySelector('.cp-t');
+      if (txt){
+        var done = function(){
+          var was = cb.lastChild.nodeValue;
+          cb.classList.add('is-done');
+          cb.lastChild.nodeValue = 'コピーしました';
+          setTimeout(function(){
+            cb.classList.remove('is-done');
+            cb.lastChild.nodeValue = was;
+          }, 1800);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(txt.textContent).then(done, function(){});
+        } else {
+          /* file:// や古い端末では clipboard が無い。選択して見せる */
+          var r = document.createRange(); r.selectNodeContents(txt);
+          var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+          try { document.execCommand('copy'); done(); } catch(err){}
+        }
+      }
+      return;
+    }
+
+    /* 裏返す */
+    var fl = el.closest('[data-flip]');
+    if (fl){ fl.classList.toggle('is-open'); return; }
+
+    /* 入れ替える／立場を切り替える */
+    var tk = el.closest('.tg-k');
+    if (tk){ swap(tk.closest('[data-toggle]'), '.tg-k', '.tg-p', tk); return; }
+    var bk = el.closest('.tb-k');
+    if (bk){ swap(bk.closest('[data-tabs]'), '.tb-k', '.tb-p', bk); return; }
+
+    /* 開く */
+    var ah = el.closest('.ac-h');
+    if (ah){
+      var item = ah.closest('.ac-i');
+      var open = item.classList.toggle('is-open');
+      ah.setAttribute('aria-expanded', open ? 'true' : 'false');
+      return;
+    }
+
+    /* 1問に答える */
+    var po = el.closest('.pl-o');
+    if (po){
+      var poll = po.closest('[data-poll]');
+      if (poll.classList.contains('is-done')) return;
+      var ans = parseInt(poll.getAttribute('data-a'), 10);
+      [].slice.call(poll.querySelectorAll('.pl-o')).forEach(function(o, n){
+        if (n === ans) o.classList.add('is-ok');
+        else if (o === po) o.classList.add('is-ng');
+      });
+      poll.classList.add('is-done');
+      return;
+    }
+
+    /* 数字を、もう一度回す */
+    var ct = el.closest('[data-count]');
+    if (ct){ run(ct); return; }
+  });
+
+  /* 裏返しは、キーボードでも開ける */
+  document.addEventListener('keydown', function(e){
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    var fl = e.target.closest && e.target.closest('[data-flip]');
+    if (!fl) return;
+    e.preventDefault();
+    fl.classList.toggle('is-open');
+  });
+
+  /* ── 0から回る数字。画面に入ったら1度だけ回る ── */
+  function run(box){
+    [].slice.call(box.querySelectorAll('b[data-to]')).forEach(function(b){
+      var to = parseInt(b.getAttribute('data-to'), 10);
+      if (isNaN(to)) return;
+      if (reduce){ b.textContent = to.toLocaleString('en-US'); return; }
+      var t0 = null, dur = 1150;
+      function step(ts){
+        if (t0 === null) t0 = ts;
+        var p = Math.min(1, (ts - t0) / dur), e2 = 1 - Math.pow(1 - p, 3);
+        b.textContent = Math.round(to * e2).toLocaleString('en-US');
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
+  }
+  if ('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(en){
+        if (!en.isIntersecting) return;
+        run(en.target); io.unobserve(en.target);
+      });
+    }, {threshold: .35});
+    /* 本文はあとから差し込まれるので、少し待ってから拾う */
+    var arm = function(){
+      [].slice.call(document.querySelectorAll('[data-count]')).forEach(function(b){
+        io.observe(b);
+      });
+    };
+    arm(); setTimeout(arm, 400); setTimeout(arm, 1600);
+  }
+
+  /* 滑る下線の初期位置。書体が届くと札の幅が変わるので、測り直す */
+  var lay = function(){
+    [].slice.call(document.querySelectorAll('.tg-sw, .tb-ks')).forEach(function(w){
+      ink(w, w.querySelector('.is-on'));
+    });
+  };
+  lay(); setTimeout(lay, 400); setTimeout(lay, 1600);
+  window.addEventListener('resize', lay, {passive: true});
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(lay);
+})();
+</script>

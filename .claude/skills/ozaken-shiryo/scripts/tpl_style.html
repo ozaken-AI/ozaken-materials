@@ -983,4 +983,284 @@ p, li, .sec-sub, .lede, .note, .card p, .take-text, .figure-cap, .hero-copy,
   [data-reveal] .ck-m i { transform: rotate(45deg); }
   [data-reveal] .ck-m i:nth-child(2) { transform: rotate(-52deg); }
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   押せる部品 ── **触れるまでは完全に止まっている。**
+   投影中に動くものが増えると本文が読めなくなるので、
+   ここには常時のアニメーションを一つも置かない。
+
+   押した感触は ripple ひとつに統一する。部品ごとに違う返し方を
+   すると、押せるものと押せないものの区別が学習できない。
+   ══════════════════════════════════════════════════════════════════ */
+
+/* 押した点から広がる円。300%あれば、どこを押しても隅まで届く */
+.oz-press { position: relative; overflow: hidden; isolation: isolate;
+  cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.oz-press::after { content: ''; position: absolute;
+  left: var(--px, 50%); top: var(--py, 50%); width: 300%; aspect-ratio: 1;
+  translate: -50% -50%; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(circle, rgba(46,84,150,.26), rgba(46,84,150,0) 62%);
+  opacity: 0; transform: scale(0); }
+.oz-press.is-press::after { animation: ozRipple .62s ease-out; }
+.sec-navy .oz-press::after {
+  background: radial-gradient(circle, rgba(216,228,240,.3), rgba(216,228,240,0) 62%); }
+@keyframes ozRipple {
+  from { opacity: .85; transform: scale(0); }
+  to   { opacity: 0;   transform: scale(1); } }
+
+/* ── コピーできる依頼文 ── */
+.copyable { margin: 1.7rem 0; border-radius: var(--radius); overflow: hidden;
+  border: 1px solid rgba(46,84,150,.16); background: var(--white); }
+.sec-navy .copyable { background: rgba(255,255,255,.05);
+  border-color: rgba(216,228,240,.18); }
+.cp-t { font-family: var(--font-en); font-size: .88rem; line-height: 1.85;
+  color: var(--ink); padding: 1.2rem 1.3rem; margin: 0; white-space: pre-wrap;
+  word-break: break-word; }
+.sec-navy .cp-t { color: rgba(255,255,255,.92); }
+.cp-b { display: flex; align-items: center; gap: .55rem; width: 100%;
+  padding: .85rem 1.3rem; border: 0; border-top: 1px solid rgba(46,84,150,.12);
+  background: var(--paper); color: var(--navy);
+  font-family: var(--font-ja-sans); font-size: .84rem; font-weight: 700;
+  transition: background .2s ease; }
+.cp-b:hover { background: #e7eef8; }
+.sec-navy .cp-b { background: rgba(255,255,255,.06); color: #fff;
+  border-top-color: rgba(216,228,240,.16); }
+.sec-navy .cp-b:hover { background: rgba(255,255,255,.12); }
+.cp-i { flex: none; width: 13px; height: 15px; border-radius: 2px;
+  border: 1.5px solid currentColor; position: relative; }
+.cp-i::before { content: ''; position: absolute; left: 2px; top: -4px;
+  width: 13px; height: 15px; border-radius: 2px;
+  border: 1.5px solid currentColor; opacity: .45; }
+.cp-b.is-done { color: #2f8f8a; }
+.sec-navy .cp-b.is-done { color: #46c98a; }
+.cp-n { font-size: .78rem; color: var(--muted); padding: 0 1.3rem 1rem; }
+.sec-navy .cp-n { color: rgba(216,228,240,.6); }
+
+/* ── 裏返るカード。表と裏は同じ升目に重ねる ── */
+.flip { margin: 1.7rem 0; border-radius: var(--radius); }
+.fl-in { display: grid; }
+.fl-in > * { grid-area: 1 / 1; }
+.fl-f, .fl-b { padding: 1.6rem 1.7rem; border-radius: var(--radius);
+  border: 1px solid rgba(46,84,150,.16); background: var(--white);
+  transition: opacity .34s ease, transform .34s cubic-bezier(.16,1,.3,1); }
+.sec-navy .fl-f, .sec-navy .fl-b { background: rgba(255,255,255,.05);
+  border-color: rgba(216,228,240,.18); }
+.fl-f p, .fl-b p { font-family: var(--font-ja-serif); font-weight: 600;
+  font-size: clamp(1.02rem, 2.2vw, 1.22rem); line-height: 1.85; color: var(--ink); }
+.sec-navy .fl-f p, .sec-navy .fl-b p { color: #fff; }
+.fl-b { border-left: 3px solid var(--azure); }
+.sec-navy .fl-b { border-left-color: var(--azure-pale); }
+.fl-h { display: inline-block; margin-top: .9rem; font-family: var(--font-en);
+  font-size: .64rem; font-weight: 700; letter-spacing: .18em; color: var(--azure); }
+.sec-navy .fl-h { color: var(--azure-pale); }
+.fl-b { opacity: 0; transform: translateY(8px); pointer-events: none; }
+.flip.is-open .fl-f { opacity: 0; transform: translateY(-8px); pointer-events: none; }
+.flip.is-open .fl-b { opacity: 1; transform: none; pointer-events: auto; }
+
+/* ── 同じ場所で入れ替わる2つ ── */
+.togglepair { margin: 1.8rem 0; }
+.tg-lb { display: block; font-family: var(--font-en); font-size: .64rem;
+  font-weight: 700; letter-spacing: .2em; color: var(--muted); margin-bottom: .55rem; }
+.tg-sw, .tb-ks { position: relative; display: inline-flex; gap: .2rem; padding: .25rem;
+  border-radius: 999px; background: rgba(46,84,150,.08); }
+.sec-navy .tg-sw, .sec-navy .tb-ks { background: rgba(255,255,255,.08); }
+.tg-k, .tb-k { position: relative; z-index: 1; border: 0; background: none;
+  border-radius: 999px; padding: .5em 1.15em; font-family: var(--font-ja-sans);
+  font-size: .84rem; font-weight: 700; color: var(--muted);
+  transition: color .24s ease; }
+.tg-k.is-on, .tb-k.is-on { color: #fff; }
+.sec-navy .tg-k.is-on, .sec-navy .tb-k.is-on { color: var(--navy-deep); }
+.tg-ink, .tb-ink { position: absolute; z-index: 0; top: .25rem; bottom: .25rem;
+  left: 0; width: 0; border-radius: 999px; background: var(--navy);
+  transition: transform .32s cubic-bezier(.16,1,.3,1), width .32s cubic-bezier(.16,1,.3,1); }
+.sec-navy .tg-ink, .sec-navy .tb-ink { background: var(--azure-pale); }
+.tg-st, .tb-st { display: grid; margin-top: 1rem; }
+.tg-st > *, .tb-st > * { grid-area: 1 / 1; }
+.tg-p, .tb-p { opacity: 0; transform: translateY(7px); pointer-events: none;
+  transition: opacity .3s ease, transform .3s cubic-bezier(.16,1,.3,1); }
+.tg-p.is-on, .tb-p.is-on { opacity: 1; transform: none; pointer-events: auto; }
+.tg-lb, .tb-ks { -webkit-user-select: none; user-select: none; }
+
+/* ── 立場で切り替える ── */
+.tabs { margin: 1.8rem 0; }
+
+/* ── 押すと開く一覧（渡したあとに読む人のための部品） ── */
+.accordion { margin: 1.7rem 0; }
+.ac-i { border-top: 1px solid rgba(46,84,150,.13); }
+.ac-i:last-of-type { border-bottom: 1px solid rgba(46,84,150,.13); }
+.sec-navy .ac-i { border-color: rgba(216,228,240,.16); }
+.ac-h { display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem; width: 100%; padding: 1.05rem .2rem; border: 0; background: none;
+  text-align: left; font-family: var(--font-ja-sans); font-size: .96rem;
+  font-weight: 700; color: var(--ink); }
+.sec-navy .ac-h { color: #fff; }
+.ac-x { flex: none; position: relative; width: 13px; height: 13px; }
+.ac-x::before, .ac-x::after { content: ''; position: absolute; left: 0; top: 6px;
+  width: 13px; height: 1.5px; background: var(--azure);
+  transition: transform .3s cubic-bezier(.16,1,.3,1); }
+.ac-x::after { transform: rotate(90deg); }
+.sec-navy .ac-x::before, .sec-navy .ac-x::after { background: var(--azure-pale); }
+.ac-i.is-open .ac-x::after { transform: rotate(0); }
+.ac-b { display: grid; grid-template-rows: 0fr;
+  transition: grid-template-rows .34s cubic-bezier(.16,1,.3,1); }
+.ac-i.is-open .ac-b { grid-template-rows: 1fr; }
+.ac-c { overflow: hidden; }
+.ac-c > * { padding-bottom: 1.1rem; font-size: .89rem; line-height: 1.85;
+  color: var(--muted); }
+.ac-c { font-size: .89rem; line-height: 1.85; color: var(--muted); }
+.sec-navy .ac-c { color: rgba(216,228,240,.75); }
+.ac-n { font-size: .78rem; color: var(--muted); margin-top: .6rem; }
+
+/* ── 0から回る数字 ── */
+.counter { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: .9rem; margin: 1.8rem 0; border-radius: var(--radius); }
+.ct-i { text-align: center; padding: 1.2rem .8rem; border-radius: var(--radius);
+  background: var(--white); border: 1px solid rgba(46,84,150,.12); }
+.sec-navy .ct-i { background: rgba(255,255,255,.05); border-color: rgba(216,228,240,.16); }
+.ct-v { display: flex; align-items: flex-start; justify-content: center; gap: .1em;
+  font-size: clamp(1.9rem, 4.6vw, 2.9rem); }
+.ct-v b { font-family: var(--font-en); font-weight: 700; font-size: 1em;
+  line-height: 1; color: var(--navy); font-variant-numeric: tabular-nums; }
+.ct-v i { font-family: var(--font-en); font-style: normal; font-weight: 700;
+  font-size: .38em; color: var(--azure); margin-top: .5em; }
+.ct-i p { font-size: .8rem; line-height: 1.6; color: var(--muted); margin-top: .5rem; }
+.sec-navy .ct-v b { color: #fff; }
+.sec-navy .ct-v i { color: var(--azure-pale); }
+.sec-navy .ct-i p { color: rgba(216,228,240,.72); }
+.ct-n { grid-column: 1 / -1; font-size: .78rem; color: var(--muted); text-align: center; }
+.sec-navy .ct-n { color: rgba(216,228,240,.6); }
+
+/* ── その場の1問 ── */
+.poll { margin: 1.8rem 0; padding: 1.5rem 1.6rem; border-radius: var(--radius);
+  background: var(--paper); border: 1px solid rgba(46,84,150,.13); }
+.sec-navy .poll { background: rgba(255,255,255,.05); border-color: rgba(216,228,240,.16); }
+.pl-q { font-family: var(--font-ja-serif); font-weight: 600;
+  font-size: clamp(1rem, 2.2vw, 1.18rem); line-height: 1.8; color: var(--ink);
+  margin-bottom: 1rem; }
+.sec-navy .pl-q { color: #fff; }
+.pl-os { display: grid; gap: .5rem; }
+.pl-o { display: flex; align-items: center; gap: .8rem; width: 100%;
+  padding: .85rem 1rem; border-radius: var(--radius-sm);
+  border: 1px solid rgba(46,84,150,.16); background: var(--white);
+  text-align: left; font-family: var(--font-ja-sans); font-size: .9rem;
+  color: var(--ink); transition: border-color .2s ease, background .2s ease; }
+.pl-o:hover { border-color: var(--azure); }
+.sec-navy .pl-o { background: rgba(255,255,255,.06); color: #fff;
+  border-color: rgba(216,228,240,.18); }
+.pl-m { flex: none; width: 17px; height: 17px; border-radius: 50%;
+  border: 1.6px solid rgba(46,84,150,.3); position: relative; }
+.sec-navy .pl-m { border-color: rgba(216,228,240,.4); }
+.poll.is-done .pl-o { pointer-events: none; }
+.poll.is-done .pl-o.is-ok { border-color: #46c98a; background: rgba(70,201,138,.1); }
+.poll.is-done .pl-o.is-ng { border-color: var(--red); background: #fde8ea; }
+.sec-navy .poll.is-done .pl-o.is-ng { background: rgba(226,55,68,.14); }
+.poll.is-done .pl-o.is-ok .pl-m { border-color: #46c98a; background: #46c98a; }
+.poll.is-done .pl-o.is-ng .pl-m { border-color: var(--red); }
+.pl-w { display: none; margin-top: 1rem; padding-top: .9rem;
+  border-top: 1px solid rgba(46,84,150,.14);
+  font-size: .88rem; line-height: 1.85; color: var(--muted); }
+.poll.is-done .pl-w { display: block; }
+.sec-navy .pl-w { color: rgba(216,228,240,.75); border-top-color: rgba(216,228,240,.18); }
+
+@media (prefers-reduced-motion: reduce) {
+  .oz-press.is-press::after { animation: none; }
+  .fl-f, .fl-b, .tg-p, .tb-p, .tg-ink, .tb-ink, .ac-b,
+  .ac-x::before, .ac-x::after { transition: none; }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   仕上げ ── 部品の質感をそろえる。
+   **触れたときの返し方を、全部の箱で同じにする。**
+   箱ごとに浮き方が違うと、押せるものと押せないものの区別が
+   学習できないまま、画面だけが賑やかになる。
+   ══════════════════════════════════════════════════════════════════ */
+
+/* 数字は必ず等幅で。回るとき・並ぶときに桁がぶれない */
+.bn-v b, .sg-v b, .kp-z, .kp-a, .mt-v, .ct-v b {
+  font-variant-numeric: tabular-nums; }
+
+/* 箱の浮き方を1つに統一する。上端の細い線は、触れたときだけ差す */
+.sg-i, .kp-i, .ph-i, .sp-h, .ct-i {
+  position: relative; overflow: hidden;
+  transition: transform .3s cubic-bezier(.16,1,.3,1), box-shadow .3s ease,
+              border-color .3s ease; }
+.sg-i::before, .kp-i::before, .ph-i::before, .sp-h::before, .ct-i::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--azure), rgba(46,84,150,0) 72%);
+  transform: scaleX(0); transform-origin: 0 50%;
+  transition: transform .38s cubic-bezier(.16,1,.3,1); }
+.sec-navy .sg-i::before, .sec-navy .kp-i::before, .sec-navy .ph-i::before,
+.sec-navy .sp-h::before, .sec-navy .ct-i::before {
+  background: linear-gradient(90deg, var(--azure-pale), rgba(159,198,245,0) 72%); }
+.sg-i:hover, .kp-i:hover, .ph-i:hover, .sp-h:hover, .ct-i:hover {
+  transform: translateY(-3px); border-color: rgba(46,84,150,.28);
+  box-shadow: 0 16px 34px -20px rgba(20,29,53,.36); }
+.sec-navy .sg-i:hover, .sec-navy .kp-i:hover, .sec-navy .ph-i:hover,
+.sec-navy .sp-h:hover, .sec-navy .ct-i:hover {
+  border-color: rgba(216,228,240,.36); box-shadow: none; }
+.sg-i:hover::before, .kp-i:hover::before, .ph-i:hover::before,
+.sp-h:hover::before, .ct-i:hover::before { transform: scaleX(1); }
+
+/* 帯が満ちるとき、光が一度だけ通る。満ちてからは光らない */
+.mt-t { position: relative; }
+.mt-t i { position: relative; overflow: hidden; }
+.mt-t i::after { content: ''; position: absolute; inset: 0;
+  background: linear-gradient(100deg, transparent 30%, rgba(255,255,255,.5) 50%,
+    transparent 70%) -40% 0 / 240% 100% no-repeat; }
+[data-reveal].visible .mt-t i::after { animation: ozMtShine 1.15s .25s ease-out both; }
+@keyframes ozMtShine { to { background-position: 160% 0; } }
+
+/* 引用は、触れると1段だけ立つ。引用符も濃くなる */
+.quote { transition: transform .3s cubic-bezier(.16,1,.3,1), border-color .3s ease; }
+.quote::before { transition: color .3s ease; }
+.quote:hover { transform: translateY(-2px); }
+.quote:hover::before { color: rgba(46,84,150,.3); }
+.sec-navy .quote:hover::before { color: rgba(216,228,240,.34); }
+
+/* 手順の番号は、触れると輪が広がる */
+.st-n { position: relative; transition: transform .3s cubic-bezier(.34,1.5,.64,1); }
+.st-n::after { content: ''; position: absolute; inset: -5px; border-radius: 50%;
+  border: 1px solid var(--azure); opacity: 0; transform: scale(.8);
+  transition: opacity .3s ease, transform .3s cubic-bezier(.16,1,.3,1); }
+.sec-navy .st-n::after { border-color: var(--azure-pale); }
+.st-i:hover .st-n { transform: scale(1.06); }
+.st-i:hover .st-n::after { opacity: .55; transform: scale(1); }
+
+/* 囲みの左の帯は、画面に入ってから伸びる */
+.callout { position: relative; border-left-color: transparent; }
+.callout::before { content: ''; position: absolute; left: -3px; top: 0; bottom: 0;
+  width: 3px; background: var(--azure); transform-origin: 50% 0; }
+.co-warn::before { background: var(--red); }
+.co-note::before { background: var(--muted); }
+.sec-navy .co-warn::before { background: var(--red-bright); }
+[data-reveal] .callout::before { transform: scaleY(0); }
+[data-reveal].visible .callout::before { transform: scaleY(1);
+  transition: transform .55s cubic-bezier(.16,1,.3,1) .1s; }
+
+/* 用語は、触れた行だけ地が付く */
+.tm-i { transition: background .25s ease, padding-left .25s ease; }
+.tm-i:hover { background: rgba(46,84,150,.045); padding-left: .7rem; }
+.sec-navy .tm-i:hover { background: rgba(255,255,255,.05); }
+
+/* 流れる帯は、触れたら止まる。読みたい語を目で追えるように */
+.marquee:hover .mq-t { animation-play-state: paused; }
+.mq-t span { transition: border-color .25s ease, color .25s ease; }
+.mq-t span:hover { border-color: var(--azure); }
+
+/* 一覧の行も、触れたら少しだけ寄る */
+.ck-i { transition: transform .25s cubic-bezier(.16,1,.3,1); }
+.ck-i:hover { transform: translateX(3px); }
+
+/* 問いと答えは、触れた組だけ濃くなる */
+.fq-i { transition: background .25s ease; margin-inline: -.8rem;
+  padding-inline: .8rem; border-radius: var(--radius-sm); }
+.fq-i:hover { background: rgba(46,84,150,.04); }
+.sec-navy .fq-i:hover { background: rgba(255,255,255,.04); }
+
+@media (prefers-reduced-motion: reduce) {
+  .sg-i, .kp-i, .ph-i, .sp-h, .ct-i, .quote, .st-n, .st-n::after,
+  .tm-i, .ck-i, .fq-i, .mq-t span { transition: none; }
+  .mt-t i::after { display: none; }
+  [data-reveal] .callout::before { transform: scaleY(1); }
+}
 </style>
