@@ -465,7 +465,14 @@ footer {
    意味のある区切りではない。本文は文節で、見出しは行の長さを均して折る。 */
 p, li, .sec-sub, .lede, .note, .card p, .take-text, .figure-cap, .hero-copy,
 .close-copy, .vs-card p, .deep p, .step-body p { text-wrap: pretty; }
-.hero-title, .sec-title, .close-title, .card h3, .vs-card h3 { text-wrap: balance; }
+.hero-title, .sec-title, .close-title { text-wrap: balance; }
+/* **カードの見出しに balance を当ててはいけない。**
+   balance は行の長さを揃えようとして、word-break:auto-phrase の
+   文節区切りを無視する。カードは幅が狭い（236px）ので、
+   「ひとつだけなら」が「ひと／つだけなら」と語の途中で折れた。
+   pretty なら文節を尊重したまま、最終行が1語だけになるのを避ける。
+   大きな見出し（hero/sec/close）は幅があるので balance のままでよい */
+.card h3, .vs-card h3 { text-wrap: pretty; }
 /* リード文は、長すぎる行を作らない。1行が長いほど、次の行頭を見失う */
 .lede { max-width: 760px; }
 
