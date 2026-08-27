@@ -152,6 +152,20 @@
   ],
   "chars": 124811
  },
+ "01_concept/marginal-value-zero.html": {
+  "blocks": [
+   "OZ-BG",
+   "OZ-BODYSTYLE",
+   "OZ-FIGFLOW",
+   "OZ-HEROFX",
+   "OZ-HEROSIZE",
+   "OZ-HOME",
+   "OZ-QR",
+   "OZ-SPACING",
+   "OZ-XREFCSS"
+  ],
+  "chars": 187219
+ },
  "01_concept/tacit-knowledge-and-data-box.html": {
   "blocks": [
    "OZ-BG",
@@ -1497,7 +1511,7 @@
   "blocks": [
    "OZ-BODYSTYLE"
   ],
-  "chars": 228877
+  "chars": 233089
  },
  "template.html": {
   "blocks": [
