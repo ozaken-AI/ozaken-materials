@@ -33,6 +33,7 @@
   OZAKEN_PW=マスター python3 normalize_style.py refresh  # 当て直す
   OZAKEN_PW=マスター python3 normalize_style.py list     # いまのばらつきを一覧する
 """
+import io
 import os
 import re
 import sys
@@ -46,6 +47,19 @@ import registry
 
 ROOT = oz_root.root(HERE)
 MARK = '/* /OZ-BODYSTYLE */'
+
+
+def from_template(head, tail):
+    """雛形（tpl_style.html）から、印で挟んだ塊をそのまま切り出す。
+
+    **ここにコピーを書き写さない。** 書き写すと、雛形を直したときに
+    こちらだけ古いまま残り、「便覧は新しいのに資料は古い」という
+    いちばん困る状態になる。切り出しにしておけば、必ず一致する。
+    """
+    src = io.open(os.path.join(HERE, 'tpl_style.html'), encoding='utf-8').read()
+    i = src.index(head)
+    j = src.index(tail, i) + len(tail)
+    return src[i:j]
 # **印は版を含めない。**v1 と書いてあると、版を上げた日に strip() が
 # 古い塊を見つけられず、新旧が二重に積まれる。実際 v1→v2 でそうなりかけた
 HEAD = '/* ══ OZ-BODYSTYLE'
@@ -145,6 +159,10 @@ CSS = """
   .sec-navy  svg :is(rect,circle,ellipse,path,polygon,polyline,line,text):hover{
     filter:brightness(1.14) drop-shadow(0 2px 9px rgba(46,84,150,.34))}
 }
+""" + from_template('/* ══ OZ-WRAP', '/* /OZ-WRAP */') \
+  + from_template('   既存部品の仕上げ ──', '/* /OZ-OLDPARTS */').join(
+      ('/* ══════════════════════════════════════════════════════════════════\n', '')) \
+  + """
 /* /OZ-BODYSTYLE */
 """
 

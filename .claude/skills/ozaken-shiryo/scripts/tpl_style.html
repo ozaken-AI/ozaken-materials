@@ -460,6 +460,7 @@ footer {
 }
 
 
+/* ══ OZ-WRAP ── 日本語の折り返し（配布対象） ══ */
 /* ── 日本語の折り返し ──
    ぶら下がりや行末の1文字残りは、読み手には「詰まって見える」だけで
    意味のある区切りではない。本文は文節で、見出しは行の長さを均して折る。 */
@@ -475,6 +476,7 @@ p, li, .sec-sub, .lede, .note, .card p, .take-text, .figure-cap, .hero-copy,
 .card h3, .vs-card h3 { text-wrap: pretty; }
 /* リード文は、長すぎる行を作らない。1行が長いほど、次の行頭を見失う */
 .lede { max-width: 760px; }
+/* /OZ-WRAP */
 
 /* レイヤー0：点の格子。べた塗りの面に、わずかな奥行きを出す。
    動かさない。動くのはレイヤー1のグローだけで十分で、
@@ -1287,6 +1289,25 @@ p, li, .sec-sub, .lede, .note, .card p, .take-text, .figure-cap, .hero-copy,
    本文が読めなくなる、という判断は本文ブロックのときと同じ。
    ══════════════════════════════════════════════════════════════════ */
 
+/* ── 土台。**この塊は、古い資料へ単体で配られる。**
+   雛形の他の場所にある前提（.card が position:relative であること、
+   下に淡い軌道があること、罫の太さ）は、2年前に組んだ資料には無い。
+   依存したまま配ると、.card::before が親を見失って
+   節の中の見当違いな場所に828pxの帯を引く（実際にそうなった）。
+   だからここで、最低限の土台を先に敷き直してから重ねる ── */
+.card { position: relative; overflow: hidden; padding-bottom: 1.7rem; }
+.card::after { content: ''; position: absolute; left: 1.6rem; right: 1.6rem;
+  bottom: 1rem; top: auto; width: auto; height: 3px; border-radius: 2px;
+  background: var(--azure-pale); }
+.sec-navy .card::after { background: rgba(255,255,255,.14); }
+/* 罫は、色だけでなく太さも宣言する。太さの無い資料では、
+   罫の位置に置いた帯が箱の外へ浮いてしまう */
+.kicker { border-left: 3px solid transparent; }
+.note   { border-left: 3px solid transparent; }
+.deep   { border-left: 4px solid transparent; }
+.step   { border-left: 4px solid transparent; }
+.stat   { border-top: 3px solid transparent; }
+
 /* ── 箱の浮き方。本文ブロックと同じ距離・同じ緩急にそろえる ── */
 .card, .stat, .step, .vs-card, .figure {
   transition: transform .3s cubic-bezier(.16,1,.3,1),
@@ -1325,6 +1346,7 @@ p, li, .sec-sub, .lede, .note, .card p, .take-text, .figure-cap, .hero-copy,
    カードでも、帯が消えたままにならないようにする */
 .card::before {
   content: ''; position: absolute; left: 1.6rem; right: 1.6rem; bottom: 1rem;
+  top: auto; width: auto;   /* 上端に帯を持つ古い資料の指定を、確実に打ち消す */
   height: 3px; border-radius: 2px; background: var(--azure); z-index: 1;
   transform: scaleX(1); transform-origin: 0 50%; }
 .sec-navy .card::before { background: var(--azure-pale); }
@@ -1340,7 +1362,7 @@ p, li, .sec-sub, .lede, .note, .card p, .take-text, .figure-cap, .hero-copy,
 /* ── 数値の札は、上の線が引かれてから中身が読まれる ── */
 /* **overflow: hidden を付けてはいけない。** 上の線は border の位置
    （top:-3px）に置くので、内側だけを見せると線ごと切り落とされる */
-.stat { position: relative; border-top-color: transparent; }
+.stat { position: relative; }
 .stat::before {
   content: ''; position: absolute; top: -3px; left: 0; right: 0; height: 3px;
   background: var(--azure); transform: scaleX(1); transform-origin: 0 50%; }
@@ -1358,9 +1380,6 @@ p, li, .sec-sub, .lede, .note, .card p, .take-text, .figure-cap, .hero-copy,
    border は transform で伸ばせないので、罫の色を抜いて
    同じ位置に細い箱を置き直す。callout と同じやり方 */
 .kicker, .note, .deep, .step { position: relative; }
-.kicker { border-left-color: transparent; }
-.note { border-left-color: transparent; }
-.deep, .step { border-left-color: transparent; }
 .kicker::before, .note::before, .deep::before, .step::before {
   content: ''; position: absolute; top: 0; bottom: 0;
   transform: scaleY(1); transform-origin: 50% 0; }
@@ -1463,4 +1482,5 @@ p, li, .sec-sub, .lede, .note, .card p, .take-text, .figure-cap, .hero-copy,
     transform: none; }
   .take::after { opacity: 1; translate: 0 0; }
 }
+/* /OZ-OLDPARTS */
 </style>
