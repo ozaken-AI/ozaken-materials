@@ -71,6 +71,9 @@ CONCEPTS = {
     '業務分解': ('04_practice/gyomu-bunkai.html',
         ['業務分解', 'HTA', 'SIPOC', 'RACI', '任せられる単位', '工程に分ける'],
         '仕事・業務・作業への分解と棚卸し'),
+    'サイト運用': ('04_practice/site-ops.html',
+        ['Cloudflare', 'GitHub', '静的サイト', 'Pages', '正本・配達・作り手'],
+        'サーバーを持たずに配る。正本・配達・作り手を3つに分ける運用の型'),
     '資料作成': ('04_practice/deck-design.html',
         ['資料作成'], '組織で資料を資産化する設計'),
 
@@ -226,6 +229,15 @@ NOT_DECKS = {'12_jobs/us-jp-employment.html',
 # パスワードの壁に当たる（Brand Kit の資料で「書体」の語が重なって、
 # 実際に行き先に出た）。NOT_DOCS に入れないのは、便覧は publish で
 # 焼く普通の資料でもあり、lint_all の検査からは外したくないため。
+# **チップを受け取らないページ。**
+#
+# 便覧は「型の見本」であって、話の重なる資料ではない。
+# ここに関連資料チップが入ると、部品の見本の下に
+# 中身の話への行き先が並んで、カタログとして読めなくなる。
+# NO_CHIP_TO（行き先にしない）とは別で、こちらは
+# **入れない側**。両方に入るページもある。
+NO_CHIP_FROM = {'template.html'}
+
 NO_CHIP_TO = {'Training/msa-life-training.html',
               '09_role/kanadevia-ict.html',
               'template.html'}

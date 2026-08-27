@@ -27,7 +27,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import lockbox
 import registry
-from crossref_data import CONCEPTS, NO_CHIP_TO, NOT_DOCS, STOP
+from crossref_data import CONCEPTS, NO_CHIP_FROM, NO_CHIP_TO, NOT_DOCS, STOP
 
 PW = os.environ.get('OZAKEN_PW') or sys.exit('OZAKEN_PW を設定してください')
 ROOT = registry.ROOT
@@ -226,7 +226,7 @@ def cmd_apply(hits, titles, bodies):
     done = skip = n_chip = 0
     for f in registry.docs():
         rel = os.path.relpath(f, ROOT)
-        if os.path.basename(f) in NOT_DOCS:
+        if os.path.basename(f) in NOT_DOCS or rel in NO_CHIP_FROM:
             skip += 1
             continue
         html = lockbox.decrypt(f, PW)
@@ -270,7 +270,8 @@ def cmd_preview(hits, titles, bodies):
     want = sys.argv[2] if len(sys.argv) > 2 else ''
     for f in registry.docs():
         rel = os.path.relpath(f, ROOT)
-        if os.path.basename(f) in NOT_DOCS or (want and want not in rel):
+        if (os.path.basename(f) in NOT_DOCS or rel in NO_CHIP_FROM
+                or (want and want not in rel)):
             continue
         html = lockbox.decrypt(f, PW)
         print('\n■ %s' % titles.get(rel, rel)[:52])

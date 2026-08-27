@@ -344,6 +344,14 @@
   "cat": "PRACTICE"
  },
  {
+  "rel": "04_practice/site-ops.html",
+  "file": "51eaf15287.jpg",
+  "title": "サイトの運用が、1人に戻ってきた ─ Cloudflare × GitHub × Claude Code",
+  "desc": "サーバーを持たず、CIも書かず、鍵のかかった資料103本を配るまでの運用の型。正本をGitHub、配達をCloudflare Pages、作り手をClaude Codeに分ける設計と、無料枠のどこに実際に触れたか、1か月で踏んだ5つの落とし穴まで。",
+  "card": "サーバーを持たず、CIも書かず、鍵のかかった資料103本を配るまでの運用の型。正本をGitHub、配達をCloudflare Pages、作り手をClaude Cod…",
+  "cat": "PRACTICE"
+ },
+ {
   "rel": "05_drive/agent-budget-taxi.html",
   "file": "272bd90777.jpg",
   "title": "AIエージェントの予算は「定期券」から「タクシー」になる",
