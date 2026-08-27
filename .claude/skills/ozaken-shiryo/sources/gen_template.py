@@ -22,7 +22,8 @@ import sys
 
 S = '/home/user/ozaken-materials/.claude/skills/ozaken-shiryo/scripts'
 sys.path.insert(0, S)
-from page_parts import hero, sec, cards, close, take
+from page_parts import (hero, sec, cards, close, take,
+                        stats, stepper, two_col, versus, deep, note)
 from blocks import (bignum, statgrid, meters, kpi_row, quote, lead_reveal,
                     callout, terms, steps, timeline, phases, split,
                     checklist, faq, marquee, spotlight, wave,
@@ -50,11 +51,12 @@ A('<!--META title=テンプレート便覧 ─ 資料の型は、ここにまと
 #   1. 面の番号の透かし ── 各面の右上に、輪郭だけの数字。
 #      eyebrow の「Section N」は公開時に振り直されるので、
 #      CSSカウンタと必ず一致する。締めの面には置かない
-#   2. 図版の四隅 ── 製図の枠のような小さなL字。触れると図版が浮く
-#   3. カードの上端 ── 青のヘアラインが左から差す
-#   4. 引用（take）── 輪郭だけの大きな「 を背に置く
-#   5. 読みの現在地 ── 上端に読了バー、右下に「いま何面目か」。
+#   2. 読みの現在地 ── 上端に読了バー、右下に「いま何面目か」。
 #      現在地は herofx が付ける html.past-hero を借りて、扉では隠す
+#
+# **図版の四隅・カードの帯・引用の「 は、ここから tpl_style.html へ移した。**
+# 便覧だけの意匠にしておくと、見本のほうが実物より良い、という
+# いちばん困る状態になる。部品の手触りは、部品の側に置く。
 #
 # 色は PALETTE の範囲だけ。赤は使わない（面ごとの1箇所は本文が使う）。
 A("""<style>
@@ -70,26 +72,8 @@ section.sec-light > .inner::before,section.sec-navy > .inner::before{
   color:transparent;-webkit-text-stroke:1px rgba(46,84,150,.15)}
 section.sec-navy > .inner::before{-webkit-text-stroke:1px rgba(159,198,245,.13)}
 section.sec-navy:last-of-type > .inner::before{content:none}
-.figure{position:relative;transition:transform .35s ease,box-shadow .35s ease}
-.figure:hover{transform:translateY(-4px);box-shadow:0 26px 56px -24px rgba(20,29,53,.42)}
-.figure::before,.figure::after{content:'';position:absolute;width:13px;height:13px;
-  pointer-events:none;opacity:.5}
-.figure::before{top:8px;left:8px;border-top:1.5px solid #2e5496;border-left:1.5px solid #2e5496}
-.figure::after{bottom:8px;right:8px;border-bottom:1.5px solid #2e5496;border-right:1.5px solid #2e5496}
-.sec-navy .figure::before{border-color:#9fc6f5}
-.sec-navy .figure::after{border-color:#9fc6f5}
-.card{transition:transform .3s ease,box-shadow .3s ease}
-.card:hover{transform:translateY(-4px)}
-.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  border-radius:2px 2px 0 0;
-  background:linear-gradient(90deg,#2e5496,rgba(46,84,150,0) 65%)}
-.sec-navy .card::before{background:linear-gradient(90deg,#9fc6f5,rgba(159,198,245,0) 65%)}
-.take{position:relative;overflow:hidden}
-.take::after{content:'\u300c';position:absolute;top:-.18em;right:.05em;z-index:0;
-  pointer-events:none;user-select:none;font-family:var(--font-ja-serif);font-weight:600;
-  font-size:5.5rem;line-height:1;color:transparent;
-  -webkit-text-stroke:1px rgba(46,84,150,.2)}
-.sec-navy .take::after{-webkit-text-stroke:1px rgba(216,228,240,.2)}
+/* 図版の四隅・カードの帯・引用の「 は、tpl_style.html へ移した。
+   便覧だけの意匠ではなく、資料の部品そのものの手触りだから */
 .tplbar{position:fixed;top:0;left:0;right:0;height:2px;z-index:95;pointer-events:none;
   background:rgba(46,84,150,.14)}
 .tplbar i{display:block;height:100%;width:0;
@@ -545,7 +529,7 @@ A(sec('sec-navy', 'Section 06 ─ Catalogue ④',
 # ── 07 ─────────────────────────────────────────────── 部品
 A(sec('sec-light', 'Section 07 ─ Parts',
       '図版以外の部品',
-      'カード・ひとこと・注記・関連資料・確認テスト・配布資料。',
+      'カード・ひとこと・注記のほか、blocks.py より前からある6つ。',
       lede='図版が主役ですが、それだけでは資料になりません。'
            '<span class="fw-bold text-azure">図で見せて、カードで言い切る</span>。'
            'この2つの組み合わせが、1つの節の基本形です。'
@@ -593,7 +577,62 @@ A(sec('sec-light', 'Section 07 ─ Parts',
            'レーザーポインタの代わりです。'
            '触れる端末では効きません（スクロールのたびに光ってしまうので）。'),
       ], ),
-      after=take(
+      after=stats([
+          ('30', '種類', '図版の作図関数'),
+          ('24', '種類', '本文ブロック'),
+          ('6', '種類', '先にあった部品'),
+          ('3', '書体', '使ってよい書体'),
+          ('1', '箇所', '1面に置ける赤'),
+      ])
+      + stepper([
+          ('部品を直す',
+           'tpl_style.html か blocks.py を直します。'
+           '<b>この便覧の見本は、説明文ではなく実物の部品で描いてある</b>ので、'
+           '直した瞬間にここの見え方も変わります。便覧だけが古くなることが起きません。'),
+          ('便覧を焼き直す',
+           'gen_template.py を走らせて publish.py --update に通します。'
+           '<b>--update は鍵を作り直しません</b>。配ったパスワードはそのまま生きます。'),
+          ('全資料へ配る',
+           'CSSは資料ごとに焼き込まれているので、'
+           '<b>publish.py --update を全本に通すまで、公開済みの資料は古いまま</b>です。'
+           '勝手に見た目が変わることはありません。'),
+      ])
+      + two_col([
+          ('触れたら、1段だけ浮く',
+           'カード・数値の札・手順・図版は、'
+           '<b>同じ距離（3px）と同じ緩急</b>で浮きます。'
+           '部品ごとに浮き方が違うと、押せるものと押せないものを学習できないまま、'
+           '画面だけが賑やかになります。'),
+          ('面に入ったら、線が一度だけ引かれる',
+           '見出しの前の罫、囲みの左の帯、カードの下の帯、図の題の下線。'
+           'どれも面が視界に入ってから引かれ、'
+           '<b>引き終わったら二度と動きません</b>。'),
+      ])
+      + versus(
+          ('pos', '置いてよい', '触れたときに返す動き',
+           'マウスを載せたところが明るくなる、箱が浮く、番号の輪が広がる。'
+           '<b>話し手がカーソルで指したところが必ず返る</b>ので、'
+           'レーザーポインタの代わりになります。',
+           '触れる端末では効きません'),
+          ('neg', '置かない', '常時うごき続ける動き',
+           '点滅・回転・往復。'
+           '<b>投影中に動くものが増えると、本文が読めなくなります</b>。'
+           '図版の中でゆっくり呼吸する色帯と、流れる矢印だけが例外です。',
+           '例外は figanim が振る2つだけ'))
+      + deep('先にあった部品を、作り直さずに揃えた理由', [
+          'stepper は33本、note は45本、kicker は94本の資料が使っています。'
+          '<b>新しい部品へ置き換えるとなると、100本ぶんの本文を書き直すことになります</b>。'
+          '書き直せば必ず、どこかで文意が変わります。',
+          'そこで、CSSの側だけを揃えました。本文のHTMLには一文字も触れていません。'
+          '<b>publish.py --update を通した資料から順に、手触りが揃っていきます</b>。'
+          'いま公開されている資料は、通すまで古いままです。',
+      ])
+      + note('<b>新しく書くときは、まず blocks.py を見てください。</b>'
+             'ここに並べた6つは、いま資料の中で動いているものを揃えるための形です。'
+             '数字なら statgrid、手順なら steps、注記なら callout、'
+             '2つ並べるなら split。'
+             '置き換えの効かない deep と versus だけが、これからも主役になります。')
+      + take(
           '図版を増やすほど良い資料になる、というわけではありません。'
           '<span class="hot">1つの節に3枚以上figureが並んだら、'
           'それは節を分ける合図</span>だと思っています。'

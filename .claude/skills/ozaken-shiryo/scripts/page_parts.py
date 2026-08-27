@@ -190,6 +190,105 @@ def take(text, name='小澤健祐（おざけん）'):
             '      </div>\n    </div>\n' % (name, name, text))
 
 
+# ══════════════════════════════════════════════════════════════════
+# 先にあった部品 ── stats / stepper / two_col / versus / deep / note
+#
+# **これらは blocks.py より前からある。** いま資料の中では
+# note が45本、stepper が33本、two_col が25本、deep が21本、
+# versus が19本、stats が14本で動いている。
+#
+# これまで組み立て関数が無く、資料ごとに手でHTMLを書いていた。
+# そのせいで余白も入れ子も少しずつ違い、normalize_style が
+# 「.card だけで12通りの余白」を数える羽目になっていた。
+# ここに1つの形を置いて、そこへ寄せる。
+#
+# **新しく書くときは、まず blocks.py を見る。** 数字なら statgrid、
+# 手順なら steps、注記なら callout('note',…)、2つ並べるなら split。
+# ここにあるのは、いま100本以上で動いているものを揃えるための形で、
+# 置き換えの効かないもの（deep・versus）だけが今後も主役になる。
+# ══════════════════════════════════════════════════════════════════
+
+
+def stats(items):
+    """数値の札を横に並べる。items: [(数, 単位, ラベル)]。単位は '' でよい。
+
+    **blocks.statgrid との違いは、数の多さ。** statgrid は3〜4個を
+    大きく見せる部品で、こちらは150px幅で自動的に折り返すので
+    5個・6個でも崩れない。図版の下に数字を添えるときに使う。
+    """
+    cells = ''.join(
+        '      <div class="stat"><div class="stat-num">%s%s</div>'
+        '<div class="stat-label">%s</div></div>\n'
+        % (esc(v), '<small>%s</small>' % esc(u) if u else '', esc(l))
+        for v, u, l in items)
+    return '    <div class="stats">\n%s    </div>\n' % cells
+
+
+def stepper(items):
+    """縦に積む手順。items: [(見出し, 本文)]。
+
+    **blocks.steps との違いは、箱の重さ。** steps は行として軽く積むが、
+    こちらは1つずつが白い箱になる。手順そのものが節の主役で、
+    各段に2〜3行の説明が付くときは、こちらのほうが読み分けやすい。
+    """
+    return '    <div class="stepper">\n%s    </div>\n' % ''.join(
+        '      <div class="step"><span class="step-num">%02d</span>'
+        '<div class="step-body"><h3>%s</h3><p>%s</p></div></div>\n'
+        % (i + 1, esc(h), x) for i, (h, x) in enumerate(items))
+
+
+def two_col(items):
+    """2列に並べる。items: [(見出し, 本文)]。見出しの下に青い罫が引かれる。
+
+    **箱にしない並べ方。** 地を塗らないので、カードほど強く区切らずに
+    「同じ重さの2つ」を置ける。3つ以上入れると列が崩れるので、必ず2つ。
+    """
+    assert len(items) == 2, 'two_col は2つまで。3つ以上は cards を使う'
+    return '    <div class="two-col">\n%s    </div>\n' % ''.join(
+        '      <div class="two-col-item"><h3>%s</h3><p>%s</p></div>\n'
+        % (esc(h), x) for h, x in items)
+
+
+def versus(left, right, label='VS'):
+    """対比する2枚。left / right は (kind, バッジ, 見出し, 本文, 補足)。
+    kind は 'pos'（肯定・できること）か 'neg'（否定・できないこと）。補足は None 可。
+
+    **赤い側は「注意すべき方」という約束**にしてある。優劣の無い2つを
+    並べたいときは、赤を持たない blocks.split を使う。
+    """
+    def side(s):
+        kind, badge, head, body, meta = s
+        return ('      <div class="vs-card">'
+                '<span class="vs-badge %s">%s</span>'
+                '<h3>%s</h3><p>%s</p>%s</div>\n'
+                % (kind, esc(badge), esc(head), body,
+                   '<p class="vs-meta">%s</p>' % meta if meta else ''))
+    return ('    <div class="vs">\n%s'
+            '      <div class="vs-label">%s</div>\n%s    </div>\n'
+            % (side(left), esc(label), side(right)))
+
+
+def deep(title, paras):
+    """濃い箱で掘り下げる。paras: [段落]。
+
+    **明るい面の上に置いても濃いまま。** 節の流れから一段降りて
+    「ここだけ詳しく」を書くための箱で、地が変わることが合図になる。
+    blocks.callout より長い文章（3〜4行を2〜3段）を入れられる。
+    """
+    return ('    <div class="deep"><h3>%s</h3>\n%s    </div>\n'
+            % (esc(title), ''.join('      <p>%s</p>\n' % x for x in paras)))
+
+
+def note(text):
+    """注記。節のいちばん最後に置く、小さな補足。
+
+    **blocks.callout('note',…) との違いは、見出しの有無。**
+    callout は「補足」の札と一行見出しを持つので独立して読めるが、
+    こちらは直前の図やカードに寄り添う一言として置く。
+    """
+    return '    <p class="note">%s</p>\n' % text
+
+
 def sec(tone, eyebrow, title, sub=None, lede=None, fig=None, body=None, cattr='',
         after=None):
     """tone: 'sec-light' か 'sec-navy'。fig は必ず1つ以上入れる。

@@ -1270,4 +1270,197 @@ p, li, .sec-sub, .lede, .note, .card p, .take-text, .figure-cap, .hero-copy,
   .mt-t i::after { display: none; }
   [data-reveal] .callout::before { transform: scaleY(1); }
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   既存部品の仕上げ ── 図版・カード・数値の札・手順・引用・注記。
+
+   **あとから足した部品のほうが手触りが良い、という状態をなくす。**
+   本文ブロックには「触れたら1段浮く」「面に入ったら線が引かれる」
+   という決まりを入れたのに、資料の九割を占める図版とカードは
+   置いたまま動かなかった。同じ資料の中で部品ごとに作法が違うと、
+   読み手は「押せるもの」を学習できないまま、画面だけが賑やかになる。
+
+   足す動きは2種類だけ。
+     ① 面に入ったとき、細い線が一度だけ引かれる（線・帯・下線）
+     ② 触れたとき、箱が1段だけ浮く（カード・札・手順・図版）
+   常時動くものは、ここでは一つも足さない。投影中に動くものが増えると
+   本文が読めなくなる、という判断は本文ブロックのときと同じ。
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── 箱の浮き方。本文ブロックと同じ距離・同じ緩急にそろえる ── */
+.card, .stat, .step, .vs-card, .figure {
+  transition: transform .3s cubic-bezier(.16,1,.3,1),
+              box-shadow .3s ease, border-color .3s ease; }
+.card:hover, .stat:hover, .step:hover, .vs-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 34px -20px rgba(20,29,53,.36); }
+.sec-navy .card:hover, .sec-navy .stat:hover,
+.sec-navy .step:hover, .sec-navy .vs-card:hover {
+  box-shadow: none; border-color: rgba(216,228,240,.3); }
+
+/* 図版だけは、少し大きく浮く。資料の主役なので触れたときの返しも強い */
+.figure { position: relative; }
+.figure:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 26px 56px -24px rgba(20,29,53,.42); }
+.sec-navy .figure:hover { box-shadow: 0 30px 64px -22px rgba(10,15,28,.62); }
+
+/* 図版の四隅に、製図の枠のようなL字。
+   **枠線を1本回すと図が窮屈になる**ので、角だけを示す。
+   触れると外へ少し開いて、箱が持ち上がったことを角でも伝える */
+.figure::before, .figure::after {
+  content: ''; position: absolute; width: 13px; height: 13px;
+  pointer-events: none; opacity: .45;
+  transition: opacity .3s ease, inset .3s cubic-bezier(.16,1,.3,1); }
+.figure::before { top: 8px; left: 8px;
+  border-top: 1.5px solid var(--azure); border-left: 1.5px solid var(--azure); }
+.figure::after { bottom: 8px; right: 8px;
+  border-bottom: 1.5px solid var(--azure); border-right: 1.5px solid var(--azure); }
+.figure:hover::before { top: 5px; left: 5px; opacity: .75; }
+.figure:hover::after { bottom: 5px; right: 5px; opacity: .75; }
+
+/* ── カードの下の帯は、面に入ってから左から満ちる ──
+   既にある .card::after を淡い軌道として残し、その上を濃い帯が走る。
+   **既定では満ちた状態にしておく。** data-reveal の外に置かれた
+   カードでも、帯が消えたままにならないようにする */
+.card::before {
+  content: ''; position: absolute; left: 1.6rem; right: 1.6rem; bottom: 1rem;
+  height: 3px; border-radius: 2px; background: var(--azure); z-index: 1;
+  transform: scaleX(1); transform-origin: 0 50%; }
+.sec-navy .card::before { background: var(--azure-pale); }
+[data-reveal] .card::before { transform: scaleX(0); }
+[data-reveal].visible .card::before { transform: scaleX(1);
+  transition: transform .7s cubic-bezier(.16,1,.3,1); }
+.cards .card:nth-child(2)::before { transition-delay: .07s }
+.cards .card:nth-child(3)::before { transition-delay: .14s }
+.cards .card:nth-child(4)::before { transition-delay: .21s }
+.cards .card:nth-child(5)::before { transition-delay: .28s }
+.cards .card:nth-child(6)::before { transition-delay: .35s }
+
+/* ── 数値の札は、上の線が引かれてから中身が読まれる ── */
+/* **overflow: hidden を付けてはいけない。** 上の線は border の位置
+   （top:-3px）に置くので、内側だけを見せると線ごと切り落とされる */
+.stat { position: relative; border-top-color: transparent; }
+.stat::before {
+  content: ''; position: absolute; top: -3px; left: 0; right: 0; height: 3px;
+  background: var(--azure); transform: scaleX(1); transform-origin: 0 50%; }
+.sec-navy .stat::before { background: var(--azure-pale); }
+[data-reveal] .stat::before { transform: scaleX(0); }
+[data-reveal].visible .stat::before { transform: scaleX(1);
+  transition: transform .6s cubic-bezier(.16,1,.3,1); }
+.stats .stat:nth-child(2)::before { transition-delay: .07s }
+.stats .stat:nth-child(3)::before { transition-delay: .14s }
+.stats .stat:nth-child(4)::before { transition-delay: .21s }
+.stats .stat:nth-child(5)::before { transition-delay: .28s }
+.stats .stat:nth-child(6)::before { transition-delay: .35s }
+
+/* ── 左の帯は、面に入ってから下へ伸びる ──
+   border は transform で伸ばせないので、罫の色を抜いて
+   同じ位置に細い箱を置き直す。callout と同じやり方 */
+.kicker, .note, .deep, .step { position: relative; }
+.kicker { border-left-color: transparent; }
+.note { border-left-color: transparent; }
+.deep, .step { border-left-color: transparent; }
+.kicker::before, .note::before, .deep::before, .step::before {
+  content: ''; position: absolute; top: 0; bottom: 0;
+  transform: scaleY(1); transform-origin: 50% 0; }
+.kicker::before { left: -3px; width: 3px; background: var(--azure); }
+.note::before   { left: -3px; width: 3px; background: var(--azure-pale); }
+.deep::before   { left: -4px; width: 4px; background: var(--azure); }
+.step::before   { left: -4px; width: 4px; background: var(--azure); }
+.sec-navy .kicker::before { background: var(--azure-pale); }
+.sec-navy .note::before { background: rgba(255,255,255,.25); }
+[data-reveal] .kicker::before, [data-reveal] .note::before,
+[data-reveal] .deep::before, [data-reveal] .step::before { transform: scaleY(0); }
+[data-reveal].visible .kicker::before, [data-reveal].visible .note::before,
+[data-reveal].visible .deep::before, [data-reveal].visible .step::before {
+  transform: scaleY(1); transition: transform .55s cubic-bezier(.16,1,.3,1) .1s; }
+.stepper .step:nth-child(2)::before { transition-delay: .17s }
+.stepper .step:nth-child(3)::before { transition-delay: .24s }
+.stepper .step:nth-child(4)::before { transition-delay: .31s }
+.stepper .step:nth-child(5)::before { transition-delay: .38s }
+
+/* ── 見出しの前後の細い線も、同じ間に引かれる ── */
+.eyebrow::before { transform: scaleX(1); transform-origin: 0 50%; }
+[data-reveal] .eyebrow::before { transform: scaleX(0); }
+[data-reveal].visible .eyebrow::before { transform: scaleX(1);
+  transition: transform .5s cubic-bezier(.16,1,.3,1); }
+
+.fig-title { position: relative; border-bottom-color: transparent; }
+.fig-title::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px;
+  background: var(--azure-pale); transform: scaleX(1); transform-origin: 0 50%; }
+.sec-navy .fig-title::after { background: rgba(255,255,255,.15); }
+[data-reveal] .fig-title::after { transform: scaleX(0); }
+[data-reveal].visible .fig-title::after { transform: scaleX(1);
+  transition: transform .8s cubic-bezier(.16,1,.3,1) .12s; }
+
+.two-col-item h3 { position: relative; border-bottom-color: transparent; }
+.two-col-item h3::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: -2px; height: 2px;
+  background: var(--azure); transform: scaleX(1); transform-origin: 0 50%; }
+.sec-navy .two-col-item h3::after { background: var(--azure-pale); }
+[data-reveal] .two-col-item h3::after { transform: scaleX(0); }
+[data-reveal].visible .two-col-item h3::after { transform: scaleX(1);
+  transition: transform .6s cubic-bezier(.16,1,.3,1) .1s; }
+
+/* ── 手順の番号は、触れると輪が広がる。本文ブロックの .st-n と同じ返し ── */
+.step-num { position: relative;
+  transition: transform .3s cubic-bezier(.34,1.5,.64,1); }
+.step-num::after {
+  content: ''; position: absolute; inset: -5px; border-radius: 50%;
+  border: 1px solid var(--azure); opacity: 0; transform: scale(.8);
+  transition: opacity .3s ease, transform .3s cubic-bezier(.16,1,.3,1); }
+.sec-navy .step-num::after { border-color: var(--azure-pale); }
+.step:hover .step-num { transform: scale(1.06); }
+.step:hover .step-num::after { opacity: .55; transform: scale(1); }
+
+/* ── 引用（Ozaken's One Point）── 背に、大きな鉤括弧を置く。
+   **地を塗らずに引用だと分からせる。**赤い罫だけだと注意書きに見える。
+
+   **文字の「 は使わない。** font-size で置くと、書体によって
+   字の墨の位置が違うぶん箱からはみ出し、overflow で切られて
+   縦棒だけが残る（実際そうなった）。罫2本で描けば、
+   どの環境でも同じ形になる。×印を線2本で作ったのと同じ理由 */
+.take { position: relative; overflow: hidden; }
+.take::after {
+  content: ''; position: absolute; top: 1rem; right: 1.2rem; z-index: 0;
+  width: 38px; height: 58px; pointer-events: none; border-radius: 4px 0 0 0;
+  border-top: 5px solid rgba(216,228,240,.22);
+  border-left: 5px solid rgba(216,228,240,.22);
+  opacity: 0; translate: 0 -8px;
+  transition: opacity .7s ease .15s, translate .7s cubic-bezier(.16,1,.3,1) .15s; }
+.sec-light .take::after { border-color: rgba(226,55,68,.2); }
+/* 腕の長さは、横より縦を長くする。正方形にすると鉤括弧ではなく
+   図版の四隅と同じ「枠の角」に見えてしまう */
+@media (max-width: 640px) { .take::after { width: 26px; height: 40px;
+  border-width: 4px; top: .8rem; right: .9rem; } }
+.take-body { position: relative; z-index: 1; }
+[data-reveal].visible .take::after,
+.take:hover::after { opacity: 1; translate: 0 0; }
+/* 顔は、触れると少しだけ寄る。話し手が指したところが必ず返る */
+.take-avatar { transition: transform .3s cubic-bezier(.34,1.5,.64,1); }
+.take:hover .take-avatar { transform: scale(1.05); }
+
+/* ── 目次の行も、触れた行だけ寄る（terms と同じ返し） ── */
+.oz-toc-list li { transition: background .25s ease, padding-left .25s ease; }
+.oz-toc-list li:hover { background: rgba(255,255,255,.05); padding-left: .6rem; }
+.oz-toc-list li:hover > b { opacity: 1; }
+
+/* ── 数字は等幅。並べたとき・入れ替わったときに桁がぶれない ── */
+.stat-num, .card-tag, .step-num, .calc b, .vs-label, .oz-toc-list li > b {
+  font-variant-numeric: tabular-nums; }
+
+@media (prefers-reduced-motion: reduce) {
+  .card, .stat, .step, .vs-card, .figure, .step-num, .step-num::after,
+  .take-avatar, .oz-toc-list li, .figure::before, .figure::after,
+  .take::after { transition: none; }
+  [data-reveal] .card::before, [data-reveal] .stat::before,
+  [data-reveal] .kicker::before, [data-reveal] .note::before,
+  [data-reveal] .deep::before, [data-reveal] .step::before,
+  [data-reveal] .eyebrow::before { transform: none; }
+  [data-reveal] .fig-title::after, [data-reveal] .two-col-item h3::after {
+    transform: none; }
+  .take::after { opacity: 1; translate: 0 0; }
+}
 </style>
