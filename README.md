@@ -79,12 +79,16 @@ OZAKEN_PW=… python3 apply_ogp.py cards
 | | |
 |---|---|
 | 申し込み | `https://content.ozaken.ai/subscribe.html` |
+| 名簿の管理 | `https://content.ozaken.ai/roster.html`（名刺CSVの取り込み・状況確認） |
 | 配信停止 | `https://content.ozaken.ai/unsubscribe`（署名つきリンク） |
 | 名簿 | Cloudflare D1 `ozaken-newsletter` |
 | 送信 | Resend |
 
+名刺CSVは `roster.html` に落とすのが早い（下見してから入る）。
+**Eight（個人版）に公開APIはないので、CSVを書き出すところだけは手作業**になる。
+
 ```bash
-# 名刺CSVを取り込む
+# 端末から入れることもできる（大きいCSV向け。結果は roster.html と同じ）
 python3 newsletter/import_meishi.py meishi.csv --source-note "2026年上期" -o newsletter/import.sql
 npx wrangler d1 execute ozaken-newsletter --remote --file=newsletter/import.sql
 

@@ -20,6 +20,8 @@ import { onRequestPost as subscribe } from '../functions/api/subscribe.js';
 import { onRequestGet as confirm } from '../functions/api/confirm.js';
 import { onRequestPost as send, onRequestGet as sendStat } from '../functions/api/send.js';
 import { onRequestPost as hook } from '../functions/api/hooks/resend.js';
+import { onRequestPost as importCsv } from '../functions/api/import.js';
+import { COLUMNS, parseCsv, detectColumns, parseDate } from '../functions/_lib/meishi.js';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SCHEMA = join(HERE, 'schema.sql');
@@ -316,6 +318,94 @@ head('8. 一度止めた人を、どこからも復活させない');
   stubResend();
   const out = await (await send({ request: adminPost({ issue: ISSUE }), env })).json();
   ok('配信の宛先に入らない', out.sent === 0 && sent.length === 0);
+}
+
+// ── 9. 名刺CSVの取り込み ────────────────────────────
+head('9. 名刺CSVの取り込み');
+{
+  // 引用符の中にカンマ・改行・二重引用符が入った、いやらしい行を混ぜる
+  const csv = [
+    '姓,名,会社名,部署名,メールアドレス,名刺交換日',
+    '小澤,健祐,"株式会社Cinematorico, Inc.",編集部,  A@Example.COM ,2026/06/12',
+    '田中,太郎,"改行\nを含む社名",営業,tanaka@example.co.jp,2026年7月3日',
+    '重複,太郎,テスト,,a@example.com,',
+    '壊れ,行,,,not-an-email,',
+    '引用,符,"""カギ""つき社名",,quote@example.co.jp,',
+  ].join('\n');
+
+  const rows = parseCsv(csv);
+  ok('引用符の中のカンマで列がずれない', rows[1][2] === '株式会社Cinematorico, Inc.', rows[1][2]);
+  ok('引用符の中の改行を1行として読む', rows[2][2].includes('\n'), JSON.stringify(rows[2][2]));
+  ok('"" を引用符1個として読む', rows[5][2] === '"カギ"つき社名', rows[5][2]);
+  const cols = detectColumns(rows[0]);
+  ok('姓と名の列を見つける', cols.last === 0 && cols.first === 1);
+  ok('年月日つきの日付を読む', parseDate('2026年7月3日', 'x').startsWith('2026-07-03'));
+  ok('読めない日付は取り込み日にする', parseDate('いつか', 'FALLBACK') === 'FALLBACK');
+
+  const { db, env } = fresh();
+  const imp = (q = '') => importCsv({
+    request: post('https://x/api/import' + q, csv,
+      { Authorization: 'Bearer admintoken', 'Content-Type': 'text/csv' }), env });
+
+  const noAuth = await importCsv({
+    request: post('https://x/api/import', csv, { Authorization: 'Bearer wrong' }), env });
+  ok('管理者トークンなしは401', noAuth.status === 401);
+
+  let out = await (await imp('?dry=1&note=下見')).json();
+  ok('下見では名簿に書き込まない', db.raw.prepare('SELECT COUNT(*) c FROM subscribers').get().c === 0);
+  ok('下見で新規の件数が分かる', out.report.created === 3, JSON.stringify(out.report));
+  ok('CSV内の重複を数える', out.report.duplicates === 1);
+  ok('形式の違う行を数える', out.report.invalid === 1);
+  ok('読み取った列を返す', out.columns.email === 'メールアドレス');
+
+  out = await (await imp('?note=2026年上期')).json();
+  ok('本番で名簿に入る',
+    db.raw.prepare('SELECT COUNT(*) c FROM subscribers').get().c === 3, JSON.stringify(out.report));
+  ok('アドレスを正規化して入れる', statusOf(db, 'a@example.com') === 'active');
+  ok('姓と名をつないで名前にする',
+    db.raw.prepare('SELECT name FROM subscribers WHERE email=?').get('a@example.com').name === '小澤 健祐');
+  ok('取得の場を記録に残す（法令上の根拠）',
+    (db.raw.prepare("SELECT detail FROM events WHERE email=? AND kind='import'").get('a@example.com') || {})
+      .detail.includes('2026年上期'));
+
+  // 一度止めた人が、CSVの入れ直しで戻らないか
+  const url = await unsubscribeUrl('https://content.ozaken.ai', env.NEWSLETTER_SECRET, 'a@example.com');
+  await unsubPost({ request: post(url, ''), env });
+  out = await (await imp('?note=2回目')).json();
+  ok('取り込み直しても配信停止済みは復活しない', statusOf(db, 'a@example.com') === 'unsubscribed');
+  ok('復活させなかった件数を報告する', out.report.kept_stopped === 1, JSON.stringify(out.report));
+  ok('誰を触らなかったか名指しで返す', (out.kept_examples || []).some(k => k.email === 'a@example.com'));
+
+  // 分割して叩いても、結果が変わらないこと
+  const d2 = fresh();
+  const imp2 = (q) => importCsv({
+    request: post('https://x/api/import' + q, csv,
+      { Authorization: 'Bearer admintoken', 'Content-Type': 'text/csv' }), env: d2.env });
+  let offset = 0, totals = { created: 0, duplicates: 0 }, rounds = 0;
+  while (rounds++ < 20) {
+    const r = await (await imp2(`?offset=${offset}&limit=2`)).json();
+    totals.created += r.report.created;
+    totals.duplicates += r.report.duplicates;
+    offset = r.next_offset;
+    if (r.done) break;
+  }
+  ok('分割して叩いても件数が変わらない',
+    totals.created === 3 && totals.duplicates === 1, JSON.stringify(totals));
+  ok('分割しても名簿の中身は同じ', d2.db.raw.prepare('SELECT COUNT(*) c FROM subscribers').get().c === 3);
+}
+
+// ── 10. 端末版とブラウザ版が食い違っていないか ───────
+head('10. 端末版（Python）とブラウザ版（JS）の、列の見出しの候補');
+{
+  const py = readFileSync(join(HERE, 'import_meishi.py'), 'utf8');
+  const start = py.indexOf('COLUMNS = {');
+  const block = py.slice(start, py.indexOf('}', start));
+  for (const [key, list] of Object.entries(COLUMNS)) {
+    const line = block.split('\n').find(l => l.trim().startsWith(`"${key}":`)) || '';
+    const inPy = [...line.matchAll(/"([^"]+)"/g)].map(m => m[1]).slice(1);
+    ok(`${key} の候補が両方で同じ`, JSON.stringify(inPy) === JSON.stringify(list),
+      `py=${JSON.stringify(inPy)} js=${JSON.stringify(list)}`);
+  }
 }
 
 console.log(`\n${'─'.repeat(46)}\n通った ${pass} 件 / 落ちた ${fail} 件\n`);
