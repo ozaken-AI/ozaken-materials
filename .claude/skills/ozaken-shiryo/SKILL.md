@@ -446,6 +446,7 @@ python3 hero_fit.py "AIエージェントの教科書" "小売はどう変わる
 | `make_pdf.mjs` | 配布用HTMLを16:9のPDFに焼く（index の無料配布資料はこれで作る） |
 | `registry.py` | パスワード台帳の読み書き |
 | `reapply.py` | 演出を直したとき、既存の全資料に当て直す（`reapply.py herofx` など） |
+| `check_blocks.py` | 注入した塊が全資料でそろっているかを見張る。**一括で書き換える前後に必ず** |
 | `hero_fit.py` | 扉の題とリード文が上限に収まるかを、**書く前に**測る（鍵は要らない） |
 | `normalize_hero.py` | 表紙の題とリードの大きさを、全資料でそろえる |
 | `normalize_style.py` | 本文の共通部品（赤・リード・箱の余白）を、全資料でそろえる |
@@ -533,6 +534,27 @@ OZAKEN_PW=マスター python3 .claude/skills/ozaken-shiryo/scripts/publish.py \
 ```bash
 OZAKEN_PW=マスター python3 .claude/skills/ozaken-shiryo/scripts/reapply.py herofx   # herofx / keynav / spacing / bg / all
 ```
+
+### 一括で書き換える前に、控えを取る
+
+**`reapply` `normalize_style` `crossref strip` のように全資料を書き換える道具は、
+走らせる前に控えを取り、走らせた後に見比べる。**
+
+```bash
+cd .claude/skills/ozaken-shiryo/scripts
+OZAKEN_PW=マスター python3 check_blocks.py save   # 走らせる前
+…一括の道具を走らせる…
+OZAKEN_PW=マスター python3 check_blocks.py        # 走らせた後。減っていたら止まる
+```
+
+**これは事故のあとに足した。** `crossref.py strip` が「印から `</style>` まで」を
+切っていたせいで、あとから積まれた `OZ-BODYSTYLE` や `OZ-HEROFX` まで巻き添えで消え、
+**92本の資料から表紙の演出と本文の体裁が丸ごと失われた**。
+1本あたり32,000字が消えていたのに、`build_page.check()` は全部通っていた。
+**あの検査は「本文が何本あるか」しか見ないので、CSSが消えても気づけない。**
+
+塊を剥がす処理を書くときは、**必ず終わりの印までで切る。**
+`</style>` までで切ると、そのあとに積まれたものを全部持っていく。
 
 ## 配布するPDFを作るとき
 

@@ -347,11 +347,17 @@ def cmd_strip(hits, titles, bodies):
         html = re.sub(r'\n<section class="(?:sec-light )?xref"[^>]*>[\s\S]*?</section>\n',
                       '', html)
         html = re.sub(r'\n\s*<p class="xr-chips">[\s\S]*?</p>', '', html)
+        # **終わりの印まででやめる。`</style>` まで消してはいけない。**
+        # ここが `</style>` まで消していたせいで、あとから積まれた
+        # OZ-BODYSTYLE（全資料の体裁をそろえる塊）が巻き添えで消え、
+        # 92本の資料から本文の体裁が丸ごと失われた。
+        # 終わりの印を持たない古い版だけ、`</style>` までで切る。
         for head in ('/* ══ 関連する資料', '/* ══ 関連資料チップ'):
             i = html.find(head)
             if i >= 0:
-                j = html.find('</style>', i)
-                html = html[:i] + html[j:]
+                j = html.find(CSS_END, i)
+                cut = j + len(CSS_END) if j >= 0 else html.find('</style>', i)
+                html = html[:i] + html[cut:]
         for m in marks:
             html = html.replace(m + '\n', '').replace(m, '')
         lockbox.encrypt(f, PW, html)
