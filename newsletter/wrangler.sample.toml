@@ -1,0 +1,34 @@
+# 見本。**このままでは使わない。** wrangler.toml という名前でリポジトリ直下に置くと、
+# Cloudflare Pages のダッシュボード側の設定より優先されてしまい、
+# いま動いている配信（ビルドなしの静的配信）を壊しかねない。
+#
+# 束ねる先は、Pages のダッシュボードで設定するのが安全:
+#   Workers & Pages → ozaken-materials → Settings → Bindings
+#
+# ローカルで動かして試すときだけ、このファイルを使う:
+#   cp newsletter/wrangler.sample.toml /tmp/wrangler.toml
+#   wrangler pages dev . --config /tmp/wrangler.toml
+
+name = "ozaken-materials"
+compatibility_date = "2026-01-01"
+pages_build_output_dir = "."
+
+[[d1_databases]]
+binding = "DB"                    # コードから env.DB で触る名前。変えない
+database_name = "ozaken-newsletter"
+database_id = "ここに wrangler d1 create の出力を貼る"
+
+# 秘密の値は、ここに書かない。
+#   wrangler pages secret put NEWSLETTER_SECRET
+#   wrangler pages secret put NEWSLETTER_ADMIN_TOKEN
+#   wrangler pages secret put RESEND_API_KEY
+#   wrangler pages secret put RESEND_WEBHOOK_SECRET
+[vars]
+NEWSLETTER_SITE = "https://content.ozaken.ai"
+NEWSLETTER_FROM = "小澤健祐（おざけん） <weekly@ozaken.ai>"
+NEWSLETTER_SENDER_NAME = "小澤健祐（おざけん）"
+NEWSLETTER_SENDER_ADDRESS = "（登記上の住所を書く。表示義務がある）"
+NEWSLETTER_REPLY_TO = "weekly@ozaken.ai"
+NEWSLETTER_UNSUB_MAILTO = "unsubscribe@ozaken.ai"
+# batch = 100通ずつ束ねて渡す（既定）。single = 1通ずつ
+NEWSLETTER_SEND_MODE = "batch"
