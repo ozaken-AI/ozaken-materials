@@ -235,15 +235,24 @@ def cmd_apply(hits, titles, bodies):
             continue
 
         got = [0]
+        # **同じ行き先は、1本の資料の中で2回まで。**
+        # 語の重なりだけで拾った相手は、共通語彙の多い資料だと
+        # 全部の面に出てくる。実際、ある資料が9面のうち6面に並んで、
+        # 関連資料の欄が「毎回おなじ1本」の飾りになっていた。
+        # 毎面に出るチップは、読み手にとって情報を持たない。
+        used = defaultdict(int)
 
         def one(m):
             sec = m.group(0)
             if 'xr-chips' in sec:
                 return sec
-            rels = picks(rel, text_of(sec), docs, w, titles)
+            rels = [r for r in picks(rel, text_of(sec), docs, w, titles)
+                    if used[r] < 2]
             c = chips(rel, rels, titles)
             if not c:
                 return sec
+            for r in rels:
+                used[r] += 1
             got[0] += len(rels)
             i = sec.rfind('</div>')          # .inner の閉じ。図版の入れ子より後ろ
             return sec[:i] + c + '\n    ' + sec[i:] if i > 0 else sec
