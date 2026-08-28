@@ -232,8 +232,11 @@ head('4. Webからの申し込み（ダブルオプトイン）');
   ok('週次マーカーの外に置いてある（差し替えで消えない）',
     idx.indexOf('<!--LETTER:START-->') > idx.indexOf('<!--WEEKLY:END-->'));
   ok('登録欄にも自動投稿よけがある', idx.includes('id="nlFax"'));
-  ok('登録欄の頻度の言い方が、購読ページと揃っている',
-    idx.includes('月に1〜3通ほど') && pageHtml.includes('月に1〜3通ほど'));
+  // そろえるべきは数字であって、言い回しではない。文面は場所ごとに変えていい。
+  ok('登録欄と購読ページで、頻度の数字が揃っている',
+    idx.includes('1〜3通') && pageHtml.includes('1〜3通'));
+  ok('購読ページが確認メール経由だと書いてある',
+    pageHtml.includes('確認') && pageHtml.includes('/api/subscribe'));
 
 
   const link = sent[0].body.text.match(/https:\/\/\S+/)[0];
