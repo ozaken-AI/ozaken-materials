@@ -126,6 +126,18 @@ head('2. メール本文');
   ok('名刺の相手には経緯を書く', msg.html.includes('名刺交換'));
   ok('文字だけの版も作る', msg.text.length > 200);
   ok('<style>を使わない（メールで落ちる）', !/<style/i.test(msg.html));
+  // メールの器が固定幅だと、携帯で横にはみ出す。
+  // width="600" / width:600px と書くと、390pxの画面で600pxのまま出る。
+  // 幅は 100% にして、上限だけ 600px で止める。
+  for (const [what, src] of [
+    ['お便り本体', readFileSync(join(HERE, '../functions/_lib/mail.js'), 'utf8')],
+    ['確認メール', readFileSync(join(HERE, '../functions/api/subscribe.js'), 'utf8')],
+  ]) {
+    // max-width:600px は正しい書き方なので、それ以外の width:600px だけを見る
+    ok(`${what}の器が固定幅になっていない`,
+      !/[^-]width:600px/.test(src) && !src.includes('width="600"'));
+    ok(`${what}の器に上限幅がある`, src.includes('max-width:600px'));
+  }
 
   const web = await buildMessage({ issue: ISSUE, subscriber: { email: 'x@y.co', name: '<img src=x onerror=alert(1)>', source: 'web' }, cfg });
   ok('名簿の名前に混ぜたタグを無害化する', !web.html.includes('<img src=x') && web.html.includes('&lt;img'));

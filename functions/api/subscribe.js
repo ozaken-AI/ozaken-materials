@@ -117,8 +117,8 @@ function confirmHtml(link, cfg) {
 <div style="display:none;max-height:0;overflow:hidden;opacity:0">あと1回だけ押していただくと、登録が完了します。</div>
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:${PAPER}">
 <tr><td align="center" style="padding:28px 12px">
-  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600"
-         style="width:600px;max-width:100%;background:#fff;border:1px solid ${LINE};border-radius:4px">
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center"
+         style="width:100%;max-width:600px;background:#fff;border:1px solid ${LINE};border-radius:4px">
 
     <tr><td style="background:${NAVY};padding:26px 34px">
       <div style="font:700 11px ${FONT};letter-spacing:.16em;color:#9fc6f5">OZAKEN LETTER</div>

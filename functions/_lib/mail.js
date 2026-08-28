@@ -119,8 +119,8 @@ export function buildEmail({ issue, subscriber, unsubUrl, cfg }) {
 <div style="display:none;max-height:0;overflow:hidden;opacity:0">${esc(issue.preheader || '')}</div>
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:${PAPER}">
 <tr><td align="center" style="padding:28px 12px">
-  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600"
-         style="width:600px;max-width:100%;background:#fff;border:1px solid ${LINE};border-radius:4px">
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center"
+         style="width:100%;max-width:600px;background:#fff;border:1px solid ${LINE};border-radius:4px">
 
     <tr><td style="background:${NAVY};padding:26px 34px">
       <div style="font:700 11px ${FONT};letter-spacing:.16em;color:#9fc6f5">OZAKEN LETTER</div>
@@ -299,8 +299,8 @@ export async function buildWelcome({ subscriber, asset, cfg }) {
 <div style="display:none;max-height:0;overflow:hidden;opacity:0">AI活用が進むかどうかは、技術力では決まりません。</div>
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:${PAPER}">
 <tr><td align="center" style="padding:28px 12px">
-  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600"
-         style="width:600px;max-width:100%;background:#fff;border:1px solid ${LINE};border-radius:4px">
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center"
+         style="width:100%;max-width:600px;background:#fff;border:1px solid ${LINE};border-radius:4px">
 
     <tr><td style="background:${NAVY};padding:26px 34px">
       <div style="font:700 11px ${FONT};letter-spacing:.16em;color:#9fc6f5">OZAKEN LETTER</div>
@@ -311,9 +311,11 @@ export async function buildWelcome({ subscriber, asset, cfg }) {
       <div style="width:40px;height:2px;background:${AZURE};font-size:0;line-height:0">&nbsp;</div>
       <div style="padding:18px 0 18px;font:400 14px ${FONT};color:${MUTED}">${greeting}</div>
       <div style="font:400 15px/1.95 ${FONT};color:${INK};padding-bottom:24px">
-        この度は資料を手に取っていただき、ありがとうございます。<br>
+        資料をダウンロードいただき、ありがとうございます。<br>
         小澤健祐（おざけん）です。<br><br>
-        ひとつだけ、先にお伝えさせてください。
+        たぶんいま、社内で「AIをどう使うか」を考えている最中だと思います。
+        そしてたいていの場合、いちばん難しいのは技術ではなく、
+        <b>最初の一歩の決め方</b>ではないでしょうか。
       </div>
     </td></tr>
 
@@ -330,14 +332,17 @@ export async function buildWelcome({ subscriber, asset, cfg }) {
 
     <tr><td style="padding:0 34px">
       <div style="font:400 15px/1.95 ${FONT};color:${INK}">
-        これまで1,500本以上のAI関連記事を書き、年間300回以上の登壇で、
-        たくさんの現場を見てきました。進んでいる会社と、止まっている会社。
-        その差は、いつも同じところにありました。<br><br>
-        完璧な計画を待たずに、<b>80点で動かして、現場で磨く。</b><br>
-        その思い切りがあるかどうか。本当に、それだけです。<br><br>
-        今回の資料も、売るためではなく、一人でも多くの方が最初の一歩を
-        踏み出せるように、と思ってつくりました。
-        もしひとつでも現場で使えるものがあれば、これ以上うれしいことはありません。
+        年間300回以上の登壇と、1,500本を超える取材・執筆で、たくさんの現場を見てきました。
+        進んでいる会社と、止まっている会社。その差は、いつも同じところにありました。<br><br>
+        止まっている会社は、たいてい「正しく始めよう」としています。
+        体制を決め、ルールを整え、費用対効果を確かめてから動こうとする。
+        <b>真面目な会社ほど、そうです。</b><br><br>
+        進んでいる会社は、順番が逆でした。<br>
+        <b>まず80点で動かして、現場で磨いている。</b>
+        やってみて初めて、何が課題で、どこにルールが要るのかが分かるからです。<br><br>
+        差がついているのは能力ではなく、この順番だけだと思っています。<br><br>
+        今回の資料も、売るためではなく、その最初の一歩を踏み出しやすくするために
+        つくりました。ひとつでも現場で使えるものがあれば、これ以上うれしいことはありません。
       </div>
     </td></tr>
 
@@ -345,15 +350,19 @@ export async function buildWelcome({ subscriber, asset, cfg }) {
       <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"
              style="background:${PAPER};border:1px solid ${LINE};border-radius:4px">
         <tr><td style="padding:22px 24px;font:400 14.5px/1.9 ${FONT};color:${INK}">
-          読んでいただいて「自社の場合はどうか」「ここが難しい」というところがあれば、
-          このメールにそのままご返信ください。<br>
+          そして、いちばんお伝えしたいのはここです。<br><br>
+          読んでいただいて「自社の場合はどうか」「ここが難しい」と思うところがあれば、
+          このメールにそのままご返信ください。一行でも構いません。<br>
           自動でお送りしているメールですが、<b>ご返信は私本人に届きます。</b>
         </td></tr>
       </table>
     </td></tr>
 
-    <tr><td style="padding:24px 34px 0;font:400 14px ${FONT};color:${MUTED}">
-      ── 小澤健祐（おざけん）
+    <tr><td style="padding:26px 34px 0">
+      <div style="font:400 14px/1.9 ${FONT};color:${MUTED}">
+        「人間とAIが共存する社会をつくる」── そのために、書いて、話しています。
+      </div>
+      <div style="padding:10px 0 0;font:400 14px ${FONT};color:${MUTED}">── 小澤健祐（おざけん）</div>
     </td></tr>
 
     <tr><td style="padding:30px 34px 0">
@@ -411,27 +420,40 @@ export async function buildWelcome({ subscriber, asset, cfg }) {
     '',
     name ? `${name} 様` : 'こんにちは',
     '',
-    'この度は資料を手に取っていただき、ありがとうございます。',
+    '資料をダウンロードいただき、ありがとうございます。',
     '小澤健祐（おざけん）です。',
     '',
-    'ひとつだけ、先にお伝えさせてください。',
+    'たぶんいま、社内で「AIをどう使うか」を考えている最中だと思います。',
+    'そしてたいていの場合、いちばん難しいのは技術ではなく、',
+    '最初の一歩の決め方ではないでしょうか。',
     '',
     '　AI活用が進むかどうかは、技術力では決まりません。',
     '',
-    'これまで1,500本以上のAI関連記事を書き、年間300回以上の登壇で、',
-    'たくさんの現場を見てきました。進んでいる会社と、止まっている会社。',
+    '年間300回以上の登壇と、1,500本を超える取材・執筆で、たくさんの現場を',
+    '見てきました。進んでいる会社と、止まっている会社。',
     'その差は、いつも同じところにありました。',
     '',
-    '完璧な計画を待たずに、80点で動かして、現場で磨く。',
-    'その思い切りがあるかどうか。本当に、それだけです。',
+    '止まっている会社は、たいてい「正しく始めよう」としています。',
+    '体制を決め、ルールを整え、費用対効果を確かめてから動こうとする。',
+    '真面目な会社ほど、そうです。',
     '',
-    '今回の資料も、売るためではなく、一人でも多くの方が最初の一歩を',
-    '踏み出せるように、と思ってつくりました。',
-    'もしひとつでも現場で使えるものがあれば、これ以上うれしいことはありません。',
+    '進んでいる会社は、順番が逆でした。',
+    'まず80点で動かして、現場で磨いている。',
+    'やってみて初めて、何が課題で、どこにルールが要るのかが分かるからです。',
     '',
-    '読んでいただいて「自社の場合はどうか」「ここが難しい」というところがあれば、',
-    'このメールにそのままご返信ください。',
+    '差がついているのは能力ではなく、この順番だけだと思っています。',
+    '',
+    '今回の資料も、売るためではなく、その最初の一歩を踏み出しやすくするために',
+    'つくりました。ひとつでも現場で使えるものがあれば、',
+    'これ以上うれしいことはありません。',
+    '',
+    'そして、いちばんお伝えしたいのはここです。',
+    '',
+    '読んでいただいて「自社の場合はどうか」「ここが難しい」と思うところが',
+    'あれば、このメールにそのままご返信ください。一行でも構いません。',
     '自動でお送りしているメールですが、ご返信は私本人に届きます。',
+    '',
+    '「人間とAIが共存する社会をつくる」── そのために、書いて、話しています。',
     '',
     '── 小澤健祐（おざけん）',
     '',
