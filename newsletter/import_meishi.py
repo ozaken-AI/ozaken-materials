@@ -27,7 +27,8 @@ COLUMNS = {
     "first":   ["名", "First name", "下の名前"],
     "name":    ["氏名", "名前", "フルネーム", "Name", "担当者名"],
     "company": ["会社名", "企業名", "Company", "組織名", "勤務先"],
-    "date":    ["名刺交換日", "交換日", "登録日", "取得日", "作成日", "タイムスタンプ", "Timestamp", "ダウンロード日"],
+    "date":    ["名刺交換日", "交換日", "登録日", "取得日", "作成日", "タイムスタンプ", "Timestamp", "ダウンロード日", "日時"],
+    "note":    ["資料", "資料名", "ダウンロード資料", "asset"],
 }
 
 EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s.]+\.[^@\s]+$")
@@ -52,10 +53,14 @@ def find_column(fieldnames, candidates):
         for got, original in cleaned.items():
             if got == want:
                 return original
-    # 完全一致で見つからなければ、含まれているかで探す
+    # 完全一致で見つからなければ、含まれているかで探す。
+    # ただし部分一致は2文字以上の見出しにだけ許す。
+    # 「名」を含むで探すと「会社名」を掴んでしまう。
     for want in candidates:
+        if not want or len(want) < 2:
+            continue
         for got, original in cleaned.items():
-            if want and want in got:
+            if want in got:
                 return original
     return None
 
@@ -117,6 +122,11 @@ def main():
     for row in rows:
         email = norm_email(row.get(col["email"]))
         if not EMAIL_RE.match(email):
+            # 見出しを信じきらない。書き出しの途中で項目が増えると、
+            # 見出しはそのままに中身だけずれることがある。行の中から探し直す。
+            email = next((e for e in (norm_email(v) for v in row.values())
+                          if EMAIL_RE.match(e)), "")
+        if not EMAIL_RE.match(email):
             skipped_bad += 1
             continue
         if email in excluded:
@@ -126,15 +136,24 @@ def main():
             skipped_dup += 1
             continue
 
-        if col["name"] and (row.get(col["name"]) or "").strip():
-            name = (row.get(col["name"]) or "").strip()
-        else:
+        name = (row.get(col["name"]) or "").strip() if col["name"] else ""
+        # 名前の欄にアドレスが入っていたら、ずれている。名前は隣にある。
+        if name and EMAIL_RE.match(norm_email(name)):
+            name = (row.get(col["email"]) or "").strip() if col["email"] else ""
+            if EMAIL_RE.match(norm_email(name)):
+                name = ""
+        if not name:
             parts = [(row.get(col[k]) or "").strip() for k in ("last", "first") if col.get(k)]
             name = " ".join(x for x in parts if x)
 
+        company = (row.get(col["company"]) or "").strip() if col["company"] else ""
+        if EMAIL_RE.match(norm_email(company)):
+            company = ""
+
         seen[email] = {
             "name": name or None,
-            "company": (row.get(col["company"]) or "").strip() if col["company"] else None,
+            "company": company or None,
+            "note": ((row.get(col["note"]) or "").strip() or None) if col.get("note") else None,
             "consent_at": norm_date(row.get(col["date"]) if col["date"] else None, today),
         }
 
@@ -143,7 +162,7 @@ def main():
             "INSERT INTO subscribers "
             "(email, name, company, status, source, source_note, consent_at, created_at, updated_at) VALUES "
             f"({sql_str(email)}, {sql_str(v['name'])}, {sql_str(v['company'])}, "
-            f"{sql_str(args.status)}, {sql_str(args.source)}, {sql_str(args.source_note)}, "
+            f"{sql_str(args.status)}, {sql_str(args.source)}, {sql_str(v['note'] or args.source_note)}, "
             f"{sql_str(v['consent_at'])}, {sql_str(today)}, {sql_str(today)}) "
             "ON CONFLICT(email) DO UPDATE SET "
             "name = COALESCE(excluded.name, subscribers.name), "
@@ -154,7 +173,7 @@ def main():
         out.append(
             "INSERT INTO events (email, kind, detail, at) VALUES "
             f"({sql_str(email)}, 'import', "
-            f"{sql_str((args.source_note or args.source) + ' / consent_at=' + v['consent_at'])}, "
+            f"{sql_str((v['note'] or args.source_note or args.source) + ' / consent_at=' + v['consent_at'])}, "
             f"{sql_str(today)});"
         )
 

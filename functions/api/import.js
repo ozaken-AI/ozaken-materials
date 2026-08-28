@@ -113,11 +113,13 @@ export async function onRequestPost({ request, env }) {
       `);
       for (let i = 0; i < items.length; i += IN_CHUNK) {
         await db.batch(items.slice(i, i + IN_CHUNK).map(s =>
-          stmt.bind(s.email, s.name, s.company, source, note, s.consentAt, t, t)));
+          // 行に資料名があればそれを、なければ画面で入れた「取得の場」を使う
+          stmt.bind(s.email, s.name, s.company, source, s.note || note, s.consentAt, t, t)));
       }
       // 同意（名刺で連絡先をいただいた）の記録は、初めて入った人にだけ残す。
       for (const s of created) {
-        await logEvent(db, s.email, 'import', `${note || source} / consent_at=${s.consentAt}`);
+        await logEvent(db, s.email, 'import',
+          `${s.note || note || source} / consent_at=${s.consentAt}`);
       }
     }
 

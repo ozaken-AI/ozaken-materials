@@ -21,6 +21,7 @@ import { onRequestGet as confirm } from '../functions/api/confirm.js';
 import { onRequestPost as send, onRequestGet as sendStat } from '../functions/api/send.js';
 import { onRequestPost as hook } from '../functions/api/hooks/resend.js';
 import { onRequestPost as importCsv } from '../functions/api/import.js';
+import { onRequestPost as downloadLead } from '../functions/api/download.js';
 import { COLUMNS, parseCsv, detectColumns, parseDate } from '../functions/_lib/meishi.js';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -439,6 +440,125 @@ head('10. 端末版（Python）とブラウザ版（JS）の、列の見出し�
     ok(`${key} の候補が両方で同じ`, JSON.stringify(inPy) === JSON.stringify(list),
       `py=${JSON.stringify(inPy)} js=${JSON.stringify(list)}`);
   }
+}
+
+// ── 11. 資料ダウンロードの受け口 ─────────────────────
+head('11. 資料ダウンロードの受け口');
+{
+  const { db, env } = fresh();
+  const gate = (payload) => downloadLead({
+    request: post('https://x/api/download', JSON.stringify(payload),
+      { 'Content-Type': 'application/json' }), env });
+
+  stubResend();
+  let r = await (await gate({ name: '田中 太郎', company: 'テスト株式会社',
+    email: ' A@Example.COM ', asset: '/99_assets/ax-guide.pdf' })).json();
+  ok('お礼メールを1通送る', r.mailed && sent.length === 1);
+  ok('配信対象として名簿に入る', statusOf(db, 'a@example.com') === 'active');
+  const row = db.raw.prepare('SELECT * FROM subscribers WHERE email=?').get('a@example.com');
+  ok('経路を download として記録する', row.source === 'download', row.source);
+  ok('どの資料から来たかを残す', row.source_note === '/99_assets/ax-guide.pdf', row.source_note);
+  ok('同意の文言そのものを記録に残す',
+    (db.raw.prepare("SELECT detail FROM events WHERE email=? AND kind='consent'").get('a@example.com') || {})
+      .detail.includes('AICX協会'));
+
+  const mail = sent[0].body;
+  ok('お礼メールに配信停止リンクがある', mail.html.includes('/unsubscribe?e='));
+  ok('ワンクリック配信停止のヘッダがある', mail.headers['List-Unsubscribe-Post'] === 'List-Unsubscribe=One-Click');
+  ok('住所と問い合わせ先がある（表示義務）',
+    mail.html.includes(BASE.NEWSLETTER_SENDER_ADDRESS) && mail.html.includes(BASE.NEWSLETTER_REPLY_TO));
+  ok('資料ダウンロード経由だと分かる一文がある', mail.html.includes('資料をダウンロードいただいた際に'));
+  const fromAddr = BASE.NEWSLETTER_FROM.match(/<([^>]+)>/)[1];
+  ok('差出人アドレスを名指しして、連絡先追加を頼んでいる',
+    mail.html.includes(fromAddr) && mail.html.includes('連絡先に追加'), fromAddr);
+  ok('これから何が届くかを書いている', mail.html.includes('これからお送りするもの'));
+  ok('<style>を使っていない（メールで落ちる）', !/<style/i.test(mail.html));
+
+  // 連投しても2通目を送らない
+  stubResend();
+  r = await (await gate({ name: '田中 太郎', email: 'a@example.com' })).json();
+  ok('60秒以内の連投では送り直さない', !r.mailed && sent.length === 0, JSON.stringify(r));
+
+  // 止めた人は、資料を落とし直しても復活も受信もしない
+  const url = await unsubscribeUrl('https://content.ozaken.ai', env.NEWSLETTER_SECRET, 'a@example.com');
+  await unsubPost({ request: post(url, ''), env });
+  db.raw.exec("DELETE FROM events WHERE kind='download'");   // 連投よけを外して、状態だけを見る
+  stubResend();
+  r = await (await gate({ name: '田中 太郎', email: 'a@example.com', asset: '/x.pdf' })).json();
+  ok('配信停止した人には送らない', !r.mailed && sent.length === 0, JSON.stringify(r));
+  ok('配信停止した人を復活させない', statusOf(db, 'a@example.com') === 'unsubscribed');
+
+  // 自動投稿と、壊れた入力
+  stubResend();
+  r = await (await gate({ email: 'bot@example.com', fax: '埋めた' })).json();
+  ok('自動投稿を静かに捨てる',
+    r.ok && sent.length === 0 && !db.raw.prepare('SELECT 1 FROM subscribers WHERE email=?').get('bot@example.com'));
+  r = await (await gate({ email: 'not-an-email' })).json();
+  ok('形式の違うアドレスは入れない', r.ok && !db.raw.prepare('SELECT 1 FROM subscribers WHERE email=?').get('not-an-email'));
+
+  // 受け口が壊れても、ゲートは資料を出せなければならない
+  const broken = await downloadLead({
+    request: post('https://x/api/download', JSON.stringify({ email: 'z@x.co' }),
+      { 'Content-Type': 'application/json' }), env: { ...BASE } });
+  ok('D1が落ちていても ok を返す（資料の配布を止めない）',
+    broken.status === 200 && (await broken.json()).ok);
+}
+
+// ── 12. ゲートと受け口の食い違い ────────────────────
+head('12. リードゲートと受け口');
+{
+  const index = readFileSync(join(HERE, '../index.html'), 'utf8');
+  ok('ゲートの送り先が自前の受け口になっている', index.includes('var ENDPOINT = "/api/download"'));
+  ok('質問の読み出しは Apps Script のまま', index.includes('var LIST_URL = "https://script.google.com'));
+  ok('ゲートは Apps Script を使っていない',
+    !/var ENDPOINT = "https:\/\/script\.google\.com/.test(index));
+  const ask = readFileSync(join(HERE, '../ask.html'), 'utf8');
+  ok('質問の投稿も Apps Script のまま', ask.includes('script.google.com/macros'));
+  ok('ゲートに自動投稿よけの欄がある', index.includes('id="gFax"'));
+
+  // 画面に出している同意の文言と、記録に残す文言がずれていないか
+  const dl = readFileSync(join(HERE, '../functions/api/download.js'), 'utf8');
+  const notice = dl.match(/const NOTICE = '([^']+)'/)[1];
+  ok('記録する同意文が、画面の文言と一致している', index.includes(notice), notice);
+}
+
+// ── 13. 見出しと中身がずれた書き出し ────────────────
+head('13. 見出しと中身がずれたCSV');
+{
+  // 実際に起きたかたち。資料ダウンロードの記録1,240行のうち1,129行で、
+  // 「氏名」の列にアドレスが、「メール」の列に氏名が入っていた。
+  // 見出しだけを信じると、ここで9割を黙って捨てる。
+  const shifted = [
+    '日時,メール,会社名,氏名,資料,UA',
+    '2026/07/30 16:56:25,小澤,テスト株式会社,ozawa@example.co.jp,01_概念/エージェント5レベル.pdf,Mozilla/5.0',
+    '2026/08/01 10:00:00,田中,サンプル株式会社,tanaka@sample.co.jp,05_推進/51施策.pdf,Mozilla/5.0',
+    // 見出しどおりの行も混ざっている
+    '2026/08/02 11:00:00,suzuki@example.com,別会社,鈴木 花子,01_概念/エージェント5レベル.pdf,Mozilla/5.0',
+  ].join('\n');
+
+  const { db, env } = fresh();
+  const r = await (await importCsv({
+    request: post('https://x/api/import?source=download&note=一括', shifted,
+      { Authorization: 'Bearer admintoken', 'Content-Type': 'text/csv' }), env })).json();
+
+  ok('ずれていても3件とも拾う', r.report.created === 3 && r.report.invalid === 0, JSON.stringify(r.report));
+  ok('ずれた行のアドレスを正しく取る', statusOf(db, 'ozawa@example.co.jp') === 'active');
+  ok('見出しどおりの行も取る', statusOf(db, 'suzuki@example.com') === 'active');
+
+  const rows = db.raw.prepare('SELECT email, name, company, source_note FROM subscribers ORDER BY email').all();
+  ok('名前の欄にアドレスが紛れ込まない', rows.every(x => !String(x.name).includes('@')),
+    JSON.stringify(rows.map(x => x.name)));
+  ok('ずれた行でも名前を拾う',
+    (rows.find(x => x.email === 'ozawa@example.co.jp') || {}).name === '小澤');
+  ok('会社名を取り違えない',
+    (rows.find(x => x.email === 'ozawa@example.co.jp') || {}).company === 'テスト株式会社');
+  ok('行ごとに、どの資料から来たかを残す',
+    (rows.find(x => x.email === 'tanaka@sample.co.jp') || {}).source_note === '05_推進/51施策.pdf');
+
+  // 「名」で部分一致すると「会社名」を掴む。1文字の見出しでは部分一致させない
+  const cols = detectColumns(parseCsv(shifted)[0]);
+  ok('「名」が「会社名」に誤って当たらない', cols.first === undefined, JSON.stringify(cols));
+  ok('日時の列を見つける', cols.date === 0);
 }
 
 console.log(`\n${'─'.repeat(46)}\n通った ${pass} 件 / 落ちた ${fail} 件\n`);

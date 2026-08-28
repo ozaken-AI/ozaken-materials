@@ -2532,6 +2532,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
       <div class="gate-field"><label for="gName">お名前</label><input id="gName" name="name" type="text" autocomplete="name" required></div>
       <div class="gate-field"><label for="gCompany">会社名・所属</label><input id="gCompany" name="company" type="text" autocomplete="organization" required></div>
       <div class="gate-field"><label for="gEmail">メールアドレス</label><input id="gEmail" name="email" type="email" autocomplete="email" required></div>
+      <div aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden"><label for="gFax">FAX</label><input id="gFax" name="fax" type="text" tabindex="-1" autocomplete="off"></div>
       <div class="gate-err" id="gateErr" aria-live="polite"></div>
       <button class="gate-submit" type="submit" id="gateSubmit">送信して資料を見る →</button>
       <p class="gate-note">送信をもって、小澤健祐（おざけん）およびAICX協会からのメールマガジン・資料・イベント案内の受け取りにご同意いただいたものとします。配信は各メールの下部から、いつでも停止できます。</p>
@@ -2541,8 +2542,11 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
 
 <script>
 (function(){
-  // ▼ GASのウェブアプリURL（.../exec）を入れると、ゲートが有効になります。空のままなら通常動作。
-  var ENDPOINT = "https://script.google.com/macros/s/AKfycbwvf6VRQsjfiXulHOPAQ_Uren7ewTS3LTp9sp7XMf3H4yDsMhQIO1f41NPs1FfaTz1P/exec";
+  // ▼ 資料ダウンロードの受け口。空にするとゲートが無効になり、通常のダウンロードに戻る。
+  //    以前は Google Apps Script（スプレッドシート＋aicx.jp からの自動返信）だったが、
+  //    差出人ドメインが2本になると次のお便りが「知らない相手」に見えるので、
+  //    news.ozaken.ai に一本化した。質問・コメントの方は Apps Script のまま。
+  var ENDPOINT = "/api/download";
   var KEY = "ozaken_lead_unlocked";
   var gate = document.getElementById('leadGate');
   if (!gate) return;
@@ -2585,8 +2589,9 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     }
     submitBtn.disabled = true; submitBtn.textContent = '送信中…';
     var asset = pending ? (pending.getAttribute('href') || '') : '';
-    var payload = { name: name, company: company, email: email, asset: asset, ua: navigator.userAgent };
-    fetch(ENDPOINT, { method:'POST', mode:'no-cors', headers:{ 'Content-Type':'text/plain;charset=utf-8' }, body: JSON.stringify(payload) })
+    var fax = (document.getElementById('gFax') || {}).value || '';
+    var payload = { name: name, company: company, email: email, asset: asset, fax: fax };
+    fetch(ENDPOINT, { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify(payload) })
       .catch(function(){})
       .finally(function(){
         try { localStorage.setItem(KEY, "1"); localStorage.setItem("ozaken_lead_info", JSON.stringify({name:name,company:company,email:email})); } catch(e){}
