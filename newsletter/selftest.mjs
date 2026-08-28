@@ -226,6 +226,14 @@ head('4. Webからの申し込み（ダブルオプトイン）');
   const indexHtml = readFileSync(join(HERE, '../index.html'), 'utf8');
   ok('購読ページ・資料ゲート・確認メールで、頻度の約束が一致している',
     pageHtml.includes('1〜3通') && indexHtml.includes('1〜3通') && mail.html.includes('1〜3通'));
+  // トップページの登録欄。週次の差し替えで消えない位置にあること。
+  const idx = readFileSync(join(HERE, '../index.html'), 'utf8');
+  ok('トップページに登録欄がある', idx.includes('id="nlForm"') && idx.includes('/api/subscribe'));
+  ok('週次マーカーの外に置いてある（差し替えで消えない）',
+    idx.indexOf('<!--LETTER:START-->') > idx.indexOf('<!--WEEKLY:END-->'));
+  ok('登録欄にも自動投稿よけがある', idx.includes('id="nlFax"'));
+  ok('登録欄の頻度の言い方が、購読ページと揃っている',
+    idx.includes('月に1〜3通ほど') && pageHtml.includes('月に1〜3通ほど'));
 
 
   const link = sent[0].body.text.match(/https:\/\/\S+/)[0];
@@ -256,6 +264,22 @@ head('5. 配信');
   const noAuth = await send({ request: post('https://x/api/send', JSON.stringify({ issue: ISSUE }),
     { Authorization: 'Bearer wrong', 'Content-Type': 'application/json' }), env });
   ok('管理者トークンなしは401', noAuth.status === 401);
+
+  // 「合っていない」で終わらせない。直す場所が変わるので、切り分けて返す。
+  const wrongBody = await noAuth.json();
+  ok('食い違いのときは、長さを添えて返す',
+    wrongBody.error.includes('一致しません') && /\d+ 文字/.test(wrongBody.error), wrongBody.error);
+  const noKey = await send({ request: post('https://x/api/send', JSON.stringify({ issue: ISSUE }),
+    { Authorization: 'Bearer whatever', 'Content-Type': 'application/json' }),
+    env: { ...env, NEWSLETTER_ADMIN_TOKEN: '' } });
+  ok('サーバー側に鍵がないときは、そう言う',
+    noKey.status === 503 && (await noKey.json()).error.includes('NEWSLETTER_ADMIN_TOKEN'));
+  // 号のIDを欠いた形で叩く。400が返れば「鍵は通った」ことが分かり、
+  // かつ名簿にも配信ログにも触らない（本物の号を渡すと、ここで送ってしまう）。
+  const padded = await send({ request: post('https://x/api/send', JSON.stringify({ issue: { subject: 'x' } }),
+    { Authorization: 'Bearer admintoken', 'Content-Type': 'application/json' }),
+    env: { ...env, NEWSLETTER_ADMIN_TOKEN: 'admintoken\n' } });
+  ok('設定値の末尾に改行が紛れても通す', padded.status === 400, String(padded.status));
 
   stubResend();
   let out = await (await send({ request: adminPost({ issue: ISSUE }), env })).json();

@@ -10,6 +10,7 @@
 // 名簿は一度汚すと戻せないので、まず下見してから入れる。
 
 import { json } from '../_lib/page.js';
+import { checkAdmin } from '../_lib/auth.js';
 import { requireDb, now, logEvent, HttpError } from '../_lib/db.js';
 import { normalize } from '../_lib/token.js';
 import { parseCsv, detectColumns, toSubscriber } from '../_lib/meishi.js';
@@ -17,16 +18,6 @@ import { parseCsv, detectColumns, toSubscriber } from '../_lib/meishi.js';
 const DEFAULT_LIMIT = 300;
 const MAX_LIMIT = 1000;
 const IN_CHUNK = 50;       // D1 に一度に渡す束縛値の数を抑える
-
-function authorized(request, env) {
-  const expected = env.NEWSLETTER_ADMIN_TOKEN;
-  if (!expected) return false;
-  const given = (request.headers.get('Authorization') || '').replace(/^Bearer\s+/i, '');
-  if (given.length !== expected.length) return false;
-  let diff = 0;
-  for (let i = 0; i < given.length; i++) diff |= given.charCodeAt(i) ^ expected.charCodeAt(i);
-  return diff === 0;
-}
 
 // 送らない状態。ここに居る人は、取り込み直しでも status に触らない。
 const STOPPED = new Set(['unsubscribed', 'bounced', 'complained']);
@@ -44,7 +35,8 @@ async function existingStatuses(db, emails) {
 }
 
 export async function onRequestPost({ request, env }) {
-  if (!authorized(request, env)) return json({ ok: false, error: 'unauthorized' }, 401);
+  const auth = checkAdmin(request, env);
+  if (!auth.ok) return json({ ok: false, error: auth.error }, auth.status);
 
   try {
     const db = requireDb(env);
