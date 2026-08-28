@@ -7,7 +7,7 @@
 import { normalize, looksLikeEmail, confirmUrl } from '../_lib/token.js';
 import { json, esc } from '../_lib/page.js';
 import { requireDb, upsertPending, logEvent, getSubscriber, HttpError } from '../_lib/db.js';
-import { config } from '../_lib/mail.js';
+import { config, PROMISES } from '../_lib/mail.js';
 
 const FONT = "-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',Meiryo,sans-serif";
 
@@ -93,14 +93,6 @@ export async function onRequestPost({ request, env }) {
 //
 // ここに書く約束は subscribe.html と同じ3つ。**片方だけ変えない。**
 // newsletter/selftest.mjs が頻度の表記の食い違いを見張っている。
-const PROMISES = [
-  ['前提が動いた論点だけを、数本',
-   'ニュースの要約は送りません。「何が変わったから、この発表は効くのか」を書きます。'],
-  ['図版つきの全文へのご案内',
-   'メールにはあらましを、詳しくは資料アーカイブの該当ページに。読むための合言葉は、購読いただいている方だけにお渡ししています。'],
-  ['不定期。月に1〜3通ほど',
-   '書くことがあるときだけお送りします。それ以上は送りません。営業のご連絡に転用することもありません。'],
-];
 
 const NAVY = '#1f3864';
 const AZURE = '#2e5496';
@@ -125,8 +117,8 @@ function confirmHtml(link, cfg) {
 <div style="display:none;max-height:0;overflow:hidden;opacity:0">あと1回だけ押していただくと、登録が完了します。</div>
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:${PAPER}">
 <tr><td align="center" style="padding:28px 12px">
-  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600"
-         style="width:600px;max-width:100%;background:#fff;border:1px solid ${LINE};border-radius:4px">
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center"
+         style="width:100%;max-width:600px;background:#fff;border:1px solid ${LINE};border-radius:4px">
 
     <tr><td style="background:${NAVY};padding:26px 34px">
       <div style="font:700 11px ${FONT};letter-spacing:.16em;color:#9fc6f5">OZAKEN LETTER</div>
