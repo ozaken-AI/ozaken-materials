@@ -35,7 +35,7 @@ export function config(env) {
     site: env.NEWSLETTER_SITE || 'https://content.ozaken.ai',
     secret: need('NEWSLETTER_SECRET'),
     apiKey: need('RESEND_API_KEY'),
-    from: need('NEWSLETTER_FROM'),                      // 例: 小澤健祐（おざけん） <weekly@ozaken.ai>
+    from: need('NEWSLETTER_FROM'),                      // 例: 小澤健祐（おざけん） <ozaken@news.ozaken.ai>
     senderName: env.NEWSLETTER_SENDER_NAME || '小澤健祐（おざけん）',
     senderAddress: need('NEWSLETTER_SENDER_ADDRESS'),   // 表示義務。住所を省くと違反になる
     replyTo: env.NEWSLETTER_REPLY_TO || null,
@@ -83,7 +83,7 @@ export function buildEmail({ issue, subscriber, unsubUrl, cfg }) {
           </div>
           <a href="${esc(issue.url)}"
              style="display:inline-block;background:${NAVY};color:#fff;text-decoration:none;
-                    border-radius:3px;padding:13px 26px;font:700 15px ${FONT}">今週の全文を読む</a>
+                    border-radius:3px;padding:13px 26px;font:700 15px ${FONT}">全文を読む</a>
           ${issue.passphrase ? `<div style="padding-top:16px;font:400 13px/1.8 ${FONT};color:${MUTED}">
             ひらくときの合言葉：<span style="font:700 14px ${FONT};color:${NAVY};background:#eef1f6;
             border-radius:3px;padding:2px 8px">${esc(issue.passphrase)}</span><br>
@@ -105,7 +105,7 @@ export function buildEmail({ issue, subscriber, unsubUrl, cfg }) {
          style="width:600px;max-width:100%;background:#fff;border:1px solid ${LINE};border-radius:4px">
 
     <tr><td style="background:${NAVY};padding:26px 34px">
-      <div style="font:700 11px ${FONT};letter-spacing:.16em;color:#9fc6f5">OZAKEN WEEKLY</div>
+      <div style="font:700 11px ${FONT};letter-spacing:.16em;color:#9fc6f5">OZAKEN LETTER</div>
       <div style="padding-top:6px;font:400 13px ${FONT};color:rgba(255,255,255,.72)">${esc(issue.id)}</div>
     </td></tr>
 
@@ -152,7 +152,7 @@ export function buildEmail({ issue, subscriber, unsubUrl, cfg }) {
   // 文字だけの版。付けないと迷惑メール判定が厳しくなるし、
   // 携帯キャリアや読み上げ環境ではこちらが読まれる。
   const text = [
-    `OZAKEN WEEKLY / ${issue.id}`,
+    `OZAKEN LETTER / ${issue.id}`,
     '',
     issue.subject,
     '',
