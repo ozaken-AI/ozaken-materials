@@ -22,6 +22,7 @@ import { onRequestPost as send, onRequestGet as sendStat } from '../functions/ap
 import { onRequestPost as hook } from '../functions/api/hooks/resend.js';
 import { onRequestPost as importCsv } from '../functions/api/import.js';
 import { onRequestPost as downloadLead } from '../functions/api/download.js';
+import { onRequestPost as preview } from '../functions/api/preview.js';
 import { COLUMNS, parseCsv, detectColumns, parseDate } from '../functions/_lib/meishi.js';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -612,6 +613,77 @@ head('13. 見出しと中身がずれたCSV');
   const cols = detectColumns(parseCsv(shifted)[0]);
   ok('「名」が「会社名」に誤って当たらない', cols.first === undefined, JSON.stringify(cols));
   ok('日時の列を見つける', cols.date === 0);
+}
+
+// ── 14. 図版と予約配信 ──────────────────────────────
+head('14. 図版と予約配信');
+{
+  const cfg = config(BASE);
+  const withImg = {
+    ...ISSUE, id: 'img', image: 'https://content.ozaken.ai/99_assets/letter/fig0.png',
+    imageAlt: '5レベルの全体像',
+    items: [{ title: '見出し', body: '本文', image: 'https://content.ozaken.ai/99_assets/letter/fig1.png',
+              imageAlt: 'レベル2から3の壁' }],
+  };
+  const m = await buildMessage({ issue: withImg, subscriber: { email: 'a@b.co', source: 'download' }, cfg });
+  ok('冒頭の画像を組み込む', m.html.includes('fig0.png'));
+  ok('項目の画像を組み込む', m.html.includes('fig1.png'));
+  ok('説明文を alt に入れる', m.html.includes('alt="5レベルの全体像"') && m.html.includes('alt="レベル2から3の壁"'));
+  ok('高精細の画面のために、表示幅を指定する', /width="532"/.test(m.html));
+  ok('暗い画面で浮かないよう、紙色を敷く', /background:#f8f7f4;border-radius/.test(m.html));
+  ok('SVGを使っていない（メールで剥がされる）', !/\.svg/i.test(m.html));
+  ok('文字だけの版には、図の説明を残す', m.text.includes('［図：レベル2から3の壁］'));
+
+  // 画像は出ないことがある。説明が無いと、そこがただの空白になる
+  const noAlt = { ...ISSUE, id: 'noalt', items: [{ title: 'x', image: 'https://x/y.png' }] };
+  const r = await send({ request: adminPost({ issue: noAlt }), env: fresh().env });
+  ok('説明の無い画像は受け付けない', r.status === 400);
+  ok('どの画像が足りないか名指しする',
+    (await r.json()).error.includes('1本目の画像'));
+
+  // 予約配信。Resend は束の中の1通ごとに時刻を持てる
+  const f = fresh();
+  seed(f.db, [['s1@x.co', 'active'], ['s2@x.co', 'active']]);
+  stubResend();
+  const out = await (await send({
+    request: adminPost({ issue: ISSUE, scheduled_at: '2026-09-01T23:00:00.000Z' }), env: f.env })).json();
+  ok('予約の時刻を返事に含める', out.scheduled_at === '2026-09-01T23:00:00.000Z');
+  ok('1通ごとに配達時刻を載せる',
+    sent[0].body.every(x => x.scheduled_at === '2026-09-01T23:00:00.000Z'), JSON.stringify(sent[0].body[0].scheduled_at));
+
+  stubResend();
+  const f2 = fresh();
+  seed(f2.db, [['t1@x.co', 'active']]);
+  await send({ request: adminPost({ issue: ISSUE }), env: f2.env });
+  ok('予約しないときは時刻を付けない', !('scheduled_at' in sent[0].body[0]));
+
+  // 号の側に時刻を書かれると、束ごとの予約と食い違う
+  const bad = { ...ISSUE, id: 'sch', scheduled_at: '2026-09-01T00:00:00Z' };
+  const rb = await send({ request: adminPost({ issue: bad }), env: fresh().env });
+  ok('号の側に時刻を書くのは受け付けない', rb.status === 400);
+}
+
+// ── 15. 見え方の確認 ────────────────────────────────
+head('15. 見え方の確認（/api/preview）');
+{
+  const f = fresh();
+  stubResend();
+  const noAuth = await preview({
+    request: post('https://x/api/preview', JSON.stringify({ issue: ISSUE }),
+      { Authorization: 'Bearer wrong', 'Content-Type': 'application/json' }), env: f.env });
+  ok('管理者トークンなしは401', noAuth.status === 401);
+
+  const r = await preview({
+    request: post('https://x/api/preview', JSON.stringify({ issue: ISSUE, as_name: '田中 太郎' }),
+      { Authorization: 'Bearer admintoken', 'Content-Type': 'application/json' }), env: f.env });
+  const j = await r.json();
+  ok('組み立てたHTMLを返す', j.ok && j.html.includes(ISSUE.subject));
+  ok('文字だけの版も返す', j.text.includes(ISSUE.subject));
+  ok('宛名の出方も確かめられる', j.html.includes('田中 太郎'));
+  ok('配信停止リンクも入っている', j.html.includes('/unsubscribe?e='));
+  ok('メールは1通も出さない', sent.length === 0);
+  ok('配信ログに触らない',
+    f.db.raw.prepare('SELECT COUNT(*) n FROM deliveries').get().n === 0);
 }
 
 console.log(`\n${'─'.repeat(46)}\n通った ${pass} 件 / 落ちた ${fail} 件\n`);

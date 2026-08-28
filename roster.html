@@ -79,6 +79,21 @@ tr.hi td{background:#eef3fa}
 .msg.warn{display:block;background:#fdf6ee;border-left:3px solid var(--amber)}
 .log{font-family:var(--font-en);font-size:12.5px;color:var(--muted);margin:12px 0 0;
   white-space:pre-wrap;line-height:1.7;max-height:190px;overflow:auto}
+textarea{width:100%;font-family:var(--font-ja-sans);font-size:15px;line-height:1.85;
+  padding:11px 13px;border:1px solid #c9d6e6;border-radius:3px;background:var(--paper);
+  color:var(--ink);resize:vertical}
+textarea:focus{outline:2px solid var(--azure);outline-offset:1px;background:var(--white)}
+#wFrame{width:100%;height:520px;border:1px solid var(--azure-pale);border-radius:4px;background:#fff}
+.plain{font-family:var(--font-en);font-size:12.5px;line-height:1.75;white-space:pre-wrap;
+  background:var(--sink);border-radius:3px;padding:14px 16px;max-height:300px;overflow:auto;margin:10px 0 0}
+/* 項目1本分。番号を左に立てて、どこまでが1本かを目で切る */
+.item{background:var(--white);border:1px solid var(--azure-pale);border-radius:4px;
+  padding:20px 22px;margin-top:14px;position:relative}
+.item-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.item-n{font-family:var(--font-en);font-weight:700;font-size:11px;letter-spacing:.12em;color:var(--azure)}
+.item-x{background:none;border:0;color:var(--muted);font-size:12.5px;padding:4px 8px;cursor:pointer}
+.item-x:hover{color:var(--red);background:transparent}
+#dPlan td.num{font-family:var(--font-en);font-weight:700;text-align:right}
 .hide{display:none}
 @media(max-width:640px){
   header h1{font-size:21px} h2{font-size:18px} .card{padding:20px 18px}
@@ -142,6 +157,147 @@ tr.hi td{background:#eef3fa}
         届いたメールの「配信停止」を押すと、<b>その宛先が名簿に載っていれば実際に止まります</b>。
         そこまで確かめて、はじめて配信の準備ができたと言えます。</p>
       <div class="msg" id="testMsg"></div>
+    </div>
+  </section>
+
+
+  <!-- ── 号を書く ─────────────────────────── -->
+  <section class="sec hide" id="secWrite">
+    <div class="rule"></div>
+    <h2>号を書く</h2>
+
+    <div class="card">
+      <div class="row">
+        <div style="flex:0 0 190px">
+          <label for="wId">号のID</label>
+          <input type="text" id="wId" placeholder="2026-09-02">
+        </div>
+        <div>
+          <label for="wSubject">件名</label>
+          <input type="text" id="wSubject" placeholder="エージェントが「試す」段階を抜けた">
+        </div>
+      </div>
+
+      <label for="wPre" style="margin-top:16px">受信箱の一覧に出る一文（プレヘッダー）</label>
+      <input type="text" id="wPre" placeholder="件名の続きとして読まれます。ここが空だと本文の頭が出ます">
+
+      <label for="wLede" style="margin-top:16px">書き出し</label>
+      <textarea id="wLede" rows="3" placeholder="この号で何を取り上げるか、2〜3行で"></textarea>
+
+      <div class="row" style="margin-top:16px">
+        <div>
+          <label for="wImg">冒頭の画像URL（任意）</label>
+          <input type="text" id="wImg" placeholder="https://content.ozaken.ai/99_assets/letter/…/fig0.png">
+        </div>
+        <div>
+          <label for="wImgAlt">その画像の説明</label>
+          <input type="text" id="wImgAlt" placeholder="画像が出ないときに、代わりに読まれる文">
+        </div>
+      </div>
+    </div>
+
+    <div id="wItems"></div>
+
+    <div class="row" style="margin:14px 0 0">
+      <button class="ghost" id="btnAddItem">＋ 項目を足す</button>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <label for="wClosing">締めの一文</label>
+      <textarea id="wClosing" rows="2" placeholder="お読みいただき、ありがとうございました。"></textarea>
+
+      <div class="row" style="margin-top:16px">
+        <div>
+          <label for="wUrl">全文ページのURL（任意）</label>
+          <input type="text" id="wUrl" placeholder="https://content.ozaken.ai/weekly/2026-09-02.html">
+        </div>
+        <div>
+          <label for="wPass">そのページの合言葉</label>
+          <input type="text" id="wPass" placeholder="購読者だけにお渡しするもの">
+        </div>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:14px">
+      <button class="ghost" id="btnSaveDraft">下書きを保存</button>
+      <button class="ghost" id="btnPreview">見え方を確かめる</button>
+      <div style="flex:1;min-width:210px">
+        <label for="wTestTo">テスト送信の宛先</label>
+        <input type="text" id="wTestTo" placeholder="自分のアドレス">
+      </div>
+      <button id="btnTestIssue">この号をテスト送信</button>
+    </div>
+    <div class="msg" id="wMsg"></div>
+
+    <div class="hide" id="wPreviewBox">
+      <div class="card" style="margin-top:16px">
+        <h2 style="font-size:17px">見え方（実際に送るのと同じ組み立て）</h2>
+        <p class="muted" id="wPrevSubject"></p>
+        <iframe id="wFrame" title="メールの見え方"></iframe>
+        <details style="margin-top:12px">
+          <summary class="muted" style="cursor:pointer">文字だけの版を見る（画像を出さない環境では、こちらが読まれます）</summary>
+          <pre class="plain" id="wPlain"></pre>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 配信 ─────────────────────────────── -->
+  <section class="sec hide" id="secSend">
+    <div class="rule"></div>
+    <h2>配信する</h2>
+
+    <div class="card">
+      <div class="row">
+        <div>
+          <label for="dWhen">送り方</label>
+          <select id="dWhen">
+            <option value="now">いますぐ送る</option>
+            <option value="sched" selected>日時を指定して予約する</option>
+          </select>
+        </div>
+        <div id="dAtWrap">
+          <label for="dAt">1日目の配達日時</label>
+          <input type="datetime-local" id="dAt">
+        </div>
+        <div id="dSkipWrap" style="flex:0 0 170px">
+          <label for="dSkip">土日を避ける</label>
+          <select id="dSkip">
+            <option value="1" selected>避ける（平日だけ）</option>
+            <option value="0">避けない</option>
+          </select>
+        </div>
+        <div id="dDaysWrap" style="flex:0 0 200px">
+          <label for="dDays">何日かけて送るか</label>
+          <select id="dDays">
+            <option value="1">1日で全部</option>
+            <option value="2">2日</option>
+            <option value="3">3日</option>
+            <option value="4" selected>4日（おすすめ）</option>
+            <option value="5">5日</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="msg warn" style="display:block;margin-top:16px">
+        <b>送信ドメインの評判は、まだ育っていません。</b>
+        新しいドメインが突然1,000通を超えて送るのは、迷惑メール判定でいちばん疑われる形です。
+        少しずつ増やすと、途中で止められますし、評判も安全に育ちます。
+      </div>
+
+      <table id="dPlan" style="margin-top:14px"></table>
+
+      <label style="display:flex;gap:9px;align-items:flex-start;margin:6px 0 0;font-weight:400;font-size:13.5px">
+        <input type="checkbox" id="dConfirm" style="width:auto;margin-top:3px">
+        <span>テスト送信で、実機の見え方と配信停止リンクを確かめました。
+          <b>予約したあとの取り消しは1通ずつ</b>になります。</span>
+      </label>
+
+      <div class="row" style="margin-top:14px">
+        <button id="btnSend" disabled>配信をはじめる</button>
+      </div>
+      <div class="msg" id="dMsg"></div>
+      <div class="log" id="dLog"></div>
     </div>
   </section>
 
@@ -228,7 +384,11 @@ tr.hi td{background:#eef3fa}
   var $ = function (id) { return document.getElementById(id); };
   function show(el, on) { el.classList.toggle('hide', !on); }
   function say(el, kind, text) { el.className = 'msg ' + kind; el.innerHTML = text; }
-  function log(line) { $('log').textContent += line + '\n'; $('log').scrollTop = 1e6; }
+  function log(line, id) {
+    var el = $(id || 'log');
+    el.textContent += line + '\n';
+    el.scrollTop = 1e6;
+  }
 
   function api(path, opts) {
     opts = opts || {};
@@ -254,7 +414,10 @@ tr.hi td{background:#eef3fa}
         drawStats(j.subscribers);
         show($('secStats'), true);
         show($('secTest'), true);
+        show($('secWrite'), true);
+        show($('secSend'), true);
         show($('secImport'), true);
+        startWriting();
       })
       .catch(function (err) {
         // 長さを出すと、貼り間違いか自動入力かがその場で分かる
@@ -283,6 +446,245 @@ tr.hi td{background:#eef3fa}
 
   function refreshStats() {
     return api('/api/send').then(function (j) { drawStats(j.subscribers); });
+  }
+
+
+  // ── 号を書く ────────────────────────────
+  // 下書きはこのブラウザに憶える。書きかけで閉じても消えない。
+  var DRAFT = 'ozaken.newsletter.draft';
+  var items = [];
+
+  function itemBlock(i) {
+    return '<div class="item" data-i="' + i + '">' +
+      '<div class="item-h"><span class="item-n">' + String(i + 1).padStart(2, '0') + '</span>' +
+      '<button type="button" class="item-x" data-del="' + i + '">この項目を消す</button></div>' +
+      '<div class="row" style="margin-bottom:14px">' +
+        '<div style="flex:0 0 170px"><label>分類（任意）</label>' +
+          '<input type="text" data-f="kicker" placeholder="企業導入 / モデル / 規制"></div>' +
+        '<div><label>見出し</label>' +
+          '<input type="text" data-f="title" placeholder="何が変わったのかが分かる一行"></div>' +
+      '</div>' +
+      '<label>本文</label>' +
+      '<textarea rows="4" data-f="body" placeholder="なぜ変わったのか、現場で何が効くのかまで"></textarea>' +
+      '<div class="row" style="margin-top:14px">' +
+        '<div><label>画像URL（任意）</label>' +
+          '<input type="text" data-f="image" placeholder="https://content.ozaken.ai/99_assets/letter/…png"></div>' +
+        '<div><label>その画像の説明</label>' +
+          '<input type="text" data-f="imageAlt" placeholder="画像が出ないときに読まれる文"></div>' +
+      '</div>' +
+      '<div class="row" style="margin-top:14px">' +
+        '<div><label>元記事などのリンク（任意）</label>' +
+          '<input type="text" data-f="link" placeholder="https://…"></div>' +
+        '<div style="flex:0 0 200px"><label>リンクの文言</label>' +
+          '<input type="text" data-f="linkLabel" placeholder="元の記事を読む"></div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  function renderItems() {
+    $('wItems').innerHTML = items.map(function (_, i) { return itemBlock(i); }).join('');
+    items.forEach(function (it, i) {
+      var box = $('wItems').querySelector('[data-i="' + i + '"]');
+      Object.keys(it).forEach(function (k) {
+        var el = box.querySelector('[data-f="' + k + '"]');
+        if (el) el.value = it[k] || '';
+      });
+    });
+  }
+
+  function readItems() {
+    return Array.prototype.map.call($('wItems').querySelectorAll('.item'), function (box) {
+      var o = {};
+      Array.prototype.forEach.call(box.querySelectorAll('[data-f]'), function (el) {
+        var v = el.value.trim();
+        if (v) o[el.getAttribute('data-f')] = v;
+      });
+      return o;
+    }).filter(function (o) { return o.title || o.body; });
+  }
+
+  function collectIssue() {
+    var v = function (id) { return ($(id).value || '').trim(); };
+    var issue = { id: v('wId'), subject: v('wSubject'), items: readItems() };
+    [['wPre','preheader'],['wLede','lede'],['wClosing','closing'],
+     ['wUrl','url'],['wPass','passphrase'],['wImg','image'],['wImgAlt','imageAlt']]
+      .forEach(function (p) { if (v(p[0])) issue[p[1]] = v(p[0]); });
+    return issue;
+  }
+
+  function fillIssue(d) {
+    [['wId','id'],['wSubject','subject'],['wPre','preheader'],['wLede','lede'],
+     ['wClosing','closing'],['wUrl','url'],['wPass','passphrase'],['wImg','image'],['wImgAlt','imageAlt']]
+      .forEach(function (p) { $(p[0]).value = d[p[1]] || ''; });
+    items = Array.isArray(d.items) && d.items.length ? d.items.slice() : [{}];
+    renderItems();
+  }
+
+  function saveDraft(quiet) {
+    var d = collectIssue();
+    try { localStorage.setItem(DRAFT, JSON.stringify(d)); } catch (e) { /* 私用ウィンドウ */ }
+    if (!quiet) say($('wMsg'), 'on', '下書きを保存しました（このブラウザにだけ憶えます）。');
+  }
+
+  function preview() {
+    items = readItems().length ? readItems() : items;
+    saveDraft(true);
+    say($('wMsg'), 'on', '組み立てています…');
+    api('/api/preview', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ issue: collectIssue() }) })
+      .then(function (j) {
+        $('wPrevSubject').textContent = '件名：' + j.subject;
+        $('wFrame').srcdoc = j.html;
+        $('wPlain').textContent = j.text;
+        show($('wPreviewBox'), true);
+        say($('wMsg'), 'on', '実際に送るのと同じ組み立てです。スマホ幅でも確かめたいときは、テスト送信を。');
+        $('wPreviewBox').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      })
+      .catch(function (e) { say($('wMsg'), 'ng', e.message); });
+  }
+
+  function testIssue() {
+    var to = $('wTestTo').value.trim();
+    if (!to) { say($('wMsg'), 'ng', 'テスト送信の宛先を入れてください。'); return; }
+    saveDraft(true);
+    $('btnTestIssue').disabled = true;
+    say($('wMsg'), 'on', '送っています…');
+    fetch('/api/send', { method: 'POST',
+      headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ issue: collectIssue(), test_to: to, test_name: '（テスト）' }) })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        var res = j.result || {};
+        if (j.ok && res.status === 'sent') {
+          say($('wMsg'), 'on', to + ' に送りました。<b>実機で、画像の出方と配信停止リンクを必ず確かめてください。</b>' +
+            'この1通は名簿にも配信ログにも残りません。');
+        } else {
+          say($('wMsg'), 'ng', '送れませんでした：' + (res.error || j.error || '理由が返りませんでした'));
+        }
+      })
+      .catch(function (e) { say($('wMsg'), 'ng', e.message); })
+      .then(function () { $('btnTestIssue').disabled = false; });
+  }
+
+  // つないだ直後の仕込み。下書きがあれば戻し、配達日時に手ごろな既定を入れる。
+  function startWriting() {
+    var d = null;
+    try { d = JSON.parse(localStorage.getItem(DRAFT) || 'null'); } catch (e) { /* 壊れていたら無視 */ }
+    fillIssue(d || { items: [{}] });
+    if (!$('dAt').value) {
+      // 明日の朝8時。BtoBは火〜木の午前がいちばん読まれる
+      var t = new Date();
+      t.setDate(t.getDate() + 1); t.setHours(8, 0, 0, 0);
+      $('dAt').value = new Date(t.getTime() - t.getTimezoneOffset() * 60000)
+        .toISOString().slice(0, 16);
+    }
+    planRows();
+  }
+
+  // ── 配信 ────────────────────────────────
+  // 日を追うごとに倍にしていく。少ないところから始めて、途中で止められる形。
+  function buckets(total, days) {
+    if (days <= 1 || total <= 0) return [{ n: total, day: 0 }];
+    var w = [], sum = 0;
+    for (var i = 0; i < days; i++) { w.push(Math.pow(2, i)); sum += w[i]; }
+    var out = [], acc = 0;
+    for (var j = 0; j < days; j++) {
+      var n = (j === days - 1) ? total - acc : Math.max(1, Math.round(total * w[j] / sum));
+      acc += n; out.push({ n: n, day: j });
+    }
+    return out.filter(function (b) { return b.n > 0; });
+  }
+
+  // 名簿の8割が法人のアドレス。土日に届けても、月曜の受信箱に埋もれるだけ。
+  // 既定では平日だけに置く。初日が土日なら、そこも翌月曜へずらす。
+  function stepDays(base, n, skipWeekend) {
+    var d = new Date(base.getTime());
+    var isWeekend = function (x) { return x.getDay() === 0 || x.getDay() === 6; };
+    if (skipWeekend) while (isWeekend(d)) d.setDate(d.getDate() + 1);
+    var i = 0;
+    while (i < n) {
+      d.setDate(d.getDate() + 1);
+      if (!skipWeekend || !isWeekend(d)) i++;
+    }
+    return d;
+  }
+
+  function planRows() {
+    var total = Number(($('stats').querySelector('.stat .v') || {}).textContent || 0);
+    var sched = $('dWhen').value === 'sched';
+    var days = sched ? Number($('dDays').value) : 1;
+    var base = $('dAt').value ? new Date($('dAt').value) : null;
+    var skip = $('dSkip').value === '1';
+    var bs = buckets(total, days);
+    $('dPlan').innerHTML = '<tr><th>いつ届くか</th><th style="text-align:right">通数</th></tr>' +
+      bs.map(function (b) {
+        var when = '送信した直後';
+        if (sched && base) {
+          var d = stepDays(base, b.day, skip);
+          when = d.toLocaleString('ja-JP', { month: 'numeric', day: 'numeric', weekday: 'short',
+                                             hour: '2-digit', minute: '2-digit' });
+        } else if (sched) { when = '（1日目の日時を入れてください）'; }
+        return '<tr><td>' + when + '</td><td class="num">' + b.n + '</td></tr>';
+      }).join('');
+    return bs.map(function (b) {
+      var at = null;
+      if (sched && base) at = stepDays(base, b.day, skip).toISOString();
+      return { n: b.n, at: at };
+    });
+  }
+
+  function runSend() {
+    var plan = planRows();
+    var sched = $('dWhen').value === 'sched';
+    if (sched && !$('dAt').value) { say($('dMsg'), 'ng', '1日目の配達日時を入れてください。'); return; }
+    var issue = collectIssue();
+    if (!issue.id || !issue.subject) { say($('dMsg'), 'ng', '号のIDと件名が要ります。'); return; }
+
+    $('btnSend').disabled = true;
+    $('dLog').textContent = '';
+    say($('dMsg'), 'on', '配信しています。この画面を閉じても、あとで同じ号を送り直せば続きから進みます。');
+
+    var bi = 0, left = plan.length ? plan[0].n : 0, sentAll = 0, failAll = 0;
+
+    function step() {
+      if (bi >= plan.length) return finish(true);
+      if (left <= 0) { bi++; left = bi < plan.length ? plan[bi].n : 0; return step(); }
+      var take = Math.min(left, 200);
+      var body = { issue: issue, limit: take };
+      if (plan[bi].at) body.scheduled_at = plan[bi].at;
+      return api('/api/send', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body) })
+        .then(function (r) {
+          var done = r.sent + r.failed;
+          sentAll += r.sent; failAll += r.failed; left -= done;
+          log((bi + 1) + '束目：送信 ' + r.sent + ' / 失敗 ' + r.failed + ' / 名簿の残り ' + r.remaining,
+              'dLog');
+          (r.errors || []).forEach(function (e) { log('   - ' + e, 'dLog'); });
+          if (r.done) return finish(false, r.gave_up);
+          if (done === 0) { say($('dMsg'), 'ng', 'これ以上進みませんでした。上の記録を見てください。');
+                            $('btnSend').disabled = false; return; }
+          return step();
+        })
+        .catch(function (e) {
+          say($('dMsg'), 'ng', '止まりました：' + e.message +
+            '<br>同じ号でもう一度「配信をはじめる」を押せば、送れた分はそのままに続きから進みます。');
+          $('btnSend').disabled = false;
+        });
+    }
+
+    function finish(nothing, gaveUp) {
+      var msg = nothing ? '予定していた分を送り終えました。' : '名簿の全員に送り終えました。';
+      msg += '（送信 ' + sentAll + ' / 失敗 ' + failAll + '）';
+      if (sched) msg += '<br>実際の配達は、上の表の日時に行われます。';
+      if (gaveUp && gaveUp.length) {
+        msg += '<br>▲ ' + gaveUp.length + '件は何度試しても送れませんでした：' +
+          gaveUp.slice(0, 5).map(function (g) { return g.email; }).join('、');
+      }
+      say($('dMsg'), 'on', msg);
+      $('btnSend').disabled = false;
+      refreshStats();
+    }
+    step();
   }
 
   // ── 動作確認の送信 ──────────────────────
@@ -429,6 +831,36 @@ tr.hi td{background:#eef3fa}
   }
 
   // ── つなぎこみ ──────────────────────────
+  // 号を書く／配信
+  $('btnAddItem').addEventListener('click', function () {
+    items = readItems(); items.push({}); renderItems();
+  });
+  $('wItems').addEventListener('click', function (e) {
+    var i = e.target.getAttribute && e.target.getAttribute('data-del');
+    if (i === null || i === undefined) return;
+    items = readItems();
+    items.splice(Number(i), 1);
+    if (!items.length) items = [{}];
+    renderItems();
+  });
+  $('btnSaveDraft').addEventListener('click', function () { saveDraft(false); });
+  $('btnPreview').addEventListener('click', preview);
+  $('btnTestIssue').addEventListener('click', testIssue);
+  $('wTestTo').addEventListener('keydown', function (e) { if (e.key === 'Enter') testIssue(); });
+
+  ['dWhen', 'dAt', 'dDays', 'dSkip'].forEach(function (id) {
+    $(id).addEventListener('change', function () {
+      var sched = $('dWhen').value === 'sched';
+      show($('dAtWrap'), sched);
+      show($('dDaysWrap'), sched);
+      show($('dSkipWrap'), sched);
+      planRows();
+    });
+  });
+  // 確かめる前に押せてしまうと、取り消せない配信が出ていく
+  $('dConfirm').addEventListener('change', function () { $('btnSend').disabled = !this.checked; });
+  $('btnSend').addEventListener('click', runSend);
+
   $('btnAuth').addEventListener('click', connect);
   $('btnTest').addEventListener('click', testSend);
   $('testTo').addEventListener('keydown', function (e) { if (e.key === 'Enter') testSend(); });
