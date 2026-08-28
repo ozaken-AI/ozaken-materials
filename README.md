@@ -19,6 +19,8 @@
 | `09_role/` | 職種ごとに何が変わるか | 営業、人事、経理、マーケ、CS、情シス |
 | `99_assets/` | （コンテンツでない素材） | 登壇スライド、画像素材 |
 | `weekly/` | 今週何が起きたか | 週次トレンド。号ごとのHTMLと、定点ファイル（`threads/`）・組版のもと（`src/`） |
+| `newsletter/` | （コンテンツでない道具） | メルマガの名簿設計・取り込み・配信スクリプト |
+| `functions/` | （コンテンツでない道具） | Cloudflare Pages Functions。配信停止・購読受付・配信の実行 |
 
 裏資料（配布先が決まっているもの）は `AX_Table/`（AX Table 各セッション）と
 `Training/`（法人研修）に置きます。
@@ -68,6 +70,40 @@ cd .claude/skills/ozaken-shiryo/scripts
 OZAKEN_PW=… python3 retarget.py https://content.ozaken.ai/ --apply
 OZAKEN_PW=… python3 apply_ogp.py cards
 ```
+
+## メルマガ
+
+名刺交換でいただいた連絡先に、週次トレンドを届ける。
+**送信は Resend、名簿と配信停止は自分で持つ**という分け方にしてある。
+
+| | |
+|---|---|
+| 申し込み | `https://content.ozaken.ai/subscribe.html` |
+| 名簿の管理 | `https://content.ozaken.ai/roster.html`（名刺CSVの取り込み・状況確認） |
+| 配信停止 | `https://content.ozaken.ai/unsubscribe`（署名つきリンク） |
+| 名簿 | Cloudflare D1 `ozaken-newsletter` |
+| 送信 | Resend |
+
+名刺CSVは `roster.html` に落とすのが早い（下見してから入る）。
+**Eight（個人版）に公開APIはないので、CSVを書き出すところだけは手作業**になる。
+
+```bash
+# 端末から入れることもできる（大きいCSV向け。結果は roster.html と同じ）
+python3 newsletter/import_meishi.py meishi.csv --source-note "2026年上期" -o newsletter/import.sql
+npx wrangler d1 execute ozaken-newsletter --remote --file=newsletter/import.sql
+
+# 号を送る（まず自分に、それから本番）
+./newsletter/send.sh --test 自分のアドレス newsletter/issues/2026-08-25.json
+./newsletter/send.sh newsletter/issues/2026-08-25.json
+
+# 配信まわりを直したら、上げる前にこれを通す（メールは1通も出ない）
+node newsletter/selftest.mjs
+```
+
+立ち上げの手順・環境変数・法令まわりは
+[`docs/newsletter-system.md`](./docs/newsletter-system.md) に。
+
+**名簿のCSVと、そこから作った `import.sql` はリポジトリに入れない**（`.gitignore` 済み）。
 
 ## 更新方法
 

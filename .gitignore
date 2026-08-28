@@ -3,3 +3,8 @@ package-lock.json
 package.json
 __pycache__/
 *.pyc
+
+# メルマガ。名簿と、そこから作った投入用SQLは個人情報なので、絶対に入れない。
+newsletter/*.csv
+newsletter/import*.sql
+newsletter/.env
