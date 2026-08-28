@@ -129,6 +129,16 @@ head('2. メール本文');
   const web = await buildMessage({ issue: ISSUE, subscriber: { email: 'x@y.co', name: '<img src=x onerror=alert(1)>', source: 'web' }, cfg });
   ok('名簿の名前に混ぜたタグを無害化する', !web.html.includes('<img src=x') && web.html.includes('&lt;img'));
   ok('Web申込者には名刺の文言を出さない', !web.html.includes('名刺交換'));
+
+  // 心当たりのない人ほど、この一文しか読まない。経路ごとに正しく出し分かること。
+  for (const [source, needle] of [
+    ['download', '資料をダウンロードいただいた際に'],
+    ['event', 'イベント・講演にご参加いただいた際に'],
+  ]) {
+    const m = await buildMessage({ issue: ISSUE, subscriber: { email: 'x@y.co', source }, cfg });
+    ok(`${source} の相手にはその経緯を書く`, m.html.includes(needle) && m.text.includes(needle));
+    ok(`${source} の相手に名刺の文言を出さない`, !m.html.includes('名刺交換'));
+  }
 }
 
 // ── 3. 配信停止 ──────────────────────────────────────

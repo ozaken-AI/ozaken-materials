@@ -36,9 +36,9 @@ p{margin:0 0 14px;font-size:15px}
 .card{background:var(--white);border:1px solid var(--azure-pale);border-radius:4px;padding:26px 26px}
 
 label{display:block;font-size:12.5px;font-weight:700;margin:0 0 6px;letter-spacing:.02em}
-input[type=text],input[type=password]{width:100%;font-family:var(--font-ja-sans);font-size:15px;
+input[type=text],input[type=password],select{width:100%;font-family:var(--font-ja-sans);font-size:15px;
   padding:11px 13px;border:1px solid #c9d6e6;border-radius:3px;background:var(--paper);color:var(--ink)}
-input:focus{outline:2px solid var(--azure);outline-offset:1px;background:var(--white)}
+input:focus,select:focus{outline:2px solid var(--azure);outline-offset:1px;background:var(--white)}
 button{font-family:var(--font-ja-sans);font-weight:700;font-size:15px;border:0;border-radius:3px;
   padding:13px 24px;cursor:pointer;background:var(--navy);color:var(--white)}
 button:hover:not(:disabled){background:var(--navy-deep)}
@@ -125,16 +125,51 @@ tr.hi td{background:#eef3fa}
       unsubscribed / bounced / complained には、取り込み直しでも二度と送りません。</p>
   </section>
 
+  <!-- ── 動作確認 ─────────────────────────── -->
+  <section class="sec hide" id="secTest">
+    <div class="rule"></div>
+    <h2>動作確認のメールを送る</h2>
+    <div class="card">
+      <div class="row">
+        <div>
+          <label for="testTo">宛先</label>
+          <input type="text" id="testTo" placeholder="自分のアドレス" autocomplete="email">
+        </div>
+        <button id="btnTest">送る</button>
+      </div>
+      <p class="muted" style="margin:14px 0 0">
+        この1通は<b>名簿にも配信ログにも残りません</b>。差出人・住所・図版の出方を、実機で確かめるためのものです。<br>
+        届いたメールの「配信停止」を押すと、<b>その宛先が名簿に載っていれば実際に止まります</b>。
+        そこまで確かめて、はじめて配信の準備ができたと言えます。</p>
+      <div class="msg" id="testMsg"></div>
+    </div>
+  </section>
+
   <!-- ── 取り込み ─────────────────────────── -->
   <section class="sec hide" id="secImport">
     <div class="rule"></div>
     <h2>名刺CSVを取り込む</h2>
 
     <div class="card" style="margin-bottom:14px">
-      <label for="note">取得の場（記録に残ります）</label>
-      <input type="text" id="note" placeholder="例：2026年上期 名刺交換 / AX Table 第3回">
-      <p class="muted" style="margin:10px 0 0">
-        「いつ・どこで連絡先をいただいたか」を残しておくと、あとから根拠を示せます。</p>
+      <div class="row" style="margin-bottom:16px">
+        <div>
+          <label for="source">取得の経路</label>
+          <select id="source">
+            <option value="meishi">名刺交換</option>
+            <option value="download">資料ダウンロード</option>
+            <option value="event">イベント・講演</option>
+            <option value="manual">その他（手で集めたもの）</option>
+          </select>
+        </div>
+        <div>
+          <label for="note">取得の場（記録に残ります）</label>
+          <input type="text" id="note" placeholder="例：2026年上期 名刺交換 / AX Table 第3回">
+        </div>
+      </div>
+      <p class="muted" style="margin:0">
+        <b>経路によって、メール本文の「なぜ届いているか」の一文が変わります。</b>
+        名刺なら「名刺交換などで」、資料ダウンロードなら「資料をダウンロードいただいた際に」。<br>
+        「取得の場」は、いつ・どこで連絡先をいただいたかの記録です。あとから根拠を示すのに使います。</p>
     </div>
 
     <label class="drop" id="drop">
@@ -170,6 +205,26 @@ tr.hi td{background:#eef3fa}
   var token = '';
   var pending = null;   // 下見の済んだCSV { text, note, report }
 
+  // 実機で確かめるための号。本文の型を一通り通るように、
+  // 見出し・本文・リンク・全文への導線・合言葉を全部入れてある。
+  var TEST_ISSUE = {
+    id: 'test',
+    subject: '【動作確認】OZAKEN LETTER の見え方',
+    preheader: '差出人・住所・配信停止リンクが正しく出ているか確かめる1通です。',
+    url: 'https://content.ozaken.ai/',
+    passphrase: 'これは見本の合言葉です',
+    lede: 'このメールは動作確認用です。以下を目で確かめてください。',
+    items: [
+      { kicker: '確かめること', title: '差出人の名前が化けていないか',
+        body: '「小澤健祐（おざけん）」と出ていますか。記号が崩れていたら、環境変数 NEWSLETTER_FROM の空白を半角に直してください。' },
+      { kicker: '確かめること', title: '下に住所と問い合わせ先が出ているか',
+        body: 'このメールのいちばん下に、発行者名・所在地・問い合わせ先が並んでいるはずです。\n表示義務なので、欠けていたら送り始められません。' },
+      { kicker: '確かめること', title: '「配信停止」が2か所から届くか',
+        body: '本文の下のリンクと、Gmail なら件名の横のボタン。両方から止められる状態が正しい形です。' }
+    ],
+    closing: 'ここまで確かめられたら、名簿を入れて1通目を出せます。'
+  };
+
   var $ = function (id) { return document.getElementById(id); };
   function show(el, on) { el.classList.toggle('hide', !on); }
   function say(el, kind, text) { el.className = 'msg ' + kind; el.innerHTML = text; }
@@ -198,6 +253,7 @@ tr.hi td{background:#eef3fa}
         say($('authMsg'), 'on', 'つながりました。');
         drawStats(j.subscribers);
         show($('secStats'), true);
+        show($('secTest'), true);
         show($('secImport'), true);
       })
       .catch(function (err) {
@@ -226,6 +282,35 @@ tr.hi td{background:#eef3fa}
     return api('/api/send').then(function (j) { drawStats(j.subscribers); });
   }
 
+  // ── 動作確認の送信 ──────────────────────
+  // 失敗しても ok:false で 200 が返る作りなので、api() の共通判定は通さず、
+  // result の中身を見て言い分けする。
+  function testSend() {
+    var to = $('testTo').value.trim();
+    if (!to) { say($('testMsg'), 'ng', '宛先を入れてください。'); return; }
+
+    $('btnTest').disabled = true;
+    say($('testMsg'), 'on', '送っています…');
+
+    fetch('/api/send', {
+      method: 'POST',
+      headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ issue: TEST_ISSUE, test_to: to, test_name: '（動作確認）' })
+    })
+      .then(function (r) { return r.json().catch(function () { return { ok: false, error: r.status + ' ' + r.statusText }; }); })
+      .then(function (j) {
+        var res = j.result || {};
+        if (j.ok && res.status === 'sent') {
+          say($('testMsg'), 'on', to + ' に送りました。受信箱を見てください。<br>' +
+            '届かないときは迷惑メールフォルダも確認を。それでも無ければ、Resend の Logs に理由が出ています。');
+        } else {
+          say($('testMsg'), 'ng', '送れませんでした：' + (res.error || j.error || '理由が返ってきませんでした'));
+        }
+      })
+      .catch(function (err) { say($('testMsg'), 'ng', '送れませんでした：' + err.message); })
+      .then(function () { $('btnTest').disabled = false; });
+  }
+
   // ── CSVを読む ───────────────────────────
   // Eight の書き出しは Shift_JIS のことがある。まず UTF-8 として厳密に読み、
   // 弾かれたら Shift_JIS として読み直す。ここで直しておけば、あとは全部UTF-8で通せる。
@@ -240,13 +325,14 @@ tr.hi td{background:#eef3fa}
   }
 
   // offset を進めながら、最後まで叩く
-  function runImport(text, note, dry) {
+  function runImport(text, note, dry, source) {
     var total = { created: 0, updated: 0, kept_stopped: 0, invalid: 0, duplicates: 0 };
     var meta = { columns: null, sample: null, kept_examples: [], total_rows: 0 };
     var offset = 0;
 
     function round() {
       var q = '/api/import?offset=' + offset + (dry ? '&dry=1' : '') +
+        (source ? '&source=' + encodeURIComponent(source) : '') +
         (note ? '&note=' + encodeURIComponent(note) : '');
       return api(q, { method: 'POST', headers: { 'Content-Type': 'text/csv' }, body: text })
         .then(function (j) {
@@ -272,8 +358,8 @@ tr.hi td{background:#eef3fa}
     decode(file).then(function (d) {
       log('文字コード: ' + d.encoding + ' / ' + file.name);
       say($('impMsg'), 'on', '中身を下見しています（まだ名簿には書き込みません）…');
-      return runImport(d.text, $('note').value.trim(), true).then(function (res) {
-        pending = { text: d.text, note: $('note').value.trim() };
+      return runImport(d.text, $('note').value.trim(), true, $('source').value).then(function (res) {
+        pending = { text: d.text, note: $('note').value.trim(), source: $('source').value };
         renderPreview(res);
         say($('impMsg'), 'on', '下見が終わりました。下の内容でよければ取り込んでください。');
       });
@@ -322,7 +408,7 @@ tr.hi td{background:#eef3fa}
     $('btnRun').disabled = true;
     $('btnCancel').disabled = true;
     say($('impMsg'), 'on', '取り込んでいます…');
-    runImport(pending.text, pending.note, false)
+    runImport(pending.text, pending.note, false, pending.source)
       .then(function (res) {
         var t = res.total;
         say($('impMsg'), 'on', '取り込みました。新規 ' + t.created + '件、更新 ' + t.updated +
@@ -341,6 +427,8 @@ tr.hi td{background:#eef3fa}
 
   // ── つなぎこみ ──────────────────────────
   $('btnAuth').addEventListener('click', connect);
+  $('btnTest').addEventListener('click', testSend);
+  $('testTo').addEventListener('keydown', function (e) { if (e.key === 'Enter') testSend(); });
   $('tok').addEventListener('keydown', function (e) { if (e.key === 'Enter') connect(); });
   $('file').addEventListener('change', function (e) { onFile(e.target.files[0]); });
   $('btnRun').addEventListener('click', commit);
