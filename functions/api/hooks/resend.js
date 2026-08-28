@@ -46,7 +46,11 @@ async function verifySvix(secret, headers, payload) {
   const age = Math.abs(Math.floor(Date.now() / 1000) - Number(ts));
   if (!Number.isFinite(age) || age > TOLERANCE_SEC) return false;
 
-  const raw = secret.startsWith('whsec_') ? secret.slice(6) : secret;
+  // 前後の空白を落としてから使う。貼るときに末尾へ改行が紛れると、
+  // 鍵の中身が変わって全部の通知が401で弾かれる。**画面上どこにも見えない。**
+  // 管理者トークンで一度これに詰まっている。
+  const trimmed = secret.trim();
+  const raw = trimmed.startsWith('whsec_') ? trimmed.slice(6) : trimmed;
   const key = await crypto.subtle.importKey(
     'raw', b64ToBytes(raw), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
   const expected = bytesToB64(await crypto.subtle.sign('HMAC', key, enc.encode(`${id}.${ts}.${payload}`)));
@@ -59,8 +63,13 @@ async function verifySvix(secret, headers, payload) {
 }
 
 export async function onRequestPost({ request, env }) {
-  const secret = env.RESEND_WEBHOOK_SECRET;
-  if (!secret) return json({ ok: false, error: 'RESEND_WEBHOOK_SECRET が未設定です。' }, 503);
+  const secret = (env.RESEND_WEBHOOK_SECRET || '').trim();
+  if (!secret) {
+    return json({ ok: false,
+      error: 'RESEND_WEBHOOK_SECRET が未設定です。Resend の Webhooks 画面に出る '
+        + 'whsec_… を Cloudflare Pages の Secret（Production）に入れて、'
+        + 'そのあと一度デプロイし直してください。' }, 503);
+  }
 
   const payload = await request.text();
   if (!(await verifySvix(secret, request.headers, payload))) {
