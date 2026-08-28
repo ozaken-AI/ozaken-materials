@@ -25,10 +25,13 @@ database_id = "ここに wrangler d1 create の出力を貼る"
 #   wrangler pages secret put RESEND_WEBHOOK_SECRET
 [vars]
 NEWSLETTER_SITE = "https://content.ozaken.ai"
-NEWSLETTER_FROM = "小澤健祐（おざけん） <weekly@ozaken.ai>"
+NEWSLETTER_FROM = "小澤健祐（おざけん） <weekly@news.ozaken.ai>"
 NEWSLETTER_SENDER_NAME = "小澤健祐（おざけん）"
 NEWSLETTER_SENDER_ADDRESS = "（登記上の住所を書く。表示義務がある）"
-NEWSLETTER_REPLY_TO = "weekly@ozaken.ai"
-NEWSLETTER_UNSUB_MAILTO = "unsubscribe@ozaken.ai"
+# news.ozaken.ai に受信箱はない。差出人あてに返信されても届かないので、
+# ここには**実際に読んでいるアドレス**を書く。空にするより害が大きいのは、
+# 受信できないアドレスを書くこと（返信が宛先不明で跳ね返る）。
+NEWSLETTER_REPLY_TO = "（実際に受信できるアドレス）"
+NEWSLETTER_UNSUB_MAILTO = ""
 # batch = 100通ずつ束ねて渡す（既定）。single = 1通ずつ
 NEWSLETTER_SEND_MODE = "batch"

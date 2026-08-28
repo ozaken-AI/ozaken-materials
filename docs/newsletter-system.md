@@ -143,12 +143,24 @@ Webからの申し込みは、ダブルオプトイン（確認メールのリ�
 
 ## 5. 立ち上げの手順
 
-### 5-1. Resend でドメインを認証する
+### 5-1. Resend でドメインを認証する（済）
 
-1. [resend.com](https://resend.com) で登録し、Domains に `ozaken.ai` を足す。
-2. 表示された DNS レコード（DKIM・SPF・DMARC）を、ドメインの DNS に足す。
-3. 緑になるまで待つ。**ここを飛ばすと、まず迷惑メールに落ちる。**
-4. API Keys で送信用の鍵を作る（`re_...`）。
+送信ドメインは **`news.ozaken.ai`**（東京リージョン）。2026年8月28日に認証済み。
+
+**ルートの `ozaken.ai` ではなくサブドメインを切ってある。**
+メルマガの評判とドメイン本体の評判を、同じ籠に入れないため。
+迷惑メール報告が増えても、ふだんのやりとりのメールは巻き込まれない。
+
+DNS は Cloudflare にあるので、Resend の Auto configure でレコードを入れた。
+入れ直すときも同じ手が使える（DKIMの公開鍵は長く、手で写すと必ず事故る）。
+
+> **Cloudflare で手を入れるときの落とし穴**
+> - プロキシ（オレンジの雲）は必ずオフ＝ DNS only。CNAME や MX がオレンジだとメールが壊れる
+> - Name 欄にはサブドメイン部分だけを書く。`.ozaken.ai` を足すと二重になる
+
+**DMARC はドメイン本体（`_dmarc.ozaken.ai`）に置く。** サブドメインは親を継承する。
+`p=none` から始めること。いきなり `p=reject` にすると、Google Workspace など
+別の経路で出しているメールまで巻き添えで弾かれる。
 
 ### 5-2. D1 を作る
 
@@ -182,14 +194,20 @@ Cloudflare のダッシュボードで、Pages プロジェクトに束ねる。
 | 名前 | 例 |
 |---|---|
 | `NEWSLETTER_SITE` | `https://content.ozaken.ai` |
-| `NEWSLETTER_FROM` | `小澤健祐（おざけん） <weekly@ozaken.ai>` |
+| `NEWSLETTER_FROM` | `小澤健祐（おざけん） <weekly@news.ozaken.ai>` |
 | `NEWSLETTER_SENDER_NAME` | `小澤健祐（おざけん）` |
 | `NEWSLETTER_SENDER_ADDRESS` | 登記上の住所 |
-| `NEWSLETTER_REPLY_TO` | `weekly@ozaken.ai` |
-| `NEWSLETTER_UNSUB_MAILTO` | `unsubscribe@ozaken.ai`（任意） |
+| `NEWSLETTER_REPLY_TO` | **実際に受信できるアドレス**（下の注意を読む） |
+| `NEWSLETTER_UNSUB_MAILTO` | 同上（任意） |
 
 `NEWSLETTER_SECRET` は**あとから変えない。**
 変えると、すでに配ったメールの配信停止リンクが全部無効になる。
+
+> **`news.ozaken.ai` に受信箱はない。**
+> 差出人の `weekly@news.ozaken.ai` に返信されても、どこにも届かない。
+> `NEWSLETTER_REPLY_TO` には**必ず、実際に読んでいるアドレス**を入れる。
+> ここを空にすると、返信が宛先不明で跳ね返る ── 相手には「無視された」ように見える。
+> `NEWSLETTER_UNSUB_MAILTO` も同じで、受信できないアドレスを書くくらいなら空にする。
 
 ### 5-4. バウンスの受け口をつなぐ
 
