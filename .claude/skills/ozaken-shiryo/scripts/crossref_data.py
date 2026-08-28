@@ -248,5 +248,8 @@ NOT_DECKS = {'12_jobs/us-jp-employment.html',
 NO_CHIP_FROM = {'template.html'}
 
 NO_CHIP_TO = {'Training/msa-life-training.html',
+              # 表紙に取引先の名前が入る単発の講演資料。
+              # 公開資料からチップを送ると、その名前が外に出てしまう
+              '05_drive/agent-management.html',
               '09_role/kanadevia-ict.html',
               'template.html'}
