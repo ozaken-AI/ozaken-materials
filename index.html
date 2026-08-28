@@ -3102,6 +3102,11 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
       <button class="ozs-item" type="button" data-oz="in" data-lock><span class="ozs-key">IN</span>受信箱（質問・コメントを全部見る）</button>
     </div>
 
+    <div class="ozs-group">NEWSLETTER ／ メールマガジン</div>
+    <div class="ozs-list ozs-one">
+      <button class="ozs-item" type="button" data-oz="nl"><span class="ozs-key">NL</span>メールマガジン管理（名簿・号・配信）</button>
+    </div>
+
     <div class="ozs-group">STAGE ／ 投影</div>
     <div class="ozs-list">
       <button class="ozs-item" type="button" data-oz="ck"><span class="ozs-key">CK</span>会場チェック（画面と音）</button>
@@ -3593,6 +3598,9 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     /* 会場チェックは別ページ。鍵はかけていない ──
        中身は試験画面と音だけで、借りた端末で開くこともあるため */
     if(code==='ck'){ closeAll(); window.location.href='stage.html'; return true; }
+    /* メールマガジンの管理。console.html などと違って暗号化した資料ではなく、
+       鍵はページの中で問う（管理者トークン）ので、ここでは行き先を渡すだけ */
+    if(code==='nl'){ closeAll(); window.location.href='roster.html'; return true; }
     if(code==='go'){ if(!window.ozBoot) return false; closeAll(); window.ozBoot(null,'start'); return true; }
     if(code==='en'){ if(!window.ozBoot||!bySecret['th']) return false; closeAll();
       window.ozBoot(function(){ bySecret['th'].show(); },'end'); return true; }
@@ -3643,9 +3651,9 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     if(e.key&&e.key.length===1&&!e.metaKey&&!e.ctrlKey&&!e.altKey){ buf=(buf+e.key.toLowerCase()).slice(-8);
       /* ma 星座マップ／ur 裏資料置き場／pw パスワード台帳／mx 資料マトリクス／
          te テンプレート便覧／cs 道具の部屋／in 受信箱／ck 会場チェック／
-         go 開演の演出／en 終演の演出。
+         nl メールマガジン管理／go 開演の演出／en 終演の演出。
          鍵の要る行き先は、判定を遷移先の暗号化ページに任せる */
-      var CODES=['ma','ur','pw','mx','te','cs','in','ck','go','en'];
+      var CODES=['ma','ur','pw','mx','te','cs','in','ck','nl','go','en'];
       for(var ci=0;ci<CODES.length;ci++){
         if(buf.slice(-2)===CODES[ci]&&run(CODES[ci])){ buf=''; return; } }
       for(var sc in bySecret){ if(buf.slice(-sc.length)===sc){ buf=''; run(sc); break; } } }

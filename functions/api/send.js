@@ -18,11 +18,29 @@ import {
 const DEFAULT_LIMIT = 500;
 const MAX_LIMIT = 1000;
 
-function validate(issue) {
+export function validate(issue) {
   if (!issue || typeof issue !== 'object') throw new HttpError(400, 'issue がありません。');
   if (!issue.id) throw new HttpError(400, 'issue.id（号のID）が要ります。');
   if (!issue.subject) throw new HttpError(400, 'issue.subject（件名）が要ります。');
   if (issue.items && !Array.isArray(issue.items)) throw new HttpError(400, 'issue.items は配列で。');
+
+  // 画像は受信側で表示されないことがある。**説明文が無いと、そこが空白になる。**
+  // 出ない前提で作るのが決まりなので、alt の無い画像は受け付けない。
+  const missing = [];
+  if (issue.image && !issue.imageAlt) missing.push('冒頭の画像');
+  (issue.items || []).forEach((it, i) => {
+    if (it.image && !it.imageAlt) missing.push(`${i + 1}本目の画像`);
+  });
+  if (missing.length) {
+    throw new HttpError(400,
+      `画像の説明（imageAlt）が要ります: ${missing.join(' / ')}。`
+      + '受信側で画像が表示されないことがあるので、説明文が無いとそこが空白になります。');
+  }
+
+  // 予約は30日先まで。過ぎた時刻を渡すと Resend が受け付けない
+  if (issue.scheduled_at || issue.scheduledAt) {
+    throw new HttpError(400, '予約の時刻は issue ではなく、送信のたびに scheduled_at として渡します。');
+  }
 }
 
 export async function onRequestPost({ request, env }) {
@@ -40,7 +58,11 @@ export async function onRequestPost({ request, env }) {
     const issue = body.issue;
     validate(issue);
 
-    // 本番前の下見。名簿にも配信ログにも触らない。
+    // 予約の時刻。この呼び出しで送る分だけに効く。
+    // 束ごとに違う時刻を渡すことで、「初日100通、翌日200通…」を一度に組める。
+    const scheduledAt = body.scheduled_at || null;
+
+    // 本番前の下見。名簿にも配信ログにも触らない。**予約もしない。**
     if (body.test_to) {
       const msg = await buildMessage({
         issue,
@@ -64,7 +86,7 @@ export async function onRequestPost({ request, env }) {
     }
 
     const messages = await Promise.all(
-      targets.map(s => buildMessage({ issue, subscriber: s, cfg })));
+      targets.map(s => buildMessage({ issue, subscriber: s, cfg, scheduledAt })));
     const results = await sendMessages(cfg, messages);
     await recordDeliveries(db, issue.id, results);
 
@@ -82,6 +104,7 @@ export async function onRequestPost({ request, env }) {
       failed,
       remaining,
       done: remaining === 0,
+      scheduled_at: scheduledAt,
       // 失敗はここに出す。全部返すと返事が膨れるので先頭だけ。
       // remaining に数え直されているので、次の周回で自動的に拾い直す（最大 MAX_ATTEMPTS 回）。
       errors: results.filter(r => r.status !== 'sent').slice(0, 5).map(r => `${r.email}: ${r.error}`),

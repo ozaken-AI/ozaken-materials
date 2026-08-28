@@ -66,6 +66,26 @@ export function config(env) {
 
 // ── 本文 ─────────────────────────────────────────────
 
+// メールの画像は、Webの画像とは別物として扱う。
+//
+//  * **SVGは載せられない。** Gmail をはじめ多くのクライアントが剥がすので、
+//    資料の図版は PNG に焼いてから置く（shot_figs.mjs が使える）。
+//  * **既定で表示されないことがある**（Outlook など）。だから alt は必須にし、
+//    結論は必ず本文の文字にも書く。図に語らせない。
+//  * **透明背景は暗い画面で浮く。** 紙色を敷いておく。
+//  * 高精細の画面のために、実体は表示幅の2倍で書き出す。
+const BODY_W = 532;   // 600px の器から、左右の余白 34px ずつを引いた幅
+
+function figure(image, alt) {
+  if (!image) return '';
+  return `
+    <tr><td style="padding:0 0 14px">
+      <img src="${esc(image)}" alt="${esc(alt || '')}" width="${BODY_W}"
+           style="display:block;width:100%;max-width:${BODY_W}px;height:auto;border:0;
+                  background:${PAPER};border-radius:3px">
+    </td></tr>`;
+}
+
 export function buildEmail({ issue, subscriber, unsubUrl, cfg }) {
   const name = (subscriber.name || '').trim();
   const greeting = name ? `${esc(name)} 様` : 'いつもありがとうございます';
@@ -80,6 +100,7 @@ export function buildEmail({ issue, subscriber, unsubUrl, cfg }) {
         <tr><td style="padding:0 0 8px;font:700 17px/1.55 ${FONT};color:${INK}">
           ${esc(it.title)}
         </td></tr>
+        ${figure(it.image, it.imageAlt)}
         <tr><td style="font:400 15px/1.85 ${FONT};color:${INK}">
           ${esc(it.body || '').replace(/\n/g, '<br>')}
         </td></tr>
@@ -138,6 +159,7 @@ export function buildEmail({ issue, subscriber, unsubUrl, cfg }) {
         <tr><td style="padding:0 0 22px;font:400 14px/1.8 ${FONT};color:${MUTED}">
           ${greeting}
         </td></tr>
+        ${figure(issue.image, issue.imageAlt)}
         ${issue.lede ? `<tr><td style="padding:0 0 28px;font:400 15px/1.9 ${FONT};color:${INK}">
           ${esc(issue.lede).replace(/\n/g, '<br>')}
         </td></tr>` : ''}
@@ -181,6 +203,8 @@ export function buildEmail({ issue, subscriber, unsubUrl, cfg }) {
     ...items.map((it, i) => [
       `${String(i + 1).padStart(2, '0')}${it.kicker ? ` ${it.kicker}` : ''}`,
       it.title,
+      // 画像は文字だけの版には出せない。説明文だけ残す
+      it.image ? `［図：${it.imageAlt || ''}］` : '',
       it.body || '',
       it.link ? `→ ${it.link}` : '',
       '',
@@ -215,7 +239,7 @@ function listHeaders(unsubUrl, mailto) {
   };
 }
 
-export async function buildMessage({ issue, subscriber, cfg }) {
+export async function buildMessage({ issue, subscriber, cfg, scheduledAt }) {
   const unsubUrl = await unsubscribeUrl(cfg.site, cfg.secret, subscriber.email);
   const { html, text } = buildEmail({ issue, subscriber, unsubUrl, cfg });
   const msg = {
@@ -227,6 +251,10 @@ export async function buildMessage({ issue, subscriber, cfg }) {
     headers: listHeaders(unsubUrl, cfg.unsubMailto),
   };
   if (cfg.replyTo) msg.reply_to = cfg.replyTo;
+  // Resend は束の中の1通ごとに配達時刻を持てる（30日先まで）。
+  // これで「初日100通、翌日200通…」を、一度の投入で予約できる。
+  // **予約したあとの取り消しは1通ずつ**なので、送る前のテストが要になる。
+  if (scheduledAt) msg.scheduled_at = scheduledAt;
   return msg;
 }
 
