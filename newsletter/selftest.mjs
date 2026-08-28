@@ -266,10 +266,12 @@ head('5. 配信');
     env: { ...env, NEWSLETTER_ADMIN_TOKEN: '' } });
   ok('サーバー側に鍵がないときは、そう言う',
     noKey.status === 503 && (await noKey.json()).error.includes('NEWSLETTER_ADMIN_TOKEN'));
-  const padded = await send({ request: post('https://x/api/send', JSON.stringify({ issue: ISSUE }),
+  // 号のIDを欠いた形で叩く。400が返れば「鍵は通った」ことが分かり、
+  // かつ名簿にも配信ログにも触らない（本物の号を渡すと、ここで送ってしまう）。
+  const padded = await send({ request: post('https://x/api/send', JSON.stringify({ issue: { subject: 'x' } }),
     { Authorization: 'Bearer admintoken', 'Content-Type': 'application/json' }),
     env: { ...env, NEWSLETTER_ADMIN_TOKEN: 'admintoken\n' } });
-  ok('設定値の末尾に改行が紛れても通す', padded.status !== 401, String(padded.status));
+  ok('設定値の末尾に改行が紛れても通す', padded.status === 400, String(padded.status));
 
   stubResend();
   let out = await (await send({ request: adminPost({ issue: ISSUE }), env })).json();
