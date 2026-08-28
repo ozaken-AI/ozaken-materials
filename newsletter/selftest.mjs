@@ -192,6 +192,29 @@ head('4. Webからの申し込み（ダブルオプトイン）');
   ok('申し込んだ直後はまだ配信対象でない', statusOf(db, 'new@example.com') === 'pending', statusOf(db, 'new@example.com'));
   ok('確認メールを1通だけ送る', sent.length === 1);
 
+  // ── 確認メールの中身 ──────────────────────────────
+  // この1通は「押してもらう」のが仕事。押す先と、押す理由が両方要る。
+  const mail = sent[0].body;
+  ok('登録ボタンのリンクが入っている', /https:\/\/[^\s"]*\/api\/confirm\?e=/.test(mail.html));
+  ok('本編と同じ名前を出している', mail.html.includes('OZAKEN LETTER') && mail.text.includes('OZAKEN LETTER'));
+  ok('何が届くかを書いている', mail.html.includes('これからお送りするもの') && mail.text.includes('これからお送りするもの'));
+  for (const needle of ['前提が動いた論点', '合言葉', '1〜3通']) {
+    ok(`約束「${needle}」が HTML と文字だけの版の両方にある`,
+      mail.html.includes(needle) && mail.text.includes(needle));
+  }
+  ok('住所と問い合わせ先が入っている（表示義務）',
+    mail.html.includes(BASE.NEWSLETTER_SENDER_ADDRESS) && mail.html.includes(BASE.NEWSLETTER_REPLY_TO));
+  ok('<style>を使っていない（メールで落ちる）', !/<style/i.test(mail.html));
+  ok('ボタンが押せないとき用に、URLも文字で出している',
+    mail.html.includes('ボタンが押せないときは'));
+
+  // 約束の数字が3か所で食い違うと、届いた瞬間に信用が減る
+  const pageHtml = readFileSync(join(HERE, '../subscribe.html'), 'utf8');
+  const indexHtml = readFileSync(join(HERE, '../index.html'), 'utf8');
+  ok('購読ページ・資料ゲート・確認メールで、頻度の約束が一致している',
+    pageHtml.includes('1〜3通') && indexHtml.includes('1〜3通') && mail.html.includes('1〜3通'));
+
+
   const link = sent[0].body.text.match(/https:\/\/\S+/)[0];
   await confirm({ request: new Request(link), env });
   ok('確認リンクで配信対象になる', statusOf(db, 'new@example.com') === 'active');

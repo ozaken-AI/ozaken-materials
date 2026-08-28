@@ -35,14 +35,22 @@ export async function onRequestGet({ request, env }) {
       });
     }
 
+    // ここは「押し終えた直後」の画面。お礼だけで終わらせず、
+    // (1) 届くまでの行き先 (2) 1通目が迷惑メールに落ちない手当て を渡す。
+    // (2) は受け取る側にしかできない、いちばん効く到達率対策。
     return html({
       title: '登録が完了しました',
-      eyebrow: 'Newsletter',
+      eyebrow: 'OZAKEN LETTER',
       heading: changed ? '登録が完了しました' : 'すでに登録されています',
-      body: `<p>次回の配信から、こちらのアドレスにお送りします。</p>
+      body: `<p>ありがとうございます。次の号から、こちらのアドレスにお送りします。</p>
 <p><span class="addr">${esc(email)}</span></p>
+<p>届くまでのあいだは、資料アーカイブをどうぞ。AIを組織で使えるようにするまでの問いを、
+<b>知る → 選ぶ → 動かす</b> の順に並べてあります。</p>
 <p class="act"><a class="btn" href="https://content.ozaken.ai/">資料アーカイブを見る</a></p>
-<div class="foot"><p class="muted">配信は各回のメール下部からいつでも停止できます。</p></div>`,
+<div class="foot"><p class="muted">
+<b>1通目が迷惑メールに入らないように、いま届いたメールの差出人を連絡先に追加しておいてください。</b>
+これがいちばん確実です。<br><br>
+配信は各回のメール下部から、いつでもすぐに停止できます。</p></div>`,
     });
   } catch (err) {
     const status = err instanceof HttpError ? err.status : 500;
