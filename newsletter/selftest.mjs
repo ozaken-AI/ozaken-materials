@@ -226,6 +226,14 @@ head('4. Webからの申し込み（ダブルオプトイン）');
   const indexHtml = readFileSync(join(HERE, '../index.html'), 'utf8');
   ok('購読ページ・資料ゲート・確認メールで、頻度の約束が一致している',
     pageHtml.includes('1〜3通') && indexHtml.includes('1〜3通') && mail.html.includes('1〜3通'));
+  // トップページの登録欄。週次の差し替えで消えない位置にあること。
+  const idx = readFileSync(join(HERE, '../index.html'), 'utf8');
+  ok('トップページに登録欄がある', idx.includes('id="nlForm"') && idx.includes('/api/subscribe'));
+  ok('週次マーカーの外に置いてある（差し替えで消えない）',
+    idx.indexOf('<!--LETTER:START-->') > idx.indexOf('<!--WEEKLY:END-->'));
+  ok('登録欄にも自動投稿よけがある', idx.includes('id="nlFax"'));
+  ok('登録欄の頻度の言い方が、購読ページと揃っている',
+    idx.includes('月に1〜3通ほど') && pageHtml.includes('月に1〜3通ほど'));
 
 
   const link = sent[0].body.text.match(/https:\/\/\S+/)[0];
