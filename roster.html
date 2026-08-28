@@ -105,7 +105,7 @@ tr.hi td{background:#eef3fa}
       <div class="row">
         <div>
           <label for="tok">管理者トークン（NEWSLETTER_ADMIN_TOKEN）</label>
-          <input type="password" id="tok" autocomplete="off" placeholder="貼り付ける">
+          <input type="password" id="tok" autocomplete="new-password" name="ozaken-admin-token" spellcheck="false" placeholder="貼り付ける">
         </div>
         <button id="btnAuth">つなぐ</button>
       </div>
@@ -257,7 +257,10 @@ tr.hi td{background:#eef3fa}
         show($('secImport'), true);
       })
       .catch(function (err) {
-        say($('authMsg'), 'ng', 'つながりませんでした：' + err.message);
+        // 長さを出すと、貼り間違いか自動入力かがその場で分かる
+        say($('authMsg'), 'ng', 'つながりませんでした：' + err.message +
+          '<br><span class="muted">いま入力されているのは ' + token.length + ' 文字です。' +
+          'openssl rand -base64 36 で作った鍵なら 48 文字になります。</span>');
       })
       .then(function () { $('btnAuth').disabled = false; });
   }

@@ -257,6 +257,20 @@ head('5. 配信');
     { Authorization: 'Bearer wrong', 'Content-Type': 'application/json' }), env });
   ok('管理者トークンなしは401', noAuth.status === 401);
 
+  // 「合っていない」で終わらせない。直す場所が変わるので、切り分けて返す。
+  const wrongBody = await noAuth.json();
+  ok('食い違いのときは、長さを添えて返す',
+    wrongBody.error.includes('一致しません') && /\d+ 文字/.test(wrongBody.error), wrongBody.error);
+  const noKey = await send({ request: post('https://x/api/send', JSON.stringify({ issue: ISSUE }),
+    { Authorization: 'Bearer whatever', 'Content-Type': 'application/json' }),
+    env: { ...env, NEWSLETTER_ADMIN_TOKEN: '' } });
+  ok('サーバー側に鍵がないときは、そう言う',
+    noKey.status === 503 && (await noKey.json()).error.includes('NEWSLETTER_ADMIN_TOKEN'));
+  const padded = await send({ request: post('https://x/api/send', JSON.stringify({ issue: ISSUE }),
+    { Authorization: 'Bearer admintoken', 'Content-Type': 'application/json' }),
+    env: { ...env, NEWSLETTER_ADMIN_TOKEN: 'admintoken\n' } });
+  ok('設定値の末尾に改行が紛れても通す', padded.status !== 401, String(padded.status));
+
   stubResend();
   let out = await (await send({ request: adminPost({ issue: ISSUE }), env })).json();
   ok('配信対象は active だけ', out.sent === 2 && out.done, JSON.stringify(out));

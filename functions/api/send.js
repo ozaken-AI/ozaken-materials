@@ -8,6 +8,7 @@
 // 途中で落ちても、叩き直しても、同じ人に二度届くことはない。
 
 import { json } from '../_lib/page.js';
+import { checkAdmin } from '../_lib/auth.js';
 import { config, buildMessage, sendMessages } from '../_lib/mail.js';
 import {
   requireDb, upsertIssue, pickRecipients, countRemaining,
@@ -17,16 +18,6 @@ import {
 const DEFAULT_LIMIT = 500;
 const MAX_LIMIT = 1000;
 
-function authorized(request, env) {
-  const expected = env.NEWSLETTER_ADMIN_TOKEN;
-  if (!expected) return false;
-  const given = (request.headers.get('Authorization') || '').replace(/^Bearer\s+/i, '');
-  if (given.length !== expected.length) return false;
-  let diff = 0;
-  for (let i = 0; i < given.length; i++) diff |= given.charCodeAt(i) ^ expected.charCodeAt(i);
-  return diff === 0;
-}
-
 function validate(issue) {
   if (!issue || typeof issue !== 'object') throw new HttpError(400, 'issue がありません。');
   if (!issue.id) throw new HttpError(400, 'issue.id（号のID）が要ります。');
@@ -35,7 +26,8 @@ function validate(issue) {
 }
 
 export async function onRequestPost({ request, env }) {
-  if (!authorized(request, env)) return json({ ok: false, error: 'unauthorized' }, 401);
+  const auth = checkAdmin(request, env);
+  if (!auth.ok) return json({ ok: false, error: auth.error }, auth.status);
 
   try {
     const db = requireDb(env);
@@ -105,7 +97,8 @@ export async function onRequestPost({ request, env }) {
 
 // 名簿と配信の状況を見る。/api/send?issue_id=2026-08-18
 export async function onRequestGet({ request, env }) {
-  if (!authorized(request, env)) return json({ ok: false, error: 'unauthorized' }, 401);
+  const auth = checkAdmin(request, env);
+  if (!auth.ok) return json({ ok: false, error: auth.error }, auth.status);
 
   try {
     const db = requireDb(env);
