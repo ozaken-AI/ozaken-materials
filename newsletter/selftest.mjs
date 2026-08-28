@@ -232,8 +232,11 @@ head('4. Webからの申し込み（ダブルオプトイン）');
   ok('週次マーカーの外に置いてある（差し替えで消えない）',
     idx.indexOf('<!--LETTER:START-->') > idx.indexOf('<!--WEEKLY:END-->'));
   ok('登録欄にも自動投稿よけがある', idx.includes('id="nlFax"'));
-  ok('登録欄の頻度の言い方が、購読ページと揃っている',
-    idx.includes('月に1〜3通ほど') && pageHtml.includes('月に1〜3通ほど'));
+  // そろえるべきは数字であって、言い回しではない。文面は場所ごとに変えていい。
+  ok('登録欄と購読ページで、頻度の数字が揃っている',
+    idx.includes('1〜3通') && pageHtml.includes('1〜3通'));
+  ok('購読ページが確認メール経由だと書いてある',
+    pageHtml.includes('確認') && pageHtml.includes('/api/subscribe'));
 
 
   const link = sent[0].body.text.match(/https:\/\/\S+/)[0];
@@ -363,6 +366,20 @@ head('7. バウンスと迷惑メール報告');
   ok('10分前の通知の使い回しを弾く', r.status === 401);
   r = await hook({ request: post('https://x/api/hooks/resend', p, {}), env });
   ok('署名なしを弾く', r.status === 401);
+
+  // 管理者トークンで一度詰まった罠。webhook の鍵でも同じことが起きる。
+  const pc = JSON.stringify({ type: 'email.complained', data: { to: ['pad@x.co'] } });
+  const d3 = fresh(); seed(d3.db, [['pad@x.co', 'active']]);
+  const padded = await hook({
+    request: post('https://x/api/hooks/resend', pc, await svixHeaders(pc)),
+    env: { ...d3.env, RESEND_WEBHOOK_SECRET: 'whsec_' + WHSEC + '\n' } });
+  ok('鍵の末尾に改行が紛れても通す',
+    padded.status === 200 && statusOf(d3.db, 'pad@x.co') === 'complained', String(padded.status));
+  const noKey2 = await hook({
+    request: post('https://x/api/hooks/resend', pc, await svixHeaders(pc)),
+    env: { ...d3.env, RESEND_WEBHOOK_SECRET: '' } });
+  ok('鍵が未設定のときは、そう言う',
+    noKey2.status === 503 && (await noKey2.json()).error.includes('RESEND_WEBHOOK_SECRET'));
 }
 
 // ── 8. 一度止めた人を復活させない ────────────────────
