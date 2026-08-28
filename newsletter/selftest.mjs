@@ -686,5 +686,19 @@ head('15. 見え方の確認（/api/preview）');
     f.db.raw.prepare('SELECT COUNT(*) n FROM deliveries').get().n === 0);
 }
 
+// ── 16. トップページの裏コマンド ────────────────────
+head('16. トップページの裏コマンド');
+{
+  const idx = readFileSync(join(HERE, '../index.html'), 'utf8');
+  // 白名簿と行き先は別々の場所にある。片方だけ足すと、打っても何も起きない
+  const codes = (idx.match(/var CODES=\[([^\]]*)\]/) || [])[1] || '';
+  ok('nl が白名簿に入っている', codes.includes("'nl'"), codes);
+  ok('nl の行き先が roster.html', /code==='nl'\)\{[^}]*roster\.html/.test(idx));
+  ok('スマホの隠しメニューにも NL がある', idx.includes('data-oz="nl"'));
+  ok('既存のコマンドを消していない',
+    ["'ma'", "'ur'", "'pw'", "'mx'", "'te'", "'cs'", "'in'", "'ck'", "'go'", "'en'"]
+      .every(c => codes.includes(c)), codes);
+}
+
 console.log(`\n${'─'.repeat(46)}\n通った ${pass} 件 / 落ちた ${fail} 件\n`);
 process.exit(fail === 0 ? 0 : 1);

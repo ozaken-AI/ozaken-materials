@@ -23,7 +23,7 @@
 body{margin:0;background:var(--paper);color:var(--ink);
   font-family:var(--font-ja-sans);line-height:1.85;-webkit-font-smoothing:antialiased}
 .wrap{max-width:820px;margin:0 auto;padding:0 24px}
-header{background:var(--navy);color:var(--white);padding:34px 0 30px}
+header{background:var(--navy);color:var(--white);padding:18px 0 16px}
 .eyebrow{font-family:var(--font-en);font-weight:700;font-size:11px;letter-spacing:.16em;
   text-transform:uppercase;color:#9fc6f5;margin:0 0 8px}
 header h1{font-family:var(--font-ja-serif);font-weight:600;font-size:26px;margin:0}
@@ -94,6 +94,56 @@ textarea:focus{outline:2px solid var(--azure);outline-offset:1px;background:var(
 .item-x{background:none;border:0;color:var(--muted);font-size:12.5px;padding:4px 8px;cursor:pointer}
 .item-x:hover{color:var(--red);background:transparent}
 #dPlan td.num{font-family:var(--font-en);font-weight:700;text-align:right}
+/* ── ダッシュボードの器 ───────────────────────────── */
+.app{display:grid;grid-template-columns:212px 1fr;align-items:start}
+.side{position:sticky;top:0;height:100vh;background:var(--navy-deep);color:#fff;
+  padding:24px 0;display:flex;flex-direction:column}
+.side-brand{font-family:var(--font-en);font-weight:700;font-size:11px;letter-spacing:.14em;
+  color:#9fc6f5;padding:0 22px 20px}
+.navi{display:flex;justify-content:space-between;align-items:center;width:100%;
+  background:none;border:0;color:rgba(255,255,255,.72);text-align:left;cursor:pointer;
+  font-family:var(--font-ja-sans);font-size:14.5px;font-weight:500;
+  padding:11px 22px;border-left:3px solid transparent}
+.navi:hover{background:rgba(255,255,255,.06);color:#fff}
+.navi.on{background:rgba(255,255,255,.09);color:#fff;border-left-color:var(--azure-pale)}
+.navi b{font-family:var(--font-en);font-size:11.5px;font-weight:700;color:rgba(255,255,255,.48)}
+.side-foot{margin-top:auto;padding:18px 22px 0;font-size:12px;line-height:1.9;
+  color:rgba(255,255,255,.5);border-top:1px solid rgba(255,255,255,.12)}
+.side-foot a{color:var(--azure-pale)}
+.linkish{background:none;border:0;padding:4px 0;cursor:pointer;text-decoration:underline;
+  font-family:var(--font-ja-sans);font-size:12px;color:rgba(255,255,255,.5)}
+.linkish:hover{color:#fff;background:none}
+.main{padding:30px 34px 90px;max-width:920px}
+.sec-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+.sec-head h2{margin:0}
+/* 号の一覧・出来事 */
+.ilist td.s{font-family:var(--font-en);font-weight:700;text-align:right;white-space:nowrap}
+.ilist tr.hot td{background:#fff8f8}
+.ilist .subj{font-weight:700}
+.ilist .idv{font-family:var(--font-en);font-size:11.5px;color:var(--muted)}
+.pill{display:inline-block;font-family:var(--font-en);font-size:10.5px;font-weight:700;
+  letter-spacing:.08em;padding:2px 8px;border-radius:2px;background:var(--sink);color:var(--azure)}
+.pill.run{background:#fdf6ee;color:var(--amber)}
+.ev{display:flex;gap:12px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--azure-pale);font-size:13.5px}
+.ev:last-child{border-bottom:0}
+.ev time{font-family:var(--font-en);font-size:11.5px;color:var(--muted);flex:none;width:104px}
+.ev .k{flex:none;width:84px;font-size:12px;font-weight:700}
+.ev .k.stop{color:var(--muted)}
+.ev .k.bad{color:var(--red)}
+.ev .k.ok{color:var(--azure)}
+.ev .who{color:var(--ink);word-break:break-all}
+.trend{display:flex;gap:22px;flex-wrap:wrap;margin:0 0 4px;font-size:13.5px;color:var(--muted)}
+.trend b{font-family:var(--font-en);font-size:17px;color:var(--navy)}
+@media(max-width:760px){
+  .app{grid-template-columns:1fr}
+  .side{position:static;height:auto;flex-direction:row;align-items:center;
+    padding:0 8px;overflow-x:auto}
+  .side-brand{display:none}
+  .navi{width:auto;white-space:nowrap;border-left:0;border-bottom:3px solid transparent;padding:14px 16px}
+  .navi.on{border-left:0;border-bottom-color:var(--azure-pale)}
+  .side-foot{display:none}
+  .main{padding:22px 18px 70px}
+}
 .hide{display:none}
 @media(max-width:640px){
   header h1{font-size:21px} h2{font-size:18px} .card{padding:20px 18px}
@@ -105,12 +155,11 @@ textarea:focus{outline:2px solid var(--azure);outline-offset:1px;background:var(
 
 <header>
   <div class="wrap">
-    <p class="eyebrow">Newsletter / Roster</p>
-    <h1>名簿</h1>
+    <p class="eyebrow">Newsletter</p>
+    <h1 style="font-size:20px">メールマガジン 管理</h1>
   </div>
 </header>
 
-<main class="wrap">
 
   <!-- ── 鍵 ───────────────────────────────── -->
   <section class="sec" id="secAuth">
@@ -130,8 +179,22 @@ textarea:focus{outline:2px solid var(--azure);outline-offset:1px;background:var(
     </div>
   </section>
 
+
+<div class="app hide" id="app">
+  <nav class="side" id="nav">
+    <div class="side-brand">OZAKEN LETTER</div>
+    <button class="navi on" data-p="pDash"><span>概況</span></button>
+    <button class="navi" data-p="pIssues"><span>号</span><b id="navIssues"></b></button>
+    <button class="navi" data-p="pRoster"><span>名簿</span><b id="navRoster"></b></button>
+    <div class="side-foot">
+      <a href="/">資料アーカイブ</a><br>
+      <button class="linkish" id="btnForget">鍵を忘れる</button>
+    </div>
+  </nav>
+  <main class="main">
+    <div class="panel" id="pDash">
   <!-- ── 内訳 ─────────────────────────────── -->
-  <section class="sec hide" id="secStats">
+  <section class="sec" id="secStats">
     <div class="rule"></div>
     <h2>いまの名簿</h2>
     <div class="stats" id="stats"></div>
@@ -140,29 +203,31 @@ textarea:focus{outline:2px solid var(--azure);outline-offset:1px;background:var(
       unsubscribed / bounced / complained には、取り込み直しでも二度と送りません。</p>
   </section>
 
-  <!-- ── 動作確認 ─────────────────────────── -->
-  <section class="sec hide" id="secTest">
+  <!-- ── 最近の出来事 ─────────────────────── -->
+  <section class="sec" id="secEvents">
     <div class="rule"></div>
-    <h2>動作確認のメールを送る</h2>
-    <div class="card">
-      <div class="row">
-        <div>
-          <label for="testTo">宛先</label>
-          <input type="text" id="testTo" placeholder="自分のアドレス" autocomplete="email">
-        </div>
-        <button id="btnTest">送る</button>
-      </div>
-      <p class="muted" style="margin:14px 0 0">
-        この1通は<b>名簿にも配信ログにも残りません</b>。差出人・住所・図版の出方を、実機で確かめるためのものです。<br>
-        届いたメールの「配信停止」を押すと、<b>その宛先が名簿に載っていれば実際に止まります</b>。
-        そこまで確かめて、はじめて配信の準備ができたと言えます。</p>
-      <div class="msg" id="testMsg"></div>
-    </div>
+    <h2>最近の出来事</h2>
+    <div class="card"><div id="eventList"></div></div>
+    <p class="muted" style="margin:12px 0 0">
+      <b>苦情とバウンスは、増え方を目で見ていないと手遅れになります。</b>
+      苦情率が 0.3% を超えると、Gmail に届かなくなります。</p>
   </section>
 
+    </div>
+
+    <div class="panel hide" id="pIssues">
+  <!-- ── 号の一覧 ─────────────────────────── -->
+  <section class="sec" id="secIssues">
+    <div class="rule"></div>
+    <div class="sec-head">
+      <h2>これまでの号</h2>
+      <button class="ghost" id="btnNewIssue">新しい号を書く</button>
+    </div>
+    <div id="issueList"></div>
+  </section>
 
   <!-- ── 号を書く ─────────────────────────── -->
-  <section class="sec hide" id="secWrite">
+  <section class="sec" id="secWrite">
     <div class="rule"></div>
     <h2>号を書く</h2>
 
@@ -243,7 +308,7 @@ textarea:focus{outline:2px solid var(--azure);outline-offset:1px;background:var(
   </section>
 
   <!-- ── 配信 ─────────────────────────────── -->
-  <section class="sec hide" id="secSend">
+  <section class="sec" id="secSend">
     <div class="rule"></div>
     <h2>配信する</h2>
 
@@ -301,8 +366,11 @@ textarea:focus{outline:2px solid var(--azure);outline-offset:1px;background:var(
     </div>
   </section>
 
+    </div>
+
+    <div class="panel hide" id="pRoster">
   <!-- ── 取り込み ─────────────────────────── -->
-  <section class="sec hide" id="secImport">
+  <section class="sec" id="secImport">
     <div class="rule"></div>
     <h2>名刺CSVを取り込む</h2>
 
@@ -353,7 +421,32 @@ textarea:focus{outline:2px solid var(--azure);outline-offset:1px;background:var(
     <div class="log" id="log"></div>
   </section>
 
-</main>
+  <!-- ── 動作確認 ─────────────────────────── -->
+  <section class="sec" id="secTest">
+    <div class="rule"></div>
+    <h2>動作確認のメールを送る</h2>
+    <div class="card">
+      <div class="row">
+        <div>
+          <label for="testTo">宛先</label>
+          <input type="text" id="testTo" placeholder="自分のアドレス" autocomplete="email">
+        </div>
+        <button id="btnTest">送る</button>
+      </div>
+      <p class="muted" style="margin:14px 0 0">
+        この1通は<b>名簿にも配信ログにも残りません</b>。差出人・住所・図版の出方を、実機で確かめるためのものです。<br>
+        届いたメールの「配信停止」を押すと、<b>その宛先が名簿に載っていれば実際に止まります</b>。
+        そこまで確かめて、はじめて配信の準備ができたと言えます。</p>
+      <div class="msg" id="testMsg"></div>
+    </div>
+  </section>
+
+
+    </div>
+  </main>
+</div>
+
+
 
 <script>
 (function () {
@@ -382,6 +475,12 @@ textarea:focus{outline:2px solid var(--azure);outline-offset:1px;background:var(
   };
 
   var $ = function (id) { return document.getElementById(id); };
+  // 名簿から来る文字列（氏名・件名・アドレス）を、そのまま innerHTML に入れない
+  function esc(v) {
+    return String(v == null ? '' : v)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
   function show(el, on) { el.classList.toggle('hide', !on); }
   function say(el, kind, text) { el.className = 'msg ' + kind; el.innerHTML = text; }
   function log(line, id) {
@@ -407,17 +506,13 @@ textarea:focus{outline:2px solid var(--azure);outline-offset:1px;background:var(
     token = $('tok').value.trim();
     if (!token) { say($('authMsg'), 'ng', 'トークンを入れてください。'); return; }
     $('btnAuth').disabled = true;
-    api('/api/send')
+    api('/api/issues')
       .then(function (j) {
         try { localStorage.setItem(KEY, token); } catch (e) { /* 私用ウィンドウなど */ }
-        say($('authMsg'), 'on', 'つながりました。');
-        drawStats(j.subscribers);
-        show($('secStats'), true);
-        show($('secTest'), true);
-        show($('secWrite'), true);
-        show($('secSend'), true);
-        show($('secImport'), true);
+        show($('secAuth'), false);
+        show($('app'), true);
         startWriting();
+        return loadOverview();
       })
       .catch(function (err) {
         // 長さを出すと、貼り間違いか自動入力かがその場で分かる
@@ -444,10 +539,102 @@ textarea:focus{outline:2px solid var(--azure);outline-offset:1px;background:var(
     }).join('');
   }
 
-  function refreshStats() {
-    return api('/api/send').then(function (j) { drawStats(j.subscribers); });
+  function refreshStats() { return loadOverview(); }
+
+
+  // ── ダッシュボード ──────────────────────
+  var EV = {
+    unsubscribe: ['配信停止', 'stop'], bounce: ['宛先不明', 'bad'],
+    complaint: ['迷惑報告', 'bad'], confirm: ['登録完了', 'ok'],
+  };
+
+  function when(iso) {
+    if (!iso) return '';
+    var d = new Date(iso);
+    return isNaN(d) ? String(iso).slice(0, 16)
+      : d.toLocaleString('ja-JP', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' });
   }
 
+  function renderIssues(list) {
+    if (!list.length) {
+      $('issueList').innerHTML = '<div class="card"><p class="muted" style="margin:0">' +
+        'まだ号がありません。「新しい号を書く」から始めてください。</p></div>';
+      return;
+    }
+    $('issueList').innerHTML = '<table class="ilist">' +
+      '<tr><th>号</th><th style="text-align:right">送信</th><th style="text-align:right">失敗</th>' +
+      '<th style="text-align:right">宛先不明</th><th style="text-align:right">迷惑報告</th>' +
+      '<th>状態</th><th></th></tr>' +
+      list.map(function (r) {
+        var done = !!r.finished_at;
+        // 苦情が0.3%を超えると Gmail に届かなくなる。目に入る形にしておく
+        var hot = r.sent > 0 && (r.complained / r.sent) > 0.003;
+        return '<tr' + (hot ? ' class="hot"' : '') + '>' +
+          '<td><span class="subj">' + esc(r.subject || '(件名なし)') + '</span><br>' +
+            '<span class="idv">' + esc(r.id) + ' ／ ' + when(r.created_at) + '</span></td>' +
+          '<td class="s">' + (r.sent || 0) + '</td>' +
+          '<td class="s">' + (r.failed || 0) + '</td>' +
+          '<td class="s">' + (r.bounced || 0) + '</td>' +
+          '<td class="s">' + (r.complained || 0) + '</td>' +
+          '<td><span class="pill ' + (done ? '' : 'run') + '">' + (done ? 'SENT' : 'IN PROGRESS') + '</span></td>' +
+          '<td><button class="ghost" data-load="' + esc(r.id) + '" ' +
+            'style="padding:7px 12px;font-size:12.5px">下敷きにする</button></td>' +
+        '</tr>';
+      }).join('') + '</table>';
+  }
+
+  function renderEvents(list, last7) {
+    var t = last7 || {};
+    $('eventList').innerHTML =
+      '<div class="trend">' +
+        '<span>直近7日：登録完了 <b>' + (t.confirm || 0) + '</b></span>' +
+        '<span>配信停止 <b>' + (t.unsubscribe || 0) + '</b></span>' +
+        '<span>宛先不明 <b>' + (t.bounce || 0) + '</b></span>' +
+        '<span>迷惑報告 <b>' + (t.complaint || 0) + '</b></span>' +
+      '</div>' +
+      (list.length
+        ? list.map(function (e) {
+            var k = EV[e.kind] || [e.kind, ''];
+            return '<div class="ev"><time>' + when(e.at) + '</time>' +
+              '<span class="k ' + k[1] + '">' + k[0] + '</span>' +
+              '<span class="who">' + esc(e.email) + '</span></div>';
+          }).join('')
+        : '<p class="muted" style="margin:10px 0 0">まだ何も起きていません。</p>');
+  }
+
+  // 概況は1回の問い合わせでまとめて取る（画面ごとに叩くと数が食い違う）
+  function loadOverview() {
+    return api('/api/issues').then(function (j) {
+      drawStats(j.subscribers);
+      renderIssues(j.issues || []);
+      renderEvents(j.events || [], j.last7);
+      $('navIssues').textContent = (j.issues || []).length || '';
+      $('navRoster').textContent = j.subscribers.active || '';
+      return j;
+    });
+  }
+
+  function goPanel(id) {
+    ['pDash', 'pIssues', 'pRoster'].forEach(function (p) { show($(p), p === id); });
+    Array.prototype.forEach.call(document.querySelectorAll('.navi'), function (b) {
+      b.classList.toggle('on', b.getAttribute('data-p') === id);
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // 前の号を下敷きにする。**同じIDのまま送ると、配信ログが効いて誰にも届かない。**
+  // 号のIDだけは空にして、必ず新しく付けてもらう。
+  function loadIssue(id) {
+    api('/api/issues?id=' + encodeURIComponent(id)).then(function (j) {
+      var d = (j.issue && j.issue.payload) || {};
+      fillIssue(d);
+      $('wId').value = '';
+      $('wSubject').focus();
+      goPanel('pIssues');
+      say($('wMsg'), 'on', '「' + esc(j.issue.subject || id) + '」を下敷きにしました。' +
+        '<b>号のIDは空にしてあります</b>（同じIDのまま送ると、送信済みとみなされて誰にも届きません）。');
+    }).catch(function (e) { say($('wMsg'), 'ng', e.message); });
+  }
 
   // ── 号を書く ────────────────────────────
   // 下書きはこのブラウザに憶える。書きかけで閉じても消えない。
@@ -831,6 +1018,25 @@ textarea:focus{outline:2px solid var(--azure);outline-offset:1px;background:var(
   }
 
   // ── つなぎこみ ──────────────────────────
+  Array.prototype.forEach.call(document.querySelectorAll('.navi'), function (b) {
+    b.addEventListener('click', function () { goPanel(b.getAttribute('data-p')); });
+  });
+  $('issueList').addEventListener('click', function (e) {
+    var id = e.target.getAttribute && e.target.getAttribute('data-load');
+    if (id) loadIssue(id);
+  });
+  $('btnNewIssue').addEventListener('click', function () {
+    fillIssue({ items: [{}] });
+    try { localStorage.removeItem(DRAFT); } catch (err) { /* 私用ウィンドウ */ }
+    goPanel('pIssues');
+    $('wId').focus();
+    say($('wMsg'), 'on', '新しい号です。号のIDは重ならないもの（例：2026-09-02）を。');
+  });
+  $('btnForget').addEventListener('click', function () {
+    try { localStorage.removeItem(KEY); } catch (err) { /* 私用ウィンドウ */ }
+    location.reload();
+  });
+
   // 号を書く／配信
   $('btnAddItem').addEventListener('click', function () {
     items = readItems(); items.push({}); renderItems();
