@@ -996,6 +996,20 @@
   ],
   "chars": 165738
  },
+ "06_people/why-for-students.html": {
+  "blocks": [
+   "OZ-BG",
+   "OZ-BODYSTYLE",
+   "OZ-FIGFLOW",
+   "OZ-HEROFX",
+   "OZ-HEROSIZE",
+   "OZ-HOME",
+   "OZ-QR",
+   "OZ-SPACING",
+   "OZ-XREFCSS"
+  ],
+  "chars": 191381
+ },
  "07_risk/ai-copyright.html": {
   "blocks": [
    "OZ-BG",
@@ -1522,10 +1536,8 @@
   "chars": 49554
  },
  "matrix.html": {
-  "blocks": [
-   "OZ-BODYSTYLE"
-  ],
-  "chars": 233089
+  "blocks": [],
+  "chars": 221350
  },
  "template.html": {
   "blocks": [
