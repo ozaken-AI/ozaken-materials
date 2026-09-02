@@ -637,6 +637,20 @@
   ],
   "chars": 211240
  },
+ "05_drive/agent-as-os.html": {
+  "blocks": [
+   "OZ-BG",
+   "OZ-BODYSTYLE",
+   "OZ-FIGFLOW",
+   "OZ-HEROFX",
+   "OZ-HEROSIZE",
+   "OZ-HOME",
+   "OZ-QR",
+   "OZ-SPACING",
+   "OZ-XREFCSS"
+  ],
+  "chars": 192172
+ },
  "05_drive/agent-budget-taxi.html": {
   "blocks": [
    "OZ-BG",
@@ -773,6 +787,20 @@
   ],
   "chars": 115662
  },
+ "05_drive/backoffice-agent.html": {
+  "blocks": [
+   "OZ-BG",
+   "OZ-BODYSTYLE",
+   "OZ-FIGFLOW",
+   "OZ-HEROFX",
+   "OZ-HEROSIZE",
+   "OZ-HOME",
+   "OZ-QR",
+   "OZ-SPACING",
+   "OZ-XREFCSS"
+  ],
+  "chars": 205062
+ },
  "05_drive/drive-phase.html": {
   "blocks": [
    "OZ-BG",
@@ -842,6 +870,20 @@
    "OZ-XREFCSS"
   ],
   "chars": 138372
+ },
+ "06_people/agent-talent-standard.html": {
+  "blocks": [
+   "OZ-BG",
+   "OZ-BODYSTYLE",
+   "OZ-FIGFLOW",
+   "OZ-HEROFX",
+   "OZ-HEROSIZE",
+   "OZ-HOME",
+   "OZ-QR",
+   "OZ-SPACING",
+   "OZ-XREFCSS"
+  ],
+  "chars": 206058
  },
  "06_people/ai-sidebusiness-talk.html": {
   "blocks": [
@@ -1517,7 +1559,7 @@
    "OZ-HEROSIZE",
    "OZ-SPACING"
   ],
-  "chars": 65099
+  "chars": 65487
  },
  "console.html": {
   "blocks": [
@@ -1537,7 +1579,7 @@
  },
  "matrix.html": {
   "blocks": [],
-  "chars": 221350
+  "chars": 226164
  },
  "template.html": {
   "blocks": [
