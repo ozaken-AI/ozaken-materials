@@ -650,6 +650,20 @@
   ],
   "chars": 211240
  },
+ "04_practice/upstream-ux-design.html": {
+  "blocks": [
+   "OZ-BG",
+   "OZ-BODYSTYLE",
+   "OZ-FIGFLOW",
+   "OZ-HEROFX",
+   "OZ-HEROSIZE",
+   "OZ-HOME",
+   "OZ-QR",
+   "OZ-SPACING",
+   "OZ-XREFCSS"
+  ],
+  "chars": 192865
+ },
  "05_drive/agent-as-os.html": {
   "blocks": [
    "OZ-BG",
@@ -1592,7 +1606,7 @@
  },
  "matrix.html": {
   "blocks": [],
-  "chars": 227692
+  "chars": 229219
  },
  "template.html": {
   "blocks": [
