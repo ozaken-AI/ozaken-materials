@@ -1942,6 +1942,23 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
 /* ══ OZ-LETTER v1 ── メールマガジンの登録（週次トレンドの直後）══════ */
 /* 紺の面の続きとして読ませたいので、地はいちばん深い層にする。
    ここで新しい面を立てると、明暗の交互が崩れて流れが切れる。 */
+/* 扉の直後の導線。扉と同じ紺のまま、下の配布資料（明るい面）へ渡す帯 */
+.hero-links { background: var(--navy-deep); padding: 1.5rem 1.5rem 1.8rem; border-top: 1px solid rgba(216,228,240,0.10); }
+.hl-inner { max-width: var(--max-w); margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.8rem 1.5rem; }
+.hl-lead { font-size: clamp(0.78rem, 1.3vw, 0.9rem); color: rgba(216,228,240,0.6); }
+.hl-btns { display: flex; flex-wrap: wrap; gap: 0.7rem; }
+.hl-btn { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-en); font-weight: 600; letter-spacing: 0.05em; font-size: clamp(0.8rem, 1.4vw, 0.92rem); border-radius: 999px; padding: 0.7em 1.5em; text-decoration: none; transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease; }
+.hl-btn-sub { font-family: var(--font-ja-sans); font-weight: 400; font-size: 0.78em; opacity: 0.6; letter-spacing: 0; }
+.hl-btn-site { color: var(--navy-deep); background: var(--azure-pale); }
+.hl-btn-site:hover { transform: translateY(-3px); box-shadow: 0 16px 40px -14px rgba(216,228,240,0.45); }
+.hl-btn-x { color: #fff; background: #14181f; border: 1px solid rgba(216,228,240,0.28); }
+.hl-btn-x:hover { background: #05070a; transform: translateY(-3px); box-shadow: 0 16px 40px -14px rgba(0,0,0,0.6); }
+.hl-btn-x svg { width: 15px; height: 15px; fill: currentColor; }
+@media (max-width: 620px) {
+  .hl-inner { flex-direction: column; gap: 0.75rem; }
+  .hl-btns { width: 100%; flex-direction: column; }
+  .hl-btn { justify-content: center; }
+}
 .nl-band { background: var(--navy-deep); padding: 3.2rem 1.5rem; position: relative; overflow: hidden; }
 .nl-band::after { content:''; position:absolute; inset:0; pointer-events:none;
   background: repeating-linear-gradient(180deg, rgba(159,198,245,.05) 0 1px, transparent 1px 6px); }
@@ -2040,6 +2057,18 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
   <div class="hero-scroll" aria-hidden="true"><span>SCROLL</span><span class="chev">⌄</span></div>
 </section>
 
+<!-- 扉の直後の導線。ここへ来た人がまず知りたいのは「誰が書いているか」なので、
+     資料の前にプロフィールとXへ出られる口を作る。扉の紺をそのまま引き継ぐ -->
+<section class="hero-links" aria-label="おざけんの外部リンク">
+  <div class="hl-inner">
+    <p class="hl-lead">この資料を書いている人について</p>
+    <div class="hl-btns">
+      <a class="hl-btn hl-btn-site" href="https://ozaken.ai/" target="_blank" rel="noopener">ポートフォリオサイト<span class="hl-btn-sub">ozaken.ai</span></a>
+      <a class="hl-btn hl-btn-x" href="https://x.com/ozaken_AI" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>@ozaken_AI<span class="hl-btn-sub">Xでフォロー</span></a>
+    </div>
+  </div>
+</section>
+
 <section class="sec-download">
   <div class="inner" data-reveal>
     <div class="dl-feature">
@@ -2089,102 +2118,6 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
   </div>
 </section>
 
-<!--WEEKLY:START-->
-<section class="sec-navy">
-  <div class="inner" data-reveal>
-    <span class="eyebrow">Weekly Trend</span>
-    <h2 class="sec-title">今週のトレンド ── 毎週、一次情報だけでまとめています</h2>
-    <p class="sec-sub">技術・法規制・人材・組織・社会・産業・スタートアップの7領域を定点で追い、数字と仕組みまで確かめたものだけを載せています。裏の取れなかった話は「今週は載せなかったもの」として理由ごと残しています。</p>
-    <div class="arc-lock">
-      <span class="arc-lock-i" aria-hidden="true">🔒</span>
-      <div class="arc-lock-b">
-        <p class="arc-lock-t">本文の閲覧には購読キーが必要です</p>
-        <p class="arc-lock-d">顧問先・研修先の方にお渡ししています。資料アーカイブとは別の鍵です。</p>
-        <div class="arc-lock-a">
-          <a href="https://ozaken.ai/contact/" target="_blank" rel="noopener">フォームから問い合わせる →</a>
-          <a href="https://x.com/ozaken_AI" target="_blank" rel="noopener">X（@ozaken_AI）のDMへ →</a>
-        </div>
-      </div>
-    </div>
-
-      <div class="cards">
-        <div class="card">
-          <span class="card-tag">08/18</span>
-          <h3>割れていく ─ 使う人と使わない組織、余る職と足りない職</h3>
-          <p>米国の労働者の52%が業務でAIを使う一方、AI導入済み組織では23%が5年内の職の消滅を懸念。EU AI Actで8月2日に始まったのは第50条の透明性義務だけ。千葉の一エリアでは連系待ちが約40件・2,500MW。今週は9本すべてで、平均ではなく「幅」が動いていました。</p>
-          <a class="wk-open" href="weekly/2026-08-18.html">2026年8月18日号を開く →</a>
-        </div>
-      </div>
-  </div>
-</section>
-<!--WEEKLY:END-->
-<!--LETTER:START-->
-<!-- メールマガジンの登録。週次トレンドの直後、マーカーの外に置く。
-     中に入れると weekly_publish.py の差し替えで消える。 -->
-<section class="nl-band" data-reveal>
-  <div class="nl-inner">
-    <p class="nl-eyebrow">Ozaken Letter</p>
-    <h2 class="nl-title">AI活用の最先端ではなく、最前線を。</h2>
-    <p class="nl-lead">組織でAIを動かしている現場で、いま何が起きているか。そのうち「これまでの前提が変わった」と
-      言える出来事だけを選び、なぜ変わったのかまで書いてお送りします。
-      図版つきの全文を読むための合言葉も、購読いただいている方にお渡ししています。</p>
-
-    <form class="nl-form" id="nlForm" novalidate>
-      <input type="email" id="nlEmail" name="email" placeholder="you@example.com"
-             autocomplete="email" inputmode="email" aria-label="メールアドレス">
-      <div class="nl-hp" aria-hidden="true">
-        <label for="nlFax">FAX</label>
-        <input type="text" id="nlFax" name="fax" tabindex="-1" autocomplete="off">
-      </div>
-      <button type="submit" id="nlSend">受け取る</button>
-    </form>
-
-    <div class="nl-msg" id="nlMsg" role="status" aria-live="polite"></div>
-
-    <p class="nl-fine">不定期・月に1〜3通ほど。確認メールのリンクを開いていただくと登録が完了します。<br>
-      配信は各回のメール下部から、いつでもすぐに停止できます。
-      <a href="/subscribe.html">くわしく</a></p>
-  </div>
-</section>
-<script>
-(function () {
-  var form = document.getElementById('nlForm');
-  if (!form) return;
-  var btn = document.getElementById('nlSend');
-  var msg = document.getElementById('nlMsg');
-  var input = document.getElementById('nlEmail');
-
-  function say(kind, text) { msg.className = 'nl-msg ' + kind; msg.textContent = text; }
-
-  form.addEventListener('submit', function (ev) {
-    ev.preventDefault();
-    var email = (input.value || '').trim();
-    // 往復させてから怒られるより、その場で気づけたほうが早い
-    if (!/^[^@\s]+@[^@\s.]+\.[^@\s]+$/.test(email)) {
-      say('ng', 'メールアドレスの形式をご確認ください。'); input.focus(); return;
-    }
-    btn.disabled = true; btn.textContent = '送信中…'; msg.className = 'nl-msg';
-
-    fetch('/api/subscribe', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: email, fax: document.getElementById('nlFax').value, note: 'index.html' })
-    })
-      .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
-      .then(function (res) {
-        if (!res.ok || !res.j.ok) throw new Error(res.j.error || '送信できませんでした。');
-        form.style.display = 'none';
-        say('on', res.j.already
-          ? 'このアドレスはすでに登録されています。次回の配信をお待ちください。'
-          : '確認メールをお送りしました。メール内のリンクを開いていただくと、登録が完了します。届かない場合は迷惑メールフォルダもご確認ください。');
-      })
-      .catch(function (err) {
-        say('ng', err.message || '送信できませんでした。しばらく置いてお試しください。');
-        btn.disabled = false; btn.textContent = '受け取る';
-      });
-  });
-})();
-</script>
-<!--LETTER:END-->
 
 
 <section class="sec-light">
@@ -2381,6 +2314,103 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
 
   </div>
 </section>
+
+<!--WEEKLY:START-->
+<section class="sec-navy">
+  <div class="inner" data-reveal>
+    <span class="eyebrow">Weekly Trend</span>
+    <h2 class="sec-title">今週のトレンド ── 毎週、一次情報だけでまとめています</h2>
+    <p class="sec-sub">技術・法規制・人材・組織・社会・産業・スタートアップの7領域を定点で追い、数字と仕組みまで確かめたものだけを載せています。裏の取れなかった話は「今週は載せなかったもの」として理由ごと残しています。</p>
+    <div class="arc-lock">
+      <span class="arc-lock-i" aria-hidden="true">🔒</span>
+      <div class="arc-lock-b">
+        <p class="arc-lock-t">本文の閲覧には購読キーが必要です</p>
+        <p class="arc-lock-d">顧問先・研修先の方にお渡ししています。資料アーカイブとは別の鍵です。</p>
+        <div class="arc-lock-a">
+          <a href="https://ozaken.ai/contact/" target="_blank" rel="noopener">フォームから問い合わせる →</a>
+          <a href="https://x.com/ozaken_AI" target="_blank" rel="noopener">X（@ozaken_AI）のDMへ →</a>
+        </div>
+      </div>
+    </div>
+
+      <div class="cards">
+        <div class="card">
+          <span class="card-tag">08/18</span>
+          <h3>割れていく ─ 使う人と使わない組織、余る職と足りない職</h3>
+          <p>米国の労働者の52%が業務でAIを使う一方、AI導入済み組織では23%が5年内の職の消滅を懸念。EU AI Actで8月2日に始まったのは第50条の透明性義務だけ。千葉の一エリアでは連系待ちが約40件・2,500MW。今週は9本すべてで、平均ではなく「幅」が動いていました。</p>
+          <a class="wk-open" href="weekly/2026-08-18.html">2026年8月18日号を開く →</a>
+        </div>
+      </div>
+  </div>
+</section>
+<!--WEEKLY:END-->
+<!--LETTER:START-->
+<!-- メールマガジンの登録。週次トレンドの直後、マーカーの外に置く。
+     中に入れると weekly_publish.py の差し替えで消える。 -->
+<section class="nl-band" data-reveal>
+  <div class="nl-inner">
+    <p class="nl-eyebrow">Ozaken Letter</p>
+    <h2 class="nl-title">AI活用の最先端ではなく、最前線を。</h2>
+    <p class="nl-lead">組織でAIを動かしている現場で、いま何が起きているか。そのうち「これまでの前提が変わった」と
+      言える出来事だけを選び、なぜ変わったのかまで書いてお送りします。
+      図版つきの全文を読むための合言葉も、購読いただいている方にお渡ししています。</p>
+
+    <form class="nl-form" id="nlForm" novalidate>
+      <input type="email" id="nlEmail" name="email" placeholder="you@example.com"
+             autocomplete="email" inputmode="email" aria-label="メールアドレス">
+      <div class="nl-hp" aria-hidden="true">
+        <label for="nlFax">FAX</label>
+        <input type="text" id="nlFax" name="fax" tabindex="-1" autocomplete="off">
+      </div>
+      <button type="submit" id="nlSend">受け取る</button>
+    </form>
+
+    <div class="nl-msg" id="nlMsg" role="status" aria-live="polite"></div>
+
+    <p class="nl-fine">不定期・月に1〜3通ほど。確認メールのリンクを開いていただくと登録が完了します。<br>
+      配信は各回のメール下部から、いつでもすぐに停止できます。
+      <a href="/subscribe.html">くわしく</a></p>
+  </div>
+</section>
+<script>
+(function () {
+  var form = document.getElementById('nlForm');
+  if (!form) return;
+  var btn = document.getElementById('nlSend');
+  var msg = document.getElementById('nlMsg');
+  var input = document.getElementById('nlEmail');
+
+  function say(kind, text) { msg.className = 'nl-msg ' + kind; msg.textContent = text; }
+
+  form.addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var email = (input.value || '').trim();
+    // 往復させてから怒られるより、その場で気づけたほうが早い
+    if (!/^[^@\s]+@[^@\s.]+\.[^@\s]+$/.test(email)) {
+      say('ng', 'メールアドレスの形式をご確認ください。'); input.focus(); return;
+    }
+    btn.disabled = true; btn.textContent = '送信中…'; msg.className = 'nl-msg';
+
+    fetch('/api/subscribe', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, fax: document.getElementById('nlFax').value, note: 'index.html' })
+    })
+      .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+      .then(function (res) {
+        if (!res.ok || !res.j.ok) throw new Error(res.j.error || '送信できませんでした。');
+        form.style.display = 'none';
+        say('on', res.j.already
+          ? 'このアドレスはすでに登録されています。次回の配信をお待ちください。'
+          : '確認メールをお送りしました。メール内のリンクを開いていただくと、登録が完了します。届かない場合は迷惑メールフォルダもご確認ください。');
+      })
+      .catch(function (err) {
+        say('ng', err.message || '送信できませんでした。しばらく置いてお試しください。');
+        btn.disabled = false; btn.textContent = '受け取る';
+      });
+  });
+})();
+</script>
+<!--LETTER:END-->
 
 <section class="sec-navy sec-profile">
   <div class="inner" data-reveal>

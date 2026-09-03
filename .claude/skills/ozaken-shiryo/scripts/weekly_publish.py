@@ -35,9 +35,11 @@ from publish import compose, check_pw_word, TPL
 
 INDEX = os.path.join(ROOT, 'index.html')
 START, END = '<!--WEEKLY:START-->', '<!--WEEKLY:END-->'
-# トップの節番号に添え書きを足したので、目印もそれに追随する。
-# 完全一致で探しているため、index 側の eyebrow を変えるときはここも変える
-ANCHOR = '<span class="eyebrow">Section 01 ─ Archive</span>'
+# 印が失われたときの置き場所。**週次は資料アーカイブの「後ろ」に置く。**
+# 昔は資料の前に出していたが、トップに来た人がまず見たいのは資料なので、
+# 資料一覧の次、プロフィールの前に移した。完全一致で探しているので、
+# index 側のこのタグを変えるときはここも変える
+ANCHOR = '<section class="sec-navy sec-profile">'
 SHOW = 4          # トップページに出す号数。古い号は一覧ページへ送る
 
 
@@ -127,8 +129,7 @@ def add_to_index(m):
         s = s[:s.index(START)] + sec + s[s.index(END) + len(END) + 1:].lstrip('\n')
     else:
         i = s.index(ANCHOR)
-        i = s.rfind('<section class="sec-light">', 0, i)
-        s = s[:i] + sec + s[i:]
+        s = s[:i] + sec + '\n' + s[i:]
     open(INDEX, 'w', encoding='utf-8').write(s)
     return True
 
