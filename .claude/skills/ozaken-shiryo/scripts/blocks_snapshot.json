@@ -11,7 +11,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 112669
+  "chars": 126962
  },
  "01_concept/ai-seci.html": {
   "blocks": [
@@ -25,7 +25,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 116481
+  "chars": 130774
  },
  "01_concept/ax-article.html": {
   "blocks": [
@@ -38,7 +38,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 80628
+  "chars": 94921
  },
  "01_concept/business-model-shift.html": {
   "blocks": [
@@ -52,7 +52,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 117920
+  "chars": 132213
  },
  "01_concept/cx-ex-hub.html": {
   "blocks": [
@@ -66,7 +66,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 125882
+  "chars": 140175
  },
  "01_concept/data-for-ai.html": {
   "blocks": [
@@ -80,7 +80,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 110776
+  "chars": 125069
  },
  "01_concept/existing-business-first.html": {
   "blocks": [
@@ -93,7 +93,7 @@
    "OZ-QR",
    "OZ-SPACING"
   ],
-  "chars": 190959
+  "chars": 205252
  },
  "01_concept/five-levels-copilot.html": {
   "blocks": [
@@ -107,7 +107,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 198321
+  "chars": 212614
  },
  "01_concept/five-levels-gemini.html": {
   "blocks": [
@@ -121,7 +121,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 197654
+  "chars": 211947
  },
  "01_concept/genai-and-dx.html": {
   "blocks": [
@@ -135,7 +135,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 87121
+  "chars": 101414
  },
  "01_concept/human-in-on-the-loop-v2.html": {
   "blocks": [
@@ -149,7 +149,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 117761
+  "chars": 132054
  },
  "01_concept/japan-revival-strategy.html": {
   "blocks": [
@@ -163,7 +163,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 124818
+  "chars": 139111
  },
  "01_concept/marginal-value-zero.html": {
   "blocks": [
@@ -177,7 +177,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 187218
+  "chars": 201511
  },
  "01_concept/tacit-knowledge-and-data-box.html": {
   "blocks": [
@@ -191,7 +191,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 116215
+  "chars": 130508
  },
  "01_concept/use-to-delegate.html": {
   "blocks": [
@@ -205,7 +205,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 166948
+  "chars": 181241
  },
  "01_concept/what-is-ai-agent.html": {
   "blocks": [
@@ -219,7 +219,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 79436
+  "chars": 93729
  },
  "01_concept/what-is-genai.html": {
   "blocks": [
@@ -233,7 +233,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 81349
+  "chars": 95642
  },
  "02_models/ai-voice.html": {
   "blocks": [
@@ -247,7 +247,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 113361
+  "chars": 127654
  },
  "02_models/china-ai-models.html": {
   "blocks": [
@@ -261,7 +261,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 126121
+  "chars": 140414
  },
  "02_models/google-io-2026-v2.html": {
   "blocks": [
@@ -274,7 +274,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 78534
+  "chars": 92827
  },
  "02_models/hybrid-ai-model-routing.html": {
   "blocks": [
@@ -288,7 +288,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 123018
+  "chars": 137311
  },
  "02_models/local-llm.html": {
   "blocks": [
@@ -302,7 +302,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 195048
+  "chars": 209341
  },
  "02_models/mcp-and-rag.html": {
   "blocks": [
@@ -316,7 +316,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 168510
+  "chars": 182803
  },
  "02_models/model-routing-16patterns.html": {
   "blocks": [
@@ -330,7 +330,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 137813
+  "chars": 152106
  },
  "02_models/model-selection.html": {
   "blocks": [
@@ -344,7 +344,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 121536
+  "chars": 135829
  },
  "02_models/mythos-1.html": {
   "blocks": [
@@ -357,7 +357,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 78064
+  "chars": 92357
  },
  "02_models/mythos-2.html": {
   "blocks": [
@@ -370,7 +370,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 78517
+  "chars": 92810
  },
  "02_models/physical-ai.html": {
   "blocks": [
@@ -384,7 +384,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 122274
+  "chars": 136567
  },
  "02_models/rag-finetuning.html": {
   "blocks": [
@@ -398,7 +398,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 136426
+  "chars": 150719
  },
  "02_models/three-axes.html": {
   "blocks": [
@@ -412,7 +412,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 112058
+  "chars": 126351
  },
  "03_tools/ai-trend-and-tools-2026.html": {
   "blocks": [
@@ -426,7 +426,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 148913
+  "chars": 163206
  },
  "03_tools/chatgpt-work.html": {
   "blocks": [
@@ -439,7 +439,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 82151
+  "chars": 96444
  },
  "03_tools/claude-guide.html": {
   "blocks": [
@@ -453,7 +453,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 91094
+  "chars": 105387
  },
  "03_tools/copilot-brand-kit.html": {
   "blocks": [
@@ -467,7 +467,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 128242
+  "chars": 142535
  },
  "03_tools/copilot-credits.html": {
   "blocks": [
@@ -481,7 +481,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 126999
+  "chars": 141292
  },
  "03_tools/copilot-guide.html": {
   "blocks": [
@@ -495,7 +495,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 94168
+  "chars": 108461
  },
  "03_tools/cowork.html": {
   "blocks": [
@@ -508,7 +508,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 475512
+  "chars": 489805
  },
  "03_tools/gemini-guide.html": {
   "blocks": [
@@ -522,7 +522,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 108156
+  "chars": 122449
  },
  "03_tools/gemini-spark.html": {
   "blocks": [
@@ -536,7 +536,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 182548
+  "chars": 196841
  },
  "04_practice/build-a-bot.html": {
   "blocks": [
@@ -550,7 +550,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 173916
+  "chars": 188209
  },
  "04_practice/build-a-workflow.html": {
   "blocks": [
@@ -564,7 +564,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 170464
+  "chars": 184757
  },
  "04_practice/context-harness-engineering.html": {
   "blocks": [
@@ -578,7 +578,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 135604
+  "chars": 149897
  },
  "04_practice/deck-design.html": {
   "blocks": [
@@ -592,7 +592,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 108772
+  "chars": 123065
  },
  "04_practice/gyomu-bunkai.html": {
   "blocks": [
@@ -606,7 +606,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 143112
+  "chars": 157405
  },
  "04_practice/knowledge-platform.html": {
   "blocks": [
@@ -620,7 +620,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 209894
+  "chars": 224187
  },
  "04_practice/prompt-engineering.html": {
   "blocks": [
@@ -634,7 +634,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 83368
+  "chars": 97661
  },
  "04_practice/site-ops.html": {
   "blocks": [
@@ -648,7 +648,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 211240
+  "chars": 225533
  },
  "04_practice/upstream-ux-design.html": {
   "blocks": [
@@ -662,7 +662,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 192865
+  "chars": 207158
  },
  "05_drive/agent-as-os.html": {
   "blocks": [
@@ -676,7 +676,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 192172
+  "chars": 206465
  },
  "05_drive/agent-budget-taxi.html": {
   "blocks": [
@@ -689,7 +689,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 96706
+  "chars": 110999
  },
  "05_drive/agent-budget-v1.html": {
   "blocks": [
@@ -702,7 +702,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 83341
+  "chars": 97634
  },
  "05_drive/agent-budget-v2.html": {
   "blocks": [
@@ -716,7 +716,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 85923
+  "chars": 100216
  },
  "05_drive/agent-management.html": {
   "blocks": [
@@ -730,7 +730,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 216776
+  "chars": 231069
  },
  "05_drive/agent-strategist.html": {
   "blocks": [
@@ -743,7 +743,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 73117
+  "chars": 87410
  },
  "05_drive/ai-51-master.html": {
   "blocks": [
@@ -756,7 +756,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 63157
+  "chars": 77450
  },
  "05_drive/ai-budget.html": {
   "blocks": [
@@ -770,7 +770,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 126226
+  "chars": 140519
  },
  "05_drive/ai-coe.html": {
   "blocks": [
@@ -784,7 +784,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 140690
+  "chars": 154983
  },
  "05_drive/ai-drive-handbook.html": {
   "blocks": [
@@ -798,7 +798,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 225705
+  "chars": 239998
  },
  "05_drive/ai-measures-50.html": {
   "blocks": [
@@ -812,7 +812,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 115662
+  "chars": 129955
  },
  "05_drive/backoffice-agent.html": {
   "blocks": [
@@ -826,7 +826,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 205062
+  "chars": 219355
  },
  "05_drive/drive-phase.html": {
   "blocks": [
@@ -840,7 +840,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 149780
+  "chars": 164073
  },
  "05_drive/five-walls.html": {
   "blocks": [
@@ -854,7 +854,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 143063
+  "chars": 157356
  },
  "05_drive/growth-phase.html": {
   "blocks": [
@@ -868,7 +868,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 168286
+  "chars": 182579
  },
  "05_drive/keiei-data-kiban.html": {
   "blocks": [
@@ -882,7 +882,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 315063
+  "chars": 329356
  },
  "05_drive/kiban-phase.html": {
   "blocks": [
@@ -896,7 +896,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 138372
+  "chars": 152665
  },
  "06_people/agent-talent-standard.html": {
   "blocks": [
@@ -910,7 +910,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 206058
+  "chars": 220351
  },
  "06_people/ai-sidebusiness-talk.html": {
   "blocks": [
@@ -923,7 +923,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 77582
+  "chars": 91875
  },
  "06_people/career-in-agent-era.html": {
   "blocks": [
@@ -937,7 +937,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 204594
+  "chars": 218887
  },
  "06_people/hr-role.html": {
   "blocks": [
@@ -951,7 +951,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 111513
+  "chars": 125806
  },
  "06_people/hr-transformation-v1.html": {
   "blocks": [
@@ -965,7 +965,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 136607
+  "chars": 150900
  },
  "06_people/jinji-gyomu.html": {
   "blocks": [
@@ -979,7 +979,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 115444
+  "chars": 129737
  },
  "06_people/jinji-seido.html": {
   "blocks": [
@@ -993,7 +993,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 203943
+  "chars": 218236
  },
  "06_people/meti-ax-skill-wg5.html": {
   "blocks": [
@@ -1007,7 +1007,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 194275
+  "chars": 208568
  },
  "06_people/openai-fde.html": {
   "blocks": [
@@ -1021,7 +1021,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 115787
+  "chars": 130080
  },
  "06_people/org-theory.html": {
   "blocks": [
@@ -1035,7 +1035,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 103325
+  "chars": 117618
  },
  "06_people/pm-in-agent-era.html": {
   "blocks": [
@@ -1046,10 +1046,9 @@
    "OZ-HEROSIZE",
    "OZ-HOME",
    "OZ-QR",
-   "OZ-SPACING",
-   "OZ-XREFCSS"
+   "OZ-SPACING"
   ],
-  "chars": 198318
+  "chars": 210316
  },
  "06_people/purpose-in-the-agent-era.html": {
   "blocks": [
@@ -1063,7 +1062,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 108828
+  "chars": 123121
  },
  "06_people/roles-in-agent-era.html": {
   "blocks": [
@@ -1077,7 +1076,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 165738
+  "chars": 180031
  },
  "06_people/why-for-students.html": {
   "blocks": [
@@ -1091,7 +1090,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 191376
+  "chars": 205669
  },
  "07_risk/ai-copyright.html": {
   "blocks": [
@@ -1105,7 +1104,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 105285
+  "chars": 119578
  },
  "07_risk/ai-guidelines.html": {
   "blocks": [
@@ -1119,7 +1118,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 96943
+  "chars": 111236
  },
  "07_risk/hallucination-and-facts.html": {
   "blocks": [
@@ -1133,7 +1132,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 98291
+  "chars": 112584
  },
  "07_risk/privacy-law.html": {
   "blocks": [
@@ -1147,7 +1146,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 121016
+  "chars": 135309
  },
  "07_risk/rogue-agents.html": {
   "blocks": [
@@ -1161,7 +1160,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 95010
+  "chars": 109303
  },
  "08_industry/iryo.html": {
   "blocks": [
@@ -1175,7 +1174,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 104615
+  "chars": 118908
  },
  "08_industry/jichitai.html": {
   "blocks": [
@@ -1189,7 +1188,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 104653
+  "chars": 118946
  },
  "08_industry/kensetsu.html": {
   "blocks": [
@@ -1203,7 +1202,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 104467
+  "chars": 118760
  },
  "08_industry/kinyu.html": {
   "blocks": [
@@ -1217,7 +1216,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 104491
+  "chars": 118784
  },
  "08_industry/kouri.html": {
   "blocks": [
@@ -1231,7 +1230,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 104261
+  "chars": 118554
  },
  "08_industry/seizogyo.html": {
   "blocks": [
@@ -1245,7 +1244,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 104911
+  "chars": 119204
  },
  "09_role/cs.html": {
   "blocks": [
@@ -1259,7 +1258,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 227776
+  "chars": 242069
  },
  "09_role/eigyo.html": {
   "blocks": [
@@ -1273,7 +1272,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 229176
+  "chars": 243469
  },
  "09_role/jinji.html": {
   "blocks": [
@@ -1287,7 +1286,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 229904
+  "chars": 244197
  },
  "09_role/joshis.html": {
   "blocks": [
@@ -1301,7 +1300,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 229555
+  "chars": 243848
  },
  "09_role/kanadevia-ict.html": {
   "blocks": [
@@ -1315,7 +1314,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 237038
+  "chars": 251331
  },
  "09_role/keiri.html": {
   "blocks": [
@@ -1329,7 +1328,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 228797
+  "chars": 243090
  },
  "09_role/marketing.html": {
   "blocks": [
@@ -1343,7 +1342,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 229057
+  "chars": 243350
  },
  "09_role/york-union.html": {
   "blocks": [
@@ -1357,7 +1356,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 273276
+  "chars": 287569
  },
  "10_policy/ai-policy-compare.html": {
   "blocks": [
@@ -1371,7 +1370,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 168598
+  "chars": 182891
  },
  "10_policy/china-ai-strategy.html": {
   "blocks": [
@@ -1385,7 +1384,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 165972
+  "chars": 180265
  },
  "10_policy/eu-ai-strategy.html": {
   "blocks": [
@@ -1399,7 +1398,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 171444
+  "chars": 185737
  },
  "10_policy/japan-ai-strategy.html": {
   "blocks": [
@@ -1413,7 +1412,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 163567
+  "chars": 177860
  },
  "10_policy/usa-ai-strategy.html": {
   "blocks": [
@@ -1427,7 +1426,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 167815
+  "chars": 182108
  },
  "11_stats/ai-stats-2026.html": {
   "blocks": [
@@ -1441,7 +1440,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 159156
+  "chars": 173449
  },
  "12_jobs/us-jp-employment.html": {
   "blocks": [
@@ -1450,7 +1449,7 @@
    "OZ-HEROSIZE",
    "OZ-HOME"
   ],
-  "chars": 62434
+  "chars": 76727
  },
  "AX_Table/s1-nanimo-kawaranai.html": {
   "blocks": [
@@ -1464,7 +1463,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 104269
+  "chars": 118562
  },
  "AX_Table/s2-roadmap.html": {
   "blocks": [
@@ -1478,7 +1477,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 101771
+  "chars": 116064
  },
  "AX_Table/s3-poc.html": {
   "blocks": [
@@ -1492,7 +1491,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 104219
+  "chars": 118512
  },
  "AX_Table/s4-setsumei-dekiru-seika.html": {
   "blocks": [
@@ -1505,7 +1504,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 82975
+  "chars": 97268
  },
  "AX_Table/s5-data-kiban.html": {
   "blocks": [
@@ -1519,7 +1518,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 105085
+  "chars": 119378
  },
  "AX_Table/s6-soshiki-saisekkei.html": {
   "blocks": [
@@ -1533,7 +1532,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 106588
+  "chars": 120881
  },
  "AX_Table/s7-gemini.html": {
   "blocks": [
@@ -1546,7 +1545,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 82309
+  "chars": 96602
  },
  "AX_Table/s8-copilot.html": {
   "blocks": [
@@ -1560,7 +1559,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 106856
+  "chars": 121149
  },
  "Training/msa-life-training.html": {
   "blocks": [
@@ -1575,7 +1574,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 163762
+  "chars": 178055
  },
  "Udemy/career-strategy.html": {
   "blocks": [
@@ -1590,7 +1589,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 296399
+  "chars": 310692
  },
  "backstage.html": {
   "blocks": [
@@ -1600,7 +1599,7 @@
    "OZ-HEROSIZE",
    "OZ-SPACING"
   ],
-  "chars": 65487
+  "chars": 79780
  },
  "console.html": {
   "blocks": [
@@ -1608,7 +1607,7 @@
    "OZ-HEROFX",
    "OZ-HEROSIZE"
   ],
-  "chars": 38641
+  "chars": 52934
  },
  "inbox.html": {
   "blocks": [
@@ -1616,11 +1615,13 @@
    "OZ-HEROFX",
    "OZ-HEROSIZE"
   ],
-  "chars": 49554
+  "chars": 63847
  },
  "matrix.html": {
-  "blocks": [],
-  "chars": 230797
+  "blocks": [
+   "OZ-HEROFX"
+  ],
+  "chars": 260072
  },
  "template.html": {
   "blocks": [
@@ -1632,7 +1633,7 @@
    "OZ-HOME",
    "OZ-SPACING"
   ],
-  "chars": 305990
+  "chars": 320283
  },
  "weekly/2026-08-18.html": {
   "blocks": [
@@ -1646,6 +1647,6 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 144883
+  "chars": 159176
  }
 }

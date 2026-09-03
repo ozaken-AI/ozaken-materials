@@ -173,7 +173,8 @@ h2 span{font-family:var(--font-en);font-size:.6rem;font-weight:700;letter-spacin
 .pat .barsLabel{position:absolute;left:50%;bottom:calc(24% + 36px);transform:translateX(-50%);
   font-family:var(--font-ja-sans);font-size:.68rem;letter-spacing:.06em;
   color:rgba(255,255,255,.5)}
-/* OZ-HEROFX v7 */
+
+/* OZ-HEROFX v8 */
 /* ══ ファーストビューの演出（index.html と同じ語彙） ══ */
 /* 地の色は index.html とまったく同じ組み合わせにする。
    単色の紺だと平坦に見えるが、上からの光・右下の赤み・斜めの三段グラデを
@@ -305,8 +306,11 @@ html.past-hero .site-frame{opacity:0}
 .oz-status{justify-content:flex-start}
 .oz-live{display:inline-block;width:7px;height:7px;border-radius:50%;background:#46c98a;
   box-shadow:0 0 8px #46c98a;margin-right:.6rem;vertical-align:middle;
-  animation:ozPulse 2s ease-in-out infinite}
-@keyframes ozPulse{0%,100%{opacity:1}50%{opacity:.32}}
+  animation:ozLivePulse 2s ease-in-out infinite}
+/* **名前は ozLivePulse。ozPulse にしない。** 雛形と figanim が図版の丸を
+   ゆっくり膨らませる ozPulse を持っていて、同じ名前で定義すると後に積まれた側が
+   勝つ。v7 まではここが後に来る資料で図の丸が点滅し、逆の資料でランプが膨らんでいた */
+@keyframes ozLivePulse{0%,100%{opacity:1}50%{opacity:.32}}
 .oz-sep{color:rgba(159,198,245,.4);margin:0 .5rem}
 .oz-cur{margin-left:.15em;animation:ozBlink 1.1s steps(1) infinite}
 @keyframes ozBlink{0%,50%{opacity:1}50.01%,100%{opacity:0}}
@@ -335,6 +339,138 @@ html.past-hero .site-frame{opacity:0}
   .hero .texture > svg > path{stroke-dashoffset:0}
   .oz-sweep,.sf-edge i,.oz-net{display:none}
   .sf-c{opacity:.5}}/* /OZ-HEROFX */
+
+/* OZ-STAGE v1 */
+/* ══ 面の中身を、話す順番に出す ══ */
+/* 器は透明にしない。中身のそれぞれが、下から順に立ち上がる */
+section:not(.hero) [data-reveal]{opacity:1;transform:none;transition:none}
+section:not(.hero) [data-reveal]>*{opacity:0}
+section:not(.hero) [data-reveal].visible>*{animation:ozStageUp .62s cubic-bezier(.16,1,.3,1) both}
+section:not(.hero) [data-reveal].visible>:nth-child(1){animation-delay:0.00s}
+section:not(.hero) [data-reveal].visible>:nth-child(2){animation-delay:0.09s}
+section:not(.hero) [data-reveal].visible>:nth-child(3){animation-delay:0.18s}
+section:not(.hero) [data-reveal].visible>:nth-child(4){animation-delay:0.28s}
+section:not(.hero) [data-reveal].visible>:nth-child(5){animation-delay:0.38s}
+section:not(.hero) [data-reveal].visible>:nth-child(6){animation-delay:0.50s}
+section:not(.hero) [data-reveal].visible>:nth-child(7){animation-delay:0.64s}
+section:not(.hero) [data-reveal].visible>:nth-child(8){animation-delay:0.76s}
+section:not(.hero) [data-reveal].visible>:nth-child(n+9){animation-delay:0.86s}
+/* 見出しは、扉の題と同じく左から拭き取る。「新しい話に入った」が一目で分かる */
+section:not(.hero) [data-reveal].visible>.sec-title{animation:ozStageTitle .85s cubic-bezier(.2,.7,.2,1) both}
+/* ひとこと（Ozaken's One Point）は横から。本文の流れとは別の声だと分かる */
+section:not(.hero) [data-reveal].visible>.take{animation:ozStageSide .7s cubic-bezier(.16,1,.3,1) both}
+/* 並んだ札は、器を先に出しておき、中身を1枚ずつ */
+section:not(.hero) [data-reveal]>.cards,section:not(.hero) [data-reveal]>.stats,section:not(.hero) [data-reveal]>.stepper,
+section:not(.hero) [data-reveal]>.two-col,section:not(.hero) [data-reveal]>.vs{opacity:1;animation:none}
+section:not(.hero) [data-reveal] .cards>.card,section:not(.hero) [data-reveal] .stats>.stat,section:not(.hero) [data-reveal] .stepper>.step,
+section:not(.hero) [data-reveal] .two-col>.two-col-item,section:not(.hero) [data-reveal] .vs>*{opacity:0}
+section:not(.hero) [data-reveal].visible .cards>.card,section:not(.hero) [data-reveal].visible .stats>.stat,
+section:not(.hero) [data-reveal].visible .stepper>.step,section:not(.hero) [data-reveal].visible .two-col>.two-col-item,
+section:not(.hero) [data-reveal].visible .vs>*{animation:ozStageUp .58s cubic-bezier(.16,1,.3,1) both}
+section:not(.hero) [data-reveal].visible .cards>.card:nth-child(1){animation-delay:0.50s}
+section:not(.hero) [data-reveal].visible .cards>.card:nth-child(1)::before{transition-delay:0.82s}
+section:not(.hero) [data-reveal].visible .cards>.card:nth-child(2){animation-delay:0.63s}
+section:not(.hero) [data-reveal].visible .cards>.card:nth-child(2)::before{transition-delay:0.95s}
+section:not(.hero) [data-reveal].visible .cards>.card:nth-child(3){animation-delay:0.76s}
+section:not(.hero) [data-reveal].visible .cards>.card:nth-child(3)::before{transition-delay:1.08s}
+section:not(.hero) [data-reveal].visible .cards>.card:nth-child(4){animation-delay:0.89s}
+section:not(.hero) [data-reveal].visible .cards>.card:nth-child(4)::before{transition-delay:1.21s}
+section:not(.hero) [data-reveal].visible .cards>.card:nth-child(5){animation-delay:1.02s}
+section:not(.hero) [data-reveal].visible .cards>.card:nth-child(5)::before{transition-delay:1.34s}
+section:not(.hero) [data-reveal].visible .cards>.card:nth-child(6){animation-delay:1.15s}
+section:not(.hero) [data-reveal].visible .cards>.card:nth-child(6)::before{transition-delay:1.47s}
+section:not(.hero) [data-reveal].visible .cards>.card:nth-child(n+7){animation-delay:1.28s}
+section:not(.hero) [data-reveal].visible .stats>.stat:nth-child(1){animation-delay:0.50s}
+section:not(.hero) [data-reveal].visible .stats>.stat:nth-child(1)::before{transition-delay:0.82s}
+section:not(.hero) [data-reveal].visible .stats>.stat:nth-child(2){animation-delay:0.63s}
+section:not(.hero) [data-reveal].visible .stats>.stat:nth-child(2)::before{transition-delay:0.95s}
+section:not(.hero) [data-reveal].visible .stats>.stat:nth-child(3){animation-delay:0.76s}
+section:not(.hero) [data-reveal].visible .stats>.stat:nth-child(3)::before{transition-delay:1.08s}
+section:not(.hero) [data-reveal].visible .stats>.stat:nth-child(4){animation-delay:0.89s}
+section:not(.hero) [data-reveal].visible .stats>.stat:nth-child(4)::before{transition-delay:1.21s}
+section:not(.hero) [data-reveal].visible .stats>.stat:nth-child(5){animation-delay:1.02s}
+section:not(.hero) [data-reveal].visible .stats>.stat:nth-child(5)::before{transition-delay:1.34s}
+section:not(.hero) [data-reveal].visible .stats>.stat:nth-child(6){animation-delay:1.15s}
+section:not(.hero) [data-reveal].visible .stats>.stat:nth-child(6)::before{transition-delay:1.47s}
+section:not(.hero) [data-reveal].visible .stats>.stat:nth-child(n+7){animation-delay:1.28s}
+section:not(.hero) [data-reveal].visible .stepper>.step:nth-child(1){animation-delay:0.50s}
+section:not(.hero) [data-reveal].visible .stepper>.step:nth-child(1)::before{transition-delay:0.82s}
+section:not(.hero) [data-reveal].visible .stepper>.step:nth-child(2){animation-delay:0.63s}
+section:not(.hero) [data-reveal].visible .stepper>.step:nth-child(2)::before{transition-delay:0.95s}
+section:not(.hero) [data-reveal].visible .stepper>.step:nth-child(3){animation-delay:0.76s}
+section:not(.hero) [data-reveal].visible .stepper>.step:nth-child(3)::before{transition-delay:1.08s}
+section:not(.hero) [data-reveal].visible .stepper>.step:nth-child(4){animation-delay:0.89s}
+section:not(.hero) [data-reveal].visible .stepper>.step:nth-child(4)::before{transition-delay:1.21s}
+section:not(.hero) [data-reveal].visible .stepper>.step:nth-child(5){animation-delay:1.02s}
+section:not(.hero) [data-reveal].visible .stepper>.step:nth-child(5)::before{transition-delay:1.34s}
+section:not(.hero) [data-reveal].visible .stepper>.step:nth-child(6){animation-delay:1.15s}
+section:not(.hero) [data-reveal].visible .stepper>.step:nth-child(6)::before{transition-delay:1.47s}
+section:not(.hero) [data-reveal].visible .stepper>.step:nth-child(n+7){animation-delay:1.28s}
+section:not(.hero) [data-reveal].visible .two-col>.two-col-item:nth-child(1){animation-delay:0.50s}
+section:not(.hero) [data-reveal].visible .two-col>.two-col-item:nth-child(2){animation-delay:0.63s}
+section:not(.hero) [data-reveal].visible .two-col>.two-col-item:nth-child(3){animation-delay:0.76s}
+section:not(.hero) [data-reveal].visible .two-col>.two-col-item:nth-child(4){animation-delay:0.89s}
+section:not(.hero) [data-reveal].visible .two-col>.two-col-item:nth-child(5){animation-delay:1.02s}
+section:not(.hero) [data-reveal].visible .two-col>.two-col-item:nth-child(6){animation-delay:1.15s}
+section:not(.hero) [data-reveal].visible .two-col>.two-col-item:nth-child(n+7){animation-delay:1.28s}
+section:not(.hero) [data-reveal].visible .vs>*:nth-child(1){animation-delay:0.50s}
+section:not(.hero) [data-reveal].visible .vs>*:nth-child(2){animation-delay:0.63s}
+section:not(.hero) [data-reveal].visible .vs>*:nth-child(3){animation-delay:0.76s}
+section:not(.hero) [data-reveal].visible .vs>*:nth-child(4){animation-delay:0.89s}
+section:not(.hero) [data-reveal].visible .vs>*:nth-child(5){animation-delay:1.02s}
+section:not(.hero) [data-reveal].visible .vs>*:nth-child(6){animation-delay:1.15s}
+section:not(.hero) [data-reveal].visible .vs>*:nth-child(n+7){animation-delay:1.28s}
+/* 図版の中身は、箱が出てから組み上がる */
+.figanim section:not(.hero) [data-reveal] .figure.anim-on svg .a-fade{animation-delay:calc(var(--d,0s) + .42s)}
+.figanim section:not(.hero) [data-reveal] .figure.anim-on svg .a-pop{animation-delay:calc(var(--d,0s) + .42s)}
+.figanim section:not(.hero) [data-reveal] .figure.anim-on svg .a-grow{animation-delay:calc(var(--d,0s) + .42s)}
+.figanim section:not(.hero) [data-reveal] .figure.anim-on svg .a-rise{animation-delay:calc(var(--d,0s) + .42s)}
+.figanim section:not(.hero) [data-reveal] .figure.anim-on svg .a-flow{animation-delay:calc(var(--d,0s) + .42s),calc(var(--d,0s) + .42s)}
+.figanim section:not(.hero) [data-reveal] .figure.anim-on svg .a-breathe{animation-delay:calc(var(--d,0s) + .42s),calc(var(--d,0s) + .6s + .42s)}
+.figanim section:not(.hero) [data-reveal] .figure.anim-on svg .a-pulse{animation-delay:calc(var(--d,0s) + .42s),calc(var(--d,0s) + .6s + .42s)}
+.figanim section:not(.hero) [data-reveal] .figure svg .a-draw{transition-delay:calc(var(--d,0s) + .42s),calc(var(--d,0s) + .5s + .42s)}
+@keyframes ozStageUp{from{opacity:0;translate:0 18px}to{opacity:1;translate:0 0}}
+@keyframes ozStageSide{from{opacity:0;translate:-22px 0}to{opacity:1;translate:0 0}}
+@keyframes ozStageTitle{
+  from{opacity:0;translate:0 12px;clip-path:inset(-12% 108% -12% -6%)}
+  to{opacity:1;translate:0 0;clip-path:inset(-12% -8% -12% -6%)}}
+
+/* ── 上端の進み具合と、面番号。扉を抜けてから出る ── */
+.oz-progress{position:fixed;top:0;left:0;right:0;z-index:70;height:3px;pointer-events:none;
+  opacity:0;transition:opacity .5s ease}
+.oz-progress.is-on{opacity:1}
+.oz-progress i{position:absolute;left:0;top:0;height:3px;width:100%;
+  transform-origin:0 50%;transform:scaleX(0);
+  background:linear-gradient(90deg,var(--azure),#9fc6f5);
+  box-shadow:0 0 10px rgba(159,198,245,.55)}
+.oz-progress b{position:absolute;top:11px;right:16px;
+  font-family:var(--font-en);font-weight:700;font-size:.66rem;letter-spacing:.18em;
+  font-variant-numeric:tabular-nums;color:rgba(216,228,240,.9);
+  background:rgba(20,29,53,.58);border:1px solid rgba(216,228,240,.22);border-radius:999px;
+  padding:.34em .85em;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.oz-progress .oz-pg-s{margin:0 .35em;opacity:.45}
+.oz-progress .oz-pg-n{display:inline-block}
+.oz-progress .oz-pg-n.is-tick{animation:ozStageTick .45s cubic-bezier(.16,1,.3,1)}
+@keyframes ozStageTick{from{translate:0 -7px;opacity:0}to{translate:0 0;opacity:1}}
+@media(max-width:640px){.oz-progress b{top:8px;right:10px;font-size:.58rem;padding:.3em .7em}}
+
+/* ── 図版の中の赤（要点）が、組み上がったあとに一度だけ光る ── */
+.figure svg .oz-key-armed{transition:filter .9s ease}
+.figure svg .oz-key{filter:drop-shadow(0 0 6px rgba(226,55,68,.9)) drop-shadow(0 0 16px rgba(226,55,68,.55)) brightness(1.18)}
+
+@media (prefers-reduced-motion: reduce){
+  section:not(.hero) [data-reveal]>*,section:not(.hero) [data-reveal] .cards>.card,section:not(.hero) [data-reveal] .stats>.stat,
+  section:not(.hero) [data-reveal] .stepper>.step,section:not(.hero) [data-reveal] .two-col>.two-col-item,section:not(.hero) [data-reveal] .vs>*{
+    opacity:1;animation:none !important;translate:none;clip-path:none}
+  .oz-progress i{transition:none}
+  .oz-progress .oz-pg-n.is-tick{animation:none}
+  .figure svg .oz-key{filter:none}}
+@media print{
+  section:not(.hero) [data-reveal]>*,section:not(.hero) [data-reveal] .cards>.card,section:not(.hero) [data-reveal] .stats>.stat,
+  section:not(.hero) [data-reveal] .stepper>.step,section:not(.hero) [data-reveal] .two-col>.two-col-item,section:not(.hero) [data-reveal] .vs>*{
+    opacity:1 !important;animation:none !important;translate:none;clip-path:none}
+  .oz-progress{display:none}}
+/* /OZ-STAGE */
 </style>
 </head>
 <body>
@@ -897,6 +1033,8 @@ html.past-hero .site-frame{opacity:0}
 })();
 </script>
 
+
+
 <script>
 /* ファーストビューの演出パーツを組み立てる。
    資料の中身から本数を数えるので、加筆しても読み出しは自動で追従する。 */
@@ -1043,6 +1181,106 @@ html.past-hero .site-frame{opacity:0}
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
+})();
+</script>
+
+
+
+<script>
+/* OZ-STAGE: 面の中身を話す順番に出すための、動く部分。
+   進み具合の帯・面番号・要点の光。どれも読み上げの邪魔をしない大きさで。 */
+(function(){
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var secs = [].slice.call(document.querySelectorAll('section.sec-light, section.sec-navy'));
+
+  /* ── 上端の進み具合と面番号 ── */
+  if (secs.length && !document.querySelector('.oz-progress')){
+    var pad = function(n){ return (n < 10 ? '0' : '') + n; };
+    var bar = document.createElement('div');
+    bar.className = 'oz-progress'; bar.setAttribute('aria-hidden', 'true');
+    bar.innerHTML = '<i></i><b><span class="oz-pg-n">01</span>'
+      + '<span class="oz-pg-s">/</span><span class="oz-pg-t">' + pad(secs.length) + '</span></b>';
+    document.body.appendChild(bar);
+    var fill = bar.querySelector('i'), num = bar.querySelector('.oz-pg-n');
+    var cur = -1, tick = false;
+    function update(){
+      tick = false;
+      var h = document.documentElement, max = h.scrollHeight - window.innerHeight;
+      var p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+      fill.style.transform = 'scaleX(' + p.toFixed(4) + ')';
+      /* いま画面の上から4割の線をまたいでいる面が、現在地 */
+      var line = window.innerHeight * 0.4, best = -1;
+      for (var i = 0; i < secs.length; i++){
+        var r = secs[i].getBoundingClientRect();
+        if (r.top <= line && r.bottom > line){ best = i; break; }
+      }
+      if (best < 0 || best === cur) return;
+      cur = best;
+      num.textContent = pad(best + 1);
+      if (!reduce){ num.classList.remove('is-tick'); void num.offsetWidth; num.classList.add('is-tick'); }
+    }
+    window.addEventListener('scroll', function(){
+      if (!tick){ tick = true; requestAnimationFrame(update); }
+    }, { passive: true });
+    window.addEventListener('resize', update, { passive: true });
+    update();
+    /* 扉のあいだは出さない。扉には扉の演出がある */
+    var hero = document.querySelector('.hero');
+    if (hero && 'IntersectionObserver' in window){
+      new IntersectionObserver(function(es){
+        bar.classList.toggle('is-on', !es[0].isIntersecting);
+      }, { threshold: 0.02 }).observe(hero);
+    } else {
+      bar.classList.add('is-on');
+    }
+  }
+
+  /* ── 図版の中の赤（要点）が、組み上がったあとに一度だけ光る ──
+     赤が3つ以上ある図（壁の連鎖・×の一覧）は光らせない。全部光ると要点でなくなる */
+  if (reduce || !('IntersectionObserver' in window)) return;
+  var RED = { '#e23744': 1, '#ff5d6a': 1 };
+  var figs = [].slice.call(document.querySelectorAll('section:not(.hero) .figure'));
+  if (!figs.length) return;
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if (!e.isIntersecting) return;
+      io.unobserve(e.target);
+      var svg = e.target.querySelector('svg');
+      if (!svg) return;
+      var reds = [].slice.call(svg.querySelectorAll('[fill],[stroke]')).filter(function(el){
+        return RED[(el.getAttribute('fill') || '').toLowerCase()]
+            || RED[(el.getAttribute('stroke') || '').toLowerCase()];
+      });
+      if (!reds.length) return;
+      /* 数えるのは要素ではなく「かたまり」。カードの赤い帯・番号・一言は3要素だが要点は1つ。
+         近い箱同士（24単位以内）をつないで、かたまりが3つ以上なら光らせない */
+      var boxes = reds.map(function(el){
+        try { var r = el.getBBox(); return [r.x - 24, r.y - 24, r.x + r.width + 24, r.y + r.height + 24]; }
+        catch (err){ return null; }
+      });
+      var grp = [], seen = [];
+      for (var a = 0; a < boxes.length; a++){
+        if (seen[a] || !boxes[a]) continue;
+        var stack = [a]; seen[a] = 1; grp.push(1);
+        while (stack.length){
+          var i = stack.pop(), bi = boxes[i];
+          for (var j = 0; j < boxes.length; j++){
+            var bj = boxes[j];
+            if (seen[j] || !bj) continue;
+            if (bi[0] < bj[2] && bj[0] < bi[2] && bi[1] < bj[3] && bj[1] < bi[3]){ seen[j] = 1; stack.push(j); }
+          }
+        }
+      }
+      if (grp.length > 2) return;
+      setTimeout(function(){
+        reds.forEach(function(el){ el.classList.add('oz-key-armed'); el.classList.add('oz-key'); });
+      }, 2000);
+      setTimeout(function(){
+        reds.forEach(function(el){ el.classList.remove('oz-key'); });
+      }, 3900);
+    });
+  }, { threshold: 0, rootMargin: '0px 0px -18% 0px' });
+  figs.forEach(function(f){ io.observe(f); });
 })();
 </script>
 </body>

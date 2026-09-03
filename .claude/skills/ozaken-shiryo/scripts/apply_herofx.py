@@ -19,7 +19,7 @@ import lockbox
 
 ROOT = oz_root.root(HERE)
 PW = os.environ.get('OZAKEN_PW') or sys.exit('OZAKEN_PW を設定してください')
-MARK = '/* OZ-HEROFX v7 */'
+MARK = '/* OZ-HEROFX v8 */'
 # 版が上がっても剥がせるように、版番号の手前まででも探せるようにしておく
 MARK_ANY = re.compile(r'/\* OZ-HEROFX v\d+ \*/')
 MARK_END = '/* /OZ-HEROFX */'
@@ -156,8 +156,11 @@ html.past-hero .site-frame{opacity:0}
 .oz-status{justify-content:flex-start}
 .oz-live{display:inline-block;width:7px;height:7px;border-radius:50%;background:#46c98a;
   box-shadow:0 0 8px #46c98a;margin-right:.6rem;vertical-align:middle;
-  animation:ozPulse 2s ease-in-out infinite}
-@keyframes ozPulse{0%,100%{opacity:1}50%{opacity:.32}}
+  animation:ozLivePulse 2s ease-in-out infinite}
+/* **名前は ozLivePulse。ozPulse にしない。** 雛形と figanim が図版の丸を
+   ゆっくり膨らませる ozPulse を持っていて、同じ名前で定義すると後に積まれた側が
+   勝つ。v7 まではここが後に来る資料で図の丸が点滅し、逆の資料でランプが膨らんでいた */
+@keyframes ozLivePulse{0%,100%{opacity:1}50%{opacity:.32}}
 .oz-sep{color:rgba(159,198,245,.4);margin:0 .5rem}
 .oz-cur{margin-left:.15em;animation:ozBlink 1.1s steps(1) infinite}
 @keyframes ozBlink{0%,50%{opacity:1}50.01%,100%{opacity:0}}
