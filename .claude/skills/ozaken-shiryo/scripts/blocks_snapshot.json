@@ -1051,20 +1051,6 @@
   ],
   "chars": 118487
  },
- "06_people/pm-in-agent-era.html": {
-  "blocks": [
-   "OZ-BG",
-   "OZ-BODYSTYLE",
-   "OZ-FIGFLOW",
-   "OZ-HEROFX",
-   "OZ-HEROSIZE",
-   "OZ-HOME",
-   "OZ-QR",
-   "OZ-SPACING",
-   "OZ-XREFCSS"
-  ],
-  "chars": 213477
- },
  "06_people/purpose-in-the-agent-era.html": {
   "blocks": [
    "OZ-BG",
@@ -1359,6 +1345,20 @@
   ],
   "chars": 244219
  },
+ "09_role/pm-in-agent-era.html": {
+  "blocks": [
+   "OZ-BG",
+   "OZ-BODYSTYLE",
+   "OZ-FIGFLOW",
+   "OZ-HEROFX",
+   "OZ-HEROSIZE",
+   "OZ-HOME",
+   "OZ-QR",
+   "OZ-SPACING",
+   "OZ-XREFCSS"
+  ],
+  "chars": 213477
+ },
  "09_role/york-union.html": {
   "blocks": [
    "OZ-BG",
@@ -1634,7 +1634,7 @@
  },
  "matrix.html": {
   "blocks": [],
-  "chars": 235620
+  "chars": 235616
  },
  "template.html": {
   "blocks": [

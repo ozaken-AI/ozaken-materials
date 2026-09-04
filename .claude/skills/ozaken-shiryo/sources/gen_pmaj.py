@@ -6,7 +6,7 @@
   python3 gen_pmaj.py
   cd ../scripts
   OZAKEN_PW=マスター python3 publish.py /tmp/body_pmaj.html \
-      06_people/pm-in-agent-era.html \
+      09_role/pm-in-agent-era.html \
       --list "AIエージェントが変えるPMの未来 ─ タスクを配る人から、前提を渡す人へ"
 
 **背骨は「配る人から、渡す人へ」。**
