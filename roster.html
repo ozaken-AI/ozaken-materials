@@ -471,8 +471,9 @@ html.past-hero .site-frame{opacity:0}
   .oz-sweep,.sf-edge i,.oz-net{display:none}
   .sf-c{opacity:.5}}/* /OZ-HEROFX */
 
-/* ══ OZ-HOME v2 ── 資料からトップページへの動線 ══════════════
-   上は扉に重ねる名札。下は締めのあとに置く行き先。 */
+
+/* ══ OZ-HOME v3 ── 資料からトップページへの動線 ══════════════
+   上は扉に置く戻りボタン。下は締めのあとに置く行き先。 */
 /* 左上には、herofx が入れる稼働バッジ（OZAKEN CMS）がもう居る。
    同じ高さに置くと重なるので、その1段下に、同じ左の軸で置く。
    扉は左そろえなので、名札・題・署名が同じ縦線から始まる。
@@ -485,32 +486,48 @@ html.past-hero .site-frame{opacity:0}
    文字が重なっていた。ノートPCの高さでは珍しくなかった。
    flexアイテムにしておけば、.inner はバッジとこの名札を除いた
    残りの領域でしか中央寄せされないので、重なりが構造的に起きない */
+/* **名札ではなく、押せるボタンとして置く。**
+   v2 までは細い罫線1本と薄い字だけだったので、
+   「いま何を開いているか」の表示に見えて、**押せることに気づかれなかった**。
+   輪郭と矢印を付け、字を白にして、一目で戻り口だと分かる形にする。
+   それでも扉の主役は題字なので、地は控えめな青のままにしてある */
 .oz-home{position:relative;z-index:4;align-self:flex-start;flex:0 0 auto;
-  margin:.8rem 0 0 1.75rem;
-  display:inline-flex;align-items:center;gap:.62rem;
-  font-family:var(--font-ja-sans);font-weight:500;font-size:.78rem;
-  letter-spacing:.06em;color:rgba(216,228,240,.72);text-decoration:none;
-  transition:color .25s ease}
-.oz-home::before{content:'';width:1.5rem;height:1px;background:currentColor;
-  transition:width .25s ease}
-.oz-home:hover{color:#ffffff}
-.oz-home:hover::before{width:2.4rem}
+  margin:.85rem 0 0 1.6rem;
+  display:inline-flex;align-items:center;gap:.5rem;
+  padding:.5em 1.1em .5em .9em;border-radius:999px;
+  background:rgba(46,84,150,.42);border:1px solid rgba(159,198,245,.5);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  font-family:var(--font-ja-sans);font-weight:600;font-size:.8rem;
+  letter-spacing:.04em;color:#ffffff;text-decoration:none;white-space:nowrap;
+  transition:background .25s ease,border-color .25s ease,box-shadow .25s ease}
+/* 矢印は文字で置く。締めのカードの「→」と同じ扱い */
+.oz-home::before{content:'←';font-family:var(--font-en);font-weight:700;
+  font-size:1em;line-height:1;transition:transform .25s ease}
+.oz-home:hover{background:rgba(46,84,150,.72);border-color:#9fc6f5;
+  box-shadow:0 8px 22px -12px rgba(10,15,28,.8)}
+.oz-home:hover::before{transform:translateX(-3px)}
+.oz-home:focus-visible{outline:2px solid #9fc6f5;outline-offset:3px}
 @media (max-width:640px){
-  .oz-home{margin:.6rem 0 0 1.05rem;font-size:.72rem;gap:.45rem}
-  .oz-home::before{width:1rem}
+  .oz-home{margin:.65rem 0 0 1.05rem;font-size:.74rem;gap:.4rem;
+    padding:.45em .95em .45em .8em}
 }
 
 /* 扉を持たないページ（記事の体裁・一覧・ダッシュボード）には、
    重ねる先が無い。いちばん上に細い帯として置く。
    これらのページは自前のCSSを持っていて、変数が揃っているとは限らないので、
    色は変数に頼らず、規定の色そのままで書く */
-.oz-homebar{position:relative;z-index:120;background:#141d35;padding:.62rem 1.5rem}
-.oz-homebar .oz-home{position:static;margin:0;color:rgba(216,228,240,.72)}
+:root{--oz-bar-h:3.6rem}
+.oz-homebar{position:relative;z-index:120;background:#141d35;padding:0 1.5rem;
+  min-height:var(--oz-bar-h);display:flex;align-items:center}
+/* 帯の中では横並びなので、上端そろえ（扉の縦並び用）を打ち消して中央へ */
+.oz-homebar .oz-home{position:static;margin:0;align-self:center}
 /* 記事のページは、自前の固定ヘッダーを持っている。
    帯を上に置くと、そのヘッダーが帯の下に潜って題字と重なるので、
-   帯のぶんだけ下げる。帯を持つページだけに効く書き方にしてある */
-body:has(> .oz-homebar) > header{top:2.7rem}
-@media (max-width:640px){.oz-homebar{padding:.55rem 1rem}}
+   帯のぶんだけ下げる。帯を持つページだけに効く書き方にしてある。
+   **下げ幅は帯の高さと同じ変数で持つ。** 別々の数字にしていたので、
+   ボタンを大きくしたときに下げ幅だけ古いままずれていた */
+body:has(> .oz-homebar) > header{top:var(--oz-bar-h)}
+@media (max-width:640px){:root{--oz-bar-h:3.3rem}.oz-homebar{padding:0 1rem}}
 
 /* 締めの直後。フッターと地続きの濃い面に、行き先を1つだけ置く */
 .oz-return{background:var(--navy-deep);padding:3.4rem 1.5rem}
@@ -537,7 +554,7 @@ body:has(> .oz-homebar) > header{top:2.7rem}
 </style>
 </head>
 <body>
-<div class="oz-homebar"><a class="oz-home" href="/index.html">AI資料アーカイブ</a></div>
+<div class="oz-homebar"><a class="oz-home" href="/index.html">AI資料アーカイブに戻る</a></div>
 
 <header>
   <div class="wrap">
