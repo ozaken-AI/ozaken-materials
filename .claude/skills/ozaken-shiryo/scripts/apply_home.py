@@ -33,16 +33,26 @@ ROOT = oz_root.root(HERE)
 HOME = '/index.html'
 
 MARK = '/* /OZ-HOME */'
-HEAD = '/* ══ OZ-HOME v1'
+HEAD = '/* ══ OZ-HOME v2'
 HEAD_ANY = '/* ══ OZ-HOME v'
 
 CSS = """
-/* ══ OZ-HOME v1 ── 資料からトップページへの動線 ══════════════
+/* ══ OZ-HOME v2 ── 資料からトップページへの動線 ══════════════
    上は扉に重ねる名札。下は締めのあとに置く行き先。 */
 /* 左上には、herofx が入れる稼働バッジ（OZAKEN CMS）がもう居る。
    同じ高さに置くと重なるので、その1段下に、同じ左の軸で置く。
-   扉は左そろえなので、名札・題・署名が同じ縦線から始まる */
-.oz-home{position:absolute;top:4.35rem;left:1.75rem;z-index:4;
+   扉は左そろえなので、名札・題・署名が同じ縦線から始まる。
+
+   **絶対配置ではなく、バッジと同じくフローの2段目に置く。**
+   以前は position:absolute で、バッジの下の高さを指定するだけの
+   決め打ちだった。扉の中身（.inner）はバッジとこの名札の存在を知らずに
+   縦中央寄せされていたので、タイトルが短い・ウィンドウが低いなどで
+   中央寄せの結果がここまで浮き上がると、扉のeyebrow（節ラベル）と
+   文字が重なっていた。ノートPCの高さでは珍しくなかった。
+   flexアイテムにしておけば、.inner はバッジとこの名札を除いた
+   残りの領域でしか中央寄せされないので、重なりが構造的に起きない */
+.oz-home{position:relative;z-index:4;align-self:flex-start;flex:0 0 auto;
+  margin:.8rem 0 0 1.75rem;
   display:inline-flex;align-items:center;gap:.62rem;
   font-family:var(--font-ja-sans);font-weight:500;font-size:.78rem;
   letter-spacing:.06em;color:rgba(216,228,240,.72);text-decoration:none;
@@ -52,7 +62,7 @@ CSS = """
 .oz-home:hover{color:#ffffff}
 .oz-home:hover::before{width:2.4rem}
 @media (max-width:640px){
-  .oz-home{top:3.35rem;left:1.05rem;font-size:.72rem;gap:.45rem}
+  .oz-home{margin:.6rem 0 0 1.05rem;font-size:.72rem;gap:.45rem}
   .oz-home::before{width:1rem}
 }
 
@@ -61,7 +71,7 @@ CSS = """
    これらのページは自前のCSSを持っていて、変数が揃っているとは限らないので、
    色は変数に頼らず、規定の色そのままで書く */
 .oz-homebar{position:relative;z-index:120;background:#141d35;padding:.62rem 1.5rem}
-.oz-homebar .oz-home{position:static;color:rgba(216,228,240,.72)}
+.oz-homebar .oz-home{position:static;margin:0;color:rgba(216,228,240,.72)}
 /* 記事のページは、自前の固定ヘッダーを持っている。
    帯を上に置くと、そのヘッダーが帯の下に潜って題字と重なるので、
    帯のぶんだけ下げる。帯を持つページだけに効く書き方にしてある */

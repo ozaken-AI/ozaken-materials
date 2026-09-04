@@ -194,7 +194,8 @@ button.send:disabled{opacity:.55;cursor:default;transform:none}
 }/* /OZ-SPACING */
 
 
-/* OZ-HEROFX v8 */
+
+/* OZ-HEROFX v9 */
 /* ══ ファーストビューの演出（index.html と同じ語彙） ══ */
 /* 地の色は index.html とまったく同じ組み合わせにする。
    単色の紺だと平坦に見えるが、上からの光・右下の赤み・斜めの三段グラデを
@@ -267,8 +268,17 @@ button.send:disabled{opacity:.55;cursor:default;transform:none}
 @keyframes ozHlBlink{0%,90%{opacity:1;transform:none}
   91%{opacity:.2;transform:translateX(-2px)}92.5%{opacity:1;transform:translateX(2px)}
   94%{opacity:.4;transform:none}95.5%,100%{opacity:1;transform:none}}
-/* システム表記バッジ（index と同じ） */
-.sys-badge{position:absolute;top:1.6rem;left:1.6rem;z-index:4;
+/* システム表記バッジ（index と同じ）。
+   **絶対配置ではなく、フローの中の1段目に置く。**
+   以前は position:absolute で扉に重ねていたため、扉の中身（.inner）は
+   バッジの存在を知らずに縦中央寄せされていた。タイトルが短い・
+   ウィンドウが低いなどで .inner が伸びきらないと、中央寄せの結果が
+   バッジのすぐ下まで浮き上がり、`apply_home.py` の名札（.oz-home）と
+   文字が重なっていた（実際、ノートPCの高さでは常態化していた）。
+   flexアイテムとして並べておけば、.inner はバッジと名札を除いた
+   残りの領域でしか中央寄せされないので、どんな高さでも重ならない */
+.sys-badge{position:relative;z-index:4;align-self:flex-start;flex:0 0 auto;
+  margin:1.6rem 0 0 1.6rem;
   display:inline-flex;align-items:center;gap:.55rem;
   padding:.5em .95em;border-radius:999px;
   background:rgba(20,29,53,.5);border:1px solid rgba(216,228,240,.22);
@@ -344,7 +354,7 @@ html.past-hero .site-frame{opacity:0}
 @media(max-width:640px){
   .oz-status{font-size:.55rem;letter-spacing:.14em}
   .oz-scroll{display:none}
-  .sys-badge{top:1rem;left:1rem;font-size:.58rem;padding:.42em .8em;gap:.4rem}
+  .sys-badge{margin:1rem 0 0 1rem;font-size:.58rem;padding:.42em .8em;gap:.4rem}
   .sys-badge .ja{font-size:.62rem}
   .sys-badge .ver{display:none}
   .sf-t{top:10px;left:10px;right:10px}.sf-b{bottom:10px;left:10px;right:10px}
@@ -658,6 +668,7 @@ html.past-hero .site-frame{opacity:0}
   });
 })();
 </script>
+
 
 
 
