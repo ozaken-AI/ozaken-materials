@@ -39,7 +39,7 @@
 #materials-home .hero:not(.is-in-view) :is(.hero-title .hl,.sys-badge .dot) { animation-play-state: paused; }
 #materials-home .sys-badge .ja { color: inherit; font-size: 12px; }
 #materials-home .sys-badge :is(.ver,.sep) { display: none; }
-#materials-home .hero-status { position: absolute; right: 0; bottom: -72px; margin: 0; padding: 0; background: none; border: 0; color: #aebfdb; font-size: 10px; letter-spacing: .13em; animation: none; transform: none; }
+#materials-home .hero-status { position: absolute; z-index: 3; right: 5vw; bottom: 30px; margin: 0; padding: 0; background: none; border: 0; color: #aebfdb; font-size: 10px; letter-spacing: .13em; animation: none; transform: none; }
 #materials-home .hero-status :is(.hs-live,.hs-cur,.hs-sep) { display: none; }
 #materials-home .hero-status #docCount { color: #fff; font-weight: 700; font-size: 17px; }
 #materials-home .mh-hero-cta { margin-top: 30px; display: flex; align-items: center; gap: 24px; font-size: 13px; animation: mh-rise .9s .35s both; }
@@ -180,7 +180,7 @@
   #materials-home .hero-copy { font-size: 13px; width: 100%; }
   #materials-home .mh-hero-cta { margin-top: 22px; gap: 18px; font-size: 12px; }
   #materials-home .mh-primary { padding: 12px 18px; gap: 24px; }
-  #materials-home .hero-status { left: 0; right: auto; bottom: -42px; font-size: 9px; }
+  #materials-home .hero-status { left: 6vw; right: auto; bottom: 62px; font-size: 9px; }
   #materials-home .mh-art { display: none; }
   #materials-home .mh-art::after { font-size: 8px; }
   #materials-home .mh-sheet-title { font-size: 18px; margin: 6px 0; }
