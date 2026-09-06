@@ -137,6 +137,20 @@
   ],
   "chars": 103856
  },
+ "01_concept/hai-cognitive-science.html": {
+  "blocks": [
+   "OZ-BG",
+   "OZ-BODYSTYLE",
+   "OZ-FIGFLOW",
+   "OZ-HEROFX",
+   "OZ-HEROSIZE",
+   "OZ-HOME",
+   "OZ-QR",
+   "OZ-SPACING",
+   "OZ-XREFCSS"
+  ],
+  "chars": 213904
+ },
  "01_concept/human-in-on-the-loop-v2.html": {
   "blocks": [
    "OZ-BG",
@@ -1648,7 +1662,7 @@
  },
  "matrix.html": {
   "blocks": [],
-  "chars": 240418
+  "chars": 245299
  },
  "template.html": {
   "blocks": [
