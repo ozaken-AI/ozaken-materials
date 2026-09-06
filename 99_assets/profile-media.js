@@ -6,6 +6,8 @@
   var keys = ['portrait', 'lecture', 'community', 'field', 'course', 'public', 'policy'];
   var slides = Array.from(profile.querySelectorAll('.pd-slide'));
   var media = [], ready = false;
+  var script = document.currentScript;
+  var configURL = script && script.getAttribute('data-profile-config') || '99_assets/profile-media.json';
 
   function imageURL(source) {
     if (typeof source !== 'string' || !source.trim()) return null;
@@ -81,7 +83,7 @@
   } else if (location.protocol === 'file:') {
     configure({});
   } else {
-    fetch('99_assets/profile-media.json')
+    fetch(configURL)
       .then(function (response) {
         if (!response.ok) throw new Error('Profile media settings are unavailable');
         return response.json();

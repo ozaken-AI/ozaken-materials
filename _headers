@@ -1,34 +1,13 @@
-# Cloudflare Pages に渡す、応答ヘッダーの指定。
+# Cloudflare Pages: HTML と資産を再利用する前に ETag で確かめる。
+# 内容が同じなら 304 応答でキャッシュを再利用し、画像も再転送しない。
+# Pages 自体の CDN キャッシュはこの指定で無効にはならない。
+# https://developers.cloudflare.com/pages/configuration/serving-pages/
 #
-# **既定では、何ひとつエッジに残らない。**
-# Pages はすべてのファイルに `cache-control: public, max-age=0, must-revalidate`
-# を付けるので、画像もPDFも毎回いちばん奥まで取りに行く。
-# 実測すると資料アーカイブの玄関は cf-cache-status: DYNAMIC だった。
+# CSS / JS / 設定 JSON は index.html 内で内容ハッシュを URL に付ける。
+# 旧版を長期保存済みのブラウザにも、新しい URL で最新の組み合わせを渡す。
+# 公開前: python3 scripts/version-site-assets.py
 #
-# 会場で全員が同時にQRを踏む使い方なので、
-# 変わらないものは東京のエッジで止めておく。
-#
-# HTMLには何も指定しない。**指定するとデプロイの反映が遅れて、
-# 直したはずのものが出てこない。** 資料の差し替えは頻繁なので、
-# ここは既定のまま（毎回確認しに行く）でよい。
-
-# 画像・ロゴ・書影。差し替えることはあるので、1日で確かめ直す。
-# stale-while-revalidate があるので、確かめている間も古い方が即座に出る
-/99_assets/*
-  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
-
-# 配布物のPDF。中身を変えるときはファイル名も変える運用なので、長く置ける
-/99_assets/*.pdf
-  Cache-Control: public, max-age=2592000, stale-while-revalidate=604800
-
-/*.pdf
-  Cache-Control: public, max-age=2592000, stale-while-revalidate=604800
-
-# ファビコンは、ブラウザが持ち続けるものなので短めに。
-# 長くすると、差し替えても古い顔がタブに残り続ける
-/99_assets/favicon-32.png
-  Cache-Control: public, max-age=86400
-/99_assets/favicon-512.png
-  Cache-Control: public, max-age=86400
-/99_assets/apple-touch-icon.png
-  Cache-Control: public, max-age=86400
+# 複数パターンに同じヘッダーを書くと値が結合されるため、指定は一度だけ。
+# https://developers.cloudflare.com/pages/configuration/headers/
+/*
+  Cache-Control: public, max-age=0, must-revalidate
