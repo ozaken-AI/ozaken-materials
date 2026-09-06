@@ -111,7 +111,13 @@ node newsletter/selftest.mjs
 Cloudflare Pages が `main` を見ていて、push のたびに自動で配信し直します。
 
 ```bash
+python3 scripts/version-site-assets.py
+python3 scripts/version-site-assets.py --check
 git add .
 git commit -m "資料を更新"
 git push origin main
 ```
+
+トップの CSS / JavaScript / プロフィール画像設定を変更した場合も、上記のバージョン更新を実行してください。内容ハッシュを参照 URL に付け、古い CSS と新しい HTML が混在する表示崩れを防ぎます。
+
+トップのデザインは `99_assets/materials-home.css` と `materials-home.js` で管理し、`#materials-home` 内に限定します。青・濃紺・赤の既存配色を引き継ぎ、講演用プロフィールや ST / GO / EN のオーバーレイには適用しません。資料の `.card` / `.card-tag` / `h3` / `.doc-list a` の階層、秘密コマンド、`data-ozk`、各種ゲート、WEEKLY / LETTER の置換マーカーを維持してください。
