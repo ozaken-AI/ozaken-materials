@@ -40,7 +40,6 @@
 #materials-home .mh-text-link { border-bottom: 1px solid #738074; padding: 10px 0; }
 #materials-home .mh-art { position: absolute; z-index: 2; width: min(41vw, 565px); aspect-ratio: 1; right: 2.7vw; top: 50%; transform: translateY(-43%); perspective: 1100px; pointer-events: none; }
 #materials-home .mh-art::before { content: ''; position: absolute; inset: 0 5% 4%; border: 1px solid #768e6859; border-radius: 50%; transform: rotateX(62deg) rotateZ(-25deg); }
-#materials-home .mh-art::after { content: 'KNOWLEDGE INTO ACTION'; position: absolute; bottom: -4%; right: 10%; font: 10px var(--font-en); letter-spacing: .2em; color: #56674f; }
 #materials-home .mh-sheet { position: absolute; width: 72%; min-height: 46%; border: 1px solid #c7d1bf; border-radius: 7px; padding: 6% 6% 3%; background: linear-gradient(130deg,#fffffff0,#f2f4e8f0); box-shadow: 1px 2px 0 #c1cbb7, 3px 5px 0 #edf0e1, 20px 32px 45px #1b372a22; transform-style: preserve-3d; animation: mh-sheet-float 7s ease-in-out infinite alternate; animation-play-state: paused; }
 #materials-home .is-in-view .mh-sheet { animation-play-state: running; }
 #materials-home .mh-sheet-back { top: 0; left: 21%; --sheet-angle: -12deg; --sheet-tilt: 18deg; --sheet-turn: -23deg; animation-delay: -.4s; }
@@ -117,6 +116,7 @@
 #materials-home .card:hover { transform: none; box-shadow: none; }
 #materials-home .card::before { display: none; }
 #materials-home #archive .card h3 { padding-right: 0; font-family: var(--font-ja-sans); }
+#materials-home #archive .card { grid-template-rows: min-content min-content min-content 1fr; align-items: start; }
 #materials-home #archive .card-tag { -webkit-text-stroke: 0; }
 #materials-home #archive .doc-list a { background: none; border-left: 0; border-radius: 0; }
 #materials-home .sec-navy .card { background: #ffffff08; border-color: #ffffff26; }
@@ -129,6 +129,8 @@
 #materials-home .nl-form input[type=email] { background: #faffef; border-color: #a5b799; color: #203c32; }
 #materials-home .nl-form input[type=email]::placeholder { color: #647c59; }
 #materials-home .nl-fine a { color: #365b47; }
+#materials-home .nl-msg.on { color: #203c32; background: #f6faee; border-left-color: #547d50; }
+#materials-home .nl-msg.ng { color: #8b2934; background: #f9e7e7; border-left-color: #ac4050; }
 #materials-home .pro-photo { border-radius: 4px; }
 #materials-home .pro-nums span b { color: #d7e9ac; }
 #materials-home .aicx-hero { background: #ffffff06; border-color: #ffffff25; box-shadow: none; }
