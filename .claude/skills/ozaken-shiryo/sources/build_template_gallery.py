@@ -110,7 +110,7 @@ def build():
 <article><span>04 / COLOUR</span><h3>色を、意味のために使う。</h3><div class="tl-swatches"><i style="--sw:#141d35">地</i><i style="--sw:#2e5496">基準</i><i style="--sw:#2f8f8a">達成</i><i style="--sw:#e23744">注意</i></div><p>紺・紙色・青を軸に、赤と青緑を要点へ。数字の内訳には凡例を添え、色だけで意味を伝えません。</p></article>
 <article><span>05 / MOTION</span><h3>動きは、説明の順番。</h3><div class="tl-motion-demo"><i></i><span></span><i></i><span></span><i></i></div><p>最初は完成形を見せ、必要に応じて再生。話し手は途中で止め、段階を選び、何度でも見せ直せます。</p></article>
 <article><span>06 / LEGIBILITY</span><h3>小さくする前に、組み替える。</h3><div class="tl-size-demo"><i>図</i><span>図<br>説明<br>補足</span></div><p>スマートフォンでは表をカードへ、比較を縦へ。単位・ラベル・出典は動かさず、読む時間を確保します。</p></article></div>
-<details class="tl-maker"><summary>作り手向け：生成と運用</summary><p>この便覧は、既存の30図版・24本文ブロックの呼び出し例を読み取り、便覧専用の表示と動きを組み立てています。今回のデザイン変更はテンプレートだけに適用しています。</p><pre>python3 .claude/skills/ozaken-shiryo/sources/build_template_gallery.py --preview /absolute/work/template.html</pre><p>本番の再生成は環境変数 OZAKEN_PW を設定して --publish。既存の暗号鍵を維持し、template.html だけを更新します。個別資料の生成雛形 gen_template.py と、共有の描画関数には新しい演出を適用しません。</p></details>'''
+<details class="tl-maker"><summary>作り手向け：生成と運用</summary><p>この便覧は、既存の30図版・24本文ブロックの呼び出し例を読み取り、便覧専用の表示と動きを組み立てています。今回のデザイン変更はテンプレートだけに適用しています。</p><pre>python3 .claude/skills/ozaken-shiryo/sources/build_template_gallery.py --preview /absolute/work/template.html</pre><p>本番の再生成は環境変数 OZAKEN_PW を設定して --publish。既存の暗号鍵を維持し、template.html だけを更新します。既存の個別資料と、共有の描画関数には新しい演出を適用しません。</p></details>'''
     default=next(x for x in CATALOG if x['id']=='dims')
     catalogue_json=json.dumps(CATALOG,ensure_ascii=False).replace('<','\\u003c')
     block_runtime=build_page.TAIL[build_page.TAIL.index('<script>\n/* ══ 押せる部品'):]
