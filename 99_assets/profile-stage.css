@@ -1,0 +1,142 @@
+/* Speaker profile. All changes stay inside the existing pr overlay. */
+#profile-fs { background:#080e1a; color:#f5f4f0; overscroll-behavior:contain; }
+#profile-fs::before { background:radial-gradient(ellipse at 83% 16%,rgba(47,80,123,.28),transparent 56%); opacity:1; animation:none; }
+#profile-fs::after { opacity:.12; }
+#profile-fs .thanks-net { opacity:.23; }
+#profile-fs .pf-doc { max-width:1280px; padding:0 clamp(24px,6vw,84px) 100px; }
+#profile-fs .pf-hud { display:none; }
+#profile-fs .pf-tools { top:18px; right:18px; }
+#profile-fs .pf-btn { border-radius:50%; background:#101a2b; border-color:#506078; }
+#profile-fs .pf-scrollhint { display:none; }
+#profile-fs .pfv-hero { position:relative; isolation:isolate; min-height:100svh; display:grid; grid-template-columns:1.22fr 1fr; align-items:center; column-gap:clamp(24px,4vw,64px); padding:80px 0 112px; box-sizing:border-box; }
+#profile-fs .pfv-wordmark { position:absolute; z-index:-1; left:-.035em; right:0; bottom:70px; overflow:hidden; font:700 clamp(90px,18vw,240px)/.8 var(--font-en); letter-spacing:-.04em; color:rgba(159,198,245,.045); pointer-events:none; }
+#profile-fs .pfv-intro { position:relative; z-index:2; }
+#profile-fs .pfv-kicker { color:#a7bed9; font:600 clamp(10px,1vw,13px)/1.5 var(--font-en); letter-spacing:.22em; margin-bottom:20px; }
+#profile-fs .pfv-kicker span { font-size:.8em; letter-spacing:.14em; white-space:nowrap; }
+#profile-fs #pfv-name { color:#fff; font:500 clamp(48px,6.8vw,92px)/1.18 var(--font-ja-serif); letter-spacing:.025em; margin:0; }
+#profile-fs #pfv-name>span { margin-left:.11em; }
+#profile-fs .pfv-alias { color:#c6d2e1; font:400 clamp(13px,1.5vw,18px)/1.5 var(--font-ja-sans); letter-spacing:.2em; margin:12px 0 0; }
+#profile-fs .pfv-vision { margin:clamp(24px,4.2vh,42px) 0 28px; padding-left:20px; border-left:2px solid #ed6572; }
+#profile-fs .pfv-vision>span { display:block; color:#b5c7df; font:600 10px/1.5 var(--font-en); letter-spacing:.28em; margin-bottom:12px; }
+#profile-fs .pfv-vision p { font:500 clamp(23px,3.2vw,40px)/1.65 var(--font-ja-serif); color:#f5f4f0; margin:0; letter-spacing:.02em; }
+#profile-fs .pfv-vision p span { color:#f17580; }
+#profile-fs .pfv-mainrole { font-size:clamp(14px,1.55vw,19px); color:#eef1f7; line-height:1.7; margin-bottom:10px; }
+#profile-fs .pfv-mainrole b { font-weight:500; white-space:nowrap; }
+#profile-fs .pfv-otherroles { font-size:clamp(11px,1.15vw,14px); line-height:1.9; color:#b4c2d5; }
+#profile-fs .pfv-portrait { position:relative; width:100%; max-width:440px; margin:0; justify-self:end; }
+#profile-fs .pfv-portrait img { display:block; width:100%; height:auto; aspect-ratio:3/4; object-fit:cover; object-position:50% 8%; filter:grayscale(.78) contrast(1.07); border-radius:1px; }
+#profile-fs .pfv-portrait::before { content:''; position:absolute; inset:-14px 14px 14px -14px; border:1px solid #516780; pointer-events:none; }
+#profile-fs .pfv-portrait::after { content:''; position:absolute; inset:0; background:linear-gradient(180deg,transparent 65%,rgba(8,14,26,.5)); pointer-events:none; }
+#profile-fs .pfv-portrait figcaption { position:relative; z-index:1; font:400 12px/1.6 var(--font-ja-serif); color:#c0cde0; letter-spacing:.15em; margin-top:16px; text-align:right; }
+#profile-fs .pfv-photo-rule { position:absolute; width:52px; height:3px; background:#ee6b78; left:-26px; top:32px; z-index:2; transform-origin:left; }
+#profile-fs .pfv-axes { position:absolute; bottom:58px; left:0; right:0; display:grid; grid-template-columns:repeat(3,1fr); border-top:1px solid #364256; padding-top:20px; }
+#profile-fs .pfv-axes span { font:500 clamp(13px,1.6vw,20px)/1.5 var(--font-ja-serif); letter-spacing:.06em; }
+#profile-fs .pfv-axes i { font:400 10px/1.5 var(--font-en); color:#ee8290; font-style:normal; margin-right:12px; }
+#profile-fs.show .pfv-portrait img { animation:pfv-photo 1.25s cubic-bezier(.18,.7,.2,1) both; }
+#profile-fs.show .pfv-photo-rule { animation:pfv-rule .85s .35s both; }
+#profile-fs.show .pfv-kicker,#profile-fs.show #pfv-name,#profile-fs.show .pfv-alias,#profile-fs.show .pfv-vision,#profile-fs.show .pfv-mainrole,#profile-fs.show .pfv-otherroles,#profile-fs.show .pfv-axes { animation:pfv-rise .85s cubic-bezier(.18,.7,.2,1) both; }
+#profile-fs.show #pfv-name { animation-delay:.12s; }
+#profile-fs.show .pfv-alias { animation-delay:.22s; }
+#profile-fs.show .pfv-vision { animation-delay:.32s; }
+#profile-fs.show .pfv-mainrole { animation-delay:.47s; }
+#profile-fs.show .pfv-otherroles { animation-delay:.57s; }
+#profile-fs.show .pfv-axes { animation-delay:.7s; }
+@keyframes pfv-photo { from { clip-path:inset(0 0 100% 0); transform:translateY(18px) scale(1.025); } to { clip-path:inset(0); transform:none; } }
+@keyframes pfv-rise { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:none; } }
+@keyframes pfv-rule { from { transform:scaleX(0); } to { transform:scaleX(1); } }
+#profile-fs .pf-sec { margin-bottom:clamp(70px,12vh,130px); scroll-margin-top:85px; }
+#profile-fs .pfv-section-label { color:#a7bed9; font:600 12px/1.5 var(--font-en); letter-spacing:.28em; margin-bottom:16px; }
+#profile-fs #pfv-mission-title { font:500 clamp(32px,4.5vw,58px)/1.5 var(--font-ja-serif); color:#f5f4f0; margin:0; }
+#profile-fs #pfv-mission-title em { color:#f17580; font-style:normal; display:inline-block; }
+#profile-fs .pfv-section-lead { color:#bdcadd; font-size:clamp(14px,1.65vw,19px); line-height:1.9; margin:20px 0; }
+#profile-fs .pfv-network { position:relative; height:clamp(350px,43vw,450px); max-width:1000px; margin:16px auto 0; }
+#profile-fs .pfv-network svg { position:absolute; inset:0; width:100%; height:100%; overflow:visible; }
+#profile-fs .pfv-network path { stroke:#728db1; stroke-width:1.2; vector-effect:non-scaling-stroke; fill:none; stroke-dasharray:1; stroke-dashoffset:1; transition:stroke-dashoffset 1.5s cubic-bezier(.25,.7,.2,1); }
+#profile-fs .pfv-network path:nth-child(2) { transition-delay:.15s; }
+#profile-fs .pfv-network path:nth-child(3) { transition-delay:.3s; }
+#profile-fs .pfv-network path:nth-child(4) { transition-delay:.45s; }
+#profile-fs .pfv-network path:nth-child(5) { transition-delay:.6s; }
+#profile-fs .pfv-network path:nth-child(6) { transition-delay:.75s; }
+#profile-fs .pfv-mission.visible .pfv-network path { stroke-dashoffset:0; }
+#profile-fs .pfv-endpoint { position:absolute; top:var(--ny); left:var(--nx); transform:translate(-50%,-50%); color:#f1f3f8; text-align:center; font:500 clamp(18px,2.6vw,28px)/1.5 var(--font-ja-serif); background:#0b1322; min-width:145px; padding:14px 12px; border-top:1px solid #516078; border-bottom:1px solid #27364c; }
+#profile-fs .pfv-endpoint small { display:block; color:#bac8db; font:400 clamp(11px,1.1vw,13px)/1.7 var(--font-ja-sans); margin-top:5px; white-space:nowrap; }
+#profile-fs .pfv-hub { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:#1e283c; border:1px solid #e16b7a; width:132px; aspect-ratio:1; display:flex; flex-direction:column; align-items:center; justify-content:center; border-radius:50%; color:#fff; font:500 25px/1.5 var(--font-ja-serif); box-shadow:0 0 70px #bb46541c; }
+#profile-fs .pfv-hub small { font:500 9px/1.8 var(--font-en); letter-spacing:.24em; color:#c8d5e5; margin-top:6px; }
+#profile-fs .pfv-signal { position:absolute; width:6px; height:6px; border-radius:50%; background:#f17580; top:50%; left:50%; margin:-3px; box-shadow:0 0 14px #f17580; pointer-events:none; }
+#profile-fs .pfv-replay { display:block; margin:12px auto 38px; background:transparent; border:1px solid #516078; color:#cfdaea; font:400 12px/1.5 var(--font-ja-sans); padding:10px 18px; border-radius:3px; min-height:44px; cursor:pointer; }
+#profile-fs .pfv-replay:hover { background:#1e283c; }
+#profile-fs .pfv-practices { display:grid; grid-template-columns:repeat(3,1fr); gap:28px; }
+#profile-fs .pfv-practices article { border-top:1px solid #516078; padding-top:22px; }
+#profile-fs .pfv-practices article>span { color:#d77f8a; font:500 10px/1.5 var(--font-en); letter-spacing:.13em; }
+#profile-fs .pfv-practices h4 { color:#fff; font:500 clamp(22px,2.7vw,31px)/1.6 var(--font-ja-serif); margin:14px 0 10px; }
+#profile-fs .pfv-practices p { color:#c0cde0; font-size:14px; line-height:1.9; }
+#profile-fs .pfv-nav { position:fixed; z-index:7; top:16px; left:50%; transform:translateX(-50%); display:flex; gap:4px; padding:5px; background:rgba(12,20,35,.96); border:1px solid #38475e; border-radius:30px; max-width:calc(100% - 28px); }
+#profile-fs .pfv-mission { display:grid; grid-template-columns:1fr 1.35fr; column-gap:36px; align-items:start; margin-top:60px; }
+#profile-fs .pfv-section-label { grid-column:1; }
+#profile-fs #pfv-mission-title { grid-column:1; }
+#profile-fs .pfv-section-lead { grid-column:1; }
+#profile-fs .pfv-network { grid-column:2; grid-row:1 / span 4; width:100%; height:390px; margin:0; }
+#profile-fs .pfv-replay { grid-column:2; margin:0 auto 12px; }
+#profile-fs .pfv-practices { grid-column:1 / -1; margin-top:28px; }
+#profile-fs .pfv-nav button { min-height:36px; padding:6px 17px; border:0; border-radius:22px; background:transparent; color:#b8c6d9; font:500 12px/1.5 var(--font-ja-sans); white-space:nowrap; cursor:pointer; }
+#profile-fs .pfv-nav button[aria-current=true] { background:#d7e2ef; color:#142238; }
+#profile-fs .pf-sec-title { font-size:clamp(24px,3.4vw,42px); font-weight:500; }
+#profile-fs .pf-sec-title::before { content:none; }
+#profile-fs .pf-sec-no { color:#db7d89; }
+#profile-fs .pf-sec-no::before,#profile-fs .pf-sec-no::after { content:none; }
+#profile-fs .pf-sec-head { gap:22px; margin-bottom:28px; padding-bottom:18px; }
+#profile-fs .pf-sec-head::after { background:linear-gradient(90deg,#e17683,#879fbe); height:1px; }
+#profile-fs .pf-nums { gap:26px; }
+#profile-fs .pf-num { border:0; border-top:1px solid #3a4a62; background:transparent; border-radius:0; padding:30px 0; }
+#profile-fs .pf-num b { font-size:clamp(42px,6vw,76px); font-weight:500; }
+#profile-fs .pf-num>span { color:#bdcbdf; font-size:14px; }
+#profile-fs .pf-num.accent { background:transparent; border-color:#e17683; }
+#profile-fs .pfv-datestamp { color:#8fa4bf; font-size:11px; line-height:1.8; margin-top:18px; }
+#profile-fs .pf-wall { grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr)); gap:10px; background:transparent; border:0; }
+#profile-fs .pf-mark { padding:24px 18px; background:#0b1424; border:1px solid #29364a; border-radius:0; }
+#profile-fs .pf-wall:has(> .pf-mark:only-child) { max-width:440px; }
+#profile-fs .pf-mark.lead { background:#182238; }
+#profile-fs .pf-mark small { color:#b4c4d9; line-height:1.7; }
+#profile-fs .pf-bookcard { border:0; border-bottom:1px solid #43546e; background:transparent; padding:24px 0; }
+#profile-fs .pf-bookcard img { border-radius:1px; box-shadow:12px 18px 25px #0005; }
+#profile-fs .pf-bookcard h5 { font-weight:500; line-height:1.8; }
+#profile-fs .pf-client-mask { display:none; }
+#profile-fs .pf-client-badge { display:none; }
+#profile-fs .pf-client-note { font-size:15px; color:#d5dfed; }
+#profile-fs .pfv-source { color:#a8bfdc; font-size:12px; display:inline-block; margin-top:14px; }
+@media (max-height:780px) and (min-width:761px) {
+  #profile-fs .pfv-hero { padding:64px 0 98px; }
+  #profile-fs .pfv-portrait { max-width:min(34vw,calc((100svh - 190px) * .75)); }
+  #profile-fs .pfv-vision { margin:22px 0; }
+  #profile-fs #pfv-name { font-size:clamp(48px,6vw,78px); }
+  #profile-fs .pfv-axes { bottom:36px; padding-top:16px; }
+}
+@media (max-width:760px) {
+  #profile-fs .pf-doc { padding:0 24px 80px; }
+  #profile-fs .pfv-hero { grid-template-columns:1fr; padding:80px 0 158px; gap:36px; min-height:0; }
+  #profile-fs .pfv-portrait { width:70%; max-width:320px; justify-self:center; }
+  #profile-fs .pfv-vision p { font-size:clamp(24px,5.6vw,36px); }
+  #profile-fs .pfv-mainrole { font-size:15px; }
+  #profile-fs .pfv-otherroles { font-size:12px; }
+  #profile-fs .pfv-axes { bottom:80px; padding-top:18px; gap:6px; }
+  #profile-fs .pfv-axes span { font-size:13px; }
+  #profile-fs .pfv-axes i { display:block; margin:0 0 4px; }
+  #profile-fs .pfv-kicker span { display:none; }
+  #profile-fs .pfv-wordmark { bottom:82px; font-size:20vw; }
+  #profile-fs .pfv-mission { display:block; }
+  #profile-fs .pfv-network { height:360px; }
+  #profile-fs .pfv-endpoint { min-width:0; width:30%; padding:10px 3px; font-size:18px; }
+  #profile-fs .pfv-endpoint small { font-size:11px; white-space:normal; max-width:none; text-wrap:balance; }
+  #profile-fs .pfv-hub { width:78px; font-size:18px; }
+  #profile-fs .pfv-hub small { font-size:8px; letter-spacing:.14em; }
+  #profile-fs .pfv-practices { grid-template-columns:1fr; gap:24px; }
+  #profile-fs .pfv-practices h4 { margin:9px 0; }
+  #profile-fs .pfv-nav { top:auto; bottom:10px; gap:0; padding:3px; }
+  #profile-fs .pfv-nav button { padding:8px 12px; min-height:44px; font-size:11px; }
+  #profile-fs .pf-nums { gap:16px; }
+  #profile-fs .pf-sec-head { align-items:start; gap:12px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  #profile-fs *,#profile-fs *::before,#profile-fs *::after { animation:none!important; transition:none!important; scroll-behavior:auto!important; }
+  #profile-fs .pf-doc [data-reveal],#profile-fs .pf-stag>* { opacity:1; transform:none; }
+}

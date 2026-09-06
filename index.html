@@ -1994,6 +1994,9 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
 }
 /* ══ /OZ-LETTER ══ */
 </style>
+<link rel="stylesheet" href="99_assets/profile-stage.css">
+<link rel="stylesheet" href="99_assets/stage-effects.css">
+<script src="99_assets/profile-stage.js" defer></script>
 </head>
 <body>
 
@@ -2833,6 +2836,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
 <div id="thanks" class="thanks" aria-hidden="true" role="dialog" aria-label="講演お礼">
   <button class="oz-x" type="button" data-oz-close aria-label="閉じる">✕</button>
   <div class="tk-hud" aria-hidden="true"><i></i><i></i><i></i><i></i><b>OZAKEN CMS ／ SESSION COMPLETE</b></div>
+  <div class="sf-stagehalo" aria-hidden="true"><i></i><i></i><i></i></div>
   <canvas class="thanks-net" aria-hidden="true"></canvas>
   <div class="thanks-inner">
     <span class="thanks-eyebrow">THANK YOU</span>
@@ -2903,6 +2907,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
 <div id="standby" class="thanks" aria-hidden="true" role="dialog" aria-label="講演開始前">
   <button class="oz-x" type="button" data-oz-close aria-label="閉じる">✕</button>
   <div class="tk-hud" aria-hidden="true"><i></i><i></i><i></i><i></i><b>OZAKEN CMS ／ STANDBY</b></div>
+  <div class="sf-stagehalo" aria-hidden="true"><i></i><i></i><i></i></div>
   <canvas class="thanks-net" aria-hidden="true"></canvas>
   <div class="thanks-inner">
     <span class="thanks-eyebrow">PLEASE WAIT</span>
@@ -2925,10 +2930,18 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
   <div class="sb-sweep" aria-hidden="true"></div>
 </div>
 
-<!-- 起動シークエンス：秘密コマンド pr で再生し、終わるとプロフィールを開く -->
-<div class="boot" id="boot" role="presentation" aria-hidden="true">
+<!-- go：開演後は表紙へ。en：終演後は謝辞・QRへ。pr：プロフィールへ直接移動。 -->
+<div class="boot" id="boot" role="dialog" aria-label="講演演出" aria-modal="true" aria-hidden="true">
   <div class="boot-grid"></div>
   <div class="boot-sweep"></div>
+  <div class="sf-nexus" aria-hidden="true">
+    <i class="sf-ring"></i><i class="sf-ring"></i><i class="sf-ring"></i>
+    <div class="sf-core sf-start"><small>HUMAN × AI</small><strong>CONNECT</strong><em>OZAKEN / LECTURE SESSION</em></div>
+    <div class="sf-core sf-end"><small>BEYOND THIS SESSION</small><strong>CONTINUE</strong><em>FROM IDEAS TO ACTION</em></div>
+  </div>
+  <div class="sf-coordinate left" aria-hidden="true">HUMAN<br>KNOWLEDGE<br>CONTEXT</div>
+  <div class="sf-coordinate right" aria-hidden="true">AI<br>POSSIBILITY<br>CONNECTION</div>
+  <div class="sf-horizon" aria-hidden="true"></div>
   <div class="boot-hud"><i></i><i></i><i></i><i></i></div>
   <div class="boot-tag">OZAKEN CMS ／ LECTURE BOOT SEQUENCE</div>
   <div class="boot-proc">
@@ -2960,7 +2973,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
   </div>
   <div class="boot-scanlines"></div>
   <div class="boot-vignette"></div>
-  <button class="boot-skip" type="button" id="bootSkip">SKIP &#9654;</button>
+  <button class="boot-skip" type="button" id="bootSkip">SKIP ／ ESC</button>
 </div>
 <script>
 /* 起動シークエンス：再生し終えたらコールバックを呼ぶ。window.ozBoot(done) で使う */
@@ -3045,7 +3058,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     caption(cap);
   }
   function stopVoice(){ clearInterval(voTimer); clearTimeout(voGap); }
-  var going=false,timer=0,raf=0,done=null;
+  var going=false,timer=0,raf=0,done=null,cleanup=0;
   function counter(){
     var t0=performance.now(),delay=3300,dur=1500;
     function step(now){
@@ -3059,7 +3072,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     if(!going) return;
     going=false; clearTimeout(timer); cancelAnimationFrame(raf); stopSounds(); stopVoice();
     boot.classList.add('is-done'); root.classList.remove('boot-locked');
-    setTimeout(function(){ boot.classList.remove('is-on','is-done'); },450);
+    cleanup=setTimeout(function(){ boot.classList.remove('is-on','is-done'); boot.setAttribute('aria-hidden','true'); },450);
     if(done){ var cb=done; done=null; cb(); }
   }
   document.getElementById('bootSkip').addEventListener('click',function(ev){ ev.stopPropagation(); finish(); });
@@ -3067,19 +3080,19 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
   /* 開始（講演スタート）と終了（セッション終了→QR）で文言だけ差し替える */
   var MODES={
     start:{tag:'OZAKEN CMS ／ LECTURE BOOT SEQUENCE',
-      lines:['INITIALIZING OZAKEN CMS','MOUNTING ARCHIVE VOLUME','CONTEXT ASSET LEDGER',
-             'MASTER DATA','HARNESS RUNTIME','STARTING LECTURE SESSION'],
+      lines:['HUMAN PERSPECTIVE','AI POSSIBILITY','SHARED CONTEXT',
+             'KNOWLEDGE CONNECTION','IDEAS INTO PRACTICE','SESSION READY'],
       bar:'STARTING LECTURE SESSION',proc:'セッション開始プロセス進行中',
       mod:'SESSION START',lead:'セッションを開始します',
       name:'小澤健祐（おざけん）',sub:'AIをすべての人に届けるために、書き、話し、つくり続けている。',
-      voCap:'おざけん コンテンツ管理システム　起動'},
+      voCap:'人間とAIをつなぐ　セッション開始'},
     end:{tag:'OZAKEN CMS ／ SESSION END SEQUENCE',
-      lines:['CLOSING LECTURE SESSION','SAVING SESSION LOG','ARCHIVING SLIDES',
-             'INDEXING MATERIALS','PUBLISHING ARCHIVE URL','GENERATING ACCESS CODE'],
-      bar:'GENERATING ACCESS CODE',proc:'セッション終了プロセス進行中',
+      lines:['SESSION COMPLETE','IDEAS CONNECTED','KEEP ASKING QUESTIONS',
+             'EXPLORE THE MATERIALS','BRING IDEAS TO WORK','CONTINUE LEARNING'],
+      bar:'CONTINUE EXPLORING',proc:'セッション終了プロセス進行中',
       mod:'SESSION COMPLETE',lead:'Thank You',
-      name:'資料アーカイブをご用意しました',sub:'続きは、QRコードからお持ち帰りください。',
-      voCap:'おざけん コンテンツ管理システム　アーカイブ生成完了'}
+      name:'今日の問いを、次の実践へ。',sub:'資料アーカイブは、次の画面のQRコードから。',
+      voCap:'セッション終了　学びは、ここから続いていく'}
   };
   function applyMode(m){
     var c=MODES[m]||MODES.start;
@@ -3099,10 +3112,13 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
   window.ozBoot=function(cb,mode){
     if(reduce){ if(cb) cb(); return; }
     if(going) return;
-    going=true; done=cb||null;
+    clearTimeout(cleanup); going=true; done=cb||null;
+    boot.setAttribute('aria-hidden','false');
     var conf=applyMode(mode);
     if(pct) pct.textContent='0%';
-    boot.classList.remove('is-done'); boot.classList.add('is-on');
+    boot.classList.remove('is-on','is-done');
+    void boot.offsetWidth; // Restart the timeline even when replaying during the previous fade-out.
+    boot.classList.add('is-on');
     root.classList.add('boot-locked');
     counter(); sounds(); narrate(conf.voCap);
     timer=setTimeout(finish,6800);
@@ -3194,110 +3210,69 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
   </div>
 
   <div class="pf-doc">
-    <!-- ヒーロー -->
-    <div class="pf-hero pf-stag" data-reveal>
-      <div class="pf-portrait">
-        <img src="99_assets/ozaken-portrait.jpg" alt="小澤健祐（おざけん）のポートレート" loading="lazy">
-        <span class="pf-pt-cap">KENSUKE OZAWA ── OZAKEN</span>
-      </div>
-      <div>
-        <span class="pf-eyebrow">SPEAKER PROFILE</span>
-        <h2 class="pf-name">小澤健祐<span class="en">KENSUKE OZAWA ／ おざけん</span></h2>
-        <span class="pf-vision-rule">VISION</span>
-        <p class="pf-vision">「人間とAIが<span class="pf-hot">共存</span>する<br>社会をつくる」</p>
-        <div class="pf-roles">
-          <span class="pf-chip lead"><span class="em">AICX協会</span> 代表理事 / Founder</span>
-          <span class="pf-chip"><span class="em">経済産業省</span> WG委員</span>
-          <span class="pf-chip"><span class="em">Cynthialy</span> 取締役CCO</span>
-          <span class="pf-chip"><span class="em">Cinematorico</span> 創業者COO</span>
+    <section class="pfv-hero" id="pfv-person" aria-labelledby="pfv-name">
+      <div class="pfv-wordmark" aria-hidden="true">OZAKEN</div>
+      <div class="pfv-intro">
+        <p class="pfv-kicker">KENSUKE OZAWA <span>／ SPEAKER PROFILE</span></p>
+        <h2 id="pfv-name">小澤<span>健祐</span></h2>
+        <p class="pfv-alias">おざけん</p>
+        <div class="pfv-vision">
+          <span>VISION</span>
+          <p>人間とAIが<span>共存</span>する<br>社会をつくる。</p>
         </div>
+        <p class="pfv-mainrole">一般社団法人AICX協会 <b>代表理事</b></p>
+        <p class="pfv-otherroles">経済産業省 AX時代におけるスキルのあり方検討WG 委員<br>Cynthialy 取締役CCO ／ Cinematorico 創業者COO</p>
       </div>
-      <div class="pf-hero-giant" aria-hidden="true">OZAKEN</div>
-    </div>
+      <figure class="pfv-portrait">
+        <img src="99_assets/ozaken-portrait.jpg" alt="小澤健祐（おざけん）" width="900" height="1200" loading="eager" decoding="async">
+        <figcaption>人と技術のあいだに、立つ。</figcaption>
+        <span class="pfv-photo-rule" aria-hidden="true"></span>
+      </figure>
+      <div class="pfv-axes" aria-label="活動の3つの軸">
+        <span><i>01</i>発信する</span><span><i>02</i>実装する</span><span><i>03</i>人を育てる</span>
+      </div>
+    </section>
 
-    <!-- ビジョン／ミッション図版 -->
-    <div class="pf-figure" data-reveal>
-      <p class="fig-t">バラバラだったものを、<span class="accent">僕が真ん中に立ってつなぐ</span>。</p>
-      <div class="pf-figscroll">
-        <svg viewBox="0 0 700 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="左は産・学・官・顧客・部署・人が同じ配置で並びながら、中央が空洞でどこともつながっていない状態。右はまったく同じ配置のまま、中央にAIエージェントが立ち、6つすべてが線でつながっている状態。左右で変わるのはつながりの有無だけ。">
-          <defs><marker id="pfBr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="#ff5d6a"/></marker></defs>
-
-          <!-- 左：いま。同じ6要素が、同じ位置に、つながらずに置かれている -->
-          <text x="40" y="40" font-size="13.5" font-family="'Shippori Mincho B1',serif" fill="rgba(216,228,240,0.7)">いま ── つながっていない</text>
-          <rect x="34" y="56" width="252" height="270" rx="14" fill="rgba(255,255,255,0.04)" stroke="rgba(216,228,240,0.14)"/>
-          <!-- 中央に向かって伸びようとして、届いていない線 -->
-          <g stroke="#ff5d6a" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.65">
-            <line x1="160" y1="125" x2="160" y2="153"/>
-            <line x1="217.2" y1="158" x2="192.9" y2="172"/>
-            <line x1="217.2" y1="224" x2="192.9" y2="210"/>
-            <line x1="160" y1="257" x2="160" y2="229"/>
-            <line x1="102.8" y1="224" x2="127.1" y2="210"/>
-            <line x1="102.8" y1="158" x2="127.1" y2="172"/>
-          </g>
-          <!-- 真ん中は空洞。つなぐ役がいない -->
-          <circle cx="160" cy="191" r="30" fill="none" stroke="#ff5d6a" stroke-width="1.4" stroke-dasharray="4 5" opacity="0.75"/>
-          <g>
-            <circle class="pf-pop" cx="160" cy="106" r="19" fill="rgba(255,255,255,0.06)" stroke="rgba(216,228,240,0.3)" stroke-width="1.2"/><text x="160" y="110" text-anchor="middle" font-size="11.5" fill="rgba(216,228,240,0.6)">企業</text>
-            <circle class="pf-pop" cx="233.6" cy="148.5" r="19" fill="rgba(255,255,255,0.06)" stroke="rgba(216,228,240,0.3)" stroke-width="1.2"/><text x="233.6" y="152.5" text-anchor="middle" font-size="11.5" fill="rgba(216,228,240,0.6)">教育</text>
-            <circle class="pf-pop" cx="233.6" cy="233.5" r="19" fill="rgba(255,255,255,0.06)" stroke="rgba(216,228,240,0.3)" stroke-width="1.2"/><text x="233.6" y="237.5" text-anchor="middle" font-size="11.5" fill="rgba(216,228,240,0.6)">行政</text>
-            <circle class="pf-pop" cx="160" cy="276" r="19" fill="rgba(255,255,255,0.06)" stroke="rgba(216,228,240,0.3)" stroke-width="1.2"/><text x="160" y="280" text-anchor="middle" font-size="11" fill="rgba(216,228,240,0.6)">現場</text>
-            <circle class="pf-pop" cx="86.4" cy="233.5" r="19" fill="rgba(255,255,255,0.06)" stroke="rgba(216,228,240,0.3)" stroke-width="1.2"/><text x="86.4" y="237.5" text-anchor="middle" font-size="11" fill="rgba(216,228,240,0.6)">業界</text>
-            <circle class="pf-pop" cx="86.4" cy="148.5" r="19" fill="rgba(255,255,255,0.06)" stroke="rgba(216,228,240,0.3)" stroke-width="1.2"/><text x="86.4" y="152.5" text-anchor="middle" font-size="11.5" fill="rgba(216,228,240,0.6)">生活者</text>
-          </g>
-          <text x="160" y="312" text-anchor="middle" font-size="12" font-family="'Shippori Mincho B1',serif" fill="#ff5d6a">真ん中に、つなぐ役がいない</text>
-
-          <!-- 中央：ミッション -->
-          <text x="350" y="142" text-anchor="middle" font-size="10.5" font-family="'Hanken Grotesk',sans-serif" letter-spacing="3" fill="#ff5d6a">MISSION</text>
-          <text x="350" y="168" text-anchor="middle" font-size="14.5" font-family="'Shippori Mincho B1',serif" fill="#ff5d6a">分断を超える</text>
-          <path class="pf-draw" d="M300 200 L400 200" stroke="#ff5d6a" stroke-width="3.4" fill="none" marker-end="url(#pfBr)"/>
-          <text x="350" y="228" text-anchor="middle" font-size="11" fill="rgba(216,228,240,0.7)">立場のあいだに</text>
-          <text x="350" y="245" text-anchor="middle" font-size="11" fill="rgba(216,228,240,0.7)">自分が入る</text>
-
-          <!-- 右：これから。位置は左とまったく同じ。中央にAIが入り、線がつながる -->
-          <text x="414" y="40" font-size="13.5" font-family="'Shippori Mincho B1',serif" fill="#d8e4f0">いま ── 真ん中に立って、つないでいる</text>
-          <rect x="414" y="56" width="252" height="270" rx="14" fill="rgba(255,255,255,0.05)" stroke="rgba(216,228,240,0.16)"/>
-          <g stroke="#8fb0e0" stroke-width="1.5" opacity="0.95">
-            <line class="pf-draw" x1="540" y1="159" x2="540" y2="127"/>
-            <line class="pf-draw" x1="567.7" y1="175" x2="595.4" y2="159"/>
-            <line class="pf-draw" x1="567.7" y1="207" x2="595.4" y2="223"/>
-            <line class="pf-draw" x1="540" y1="223" x2="540" y2="255"/>
-            <line class="pf-draw" x1="512.3" y1="207" x2="484.6" y2="223"/>
-            <line class="pf-draw" x1="512.3" y1="175" x2="484.6" y2="159"/>
-          </g>
-          <g>
-            <circle class="pf-pop" cx="540" cy="106" r="19" fill="#16203a" stroke="#d8e4f0" stroke-width="1.2"/><text x="540" y="110" text-anchor="middle" font-size="11.5" fill="#ffffff">企業</text>
-            <circle class="pf-pop" cx="613.6" cy="148.5" r="19" fill="#16203a" stroke="#d8e4f0" stroke-width="1.2"/><text x="613.6" y="152.5" text-anchor="middle" font-size="11.5" fill="#ffffff">教育</text>
-            <circle class="pf-pop" cx="613.6" cy="233.5" r="19" fill="#16203a" stroke="#d8e4f0" stroke-width="1.2"/><text x="613.6" y="237.5" text-anchor="middle" font-size="11.5" fill="#ffffff">行政</text>
-            <circle class="pf-pop" cx="540" cy="276" r="19" fill="#16203a" stroke="#d8e4f0" stroke-width="1.2"/><text x="540" y="280" text-anchor="middle" font-size="11" fill="#ffffff">現場</text>
-            <circle class="pf-pop" cx="466.4" cy="233.5" r="19" fill="#16203a" stroke="#d8e4f0" stroke-width="1.2"/><text x="466.4" y="237.5" text-anchor="middle" font-size="11" fill="#ffffff">業界</text>
-            <circle class="pf-pop" cx="466.4" cy="148.5" r="19" fill="#16203a" stroke="#d8e4f0" stroke-width="1.2"/><text x="466.4" y="152.5" text-anchor="middle" font-size="11.5" fill="#ffffff">生活者</text>
-          </g>
-          <circle class="pf-hub-ring" cx="540" cy="191" r="30" fill="none" stroke="#9fc6f5" stroke-width="1.4"/><circle class="pf-pop" cx="540" cy="191" r="30" fill="#141d35" stroke="#9fc6f5" stroke-width="1.8"/>
-          <text x="540" y="187" text-anchor="middle" font-size="11.5" font-family="'Shippori Mincho B1',serif" fill="#ffffff">おざけん</text>
-          <text x="540" y="203" text-anchor="middle" font-size="8.5" font-family="'Hanken Grotesk',sans-serif" letter-spacing="1" fill="rgba(216,228,240,0.72)">OZAKEN</text>
-          <text x="540" y="312" text-anchor="middle" font-size="12" font-family="'Shippori Mincho B1',serif" fill="#9fc6f5">立場をまたいで、実際に手を動かす</text>
+    <section class="pfv-mission pf-sec" id="pfv-mission" data-reveal aria-labelledby="pfv-mission-title">
+      <div class="pfv-section-label">MISSION</div>
+      <h3 id="pfv-mission-title">分断を超えて、<em>つなぐ。</em></h3>
+      <p class="pfv-section-lead">企業、教育、行政、そして現場。<br>立場をまたいで、AIを実際に使える形へ。</p>
+      <div class="pfv-network" role="img" aria-label="おざけんを中心に企業、教育、行政、現場、業界、生活者がつながる活動の概念図">
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <path pathLength="1" d="M50 50 L16 18"/><path pathLength="1" d="M50 50 L16 50"/><path pathLength="1" d="M50 50 L16 82"/>
+          <path pathLength="1" d="M50 50 L84 18"/><path pathLength="1" d="M50 50 L84 50"/><path pathLength="1" d="M50 50 L84 82"/>
         </svg>
+        <span class="pfv-endpoint" style="--nx:16%;--ny:18%;--delay:0s">企業<small>業務・組織の実装</small></span>
+        <span class="pfv-endpoint" style="--nx:16%;--ny:50%;--delay:.15s">教育<small>学びを実践へ</small></span>
+        <span class="pfv-endpoint" style="--nx:16%;--ny:82%;--delay:.3s">行政<small>人材・地域の変革</small></span>
+        <span class="pfv-endpoint" style="--nx:84%;--ny:18%;--delay:.45s">現場<small>使い続けられる形へ</small></span>
+        <span class="pfv-endpoint" style="--nx:84%;--ny:50%;--delay:.6s">業界<small>企業を超えた共創</small></span>
+        <span class="pfv-endpoint" style="--nx:84%;--ny:82%;--delay:.75s">生活者<small>技術を身近な言葉へ</small></span>
+        <span class="pfv-hub">おざけん<small>OZAKEN</small></span>
       </div>
-      <div class="pf-mission">
-        <span class="pf-mission-lb">MISSION</span>
-        <p class="pf-mission-tx">分断を超えて、<span class="pf-hot">つなぐ</span>。</p>
+      <button type="button" class="pfv-replay">つながりを再生 ↻</button>
+      <div class="pfv-practices">
+        <article><span>01 / COMMUNICATE</span><h4>発信する</h4><p>書籍・記事・講演を通じて、<br>AIの変化を実践の言葉にする。</p></article>
+        <article><span>02 / IMPLEMENT</span><h4>実装する</h4><p>企業や行政とともに、<br>業務と組織の変革を進める。</p></article>
+        <article><span>03 / EDUCATE</span><h4>人を育てる</h4><p>研修・認定資格・コミュニティで、<br>AIを動かす人材を増やす。</p></article>
       </div>
-    </div>
+    </section>
 
         <!-- 数字の壁 ── 説明は口で話す。画面には規模だけを出す -->
-    <section class="pf-sec" data-reveal>
+    <section class="pf-sec" id="pfv-results" data-reveal>
       <div class="pf-sec-head"><span class="pf-sec-no">01</span><h3 class="pf-sec-title">数字で見る</h3></div>
       <div class="pf-nums pf-stag">
-        <div class="pf-num accent"><b><span class="cval" data-to="300">300</span><i>回+</i></b><span>年間登壇</span></div>
+        <div class="pf-num accent"><b><span class="cval" data-to="300">300</span><i>回+</i></b><span>年間の講演・研修・パネル登壇</span></div>
         <div class="pf-num"><b><span class="cval" data-to="1500">1,500</span><i>本+</i></b><span>AI関連記事の執筆</span></div>
-        <div class="pf-num"><b><span class="cval" data-to="3">3</span><i>冊</i></b><span>著書（3冊目 9.17 発売）</span></div>
+        <div class="pf-num"><b><span class="cval" data-to="2">2</span><i>冊</i></b><span>既刊書籍 ＋ 新刊1冊（9.17 発売予定）</span></div>
         <div class="pf-num"><b><span class="cval" data-to="50000">50,000</span><i>人+</i></b><span>Udemy 累計受講者</span></div>
         <div class="pf-num"><b><span class="cval" data-to="20000">20,000</span><i>名+</i></b><span>AI Agent Day 累計参加</span></div>
         <div class="pf-num"><b><span class="cval" data-to="1300">1,300</span><i>人</i></b><span>認定資格の申込</span></div>
       </div>
+      <p class="pfv-datestamp">活動実績：2026年9月6日 本人確認。参加・受講・申込はそれぞれの累計値。</p>
     </section>
 
-    <!-- 登壇 ── ロゴの壁。ここは名前そのものが絵になる -->
+    <!-- 登壇・講演 -->
     <section class="pf-sec" data-reveal>
       <div class="pf-sec-head"><span class="pf-sec-no">02</span><h3 class="pf-sec-title">登壇・講演 ── 年間300回超</h3></div>
       <p class="pf-subhead">CONFERENCE ─ 主要カンファレンス</p>
@@ -3332,12 +3307,12 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     </section>
 
     <!-- 著書 ── 書影が絵。説明は口で -->
-    <section class="pf-sec" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">03</span><h3 class="pf-sec-title">著書 ── 3冊</h3></div>
+    <section class="pf-sec" id="pfv-books" data-reveal>
+      <div class="pf-sec-head"><span class="pf-sec-no">03</span><h3 class="pf-sec-title">著書 ── 実践知を、届ける</h3></div>
       <div class="pf-bookrow pf-stag">
         <div class="pf-bookcard pf-bookcard-new">
           <img src="99_assets/book-uchuichi-yasashii-ai.jpg" alt="『40代・50代でもよくわかる 宇宙一やさしいAIの教科書』書影" loading="lazy" onerror="var c=this.closest('.pf-bookcard');this.remove();if(c)c.classList.add('no-cover')">
-          <div><span class="pf-newbadge">NEW</span><h5>『40代・50代でもよくわかる<br>宇宙一やさしいAIの教科書』</h5><p>2026年9月17日 発売</p></div>
+          <div><span class="pf-newbadge">COMING SOON</span><h5>『40代・50代でもよくわかる<br>宇宙一やさしいAIの教科書』</h5><p>2026年9月17日 発売予定</p></div>
         </div>
         <div class="pf-bookcard">
           <img src="99_assets/book-ai-agent.jpg" alt="『AIエージェントの教科書』書影" loading="lazy">
@@ -3379,18 +3354,19 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     <section class="pf-sec" data-reveal>
       <div class="pf-sec-head"><span class="pf-sec-no">05</span><h3 class="pf-sec-title">AICX協会 ── 代表理事 / Founder</h3></div>
       <div class="pf-logos">
-        <span class="lg"><img src="99_assets/logo-aicx-white.png" alt="一般社団法人AICX協会 ロゴ" loading="lazy"><span>国内初・AIエージェント特化型の業界団体</span></span>
+        <span class="lg"><img src="99_assets/logo-aicx-white.png" alt="一般社団法人AICX協会 ロゴ" loading="lazy"><span>AIエージェントの社会実装を推進する業界団体</span></span>
       </div>
       <div class="pf-cards pf-stag">
         <div class="pf-card"><h4><span class="tag">01</span>カンファレンス</h4><p>AI Agent Day を主催</p></div>
-        <div class="pf-card"><h4><span class="tag">02</span>認定資格</h4><p>人材の“格”を定義する</p></div>
+        <div class="pf-card"><h4><span class="tag">02</span>認定資格</h4><p>実装を担う人材を育てる</p></div>
         <div class="pf-card"><h4><span class="tag">03</span>委員会</h4><p>企業横断で実装の型をつくる</p></div>
         <div class="pf-card"><h4><span class="tag">04</span>官公庁</h4><p>防衛装備庁との取り組みほか</p></div>
       </div>
+      <a class="pfv-source" href="https://prtimes.jp/main/html/rd/p/000000155.000155740.html" target="_blank" rel="noopener">AI Agent Day 2026 Summer 開催報告 ↗</a>
       <div class="pf-metrics pf-stag" style="margin-top:1.2rem">
         <div class="pf-metric accent">
-          <div class="mnum"><span class="cval" data-to="4000">4,000</span><small>人</small></div>
-          <div class="mttl">AI Agent Day 2026 Summer</div>
+          <div class="mnum"><span class="cval" data-to="3823">3,823</span><small>名</small></div>
+          <div class="mttl">AI Agent Day 2026 Summer 参加登録</div>
         </div>
         <div class="pf-metric">
           <div class="mnum"><span class="cval" data-to="20000">20,000</span><small>名+</small></div>
@@ -3401,7 +3377,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
 
     <!-- 認定資格 ── ロゴ・数・3本柱 -->
     <section class="pf-sec" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">06</span><h3 class="pf-sec-title">日本初のAIエージェント認定資格</h3></div>
+      <div class="pf-sec-head"><span class="pf-sec-no">06</span><h3 class="pf-sec-title">AIエージェントを動かす人材を育てる</h3></div>
       <div class="pf-logos">
         <span class="lg plate"><img src="99_assets/logo-strategist.png" alt="AIエージェント・ストラテジスト 認定資格 ロゴ" loading="lazy"><span>AI AGENT STRATEGIST ── 申込 1,300人</span></span>
       </div>
@@ -3414,12 +3390,12 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     </section>
 
     <!-- 肩書き ── 産・官・学をひとつの壁に -->
-    <section class="pf-sec" data-reveal>
+    <section class="pf-sec" id="pfv-roles" data-reveal>
       <div class="pf-sec-head"><span class="pf-sec-no">07</span><h3 class="pf-sec-title">委員・顧問・アドバイザー</h3></div>
       <p class="pf-subhead">GOVERNMENT ─ 国・自治体</p>
       <div class="pf-wall pf-stag">
-        <span class="pf-mark mincho lead">経済産業省<small>AX時代のスキルWG 委員</small></span>
-        <span class="pf-mark mincho">大分県<small>フェロー</small></span>
+        <span class="pf-mark mincho lead">経済産業省<small>AX時代におけるスキルのあり方検討WG 委員</small></span>
+        <span class="pf-mark mincho">大分県 DAIB<small>フェロー（技術顧問）</small></span>
         <span class="pf-mark mincho">千葉県船橋市<small>生成AIアドバイザー</small></span>
       </div>
       <p class="pf-subhead">CORPORATE ─ 企業顧問</p>
@@ -3428,8 +3404,9 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
         <span class="pf-mark en">NTTデータグループ<small>アドバイザー</small></span>
         <span class="pf-mark en">Lightblue<small>顧問</small></span>
         <span class="pf-mark en">THA<small>顧問</small></span>
-        <span class="pf-mark en">Google Gemini<small>アドバイザー（旧）</small></span>
       </div>
+      <p class="pf-subhead">PAST ROLE ─ 過去の役割</p>
+      <div class="pf-wall"><span class="pf-mark en">Google Gemini<small>アドバイザー（旧）</small></span></div>
       <p class="pf-subhead">MEDIA / COMMUNITY</p>
       <div class="pf-wall pf-stag">
         <span class="pf-mark en">NewsPicks<small>AI DIVE メインMC・プロピッカー</small></span>
@@ -3544,6 +3521,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     </div>
   </div>
 
+  <nav class="pfv-nav" aria-label="プロフィールの章"><button type="button" data-pfv-target="pfv-person" aria-current="true">人物</button><button type="button" data-pfv-target="pfv-mission">使命</button><button type="button" data-pfv-target="pfv-results">実績</button><button type="button" data-pfv-target="pfv-books">著書</button><button type="button" data-pfv-target="pfv-roles">役割</button></nav>
   <p class="pf-scrollhint">SCROLL<span class="arw"></span></p>
 </div>
 <script>
