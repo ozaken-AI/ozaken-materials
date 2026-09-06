@@ -1997,6 +1997,7 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
 <link rel="stylesheet" href="99_assets/profile-stage.css">
 <link rel="stylesheet" href="99_assets/stage-effects.css">
 <script src="99_assets/profile-stage.js" defer></script>
+<script src="99_assets/profile-media.js" defer></script>
 </head>
 <body>
 
@@ -3199,330 +3200,136 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
   <div class="tc-hint" id="tcHint">Enter で確定 ／ Esc で閉じる</div>
 </div>
 
-<!-- 秘密コマンド：プロフィール紹介（投影用フルスクリーン） -->
-<div id="profile-fs" class="thanks profile-fs" aria-hidden="true" role="dialog" aria-label="プロフィール紹介">
-  <div class="pf-hud" aria-hidden="true"><i></i><i></i><i></i><i></i><b>OZAKEN CMS ／ LECTURE SESSION</b></div>
+<!-- 秘密コマンド：プロフィール紹介（講演・プロジェクター投影専用） -->
+<div id="profile-fs" class="thanks profile-fs" aria-hidden="true" role="dialog" aria-modal="true" aria-label="講演用プロフィール" tabindex="-1">
   <canvas class="thanks-net" aria-hidden="true"></canvas>
-  <div class="pf-progress" aria-hidden="true"></div>
-  <div class="pf-tools">
+  <div class="pf-tools pd-controls">
     <button type="button" class="pf-btn pf-fs" aria-label="全画面表示" title="全画面">⛶</button>
     <button type="button" class="pf-btn pf-close" aria-label="閉じる" title="閉じる（Esc）">✕</button>
   </div>
-
-  <div class="pf-doc">
-    <section class="pfv-hero" id="pfv-person" aria-labelledby="pfv-name">
-      <div class="pfv-wordmark" aria-hidden="true">OZAKEN</div>
-      <div class="pfv-intro">
-        <p class="pfv-kicker">KENSUKE OZAWA <span>／ SPEAKER PROFILE</span></p>
-        <h2 id="pfv-name">小澤<span>健祐</span></h2>
-        <p class="pfv-alias">おざけん</p>
-        <div class="pfv-vision">
-          <span>VISION</span>
-          <p>人間とAIが<span>共存</span>する<br>社会をつくる。</p>
-        </div>
-        <p class="pfv-mainrole">一般社団法人AICX協会 <b>代表理事</b></p>
-        <p class="pfv-otherroles">経済産業省 AX時代におけるスキルのあり方検討WG 委員<br>Cynthialy 取締役CCO ／ Cinematorico 創業者COO</p>
+  <div class="pf-doc" role="region" aria-label="プロフィール：縦にスクロール">
+    <section class="pd-slide pd-intro" id="pd-person" data-title="人物と理念" aria-label="1 / 10 人物と理念" aria-roledescription="セクション">
+      <div class="pd-intro-copy">
+        <p class="pd-eyebrow pd-enter">KENSUKE OZAWA</p>
+        <h2 class="pd-name pd-enter">小澤 健祐</h2>
+        <p class="pd-alias pd-enter">おざけん</p>
+        <p class="pd-vision pd-enter">人間とAIが<span>共存</span>する<br>社会をつくる。</p>
+        <p class="pd-primary-role pd-enter">一般社団法人AICX協会<br><b>代表理事</b></p>
       </div>
-      <figure class="pfv-portrait">
-        <img src="99_assets/ozaken-portrait.jpg" alt="小澤健祐（おざけん）" width="900" height="1200" loading="eager" decoding="async">
-        <figcaption>人と技術のあいだに、立つ。</figcaption>
-        <span class="pfv-photo-rule" aria-hidden="true"></span>
-      </figure>
-      <div class="pfv-axes" aria-label="活動の3つの軸">
-        <span><i>01</i>発信する</span><span><i>02</i>実装する</span><span><i>03</i>人を育てる</span>
+      <div class="pd-portrait-stage">
+        <div class="pd-sculpture" aria-hidden="true"><i></i><i></i><i></i></div>
+        <figure class="pd-portrait has-media" data-profile-media="portrait" data-profile-media-frame>
+          <img src="99_assets/ozaken-portrait.jpg" alt="小澤健祐" width="900" height="1200" decoding="async">
+          <span class="pd-portrait-fallback" aria-hidden="true">KO<span>HUMAN × AI</span></span>
+          <figcaption><span>HUMAN × AI</span><b>小澤 健祐</b></figcaption>
+        </figure>
+        <span class="pd-photo-label" aria-hidden="true">A BRIDGE TO THE FUTURE.</span>
+      </div>
+      <span class="pd-signature" aria-hidden="true">OZAKEN</span>
+    </section>
+    <section class="pd-slide pd-mission" id="pd-mission" data-title="使命" aria-label="2 / 10 使命" aria-roledescription="セクション">
+      <header class="pd-heading"><p class="pd-eyebrow">MISSION</p><h2>分断を超えて、<em>つなぐ。</em></h2></header>
+      <div class="pd-network" role="img" aria-label="おざけんを中心に、企業・教育・行政・現場・業界・生活者がつながる">
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M50 50L14 16"/><path pathLength="1" d="M50 50L14 50"/><path pathLength="1" d="M50 50L14 84"/><path pathLength="1" d="M50 50L86 16"/><path pathLength="1" d="M50 50L86 50"/><path pathLength="1" d="M50 50L86 84"/></svg>
+        <span class="pd-node" style="--x:14%;--y:16%;--delay:0s">企業</span><span class="pd-node" style="--x:14%;--y:50%;--delay:.18s">教育</span><span class="pd-node" style="--x:14%;--y:84%;--delay:.36s">行政</span>
+        <span class="pd-node" style="--x:86%;--y:16%;--delay:.54s">現場</span><span class="pd-node" style="--x:86%;--y:50%;--delay:.72s">業界</span><span class="pd-node" style="--x:86%;--y:84%;--delay:.9s">生活者</span>
+        <span class="pd-hub">おざけん</span>
+      </div>
+      <p class="pd-takeaway">立場をまたいで、AIを使える形へ。</p>
+    </section>
+    <section class="pd-slide" id="pd-reach" data-title="発信と教育" aria-label="3 / 10 発信と教育" aria-roledescription="セクション">
+      <header class="pd-heading"><p class="pd-eyebrow">COMMUNICATE / EDUCATE</p><h2>発信し、<em>学びを届ける。</em></h2></header>
+      <div class="pd-metrics pd-three">
+        <article class="pd-enter"><p>年間の登壇</p><strong>300<span>回超</span></strong><p>講演・研修・パネル</p></article>
+        <article class="pd-enter"><p>AI関連記事</p><strong>1,500<span>本超</span></strong><p>執筆</p></article>
+        <article class="pd-enter"><p>Udemy受講者</p><strong>50,000<span>人超</span></strong><p>累計</p></article>
       </div>
     </section>
-
-    <section class="pfv-mission pf-sec" id="pfv-mission" data-reveal aria-labelledby="pfv-mission-title">
-      <div class="pfv-section-label">MISSION</div>
-      <h3 id="pfv-mission-title">分断を超えて、<em>つなぐ。</em></h3>
-      <p class="pfv-section-lead">企業、教育、行政、そして現場。<br>立場をまたいで、AIを実際に使える形へ。</p>
-      <div class="pfv-network" role="img" aria-label="おざけんを中心に企業、教育、行政、現場、業界、生活者がつながる活動の概念図">
-        <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-          <path pathLength="1" d="M50 50 L16 18"/><path pathLength="1" d="M50 50 L16 50"/><path pathLength="1" d="M50 50 L16 82"/>
-          <path pathLength="1" d="M50 50 L84 18"/><path pathLength="1" d="M50 50 L84 50"/><path pathLength="1" d="M50 50 L84 82"/>
-        </svg>
-        <span class="pfv-endpoint" style="--nx:16%;--ny:18%;--delay:0s">企業<small>業務・組織の実装</small></span>
-        <span class="pfv-endpoint" style="--nx:16%;--ny:50%;--delay:.15s">教育<small>学びを実践へ</small></span>
-        <span class="pfv-endpoint" style="--nx:16%;--ny:82%;--delay:.3s">行政<small>人材・地域の変革</small></span>
-        <span class="pfv-endpoint" style="--nx:84%;--ny:18%;--delay:.45s">現場<small>使い続けられる形へ</small></span>
-        <span class="pfv-endpoint" style="--nx:84%;--ny:50%;--delay:.6s">業界<small>企業を超えた共創</small></span>
-        <span class="pfv-endpoint" style="--nx:84%;--ny:82%;--delay:.75s">生活者<small>技術を身近な言葉へ</small></span>
-        <span class="pfv-hub">おざけん<small>OZAKEN</small></span>
+    <section class="pd-slide" id="pd-aicx" data-title="AICX協会" aria-label="4 / 10 AICX協会" aria-roledescription="セクション">
+      <header class="pd-heading"><p class="pd-eyebrow">AICX / FOUNDER</p><h2>AIを動かす、<em>人と場をつくる。</em></h2></header>
+      <div class="pd-feature">
+      <div class="pd-metrics pd-two">
+        <article class="pd-enter"><p>AI Agent Day</p><strong>20,000<span>名超</span></strong><p>累計参加</p></article>
+        <article class="pd-enter"><p>AIエージェント・ストラテジスト</p><strong>1,300<span>人</span></strong><p>認定資格への申込</p></article>
       </div>
-      <button type="button" class="pfv-replay">つながりを再生 ↻</button>
-      <div class="pfv-practices">
-        <article><span>01 / COMMUNICATE</span><h4>発信する</h4><p>書籍・記事・講演を通じて、<br>AIの変化を実践の言葉にする。</p></article>
-        <article><span>02 / IMPLEMENT</span><h4>実装する</h4><p>企業や行政とともに、<br>業務と組織の変革を進める。</p></article>
-        <article><span>03 / EDUCATE</span><h4>人を育てる</h4><p>研修・認定資格・コミュニティで、<br>AIを動かす人材を増やす。</p></article>
+        <figure class="pd-media-panel pd-media-community" data-profile-media="community" data-profile-media-frame>
+          <img class="pd-slot-image" alt="" hidden decoding="async">
+          <div class="pd-media-fallback" aria-hidden="true"><div class="pd-orbit-art"><i></i><i></i><i></i><img src="99_assets/logo-aicx-white.png" alt=""></div></div>
+          <figcaption><span>COMMUNITY</span><b>学びが、つながる。</b></figcaption>
+        </figure>
       </div>
     </section>
-
-        <!-- 数字の壁 ── 説明は口で話す。画面には規模だけを出す -->
-    <section class="pf-sec" id="pfv-results" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">01</span><h3 class="pf-sec-title">数字で見る</h3></div>
-      <div class="pf-nums pf-stag">
-        <div class="pf-num accent"><b><span class="cval" data-to="300">300</span><i>回+</i></b><span>年間の講演・研修・パネル登壇</span></div>
-        <div class="pf-num"><b><span class="cval" data-to="1500">1,500</span><i>本+</i></b><span>AI関連記事の執筆</span></div>
-        <div class="pf-num"><b><span class="cval" data-to="2">2</span><i>冊</i></b><span>既刊書籍 ＋ 新刊1冊（9.17 発売予定）</span></div>
-        <div class="pf-num"><b><span class="cval" data-to="50000">50,000</span><i>人+</i></b><span>Udemy 累計受講者</span></div>
-        <div class="pf-num"><b><span class="cval" data-to="20000">20,000</span><i>名+</i></b><span>AI Agent Day 累計参加</span></div>
-        <div class="pf-num"><b><span class="cval" data-to="1300">1,300</span><i>人</i></b><span>認定資格の申込</span></div>
-      </div>
-      <p class="pfv-datestamp">活動実績：2026年9月6日 本人確認。参加・受講・申込はそれぞれの累計値。</p>
-    </section>
-
-    <!-- 登壇・講演 -->
-    <section class="pf-sec" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">02</span><h3 class="pf-sec-title">登壇・講演 ── 年間300回超</h3></div>
-      <p class="pf-subhead">CONFERENCE ─ 主要カンファレンス</p>
-      <div class="pf-wall pf-stag">
-        <span class="pf-mark en lead">AI Agent Day<small>2025 Summer 主催・登壇</small></span>
-        <span class="pf-mark en">IVS 2024 KYOTO<small>／ IVS 2025</small></span>
-        <span class="pf-mark mincho">AI・人工知能EXPO<small>特別講演</small></span>
-        <span class="pf-mark en">Dell Technologies<small>基調講演</small></span>
-        <span class="pf-mark en">HP Future of Work<small>AI Conference 2025</small></span>
-        <span class="pf-mark en">AI &amp; DX Leaders'<small>Conference 2026</small></span>
-        <span class="pf-mark en">Startup JAPAN 2025</span>
-        <span class="pf-mark en">UpdataNOW25</span>
-        <span class="pf-mark en">World Forum Tokyo</span>
-        <span class="pf-mark en">Google オフィス<small>大手企業向け</small></span>
-        <span class="pf-mark mincho">慶應義塾<small>生成AIラボ</small></span>
-        <span class="pf-mark mincho">コンテンツ東京 2024</span>
-        <span class="pf-mark en">Generative AI<small>Business Day</small></span>
-        <span class="pf-mark mincho">AI博覧会</span>
-        <span class="pf-mark en">Karakuri Tech<small>Conference 2025</small></span>
-        <span class="pf-mark mincho">オートモーティブワールド<small>特別講演</small></span>
-        <span class="pf-mark mincho">コールセンター/CRM<small>デモ＆コンファレンス</small></span>
-        <span class="pf-mark mincho">東北AI維新<small>CONFERENCE 2026</small></span>
-        <span class="pf-mark en">LIVENT EXPO 2026</span>
-      </div>
-      <p class="pf-subhead">CORPORATE / GOV ─ 企業・自治体向け</p>
-      <div class="pf-wall pf-stag">
-        <span class="pf-mark mincho">ソフトバンク<small>社内講演</small></span>
-        <span class="pf-mark mincho">船橋市役所</span>
-        <span class="pf-mark mincho">鹿児島県商工会議所</span>
-        <span class="pf-mark mincho">電通<small>基調講演・審査員</small></span>
+    <section class="pd-slide pd-books" id="pd-books" data-title="著書" aria-label="5 / 10 著書" aria-roledescription="セクション">
+      <header class="pd-heading"><p class="pd-eyebrow">BOOKS</p><h2>実践知を、<em>一冊に。</em></h2></header>
+      <div class="pd-book-grid">
+        <figure class="pd-enter"><span class="pd-book-object"><img src="99_assets/book-seisei-ai.jpg" alt="生成AI導入の教科書の書影"></span><figcaption><b>生成AI導入の教科書</b><span>2023年9月 刊行</span></figcaption></figure>
+        <figure class="pd-enter"><span class="pd-book-object"><img src="99_assets/book-ai-agent.jpg" alt="AIエージェントの教科書の書影"></span><figcaption><b>AIエージェントの教科書</b><span>2025年8月 刊行</span></figcaption></figure>
+        <figure class="pd-enter"><span class="pd-book-object"><img src="99_assets/book-uchuichi-yasashii-ai.jpg" alt="40代・50代でもよくわかる 宇宙一やさしいAIの教科書の書影"></span><figcaption><b>宇宙一やさしいAIの教科書</b><span class="pd-accent">2026年9月17日 発売予定</span></figcaption></figure>
       </div>
     </section>
-
-    <!-- 著書 ── 書影が絵。説明は口で -->
-    <section class="pf-sec" id="pfv-books" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">03</span><h3 class="pf-sec-title">著書 ── 実践知を、届ける</h3></div>
-      <div class="pf-bookrow pf-stag">
-        <div class="pf-bookcard pf-bookcard-new">
-          <img src="99_assets/book-uchuichi-yasashii-ai.jpg" alt="『40代・50代でもよくわかる 宇宙一やさしいAIの教科書』書影" loading="lazy" onerror="var c=this.closest('.pf-bookcard');this.remove();if(c)c.classList.add('no-cover')">
-          <div><span class="pf-newbadge">COMING SOON</span><h5>『40代・50代でもよくわかる<br>宇宙一やさしいAIの教科書』</h5><p>2026年9月17日 発売予定</p></div>
-        </div>
-        <div class="pf-bookcard">
-          <img src="99_assets/book-ai-agent.jpg" alt="『AIエージェントの教科書』書影" loading="lazy">
-          <div><h5>『AIエージェントの教科書』</h5><p>2025年8月 刊行</p></div>
-        </div>
-        <div class="pf-bookcard">
-          <img src="99_assets/book-seisei-ai.jpg" alt="『生成AI導入の教科書』書影" loading="lazy">
-          <div><h5>『生成AI導入の教科書』</h5><p>2023年9月 刊行</p></div>
-        </div>
+    <section class="pd-slide" id="pd-public" data-title="国・自治体" aria-label="6 / 10 国・自治体" aria-roledescription="セクション">
+      <header class="pd-heading"><p class="pd-eyebrow">PUBLIC SECTOR</p><h2>政策と現場を、<em>つなぐ。</em></h2></header>
+      <div class="pd-role-grid pd-three">
+        <article class="pd-enter"><h3>経済産業省</h3><p>AX時代における<br>スキルのあり方検討<br>ワーキンググループ<br><b>委員</b></p></article>
+        <article class="pd-enter"><h3>大分県 DAIB</h3><p>フェロー<br><b>技術顧問</b></p></article>
+        <article class="pd-enter"><h3>千葉県船橋市</h3><p><b>生成AIアドバイザー</b></p></article>
       </div>
     </section>
-
-    <!-- 発信 ── YouTube と Udemy を対の面で -->
-    <section class="pf-sec" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">04</span><h3 class="pf-sec-title">発信 ── YouTube・Udemy</h3></div>
-      <div class="pf-duo pf-stag">
-        <div class="pf-duo-i">
-          <div class="pf-udemy-eyebrow" style="color:#9fc6f5">YOUTUBE CHANNEL</div>
-          <div class="pf-ytch" style="margin:0 auto">
-            <span class="pf-ytav"><img src="99_assets/logo-ai-genba-houkoku.jpg" alt="" loading="lazy"
-                  onerror="var w=this.closest('.pf-ytav');this.remove();if(w)w.classList.add('no-logo')"></span>
-            <span class="pf-ytmeta">
-              <span class="pf-ytlabel">RUNNING</span>
-              <span class="pf-ytname">AI現場報告</span>
-            </span>
-          </div>
-          <p class="pf-duo-cap"><b>最前線</b>（現場のリアル）×<b>最先端</b>（技術の動き）</p>
-        </div>
-        <div class="pf-duo-i">
-          <div class="pf-udemy-eyebrow">UDEMY ／ ONLINE COURSE</div>
-          <div class="pf-udemy-num">50,000<small>+</small></div>
-          <div class="pf-udemy-cap">累計受講者数</div>
-          <span class="pf-udemy-badge">BESTSELLER INSTRUCTOR</span>
-        </div>
+    <section class="pd-slide" id="pd-business" data-title="企業での役割" aria-label="7 / 10 企業での役割" aria-roledescription="セクション">
+      <header class="pd-heading"><p class="pd-eyebrow">BUSINESS</p><h2>企業とともに、<em>実装する。</em></h2></header>
+      <div class="pd-role-grid pd-six">
+        <article class="pd-enter"><h3>Cynthialy</h3><p>取締役CCO</p></article><article class="pd-enter"><h3>Cinematorico</h3><p>創業者COO</p></article><article class="pd-enter"><h3>日本HP</h3><p>顧問</p></article>
+        <article class="pd-enter"><h3>NTTデータグループ</h3><p>アドバイザー</p></article><article class="pd-enter"><h3>Lightblue</h3><p>顧問</p></article><article class="pd-enter"><h3>THA</h3><p>顧問</p></article>
       </div>
     </section>
-
-    <!-- AICX ── ロゴ・4本柱・規模 -->
-    <section class="pf-sec" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">05</span><h3 class="pf-sec-title">AICX協会 ── 代表理事 / Founder</h3></div>
-      <div class="pf-logos">
-        <span class="lg"><img src="99_assets/logo-aicx-white.png" alt="一般社団法人AICX協会 ロゴ" loading="lazy"><span>AIエージェントの社会実装を推進する業界団体</span></span>
-      </div>
-      <div class="pf-cards pf-stag">
-        <div class="pf-card"><h4><span class="tag">01</span>カンファレンス</h4><p>AI Agent Day を主催</p></div>
-        <div class="pf-card"><h4><span class="tag">02</span>認定資格</h4><p>実装を担う人材を育てる</p></div>
-        <div class="pf-card"><h4><span class="tag">03</span>委員会</h4><p>企業横断で実装の型をつくる</p></div>
-        <div class="pf-card"><h4><span class="tag">04</span>官公庁</h4><p>防衛装備庁との取り組みほか</p></div>
-      </div>
-      <a class="pfv-source" href="https://prtimes.jp/main/html/rd/p/000000155.000155740.html" target="_blank" rel="noopener">AI Agent Day 2026 Summer 開催報告 ↗</a>
-      <div class="pf-metrics pf-stag" style="margin-top:1.2rem">
-        <div class="pf-metric accent">
-          <div class="mnum"><span class="cval" data-to="3823">3,823</span><small>名</small></div>
-          <div class="mttl">AI Agent Day 2026 Summer 参加登録</div>
-        </div>
-        <div class="pf-metric">
-          <div class="mnum"><span class="cval" data-to="20000">20,000</span><small>名+</small></div>
-          <div class="mttl">AI Agent Day 累計参加</div>
-        </div>
+    <section class="pd-slide" id="pd-media" data-title="メディア" aria-label="8 / 10 メディア" aria-roledescription="セクション">
+      <header class="pd-heading"><p class="pd-eyebrow">MEDIA / SELECTED</p><h2>AIの変化を、<em>身近な言葉に。</em></h2></header>
+      <div class="pd-role-grid pd-six">
+        <article class="pd-enter"><h3>ABEMA Prime</h3><p>レギュラー出演</p></article><article class="pd-enter"><h3>NewsPicks</h3><p>AI DIVE メインMC</p></article><article class="pd-enter"><h3>BS-TBS</h3><p>報道1930</p></article>
+        <article class="pd-enter"><h3>テレビ東京</h3><p>AIアカデミー</p></article><article class="pd-enter"><h3>日本経済新聞</h3><p>取材・掲載</p></article><article class="pd-enter"><h3>東洋経済オンライン</h3><p>取材・掲載</p></article>
       </div>
     </section>
-
-    <!-- 認定資格 ── ロゴ・数・3本柱 -->
-    <section class="pf-sec" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">06</span><h3 class="pf-sec-title">AIエージェントを動かす人材を育てる</h3></div>
-      <div class="pf-logos">
-        <span class="lg plate"><img src="99_assets/logo-strategist.png" alt="AIエージェント・ストラテジスト 認定資格 ロゴ" loading="lazy"><span>AI AGENT STRATEGIST ── 申込 1,300人</span></span>
+    <section class="pd-slide" id="pd-talks" data-title="講演" aria-label="9 / 10 講演" aria-roledescription="セクション">
+      <header class="pd-heading"><p class="pd-eyebrow">ON STAGE / SELECTED</p><h2>最前線の知見を、<em>会場へ。</em></h2></header>
+      <div class="pd-feature">
+      <div class="pd-role-grid pd-six">
+        <article class="pd-enter"><h3>IVS</h3><p>2024 KYOTO / 2025</p></article><article class="pd-enter"><h3>AI・人工知能EXPO</h3><p>特別講演</p></article><article class="pd-enter"><h3>Dell Technologies</h3><p>基調講演</p></article>
+        <article class="pd-enter"><h3>HP Future of Work</h3><p>AI Conference 2025</p></article><article class="pd-enter"><h3>慶應義塾</h3><p>生成AIラボ</p></article><article class="pd-enter"><h3>ソフトバンク</h3><p>社内講演</p></article>
       </div>
-      <div class="pf-pillars pf-stag">
-        <div class="pf-pillar"><div class="pno">1</div><span class="pen">AI AGENT</span><h5>AIエージェント</h5><p>実装の基盤</p></div>
-        <div class="pf-pillar"><div class="pno">2</div><span class="pen">WORKFLOW</span><h5>業務変革</h5><p>プロセスを組み替える</p></div>
-        <div class="pf-pillar"><div class="pno">3</div><span class="pen">ORGANIZATION</span><h5>組織変革</h5><p>役割を再設計する</p></div>
-      </div>
-      <p class="pf-pillar-goal">3本柱を貫いて設計する人材 ＝ <span class="pf-hot">AIエージェント・ストラテジスト</span></p>
-    </section>
-
-    <!-- 肩書き ── 産・官・学をひとつの壁に -->
-    <section class="pf-sec" id="pfv-roles" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">07</span><h3 class="pf-sec-title">委員・顧問・アドバイザー</h3></div>
-      <p class="pf-subhead">GOVERNMENT ─ 国・自治体</p>
-      <div class="pf-wall pf-stag">
-        <span class="pf-mark mincho lead">経済産業省<small>AX時代におけるスキルのあり方検討WG 委員</small></span>
-        <span class="pf-mark mincho">大分県 DAIB<small>フェロー（技術顧問）</small></span>
-        <span class="pf-mark mincho">千葉県船橋市<small>生成AIアドバイザー</small></span>
-      </div>
-      <p class="pf-subhead">CORPORATE ─ 企業顧問</p>
-      <div class="pf-wall pf-stag">
-        <span class="pf-mark en">日本HP<small>顧問</small></span>
-        <span class="pf-mark en">NTTデータグループ<small>アドバイザー</small></span>
-        <span class="pf-mark en">Lightblue<small>顧問</small></span>
-        <span class="pf-mark en">THA<small>顧問</small></span>
-      </div>
-      <p class="pf-subhead">PAST ROLE ─ 過去の役割</p>
-      <div class="pf-wall"><span class="pf-mark en">Google Gemini<small>アドバイザー（旧）</small></span></div>
-      <p class="pf-subhead">MEDIA / COMMUNITY</p>
-      <div class="pf-wall pf-stag">
-        <span class="pf-mark en">NewsPicks<small>AI DIVE メインMC・プロピッカー</small></span>
-        <span class="pf-mark en">SHIFT AI<small>公式モデレーター</small></span>
-        <span class="pf-mark mincho">Cynthialy<small>取締役CCO</small></span>
-        <span class="pf-mark mincho">Cinematorico<small>創業者COO</small></span>
+        <figure class="pd-media-panel pd-media-lecture" data-profile-media="lecture" data-profile-media-frame>
+          <img class="pd-slot-image" alt="" hidden decoding="async">
+          <div class="pd-media-fallback" aria-hidden="true"><div class="pd-stage-art"><i></i><i></i><i></i><span>LIVE</span></div></div>
+          <figcaption><span>ON STAGE</span><b>知見が、体験になる。</b></figcaption>
+        </figure>
       </div>
     </section>
-
-    <!-- 支援先 ── NDAの札そのものが絵 -->
-    <section class="pf-sec" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">08</span><h3 class="pf-sec-title">主要支援先（社名非公開）</h3></div>
-      <div class="pf-clients pf-stag">
-        <div class="pf-client">
-          <span class="pf-client-badge">🔒 NDA</span>
-          <svg class="pf-client-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 13l2-5.5A2 2 0 0 1 6.9 6h10.2a2 2 0 0 1 1.9 1.5L21 13v5h-2.5M3 13v5h2.5M3 13h18"/><circle cx="7" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg>
-          <span class="pf-client-ind">Automotive</span>
-          <span class="pf-client-mask">██████ 自動車</span>
-          <span class="pf-client-note">大手自動車メーカー</span>
-        </div>
-        <div class="pf-client">
-          <span class="pf-client-badge">🔒 NDA</span>
-          <svg class="pf-client-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="1"/><path d="M10 3v3M14 3v3M10 18v3M14 18v3M3 10h3M3 14h3M18 10h3M18 14h3"/></svg>
-          <span class="pf-client-ind">Semiconductor</span>
-          <span class="pf-client-mask">████ 製造装置</span>
-          <span class="pf-client-note">大手半導体製造装置メーカー</span>
-        </div>
-        <div class="pf-client">
-          <span class="pf-client-badge">🔒 NDA</span>
-          <svg class="pf-client-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L4 14h6l-1 8 9-12h-6z"/></svg>
-          <span class="pf-client-ind">Energy</span>
-          <span class="pf-client-mask">████████ 電力</span>
-          <span class="pf-client-note">大手電力会社</span>
-        </div>
-        <div class="pf-client">
-          <span class="pf-client-badge">🔒 NDA</span>
-          <svg class="pf-client-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M4 21V10l6 4V10l6 4V7l4 3v11"/></svg>
-          <span class="pf-client-ind">Manufacturing</span>
-          <span class="pf-client-mask">██████ 製作所</span>
-          <span class="pf-client-note">大手製造業</span>
-        </div>
+    <section class="pd-slide" id="pd-field" data-title="支援の現場" aria-label="10 / 10 支援の現場" aria-roledescription="セクション">
+      <header class="pd-heading"><p class="pd-eyebrow">IN THE FIELD</p><h2>業界をまたいで、<em>現場に立つ。</em></h2></header>
+      <div class="pd-feature">
+      <div class="pd-role-grid pd-four">
+        <article class="pd-enter"><h3>自動車</h3><p>大手自動車メーカー</p></article><article class="pd-enter"><h3>半導体</h3><p>大手半導体製造装置メーカー</p></article>
+        <article class="pd-enter"><h3>エネルギー</h3><p>大手電力会社</p></article><article class="pd-enter"><h3>製造</h3><p>大手製造業</p></article>
       </div>
-      <p class="pf-clients-note">※ 各業界を代表する企業での社内講演・AI実装支援。契約上、社名は非公開。</p>
+        <figure class="pd-media-panel pd-media-field" data-profile-media="field" data-profile-media-frame>
+          <img class="pd-slot-image" alt="" hidden decoding="async">
+          <div class="pd-media-fallback" aria-hidden="true"><div class="pd-field-art"><i></i><i></i><i></i><span>AI</span></div></div>
+          <figcaption><span>IN THE FIELD</span><b>構想から、実装へ。</b></figcaption>
+        </figure>
+      </div>
+      <p class="pd-footnote">社内講演・AI実装支援 ／ 契約上、社名は非公開</p>
     </section>
-
-    <!-- メディア ── ここも名前の壁 -->
-    <section class="pf-sec" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">09</span><h3 class="pf-sec-title">メディア出演・取材</h3></div>
-      <p class="pf-subhead">TV / VIDEO ─ テレビ・映像</p>
-      <div class="pf-wall pf-stag">
-        <span class="pf-mark en lead">ABEMA Prime<small>レギュラー出演</small></span>
-        <span class="pf-mark mincho">BS-TBS<small>報道1930 生出演</small></span>
-        <span class="pf-mark mincho">テレビ東京<small>AIアカデミー</small></span>
-        <span class="pf-mark mincho">日本テレビ<small>午前0時の森</small></span>
-        <span class="pf-mark mincho">千葉テレビ</span>
-        <span class="pf-mark mincho">内田篤人のSDGsスクール</span>
-      </div>
-      <p class="pf-subhead">WEB PROGRAM ─ ネット番組</p>
-      <div class="pf-wall pf-stag">
-        <span class="pf-mark en lead">NewsPicks<small>AI DIVE メインMC</small></span>
-        <span class="pf-mark en">NewsPicks<small>The UPDATE</small></span>
-        <span class="pf-mark en">NewsPicks<small>New Session</small></span>
-        <span class="pf-mark en">NewsPicks<small>1on1 DEEP</small></span>
-        <span class="pf-mark en">RehacQ</span>
-        <span class="pf-mark mincho">ホリエモンチャンネル</span>
-        <span class="pf-mark mincho">箕輪世界観チャンネル</span>
-        <span class="pf-mark en">Schoo<small>複数回出演</small></span>
-      </div>
-      <p class="pf-subhead">RADIO / AUDIO ─ ラジオ・音声</p>
-      <div class="pf-wall pf-stag">
-        <span class="pf-mark en">J-WAVE<small>TOKYO MORNING RADIO</small></span>
-        <span class="pf-mark mincho">ニッポン放送<small>NEXT-RAD</small></span>
-        <span class="pf-mark en">Voicy<small>ながら日経</small></span>
-      </div>
-      <p class="pf-subhead">PRESS / WEB ─ 新聞・雑誌・Web</p>
-      <div class="pf-wall pf-stag">
-        <span class="pf-mark mincho">日本経済新聞</span>
-        <span class="pf-mark mincho">読売新聞<small>複数回</small></span>
-        <span class="pf-mark mincho">東洋経済オンライン</span>
-        <span class="pf-mark mincho">ダイヤモンド・オンライン</span>
-        <span class="pf-mark mincho">プレジデントオンライン</span>
-        <span class="pf-mark en">ITmedia</span>
-        <span class="pf-mark en">マイナビニュース</span>
-        <span class="pf-mark en">DIME</span>
-        <span class="pf-mark mincho">宣伝会議</span>
-        <span class="pf-mark en">THE21</span>
-        <span class="pf-mark mincho">千葉日報</span>
-        <span class="pf-mark mincho">スポニチ</span>
-        <span class="pf-mark en">Digital Shift Times</span>
-        <span class="pf-mark en">HRプロ</span>
-      </div>
-    </section>
-
-    <!-- 講演テーマ ── 題だけを札で -->
-    <section class="pf-sec" data-reveal>
-      <div class="pf-sec-head"><span class="pf-sec-no">10</span><h3 class="pf-sec-title">主な講演テーマ</h3></div>
-      <div class="pf-chips pf-stag">
-        <span class="pf-chip"><span class="em">01</span> AIエージェントが変えるビジネスの未来</span>
-        <span class="pf-chip"><span class="em">02</span> 明日から使える 生成AI活用術</span>
-        <span class="pf-chip"><span class="em">03</span> AI時代のリスキリング戦略</span>
-        <span class="pf-chip"><span class="em">04</span> AIがもたらす顧客体験（CX）革命</span>
-        <span class="pf-chip"><span class="em">05</span> 経営者が知るべきAIの本質</span>
-        <span class="pf-chip"><span class="em">06</span> AI × 地方創生</span>
-        <span class="pf-chip"><span class="em">07</span> メディア・コンテンツ業界のAI活用</span>
-        <span class="pf-chip"><span class="em">08</span> AIエージェント時代の働き方改革</span>
-      </div>
-    </section>
-
-    <div class="pf-cta" data-reveal>
-      <a href="https://ozaken.ai/" target="_blank" rel="noopener">ポートフォリオサイトを見る →</a>
-      <a class="pf-x" href="https://x.com/ozaken_AI" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>@ozaken_AI</a>
-    </div>
   </div>
-
-  <nav class="pfv-nav" aria-label="プロフィールの章"><button type="button" data-pfv-target="pfv-person" aria-current="true">人物</button><button type="button" data-pfv-target="pfv-mission">使命</button><button type="button" data-pfv-target="pfv-results">実績</button><button type="button" data-pfv-target="pfv-books">著書</button><button type="button" data-pfv-target="pfv-roles">役割</button></nav>
-  <p class="pf-scrollhint">SCROLL<span class="arw"></span></p>
+  <nav class="pd-controls pd-navigation" aria-label="プロフィールの操作">
+    <button type="button" data-pd-prev aria-label="前の画面">↑ 前へ</button><button type="button" data-pd-menu aria-expanded="false" aria-controls="pd-overview">一覧</button><button type="button" data-pd-replay>再生 ↻</button><button type="button" data-pd-next aria-label="次の画面">次へ ↓</button>
+    <span class="pd-keyhelp">スクロール / ↓ ↑ で移動 · ? 一覧 · Esc 閉じる</span>
+  </nav>
+  <div class="pd-page" aria-live="polite" aria-atomic="true"><span data-pd-count>01 / 10</span><span data-pd-title>人物と理念</span></div>
+  <p class="pd-scroll-cue" aria-hidden="true">↓ スクロールで次の画面へ</p>
+  <div id="pd-overview" class="pd-overview" hidden>
+    <div class="pd-overview-head"><h2>話す内容を選ぶ</h2><button type="button" data-pd-menu-close>一覧を閉じる</button></div>
+    <div class="pd-overview-grid"></div>
+    <p>1〜9 / 0 で直接移動 · Home で先頭 · End で最後</p>
+  </div>
 </div>
 <script>
 /* 秘密コマンド：start=開演前(待機)＋QR / thanks=終演お礼＋QR / profile=プロフィール紹介。#standby / #thanks / #profile でも表示。クリックで全画面、Escで戻る */

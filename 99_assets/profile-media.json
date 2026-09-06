@@ -1,0 +1,22 @@
+{
+  "portrait": {
+    "src": "99_assets/ozaken-portrait.jpg",
+    "alt": "小澤健祐（おざけん）のポートレート",
+    "objectPosition": "50% 40%"
+  },
+  "lecture": {
+    "src": "",
+    "alt": "講演で参加者に話す小澤健祐",
+    "objectPosition": "50% 50%"
+  },
+  "community": {
+    "src": "",
+    "alt": "AI Agent Day の会場風景",
+    "objectPosition": "50% 50%"
+  },
+  "field": {
+    "src": "",
+    "alt": "AI の社会実装に取り組む現場",
+    "objectPosition": "50% 50%"
+  }
+}
