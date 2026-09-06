@@ -1,26 +1,22 @@
 #!/usr/bin/env python3
-"""テンプレート便覧を、**普通の資料として**組む。
+"""30図版・24本文パーツの呼び出し見本を保持する、旧便覧の生成元。
 
-前の版は道具のページとして手で組んでいた。そのせいで、
-ファーストビューの演出も、背景のドリフトも、粒子のネットワークも、
-図版が組み上がる動きも付かず、「実物と同じ見え方」になっていなかった。
-型の見本が実物と違う見え方をしていたら、見本の役目を果たさない。
+現在の template.html は build_template_gallery.py で生成する。
+同スクリプトはこのファイルを import 用モードで読み、実際の呼び出し例を
+取り出して、便覧専用の構図・スタイル・操作と組み合わせる。
 
-そこで、他の資料とまったく同じ道筋（publish.py）で焼く。
-表紙・明暗の交互・締めの規約もそのまま守る。
-**このページ自体が、規約を守れているかどうかの証拠になる。**
+  python3 .claude/skills/ozaken-shiryo/sources/build_template_gallery.py --preview /absolute/work/template.html
+  OZAKEN_PW=... python3 .claude/skills/ozaken-shiryo/sources/build_template_gallery.py --publish
 
-  cd .claude/skills/ozaken-shiryo/sources
-  python3 gen_template.py
-  cd ../scripts
-  OZAKEN_PW=マスター python3 publish.py /tmp/body_template.html template.html --update
-
-`--update` なので鍵は作り直さない。**道具のページなのでマスターだけで開く。**
-トップページで te と打つと、ここへ来られる。
+新しい便覧を更新するときに、この旧原稿を publish.py に渡さないこと。
+このファイルを直接実行した場合の /tmp/body_template.html は、従来の
+通常資料形式を参照するために残してある。共通の描画関数や個別資料の
+見た目は、新しい便覧の再生成では変更しない。te コマンドの遷移先も同じ。
 """
 import sys
+from pathlib import Path
 
-S = '/home/user/ozaken-materials/.claude/skills/ozaken-shiryo/scripts'
+S = str(Path(__file__).resolve().parents[1] / 'scripts')
 sys.path.insert(0, S)
 from page_parts import (hero, sec, cards, close, take,
                         stats, stepper, two_col, versus, deep, note)
@@ -1068,5 +1064,6 @@ def _no(m):
 _body = _re.sub(r'class="fig-no">Fig\.\d+</span>', _no, _body)
 
 
-open('/tmp/body_template.html', 'w', encoding='utf-8').write(_body)
-print('書きました: %d 文字 / 図版 %d 点' % (len(_body), _f[0]))
+if __name__ == '__main__':
+    Path('/tmp/body_template.html').write_text(_body, encoding='utf-8')
+    print('書きました: %d 文字 / 図版 %d 点' % (len(_body), _f[0]))
