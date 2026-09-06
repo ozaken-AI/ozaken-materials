@@ -125,6 +125,19 @@ CSS = """
 .sec-navy:not([data-figdark]) .fig-title{color:var(--ink);
   border-bottom-color:var(--azure-pale)}
 .sec-navy:not([data-figdark]) .legend-item{color:var(--muted)}
+/* **印のある面は、こちらから濃く塗り直す。**
+   上の `:not()` は「白くしない」と言っているだけで、濃くはしていない。
+   資料自身が `.sec-navy .figure{background:var(--white)}` を持っていると、
+   印のある面にはそれが当たり、白い箱に白い字が乗って図が丸ごと消える
+   （コンテキスト＆ハーネスの Fig.2 で実際に消えた）。
+   属性を1つ足したぶん、資料側の指定より強い。ここで濃さを言い切る */
+.sec-navy[data-figdark] .figure{background:var(--navy-deep);box-shadow:none;
+  border-color:rgba(255,255,255,.08);color:var(--white)}
+.sec-navy[data-figdark] .fig-title{color:var(--white);
+  border-bottom-color:rgba(255,255,255,.15)}
+.sec-navy[data-figdark] .fig-no{color:var(--azure-pale)}
+.sec-navy[data-figdark] .figure-cap{color:rgba(255,255,255,.5)}
+.sec-navy[data-figdark] .legend-item{color:rgba(255,255,255,.6)}
 .sec-light .figure{color:var(--ink)}
 @media(max-width:640px){.figure{padding:1.4rem 1.1rem 1rem}}
 
