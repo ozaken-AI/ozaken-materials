@@ -1,0 +1,115 @@
+/* Actual PDF first pages. Keep every cover complete, including portrait reports. */
+#materials-home .dl-items {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px 24px;
+  margin-top: 40px;
+}
+#materials-home .dl-item,
+#materials-home .dl-item:first-child {
+  grid-column: auto;
+  min-width: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid #d0dbe8;
+  border-radius: 12px;
+  background: #fbfcfe;
+  color: #1f3864;
+  box-shadow: 0 7px 24px #1f386408;
+  transition: border-color .35s ease, box-shadow .35s ease;
+}
+#materials-home .dl-item::before { display: none; }
+#materials-home .dl-item:hover {
+  transform: none;
+  border-color: #9db4d0;
+  box-shadow: 0 14px 36px #1f386415;
+}
+#materials-home .dl-cover {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 4 / 3;
+  width: 100%;
+  margin: 0;
+  padding: 25px;
+  background: radial-gradient(ellipse at 60% 20%, #f8fbff, transparent 65%), linear-gradient(145deg, #e1eaf5, #ccd9eb);
+  border-bottom: 1px solid #d0dbe8;
+  perspective: 1000px;
+}
+#materials-home .dl-cover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 7px #141d352c);
+  transform: rotateY(-4deg) rotateZ(-1deg);
+  transition: transform .65s cubic-bezier(.2, .65, .25, 1);
+}
+#materials-home .dl-cover--portrait { padding: 18px; }
+#materials-home .dl-cover--portrait img { transform: rotateY(-7deg) rotateZ(-2deg); }
+#materials-home .dl-details {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 25px 24px 22px;
+}
+#materials-home .dl-item h3,
+#materials-home .dl-item:first-child h3 {
+  color: #1f3864;
+  font-family: var(--font-ja-sans);
+  font-size: clamp(17px, 1.55vw, 20px);
+  font-weight: 700;
+  line-height: 1.55;
+  letter-spacing: .015em;
+  margin: 0;
+}
+#materials-home .dl-item p,
+#materials-home .dl-item:first-child p {
+  color: #5b6d86;
+  font-size: 13px;
+  line-height: 1.9;
+  margin: 13px 0 24px;
+  max-width: none;
+}
+#materials-home .dl-item .dl-btn,
+#materials-home .dl-item:first-child .dl-btn {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  margin-top: auto;
+  padding: 14px 0 0;
+  color: #1f3864;
+  background: transparent;
+  border: 0;
+  border-top: 1px solid #d0dbe8;
+  border-radius: 0;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.6;
+}
+#materials-home .dl-item .dl-btn-icon { font-size: 20px; line-height: 1; color: #e23744; }
+#materials-home .dl-item .dl-btn-meta { margin-left: auto; color: #64728a; font-size: 10px; font-weight: 500; opacity: 1; }
+#materials-home .dl-item .dl-btn:hover { color: #2e5496; transform: none; }
+#materials-home .dl-item .dl-btn:focus-visible { outline: 2px solid #2e5496; outline-offset: 5px; }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  #materials-home .dl-item:hover .dl-cover img { transform: rotateY(0) rotateZ(0) translateY(-3px); }
+}
+@media (max-width: 1100px) {
+  #materials-home .dl-items { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  #materials-home .dl-items { grid-template-columns: 1fr; gap: 24px; }
+  #materials-home .dl-cover { aspect-ratio: 4 / 3; padding: 22px; }
+  #materials-home .dl-cover--portrait { padding: 18px; }
+  #materials-home .dl-details { padding: 23px 22px 21px; }
+  #materials-home .dl-item h3,
+  #materials-home .dl-item:first-child h3 { font-size: 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #materials-home .dl-item,
+  #materials-home .dl-cover img { transition: none; }
+}
