@@ -1,22 +1,37 @@
 {
   "portrait": {
-    "src": "99_assets/ozaken-portrait.jpg",
-    "alt": "小澤健祐（おざけん）のポートレート",
-    "objectPosition": "50% 40%"
+    "src": "99_assets/profile/hero-stage.jpg",
+    "alt": "マイクを手に話す小澤健祐",
+    "objectPosition": "60% 48%"
   },
   "lecture": {
-    "src": "",
-    "alt": "講演で参加者に話す小澤健祐",
-    "objectPosition": "50% 50%"
+    "src": "99_assets/profile/lecture-wide.jpg",
+    "alt": "講演中の小澤健祐と会場のスクリーン",
+    "objectPosition": "50% 64%"
   },
   "community": {
-    "src": "",
-    "alt": "AI Agent Day の会場風景",
-    "objectPosition": "50% 50%"
+    "src": "99_assets/profile/community-night.jpg",
+    "alt": "AI Agent Day のリアルイベント「AI Agent Night」の集合写真",
+    "objectPosition": "50% 64%"
   },
   "field": {
     "src": "",
     "alt": "AI の社会実装に取り組む現場",
+    "objectPosition": "50% 50%"
+  },
+  "course": {
+    "src": "99_assets/profile/udemy-ai-agent.png",
+    "alt": "Udemy の AI エージェント講座の画像",
+    "objectPosition": "50% 50%"
+  },
+  "public": {
+    "src": "99_assets/profile/funabashi.jpg",
+    "alt": "書籍を手にした記念写真",
+    "objectPosition": "50% 42%"
+  },
+  "policy": {
+    "src": "99_assets/profile/meti-members.png",
+    "alt": "経済産業省 AX時代におけるスキルのあり方検討ワーキンググループ 構成員名簿",
     "objectPosition": "50% 50%"
   }
 }

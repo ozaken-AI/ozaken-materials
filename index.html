@@ -3216,15 +3216,10 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
         <p class="pd-vision pd-enter">人間とAIが<span>共存</span>する<br>社会をつくる。</p>
         <p class="pd-primary-role pd-enter">一般社団法人AICX協会<br><b>代表理事</b></p>
       </div>
-      <div class="pd-portrait-stage">
-        <div class="pd-sculpture" aria-hidden="true"><i></i><i></i><i></i></div>
-        <figure class="pd-portrait has-media" data-profile-media="portrait" data-profile-media-frame>
-          <img src="99_assets/ozaken-portrait.jpg" alt="小澤健祐" width="900" height="1200" decoding="async">
-          <span class="pd-portrait-fallback" aria-hidden="true">KO<span>HUMAN × AI</span></span>
-          <figcaption><span>HUMAN × AI</span><b>小澤 健祐</b></figcaption>
-        </figure>
-        <span class="pd-photo-label" aria-hidden="true">A BRIDGE TO THE FUTURE.</span>
-      </div>
+      <figure class="pd-cover-visual" data-profile-media="portrait" data-profile-media-frame>
+        <img data-profile-src="99_assets/profile/hero-stage.jpg" data-profile-position="60% 48%" alt="マイクを手に登壇する小澤健祐" decoding="async" hidden>
+        <figcaption>人間とAIの<br>あいだに、立つ。</figcaption>
+      </figure>
       <span class="pd-signature" aria-hidden="true">OZAKEN</span>
     </section>
     <section class="pd-slide pd-mission" id="pd-mission" data-title="使命" aria-label="2 / 10 使命" aria-roledescription="セクション">
@@ -3239,24 +3234,34 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     </section>
     <section class="pd-slide" id="pd-reach" data-title="発信と教育" aria-label="3 / 10 発信と教育" aria-roledescription="セクション">
       <header class="pd-heading"><p class="pd-eyebrow">COMMUNICATE / EDUCATE</p><h2>発信し、<em>学びを届ける。</em></h2></header>
-      <div class="pd-metrics pd-three">
-        <article class="pd-enter"><p>年間の登壇</p><strong>300<span>回超</span></strong><p>講演・研修・パネル</p></article>
-        <article class="pd-enter"><p>AI関連記事</p><strong>1,500<span>本超</span></strong><p>執筆</p></article>
-        <article class="pd-enter"><p>Udemy受講者</p><strong>50,000<span>人超</span></strong><p>累計</p></article>
+      <div class="pd-reach-layout">
+        <div class="pd-reach-numbers">
+          <article class="pd-enter"><div><p>年間の登壇</p><span>講演・研修・パネル</span></div><strong>300<small>回超</small></strong></article>
+          <article class="pd-enter"><div><p>AI関連記事</p><span>執筆</span></div><strong>1,500<small>本超</small></strong></article>
+        </div>
+        <article class="pd-course-card pd-enter">
+          <div class="pd-course-top">
+            <figure class="pd-course-art" data-profile-media="course" data-profile-media-frame>
+              <img data-profile-src="99_assets/profile/udemy-ai-agent.png" alt="Udemy講座 AIエージェントの教科書のサムネイル" decoding="async" hidden>
+              <span class="pd-course-fallback" aria-hidden="true">AI<br>AGENT</span>
+            </figure>
+            <div><p class="pd-course-brand">Udemy</p><h3>AIエージェントの<br>教科書</h3></div>
+          </div>
+          <div class="pd-course-result"><p>Udemy受講者</p><strong>50,000<small>人超</small></strong><span>累計</span></div>
+        </article>
       </div>
     </section>
     <section class="pd-slide" id="pd-aicx" data-title="AICX協会" aria-label="4 / 10 AICX協会" aria-roledescription="セクション">
-      <header class="pd-heading"><p class="pd-eyebrow">AICX / FOUNDER</p><h2>AIを動かす、<em>人と場をつくる。</em></h2></header>
-      <div class="pd-feature">
-      <div class="pd-metrics pd-two">
-        <article class="pd-enter"><p>AI Agent Day</p><strong>20,000<span>名超</span></strong><p>累計参加</p></article>
-        <article class="pd-enter"><p>AIエージェント・ストラテジスト</p><strong>1,300<span>人</span></strong><p>認定資格への申込</p></article>
-      </div>
-        <figure class="pd-media-panel pd-media-community" data-profile-media="community" data-profile-media-frame>
-          <img class="pd-slot-image" alt="" hidden decoding="async">
-          <div class="pd-media-fallback" aria-hidden="true"><div class="pd-orbit-art"><i></i><i></i><i></i><img src="99_assets/logo-aicx-white.png" alt=""></div></div>
-          <figcaption><span>COMMUNITY</span><b>学びが、つながる。</b></figcaption>
+      <header class="pd-heading"><p class="pd-eyebrow">AICX / FOUNDER</p><img class="pd-association-mark" src="99_assets/logo-aicx-white.png" alt="AICX協会"><h2>AIを動かす、<em>人と場をつくる。</em></h2></header>
+      <div class="pd-community-layout">
+        <figure class="pd-community-photo" data-profile-media="community" data-profile-media-frame>
+          <img data-profile-src="99_assets/profile/community-night.jpg" data-profile-position="50% 64%" alt="AI Agent Dayのリアルイベント、AI Agent Nightの集合写真" decoding="async" hidden>
+          <figcaption><span>AI AGENT DAY</span><b>リアルイベント「AI Agent Night」</b></figcaption>
         </figure>
+        <div class="pd-impact">
+          <article class="pd-enter"><p>AI Agent Day</p><strong>20,000<small>名超</small></strong><span>累計参加</span></article>
+          <article class="pd-enter"><img class="pd-qualification-mark" src="99_assets/logo-strategist.png" alt="AIエージェント・ストラテジスト"><p>AIエージェント・<br>ストラテジスト</p><strong>1,300<small>人</small></strong><span>認定資格への申込</span></article>
+        </div>
       </div>
     </section>
     <section class="pd-slide pd-books" id="pd-books" data-title="著書" aria-label="5 / 10 著書" aria-roledescription="セクション">
@@ -3269,10 +3274,22 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     </section>
     <section class="pd-slide" id="pd-public" data-title="国・自治体" aria-label="6 / 10 国・自治体" aria-roledescription="セクション">
       <header class="pd-heading"><p class="pd-eyebrow">PUBLIC SECTOR</p><h2>政策と現場を、<em>つなぐ。</em></h2></header>
-      <div class="pd-role-grid pd-three">
-        <article class="pd-enter"><h3>経済産業省</h3><p>AX時代における<br>スキルのあり方検討<br>ワーキンググループ<br><b>委員</b></p></article>
-        <article class="pd-enter"><h3>大分県 DAIB</h3><p>フェロー<br><b>技術顧問</b></p></article>
-        <article class="pd-enter"><h3>千葉県船橋市</h3><p><b>生成AIアドバイザー</b></p></article>
+      <div class="pd-public-layout">
+        <figure class="pd-civic-photo" data-profile-media="public" data-profile-media-frame>
+          <div class="pd-civic-image"><img data-profile-src="99_assets/profile/funabashi.jpg" data-profile-position="50% 42%" alt="船橋市で著書を手にした小澤健祐のツーショット" decoding="async" hidden></div>
+          <figcaption><span>千葉県船橋市</span><b>生成AIアドバイザー</b></figcaption>
+        </figure>
+        <div class="pd-public-roles">
+          <article class="pd-policy-card pd-enter">
+            <p class="pd-proof-label">PUBLIC POLICY</p><h3>経済産業省 <b>委員</b></h3>
+            <p class="pd-policy-name">AX時代におけるスキルのあり方検討<br>ワーキンググループ</p>
+            <figure class="pd-proof" data-profile-media="policy" data-profile-media-frame>
+              <div class="pd-proof-window"><img data-profile-src="99_assets/profile/meti-members.png" alt="経済産業省の構成員名簿に掲載された小澤健祐の氏名と所属" decoding="async" hidden></div>
+              <figcaption>構成員名簿より</figcaption>
+            </figure>
+          </article>
+          <article class="pd-local-role pd-enter"><h3>大分県 DAIB</h3><p>フェロー / <b>技術顧問</b></p></article>
+        </div>
       </div>
     </section>
     <section class="pd-slide" id="pd-business" data-title="企業での役割" aria-label="7 / 10 企業での役割" aria-roledescription="セクション">
@@ -3291,16 +3308,15 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     </section>
     <section class="pd-slide" id="pd-talks" data-title="講演" aria-label="9 / 10 講演" aria-roledescription="セクション">
       <header class="pd-heading"><p class="pd-eyebrow">ON STAGE / SELECTED</p><h2>最前線の知見を、<em>会場へ。</em></h2></header>
-      <div class="pd-feature">
+      <div class="pd-talks-layout">
+        <figure class="pd-lecture-photo" data-profile-media="lecture" data-profile-media-frame>
+          <img data-profile-src="99_assets/profile/lecture-wide.jpg" data-profile-position="50% 64%" alt="大きなスクリーンを背に会場へ語りかける小澤健祐" decoding="async" hidden>
+          <figcaption>知見が、体験になる。</figcaption>
+        </figure>
       <div class="pd-role-grid pd-six">
         <article class="pd-enter"><h3>IVS</h3><p>2024 KYOTO / 2025</p></article><article class="pd-enter"><h3>AI・人工知能EXPO</h3><p>特別講演</p></article><article class="pd-enter"><h3>Dell Technologies</h3><p>基調講演</p></article>
         <article class="pd-enter"><h3>HP Future of Work</h3><p>AI Conference 2025</p></article><article class="pd-enter"><h3>慶應義塾</h3><p>生成AIラボ</p></article><article class="pd-enter"><h3>ソフトバンク</h3><p>社内講演</p></article>
       </div>
-        <figure class="pd-media-panel pd-media-lecture" data-profile-media="lecture" data-profile-media-frame>
-          <img class="pd-slot-image" alt="" hidden decoding="async">
-          <div class="pd-media-fallback" aria-hidden="true"><div class="pd-stage-art"><i></i><i></i><i></i><span>LIVE</span></div></div>
-          <figcaption><span>ON STAGE</span><b>知見が、体験になる。</b></figcaption>
-        </figure>
       </div>
     </section>
     <section class="pd-slide" id="pd-field" data-title="支援の現場" aria-label="10 / 10 支援の現場" aria-roledescription="セクション">
