@@ -6,34 +6,42 @@
   var overview = profile.querySelector('#pd-overview');
   var grid = overview.querySelector('.pd-overview-grid');
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
-  var active = 0, isOpen = false, controlsTimer = 0, previousFocus = null;
+  var active = -1, isOpen = false, controlsTimer = 0, previousFocus = null;
   var signals = [], signalFrame = 0, scrollTimer = 0, resizeFrame = 0;
-  var destination = null;
+  var destination = null, scrolling = false, stableChecks = 0, observedTop = 0;
   var deck = profile.querySelector('.pf-doc');
+  var supportsScrollEnd = 'onscrollend' in deck;
+  var count = profile.querySelector('[data-pd-count]');
+  var title = profile.querySelector('[data-pd-title]');
+  var cue = profile.querySelector('.pd-scroll-cue');
   function clearSignals() {
-    cancelAnimationFrame(signalFrame);
-    signals.forEach(function (animation) { animation.cancel(); });
+    cancelAnimationFrame(signalFrame); signalFrame = 0;
+    signals.forEach(function (signal) { signal.animation.cancel(); signal.dot.remove(); });
     signals = [];
-    profile.querySelectorAll('.pd-signal').forEach(function (el) { el.remove(); });
   }
   function connect() {
-    if (reduced.matches || !isOpen || active !== 1 || !overview.hidden) return;
+    signalFrame = 0;
+    if (reduced.matches || !isOpen || scrolling || active !== 1 || !overview.hidden) return;
     var network = slides[active].querySelector('.pd-network');
     var rect = network.getBoundingClientRect();
-    network.querySelectorAll('.pd-node').forEach(function (node, index) {
+    // Read every endpoint before adding animated elements to avoid alternating layout reads and writes.
+    var endpoints = Array.from(network.querySelectorAll('.pd-node')).map(function (node) {
       var target = node.getBoundingClientRect();
-      var x = target.left + target.width / 2 - rect.left - rect.width / 2;
-      var y = target.top + target.height / 2 - rect.top - rect.height / 2;
+      return {x:target.left + target.width / 2 - rect.left - rect.width / 2,
+        y:target.top + target.height / 2 - rect.top - rect.height / 2};
+    });
+    endpoints.forEach(function (point, index) {
       var dot = document.createElement('i'); dot.className = 'pd-signal'; dot.setAttribute('aria-hidden', 'true');
       network.appendChild(dot);
       var animation = dot.animate([
         {transform:'translate(0,0)',opacity:0},
         {transform:'translate(0,0)',opacity:1,offset:.1},
-        {transform:'translate('+x+'px,'+y+'px)',opacity:1,offset:.85},
-        {transform:'translate('+x+'px,'+y+'px)',opacity:0}
+        {transform:'translate('+point.x+'px,'+point.y+'px)',opacity:1,offset:.85},
+        {transform:'translate('+point.x+'px,'+point.y+'px)',opacity:0}
       ], {duration:1450,delay:index*180,easing:'cubic-bezier(.3,0,.25,1)',fill:'both'});
-      animation.onfinish = function () { dot.remove(); };
-      signals.push(animation);
+      var signal = {animation:animation,dot:dot};
+      animation.onfinish = function () { dot.remove(); signals = signals.filter(function (item) { return item !== signal; }); };
+      signals.push(signal);
     });
   }
   function hideControls() {
@@ -45,23 +53,23 @@
   }
   function showControls() {
     if (!isOpen) return;
-    profile.classList.add('pd-controls-visible'); hideControls();
+    if (!profile.classList.contains('pd-controls-visible')) profile.classList.add('pd-controls-visible');
+    hideControls();
   }
-  function activate(index, replay) {
+  function activate(index) {
     index = Math.max(0, Math.min(slides.length-1, index));
-    if (!replay && index === active && slides[index].classList.contains('is-active')) return;
-    clearSignals(); active = index;
-    slides.forEach(function (slide) {
-      slide.classList.remove('is-active','is-replaying');
-    });
-    void slides[active].offsetWidth;
+    if (index === active) return;
+    if (active >= 0) {
+      slides[active].classList.remove('is-active');
+      grid.children[active].setAttribute('aria-current','false');
+    }
+    active = index;
     slides[active].classList.add('is-active');
-    if (replay) slides[active].classList.add('is-replaying');
-    profile.querySelector('[data-pd-count]').textContent = String(active+1).padStart(2,'0')+' / '+slides.length;
-    profile.querySelector('[data-pd-title]').textContent = slides[active].dataset.title;
-    profile.querySelector('.pd-scroll-cue').textContent = active === slides.length-1 ? '↑ スクロールで前の画面へ' : '↓ スクロールで次の画面へ';
-    grid.querySelectorAll('button').forEach(function (button,i) { button.setAttribute('aria-current',String(i===active)); });
-    signalFrame = requestAnimationFrame(connect);
+    count.textContent = String(active+1).padStart(2,'0')+' / '+slides.length;
+    title.textContent = slides[active].dataset.title;
+    cue.textContent = active === slides.length-1 ? '↑ スクロールで前の画面へ' : '↓ スクロールで次の画面へ';
+    grid.children[active].setAttribute('aria-current','true');
+    if (active === 1 && isOpen && !reduced.matches && overview.hidden) signalFrame = requestAnimationFrame(connect);
   }
   function nearestSection() {
     var nearest = 0, distance = Infinity;
@@ -72,27 +80,54 @@
     return nearest;
   }
   function navigationIndex() { return destination === null ? nearestSection() : destination; }
+  function beginScroll() {
+    if (scrolling) return;
+    scrolling = true; clearSignals(); profile.classList.add('pd-is-scrolling');
+  }
   function settleScroll() {
-    clearTimeout(scrollTimer);
     if (!isOpen) return;
+    // An older smooth scroll may end after a new key press has selected another destination.
+    if (destination !== null && Math.abs(deck.scrollTop-slides[destination].offsetTop) > 2) return;
+    clearTimeout(scrollTimer); scrollTimer = 0;
     destination = null;
+    if (scrolling) { scrolling = false; profile.classList.remove('pd-is-scrolling'); }
     activate(nearestSection());
+  }
+  function checkScroll() {
+    scrollTimer = 0;
+    if (!isOpen || !scrolling) return;
+    var top = deck.scrollTop;
+    var atDestination = destination === null || Math.abs(top-slides[destination].offsetTop) <= 2;
+    if (Math.abs(top-observedTop) > .5 || !atDestination) stableChecks = 0;
+    else stableChecks++;
+    observedTop = top;
+    if (stableChecks >= 2) settleScroll();
+    else scrollTimer = setTimeout(checkScroll,200);
+  }
+  function queueScrollCheck() {
+    clearTimeout(scrollTimer); observedTop = deck.scrollTop; stableChecks = 0;
+    scrollTimer = setTimeout(checkScroll,200);
   }
   function goToSection(index, instant) {
     index = Math.max(0, Math.min(slides.length-1, index));
-    clearTimeout(scrollTimer); clearSignals(); destination = index;
+    clearTimeout(scrollTimer); destination = index;
     var top = slides[index].offsetTop;
+    beginScroll();
     deck.scrollTo({top:top, behavior:instant || reduced.matches ? 'auto' : 'smooth'});
     if (instant || reduced.matches || Math.abs(deck.scrollTop-top) < 2) settleScroll();
+    else if (!supportsScrollEnd) queueScrollCheck();
   }
   deck.addEventListener('scroll',function(){
     if (!isOpen) return;
-    clearSignals(); clearTimeout(scrollTimer);
-    // scrollend is preferred; the timer also covers browsers without it.
-    scrollTimer = setTimeout(settleScroll,160);
+    beginScroll();
+    // Modern browsers report the true end; the fallback waits for two stable samples.
+    if (!supportsScrollEnd) queueScrollCheck();
   },{passive:true});
   deck.addEventListener('scrollend',settleScroll);
-  function manualScroll() { destination = null; }
+  function manualScroll() {
+    destination = null;
+    if (scrolling && !supportsScrollEnd) queueScrollCheck();
+  }
   deck.addEventListener('wheel',manualScroll,{passive:true});
   deck.addEventListener('touchstart',manualScroll,{passive:true});
   function toggleMenu(open) {
@@ -104,6 +139,7 @@
   }
   slides.forEach(function (slide, index) {
     var button = document.createElement('button'); button.type='button';
+    button.setAttribute('aria-current','false');
     var number = document.createElement('b'); number.textContent=String(index+1).padStart(2,'0');
     var label = document.createElement('span'); label.textContent=slide.dataset.title;
     button.append(number,label);
@@ -154,10 +190,10 @@
     isOpen=open;
     if(open) {
       previousFocus=document.activeElement; overview.hidden=true;deck.inert=false;
-      goToSection(0,true); activate(0,true); profile.focus({preventScroll:true});showControls();
+      goToSection(0,true); profile.focus({preventScroll:true});showControls();
     } else {
-      clearSignals();clearTimeout(controlsTimer);clearTimeout(scrollTimer);cancelAnimationFrame(resizeFrame);destination=null;overview.hidden=true;deck.inert=false;
-      profile.classList.remove('pd-controls-visible');
+      clearSignals();clearTimeout(controlsTimer);clearTimeout(scrollTimer);cancelAnimationFrame(resizeFrame);destination=null;scrolling=false;overview.hidden=true;deck.inert=false;
+      profile.classList.remove('pd-controls-visible','pd-is-scrolling');
       if(previousFocus&&previousFocus.isConnected&&!profile.contains(previousFocus))previousFocus.focus({preventScroll:true});
     }
   }
@@ -169,5 +205,5 @@
     var index = destination === null ? active : destination;
     resizeFrame = requestAnimationFrame(function(){ goToSection(index,true); });
   });
-  activate(0,true); syncOpen();
+  activate(0); syncOpen();
 })();
