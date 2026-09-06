@@ -73,6 +73,12 @@
 #materials-home .hl-btn svg { fill: currentColor; }
 #materials-home :is(.sec-light,.sec-navy,.sec-download,.nl-band) { padding: 90px 5vw; overflow: clip; }
 #materials-home :is(.sec-light,.sec-navy,.sec-download)::before { content: none; animation: none; }
+#materials-home .mh-ambient { position: relative; isolation: isolate; --mh-ambient-glow: #2e549626; --mh-ambient-line: #2e54961c; }
+/* One bounded layer per section: the long archive never becomes a giant texture. */
+#materials-home .mh-ambient::before { content: ''; position: absolute; inset: auto; top: 0; right: -5vw; width: min(82vw,960px); height: min(78vh,600px); max-height: 100%; z-index: 0; pointer-events: none; background: radial-gradient(ellipse at 66% 38%,var(--mh-ambient-glow),transparent 66%),linear-gradient(137deg,transparent 49.85%,var(--mh-ambient-line) 50%,transparent 50.15%),linear-gradient(27deg,transparent 59.85%,var(--mh-ambient-line) 60%,transparent 60.15%); opacity: .6; transform: translate(-2%,-1%); animation: mh-ambient-drift 24s ease-in-out infinite alternate; animation-play-state: paused; will-change: auto; }
+#materials-home .sec-navy.mh-ambient { --mh-ambient-glow: #82b8ff21; --mh-ambient-line: #d8e4f023; }
+#materials-home .sec-navy.mh-ambient::before { right: auto; left: -5vw; animation-direction: alternate-reverse; }
+#materials-home .mh-ambient.mh-ambient-active::before { animation-play-state: running; will-change: transform, opacity; }
 #materials-home .sec-light { background: #f8f7f4; }
 #materials-home .sec-navy { background: #1f3864; --azure: #d8e4f0; --muted: #c5d4e8; }
 #materials-home .sec-download { background: #f8f7f4; }
@@ -147,6 +153,7 @@
 #materials-home :is(.lead-btn,.profile-link) { border-radius: 3px; box-shadow: none; }
 #materials-home footer { background: #141d35; color: #bfcee4; border-top: 1px solid #ffffff20; padding: 25px 5vw; font-size: 12px; }
 @keyframes mh-opening-scan { 0% { opacity: 0; transform: translateX(-70%); } 22% { opacity: 1; } 100% { opacity: 0; transform: translateX(60%); } }
+@keyframes mh-ambient-drift { from { transform: translate(-2%,-1%); opacity: .45; } to { transform: translate(2%,3%); opacity: .85; } }
 @keyframes mh-photo-arrive { from { filter: grayscale(1) contrast(1.12) blur(14px); clip-path: inset(0 0 0 45%); } to { filter: grayscale(1) contrast(1.12) blur(0); clip-path: inset(0); } }
 @keyframes mh-panels-arrive { from { opacity: 0; transform: translate3d(36px,18px,0) rotateY(-12deg); } to { opacity: 1; transform: none; } }
 @keyframes mh-flow-draw { 0%,8% { stroke-dasharray: 1; stroke-dashoffset: 1; opacity: .35; } 32%,88% { stroke-dasharray: 1; stroke-dashoffset: 0; opacity: 1; } 100% { stroke-dasharray: 1; stroke-dashoffset: 0; opacity: .35; } }

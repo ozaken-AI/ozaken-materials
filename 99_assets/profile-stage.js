@@ -21,7 +21,7 @@
   }
   function connect() {
     signalFrame = 0;
-    if (reduced.matches || !isOpen || scrolling || active !== 1 || !overview.hidden) return;
+    if (document.hidden || reduced.matches || !isOpen || scrolling || active !== 1 || !overview.hidden) return;
     var network = slides[active].querySelector('.pd-network');
     var rect = network.getBoundingClientRect();
     // Read every endpoint before adding animated elements to avoid alternating layout reads and writes.
@@ -69,7 +69,7 @@
     title.textContent = slides[active].dataset.title;
     cue.textContent = active === slides.length-1 ? '↑ スクロールで前の画面へ' : '↓ スクロールで次の画面へ';
     grid.children[active].setAttribute('aria-current','true');
-    if (active === 1 && isOpen && !reduced.matches && overview.hidden) signalFrame = requestAnimationFrame(connect);
+    if (active === 1 && isOpen && !document.hidden && !reduced.matches && overview.hidden) signalFrame = requestAnimationFrame(connect);
   }
   function nearestSection() {
     var nearest = 0, distance = Infinity;
@@ -198,6 +198,12 @@
     }
   }
   new MutationObserver(syncOpen).observe(profile,{attributes:true,attributeFilter:['class']});
+  function syncVisibility() {
+    profile.classList.toggle('pd-page-hidden',document.hidden);
+    if (document.hidden) clearSignals();
+  }
+  document.addEventListener('visibilitychange',syncVisibility);
+  syncVisibility();
   reduced.addEventListener('change',function(){if(reduced.matches)clearSignals();});
   window.addEventListener('resize',function(){
     if (!isOpen) return;
