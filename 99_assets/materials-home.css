@@ -117,12 +117,14 @@
 #materials-home .card:hover { transform: none; box-shadow: none; }
 #materials-home .card::before { display: none; }
 #materials-home #archive .card h3 { padding-right: 0; font-family: var(--font-ja-sans); }
+#materials-home #archive .card-tag { -webkit-text-stroke: 0; }
+#materials-home #archive .doc-list a { background: none; border-left: 0; border-radius: 0; }
 #materials-home .sec-navy .card { background: #ffffff08; border-color: #ffffff26; }
 #materials-home .nl-band { background: #e2e9d5; border-block: 1px solid #c5d1b9; }
 #materials-home .nl-inner { max-width: 1200px; }
 #materials-home .nl-band :is(h2,.nl-title) { color: #203c32; }
 #materials-home .nl-band :is(p,.nl-kicker,.nl-copy,.nl-note) { color: #4f664e; }
-#materials-home .nl-form button { background: #203c32; }
+#materials-home .nl-form button { background: #203c32; color: white; }
 #materials-home .nl-form button:hover:not(:disabled) { background: #365b47; color: white; }
 #materials-home .nl-form input[type=email] { background: #faffef; border-color: #a5b799; color: #203c32; }
 #materials-home .nl-form input[type=email]::placeholder { color: #647c59; }
