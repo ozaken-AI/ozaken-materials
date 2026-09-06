@@ -19,8 +19,9 @@
 トップページで te と打つと、ここへ来られる。
 """
 import sys
+from pathlib import Path
 
-S = '/home/user/ozaken-materials/.claude/skills/ozaken-shiryo/scripts'
+S = str(Path(__file__).resolve().parents[1] / 'scripts')
 sys.path.insert(0, S)
 from page_parts import (hero, sec, cards, close, take,
                         stats, stepper, two_col, versus, deep, note)
@@ -1068,5 +1069,6 @@ def _no(m):
 _body = _re.sub(r'class="fig-no">Fig\.\d+</span>', _no, _body)
 
 
-open('/tmp/body_template.html', 'w', encoding='utf-8').write(_body)
-print('書きました: %d 文字 / 図版 %d 点' % (len(_body), _f[0]))
+if __name__ == '__main__':
+    Path('/tmp/body_template.html').write_text(_body, encoding='utf-8')
+    print('書きました: %d 文字 / 図版 %d 点' % (len(_body), _f[0]))
