@@ -4,7 +4,6 @@
   if (!profile) return;
   var slides = Array.from(profile.querySelectorAll('.pd-slide'));
   var overview = profile.querySelector('#pd-overview');
-  var menuButton = profile.querySelector('[data-pd-menu]');
   var grid = overview.querySelector('.pd-overview-grid');
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
   var active = 0, isOpen = false, controlsTimer = 0, previousFocus = null;
@@ -60,8 +59,6 @@
     if (replay) slides[active].classList.add('is-replaying');
     profile.querySelector('[data-pd-count]').textContent = String(active+1).padStart(2,'0')+' / '+slides.length;
     profile.querySelector('[data-pd-title]').textContent = slides[active].dataset.title;
-    profile.querySelector('[data-pd-prev]').disabled = active === 0;
-    profile.querySelector('[data-pd-next]').disabled = active === slides.length-1;
     profile.querySelector('.pd-scroll-cue').textContent = active === slides.length-1 ? '↑ スクロールで前の画面へ' : '↓ スクロールで次の画面へ';
     grid.querySelectorAll('button').forEach(function (button,i) { button.setAttribute('aria-current',String(i===active)); });
     signalFrame = requestAnimationFrame(connect);
@@ -100,7 +97,6 @@
   deck.addEventListener('touchstart',manualScroll,{passive:true});
   function toggleMenu(open) {
     overview.hidden = !open; deck.inert = open;
-    menuButton.setAttribute('aria-expanded',String(open));
     if (open) {
       goToSection(nearestSection(),true); clearSignals(); showControls();
       grid.children[active].focus({preventScroll:true});
@@ -114,10 +110,6 @@
     button.addEventListener('click', function () { toggleMenu(false); goToSection(index); });
     grid.appendChild(button);
   });
-  profile.querySelector('[data-pd-prev]').addEventListener('click',function(){ goToSection(navigationIndex()-1); });
-  profile.querySelector('[data-pd-next]').addEventListener('click',function(){ goToSection(navigationIndex()+1); });
-  profile.querySelector('[data-pd-replay]').addEventListener('click',function(){ goToSection(active,true); activate(active,true); });
-  menuButton.addEventListener('click',function(){ toggleMenu(overview.hidden); });
   profile.querySelector('[data-pd-menu-close]').addEventListener('click',function(){ toggleMenu(false); });
   profile.addEventListener('pointermove',showControls,{passive:true});
   profile.addEventListener('pointerdown',showControls,{passive:true});
@@ -161,7 +153,7 @@
     if(open===isOpen)return;
     isOpen=open;
     if(open) {
-      previousFocus=document.activeElement; overview.hidden=true;deck.inert=false; menuButton.setAttribute('aria-expanded','false');
+      previousFocus=document.activeElement; overview.hidden=true;deck.inert=false;
       goToSection(0,true); activate(0,true); profile.focus({preventScroll:true});showControls();
     } else {
       clearSignals();clearTimeout(controlsTimer);clearTimeout(scrollTimer);cancelAnimationFrame(resizeFrame);destination=null;overview.hidden=true;deck.inert=false;
