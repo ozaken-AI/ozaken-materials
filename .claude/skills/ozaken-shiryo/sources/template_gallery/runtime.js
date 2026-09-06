@@ -21,7 +21,7 @@ function motion(el){
  let frames;
  if(type==='draw'){
   el.removeAttribute('pathLength');
-  const length=el.getTotalLength(),matrix=el.getScreenCTM();let px=0,previous=el.getPointAtLength(0).matrixTransform(matrix);
+  const length=el.getTotalLength(),matrix=el.getScreenCTM();if(!matrix)return;let px=0,previous=el.getPointAtLength(0).matrixTransform(matrix);
   for(let i=1;i<=80;i++){const point=el.getPointAtLength(length*i/80).matrixTransform(matrix);px+=Math.hypot(point.x-previous.x,point.y-previous.y);previous=point;}
   frames=[{strokeDasharray:px+'px '+px+'px',strokeDashoffset:px+'px'},{strokeDasharray:px+'px '+px+'px',strokeDashoffset:'0px'}];
  }
@@ -36,7 +36,7 @@ function motion(el){
 }
 function prepare(){
  animations.forEach(a=>a.cancel());animations=[];packets=[];
- if(!reduced.matches){
+ if(!reduced.matches&&canvas.getBoundingClientRect().width){
   canvas.querySelectorAll('[data-motion]').forEach(motion);
   canvas.querySelectorAll('[data-arc]').forEach(el=>{
    const length=Number(el.dataset.arc),circ=Number(el.dataset.circ);
@@ -131,7 +131,7 @@ document.querySelectorAll('.ac-h').forEach(el=>{const sync=()=>el.closest('.ac-i
 document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();});
 new IntersectionObserver(entries=>{if(!entries[0].isIntersecting)pause();},{threshold:0}).observe(studio);
 new IntersectionObserver(entries=>{const state=entries[0].isIntersecting?'running':'paused';document.querySelectorAll('.hero-orbit,.hero-cube').forEach(el=>el.style.animationPlayState=state);},{threshold:0}).observe($('.tl-hero'));
-new ResizeObserver(()=>{const r=canvas.getBoundingClientRect(),size=Math.round(r.width)+'x'+Math.round(r.height);if(!r.width||size===lastSize)return;lastSize=size;cancelAnimationFrame(resizeFrame);resizeFrame=requestAnimationFrame(()=>prepare());}).observe(canvas);
+new ResizeObserver(()=>{const r=canvas.getBoundingClientRect(),size=Math.round(r.width)+'x'+Math.round(r.height);if(!r.width){lastSize='';return;}if(size===lastSize)return;lastSize=size;cancelAnimationFrame(resizeFrame);resizeFrame=requestAnimationFrame(()=>prepare());}).observe(canvas);
 reduced.addEventListener('change',()=>{pause();play.disabled=reduced.matches;$('#tl-replay').disabled=reduced.matches;activeCaption=-2;time=duration;prepare();});
 window.addEventListener('beforeprint',()=>{pause();render(duration);});
 play.disabled=reduced.matches;$('#tl-replay').disabled=reduced.matches;
