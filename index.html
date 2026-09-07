@@ -1510,6 +1510,7 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
   font-family:var(--font-ja-sans);font-size:.76rem;letter-spacing:.1em;
   color:#fff;white-space:nowrap;overflow:hidden}
 .boot.is-on .boot-vo{animation:bootFadeIn .5s ease .2s both,bootPanelOut .4s ease 5.6s both}
+.boot-vo .cap{min-width:0;white-space:normal;line-height:1.5}
 .boot-vo .vt{flex:none;font-family:var(--font-en);font-size:.6rem;font-weight:700;
   letter-spacing:.18em;color:rgba(159,198,245,.72)}
 .boot-vo .eq{flex:none;display:flex;align-items:flex-end;gap:2px;height:13px}
@@ -3057,63 +3058,21 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
   <div class="boot-vignette"></div>
   <button class="boot-skip" type="button" id="bootSkip">SKIP ／ ESC</button>
 </div>
+<script src="99_assets/session-audio.js?v=57557bfa9bb66b15c39b5d04342da7092a63d4031323af7f1f38069edb96ea39" defer></script>
 <script>
 /* 起動シークエンス：再生し終えたらコールバックを呼ぶ。window.ozBoot(done) で使う */
 (function(){
   var boot=document.getElementById('boot'); if(!boot) return;
   var root=document.documentElement, pct=document.getElementById('bootPct');
   var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var actx=null;
-  function tone(f,at,dur,vol,type){
-    if(!actx) return;
-    var o=actx.createOscillator(),g=actx.createGain(),t=actx.currentTime+at;
-    o.type=type||'square'; o.frequency.setValueAtTime(f,t);
-    g.gain.setValueAtTime(0.0001,t);
-    g.gain.exponentialRampToValueAtTime(vol,t+0.01);
-    g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
-    o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t+dur+0.02);
+  /* 録音済みの合成音声と通信音を一緒に再生し、映像の終了で確実に止める。 */
+  function sounds(mode){
+    if(window.ozSessionAudio) window.ozSessionAudio.play(mode);
   }
-  function sweepTone(a,b,at,dur,vol){
-    if(!actx) return;
-    var o=actx.createOscillator(),g=actx.createGain(),t=actx.currentTime+at;
-    o.type='sawtooth'; o.frequency.setValueAtTime(a,t); o.frequency.exponentialRampToValueAtTime(b,t+dur);
-    g.gain.setValueAtTime(0.0001,t);
-    g.gain.exponentialRampToValueAtTime(vol,t+0.06);
-    g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
-    o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t+dur+0.02);
+  function stopSounds(){
+    if(window.ozSessionAudio) window.ozSessionAudio.stop();
   }
-  /* 帯域を絞ったノイズ。無線がつながる／切れるときの「ザッ」 */
-  function noise(at,dur,vol,f0,f1){
-    if(!actx) return;
-    var t=actx.currentTime+at,len=Math.max(1,Math.floor(actx.sampleRate*dur));
-    var buf=actx.createBuffer(1,len,actx.sampleRate),d=buf.getChannelData(0);
-    for(var i=0;i<len;i++) d[i]=(Math.random()*2-1)*(1-i/len);
-    var src=actx.createBufferSource(); src.buffer=buf;
-    var bp=actx.createBiquadFilter(); bp.type='bandpass'; bp.Q.value=1.1;
-    bp.frequency.setValueAtTime(f0||1200,t);
-    if(f1) bp.frequency.exponentialRampToValueAtTime(f1,t+dur);
-    var g=actx.createGain();
-    g.gain.setValueAtTime(0.0001,t);
-    g.gain.exponentialRampToValueAtTime(vol,t+0.012);
-    g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
-    src.connect(bp); bp.connect(g); g.connect(actx.destination);
-    src.start(t); src.stop(t+dur+0.02);
-  }
-  function sounds(){
-    try{ actx=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ return; }
-    sweepTone(120,480,0,0.45,0.13);
-    /* システムメッセージが表示される合図 */
-    noise(0.18,0.26,0.06,300,2600);
-    tone(1760,0.26,0.05,0.075,'sine'); tone(2349,0.33,0.06,0.06,'sine');
-    /* 各行のゲージが伸びきってOKが入る瞬間に鳴らす */
-    for(var i=0;i<5;i++) tone(1245,0.81+i*0.52,0.05,0.11);
-    tone(880,3.41,0.08,0.12);                        /* RUN 行 */
-    for(var j=0;j<6;j++) tone(660,3.45+j*0.22,0.035,0.055); /* 読み込み中の刻み */
-    tone(1046,5.45,0.10,0.12,'triangle');
-    tone(1568,5.60,0.26,0.11,'triangle');
-  }
-  function stopSounds(){ if(actx&&actx.close){ try{ actx.close(); }catch(e){} actx=null; } }
-  /* ── 起動時のシステムメッセージ。音声は使わず、画面上の表示だけで見せる ── */
+  /* 音声と同じメッセージを画面にも残す。 */
   var voTimer=0,voGap=0;
   /* 一節ずつ、間を置いて打ち出す。端末が区切って表示している口調にする */
   function caption(text){
@@ -3129,9 +3088,9 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
         if(i>=s.length){
           clearInterval(voTimer); out=head+s+'　';
           el.classList.remove('is-live');
-          voGap=setTimeout(chunk,470);
+          voGap=setTimeout(chunk,160);
         }
-      },95);
+      },60);
     }
     chunk();
   }
@@ -3167,14 +3126,14 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
       bar:'STARTING LECTURE SESSION',proc:'セッション開始プロセス進行中',
       mod:'SESSION START',lead:'セッションを開始します',
       name:'小澤健祐（おざけん）',sub:'AIをすべての人に届けるために、書き、話し、つくり続けている。',
-      voCap:'人間とAIをつなぐ　セッション開始'},
+      voCap:'Session start in progress. Systems online.'},
     end:{tag:'OZAKEN CMS ／ SESSION END SEQUENCE',
       lines:['SESSION COMPLETE','IDEAS CONNECTED','KEEP ASKING QUESTIONS',
              'EXPLORE THE MATERIALS','BRING IDEAS TO WORK','CONTINUE LEARNING'],
       bar:'CONTINUE EXPLORING',proc:'セッション終了プロセス進行中',
       mod:'SESSION COMPLETE',lead:'Thank You',
       name:'今日の問いを、次の実践へ。',sub:'資料アーカイブは、次の画面のQRコードから。',
-      voCap:'セッション終了　学びは、ここから続いていく'}
+      voCap:'Session complete. Standing by.'}
   };
   function applyMode(m){
     var c=MODES[m]||MODES.start;
@@ -3202,7 +3161,7 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
     void boot.offsetWidth; // Restart the timeline even when replaying during the previous fade-out.
     boot.classList.add('is-on');
     root.classList.add('boot-locked');
-    counter(); sounds(); narrate(conf.voCap);
+    counter(); sounds(mode==='end'?'end':'start'); narrate(conf.voCap);
     timer=setTimeout(finish,6800);
   };
   window.ozBootSkip=function(){ if(going) finish(); };
