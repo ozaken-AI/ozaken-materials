@@ -14,7 +14,10 @@ from pathlib import Path
 import argparse, functools, inspect, json, os, re, runpy, sys
 HERE=Path(__file__).resolve().parent
 SCRIPTS=HERE.parent/'scripts';sys.path.insert(0,str(SCRIPTS))
-from template_gallery.catalog import CATALOG,CATEGORIES,BLOCKS
+from template_gallery.catalog import CATALOG as BASE_CATALOG,CATEGORIES,BLOCKS as BASE_BLOCKS
+from template_gallery.next import FIGURES as NEW_FIGURES, PARTS as NEW_PARTS, scene as new_scene, parts as new_parts, curtain
+CATALOG = [*BASE_CATALOG, *NEW_FIGURES]
+BLOCKS = {**BASE_BLOCKS, **NEW_PARTS}
 from template_gallery.scenes import scene,e
 import domain_fig,blocks,build_page
 # The shared keynav module requires an environment variable at import time, even
@@ -38,8 +41,8 @@ def examples():
             return html
         setattr(mod,name,call)
     try:
-        for item in CATALOG:wrap(domain_fig,'fig_'+item['id'],figures)
-        for key in BLOCKS:wrap(blocks,key,parts)
+        for item in BASE_CATALOG:wrap(domain_fig,'fig_'+item['id'],figures)
+        for key in BASE_BLOCKS:wrap(blocks,key,parts)
         runpy.run_path(str(HERE/'gen_template.py'),run_name='template_examples')
     finally:
         for mod,name,fn in originals:setattr(mod,name,fn)
@@ -52,7 +55,11 @@ def mini(kind):
     def rect(x,y,w,h,c=''):
         return f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="3" class="{c}"/>'
     def line(d,c=''):return f'<path d="{d}" class="{c}"/>'
-    if kind=='dims':art=line('M100 10 135 30 135 68 100 88 65 68 65 30 Z M65 30 100 50 135 30 M100 50 V88')+line('M25 50 H50 M148 50 H177','faint')
+    if kind=='cutaway':art=''.join(line(f'M35 {15+i*19} L85 {3+i*19} L154 {20+i*19} L106 {34+i*19} Z','accent' if i==1 else '') for i in range(4))
+    elif kind=='rebuild':art=''.join(rect(x,y,34,19,'filled' if i<4 else '') for i,(x,y) in enumerate([(27,13),(72,13),(27,43),(72,43),(137,28),(137,60)]))+line('M119 10 V90','faint')
+    elif kind=='gate':art=line('M18 50 H88 M88 20 V40 M88 60 V85 M88 50 C115 50 114 24 140 24 M88 50 C115 50 114 76 140 76')+rect(143,14,40,20)+rect(143,66,40,20,'filled')
+    elif kind=='waiting':art=rect(20,20,150,20)+rect(20,61,110,20)+rect(87,20,50,20,'filled')+rect(52,61,50,20,'filled')
+    elif kind=='dims':art=line('M100 10 135 30 135 68 100 88 65 68 65 30 Z M65 30 100 50 135 30 M100 50 V88')+line('M25 50 H50 M148 50 H177','faint')
     elif kind in ('cycle','issues','loop4'):
         art='<circle cx="100" cy="50" r="32"/>'+''.join(rect(x,y,22,14,'filled' if i==1 else '') for i,(x,y) in enumerate([(89,11),(123,43),(89,75),(55,43)]))
     elif kind in ('tree','kpi'):
@@ -79,13 +86,15 @@ def mini(kind):
 
 def build():
     figures,parts=examples()
-    style=(HERE/'template_gallery/style.css').read_text();runtime=(HERE/'template_gallery/runtime.js').read_text()
+    parts.update({k:{'html':v} for k,v in new_parts().items()})
+    new_ids={x['id'] for x in NEW_FIGURES}
+    style='\n'.join((HERE/'template_gallery'/name).read_text() for name in ['style.css','atmosphere.css','next.css']);runtime=(HERE/'template_gallery/next.js').read_text()+'\n'+(HERE/'template_gallery/runtime.js').read_text()
     cards=[];templates=[]
     for i,item in enumerate(CATALOG):
-        k=item['id'];rendered=scene(k,figures['fig_'+k]['args'])
+        k=item['id'];rendered=new_scene(k) if k in new_ids else scene(k,figures['fig_'+k]['args'])
         templates.append(f'<template id="scene-{k}"><div class="lab-scene scene-{k}">{rendered}</div></template>')
-        cards.append(f'''<button type="button" class="tl-card" data-select="{k}" data-category="{item['category']}">
-<span class="tl-card-top"><span>{i+1:02} / {e(CATEGORIES[item['category']])}</span><span aria-hidden="true">↗</span></span>
+        cards.append(f'''<button type="button" class="tl-card" data-select="{k}" data-category="{item['category']}" {'data-new' if k in new_ids else ''}>
+<span class="tl-card-top"><span>{i+1:02} / {e(CATEGORIES[item['category']])}</span><span aria-hidden="true">{'NEW' if k in new_ids else '↗'}</span></span>
 <div class="tl-card-art">{mini(k)}</div><h3>{e(item['name'])}</h3><p>{e(item['purpose'])}</p><span class="tl-card-link">動きを試す <span aria-hidden="true">→</span></span></button>''')
     partcards=[]
     for i,(k,(name,purpose,group)) in enumerate(BLOCKS.items()):
@@ -102,7 +111,8 @@ def build():
             ],note='読み手が必要な情報を開くための見本です。')
         # Counter is readable in print/no-JS; runtime can still replay it.
         html=re.sub(r'(<b data-to="(\d+)">)0',lambda m:m[1]+format(int(m[2]),','),html)
-        partcards.append(f'<article class="tl-part" data-part="{k}" data-part-group="{group}"><header><span>{i+1:02} / {e(group)}</span><h3>{e(name)}</h3><p>{e(purpose)}</p></header><div class="tl-part-example">{html}</div><footer><code>{k}()</code><button type="button" data-replay-part aria-label="{e(name)}を再生">再生 ↻</button></footer></article>')
+        api_label=f'<code>{k}()</code>' if k in BASE_BLOCKS else '<span>便覧専用の見本</span>'
+        partcards.append(f'<article class="tl-part" data-part="{k}" data-part-group="{group}"><header><span>{i+1:02} / {e(group)}</span><h3>{e(name)}</h3><p>{e(purpose)}</p></header><div class="tl-part-example">{html}</div><footer>{api_label}<button type="button" data-replay-part aria-label="{e(name)}を再生">再生 ↻</button></footer></article>')
     guide='''<div class="tl-guide-intro"><span class="tl-eyebrow">DESIGN NOTES</span><h2>形を整える。<br>伝えることに、集中する。</h2><p>色・書体・余白・動きに共通の役割を持たせる。<br>図が変わっても、読み方は迷わせない。</p></div>
 <div class="tl-guide-grid"><article><span>01 / COMPOSITION</span><h3>一つの面に、一つの主張。</h3><div class="tl-page-demo"><i>主張</i><b>図版</b><span>補足　／　補足　／　補足</span></div><p>導入で問いを置き、図で理解し、短い補足で結論を持ち帰る。図を詰め込むより、話の単位で面を分けます。</p></article>
 <article><span>02 / CONTRAST</span><h3>明るい面と、濃い面。</h3><div class="tl-tone-demo"><i>表紙</i><i>本文</i><i>本文</i><i>締め</i></div><p>通常の資料は、表紙 → 明暗の交互 → 濃い締め。色の切り替わりを、話の切り替わりと揃えます。</p></article>
@@ -110,16 +120,16 @@ def build():
 <article><span>04 / COLOUR</span><h3>色を、意味のために使う。</h3><div class="tl-swatches"><i style="--sw:#141d35">地</i><i style="--sw:#2e5496">基準</i><i style="--sw:#2f8f8a">達成</i><i style="--sw:#e23744">注意</i></div><p>紺・紙色・青を軸に、赤と青緑を要点へ。数字の内訳には凡例を添え、色だけで意味を伝えません。</p></article>
 <article><span>05 / MOTION</span><h3>動きは、説明の順番。</h3><div class="tl-motion-demo"><i></i><span></span><i></i><span></span><i></i></div><p>最初は完成形を見せ、必要に応じて再生。話し手は途中で止め、段階を選び、何度でも見せ直せます。</p></article>
 <article><span>06 / LEGIBILITY</span><h3>小さくする前に、組み替える。</h3><div class="tl-size-demo"><i>図</i><span>図<br>説明<br>補足</span></div><p>スマートフォンでは表をカードへ、比較を縦へ。単位・ラベル・出典は動かさず、読む時間を確保します。</p></article></div>
-<details class="tl-maker"><summary>作り手向け：生成と運用</summary><p>この便覧は、既存の30図版・24本文ブロックの呼び出し例を読み取り、便覧専用の表示と動きを組み立てています。今回のデザイン変更はテンプレートだけに適用しています。</p><pre>python3 .claude/skills/ozaken-shiryo/sources/build_template_gallery.py --preview /absolute/work/template.html</pre><p>本番の再生成は環境変数 OZAKEN_PW を設定して --publish。既存の暗号鍵を維持し、template.html だけを更新します。既存の個別資料と、共有の描画関数には新しい演出を適用しません。</p></details>'''
+<details class="tl-maker"><summary>作り手向け：生成と運用</summary><p>この便覧は、既存の30図版・24本文ブロックの呼び出し例に、新しい4図版・9パーツの見本を加えています。便覧専用の生成コードで表示と動きを組み立て、テンプレートだけに適用しています。</p><pre>python3 .claude/skills/ozaken-shiryo/sources/build_template_gallery.py --preview /absolute/work/template.html</pre><p>本番の再生成は環境変数 OZAKEN_PW を設定して --publish。既存の暗号鍵を維持し、template.html だけを更新します。既存の個別資料と、共有の描画関数には新しい演出を適用しません。</p></details>'''
     default=next(x for x in CATALOG if x['id']=='dims')
     catalogue_json=json.dumps(CATALOG,ensure_ascii=False).replace('<','\\u003c')
     block_runtime=build_page.TAIL[build_page.TAIL.index('<script>\n/* ══ 押せる部品'):]
-    html=f'''<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>テンプレート便覧 — 伝わる図に、動きを。 | おざけん</title><meta name="description" content="30種類の図版と24種類の本文パーツ。用途から選び、動きと説明の順番を試せるテンプレート便覧。"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Shippori+Mincho+B1:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">{build_page.STYLE}<style>{style}</style></head>
-<body class="tl-body"><a class="tl-skip" href="#tl-explorer">図版の操作へ移動</a><header class="tl-header"><a class="tl-brand" href="index.html">OZAKEN<span>DESIGN LIBRARY</span></a><nav class="tl-tabs" role="tablist" aria-label="便覧の表示"><button type="button" role="tab" id="tab-figures" aria-controls="panel-figures" aria-selected="true" data-panel="figures">図版 <span>30</span></button><button type="button" role="tab" id="tab-parts" aria-controls="panel-parts" aria-selected="false" tabindex="-1" data-panel="parts">本文パーツ <span>24</span></button><button type="button" role="tab" id="tab-guide" aria-controls="panel-guide" aria-selected="false" tabindex="-1" data-panel="guide">設計ガイド</button></nav><a class="tl-back" href="index.html">資料アーカイブ ↗</a></header>
-<main id="tl-main"><section id="panel-figures" role="tabpanel" aria-labelledby="tab-figures"><div class="tl-hero"><div class="tl-hero-copy"><span class="tl-eyebrow">OZAKEN TEMPLATE COLLECTION / 2026</span><h1>伝わる図に、<br><em>動きを。</em></h1><p>比較する。つなぐ。ほどく。<br>伝えたいことから、図の形と動きを選ぶ。</p><a href="#tl-explorer" class="tl-hero-link">図版を試す <span>↓</span></a></div><div class="tl-hero-art" aria-hidden="true"><div class="hero-orbit orbit-a"></div><div class="hero-orbit orbit-b"></div><div class="hero-orbit orbit-c"></div><div class="hero-cube">{mini('dims')}</div><span class="hero-label label-a">FORM</span><span class="hero-label label-b">MEANING</span><span class="hero-label label-c">MOTION</span></div><div class="tl-hero-bottom"><span>形が変わる。理解が、つながる。</span><span>30 FIGURES <i>／</i> 24 BUILDING BLOCKS</span></div></div>
+    html=f'''<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>テンプレート便覧 — 伝わる資料に、動きを。 | おざけん</title><meta name="description" content="{len(CATALOG)}種類の図版と{len(BLOCKS)}種類の本文パーツ。用途から選び、動きと説明の順番を試せるテンプレート便覧。"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Shippori+Mincho+B1:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">{build_page.STYLE}<style>{style}</style></head>
+<body class="tl-body"><div class="tl-atmosphere" aria-hidden="true"><i></i><i></i></div><div class="tl-ambient-dock"><button type="button" id="tl-ambient-toggle" aria-pressed="true">背景の動き：ON</button></div><a class="tl-skip" href="#tl-explorer">図版の操作へ移動</a><header class="tl-header"><a class="tl-brand" href="index.html">OZAKEN<span>DESIGN LIBRARY</span></a><nav class="tl-tabs" role="tablist" aria-label="便覧の表示"><button type="button" role="tab" id="tab-figures" aria-controls="panel-figures" aria-selected="true" data-panel="figures">図版 <span>{len(CATALOG)}</span></button><button type="button" role="tab" id="tab-parts" aria-controls="panel-parts" aria-selected="false" tabindex="-1" data-panel="parts">本文パーツ <span>{len(BLOCKS)}</span></button><button type="button" role="tab" id="tab-guide" aria-controls="panel-guide" aria-selected="false" tabindex="-1" data-panel="guide">設計ガイド</button></nav><a class="tl-back" href="index.html">資料アーカイブ ↗</a></header>
+<main id="tl-main"><section id="panel-figures" role="tabpanel" aria-labelledby="tab-figures"><div class="tl-hero" data-ambient-zone><div class="tl-hero-copy"><span class="tl-eyebrow">OZAKEN TEMPLATE COLLECTION / 2026</span><h1><span><b>伝わる資料に、</b></span><span><b><em>動きを。</em></b></span></h1><p>言葉も、数字も、物語も。<br>伝えたい内容に、表情とリズムを。</p><div class="tl-hero-actions"><a href="#tl-explorer" class="tl-hero-link">テンプレートを選ぶ <span>↓</span></a><button type="button" class="tl-hero-parts" data-open-parts>本文パーツを見る ↗</button></div></div><div class="tl-hero-art" aria-hidden="true">{curtain()}<span class="tl-hero-art-caption">WORDS INTO EXPERIENCE</span></div><div class="tl-hero-bottom"><span>言葉が届く。理解が、つながる。</span><span>{len(CATALOG)} FIGURES <i>／</i> {len(BLOCKS)} BUILDING BLOCKS</span></div></div>
 <div class="tl-shell"><div class="tl-section-head" id="tl-explorer"><div><span class="tl-eyebrow">01 / MOTION STUDIO</span><h2>動かして、伝わり方を試す。</h2></div><p>完成形から、説明の順番へ。</p></div><div id="tl-studio-anchor"></div><section class="tl-studio" aria-label="図版のプレビュー"><div class="tl-stage-top"><div><span id="tl-stage-category">流れを伝える</span><h3 id="tl-stage-title" tabindex="-1">次元の変化</h3></div><button type="button" id="tl-expand">大きく表示 ⤢</button></div><div class="tl-workspace"><div class="tl-canvas" id="tl-canvas" role="region" aria-label="図版の見本">{scene('dims',figures['fig_dims']['args'])}</div><aside class="tl-inspector"><span class="tl-eyebrow">WHAT IT TELLS</span><h4 id="tl-purpose">{e(default['purpose'])}</h4><div><span>向いている場面</span><p id="tl-best">{e(default['best'])}</p></div><div><span>使うときの注意</span><p id="tl-caution">{e(default['caution'])}</p></div><p class="tl-example-note">図は型を示すための見本です。実際の数値・出典・文言に置き換えて使います。</p></aside></div><div class="tl-player"><div class="tl-controls"><button type="button" id="tl-play" class="tl-primary">▶ 再生</button><button type="button" id="tl-replay" aria-label="最初から再生">↻ 最初から</button><button type="button" id="tl-next">次の段階 →</button><button type="button" id="tl-all">全体を見る</button><label class="tl-speed">速度<select id="tl-speed" aria-label="再生速度"><option value="0.7">ゆっくり</option><option value="1" selected>標準</option><option value="1.4">速く</option></select></label></div><label class="tl-range-label" for="tl-progress">再生位置 <span id="tl-time">完成形</span></label><input type="range" id="tl-progress" min="0" max="1000" value="1000" aria-label="再生位置"><div class="tl-beats" id="tl-beats" aria-label="説明の段階"></div><p class="tl-caption" id="tl-caption" aria-live="polite">完成形を表示しています。再生すると、説明の順に変化します。</p></div></section>
-<div class="tl-section-head tl-catalog-head" id="tl-catalog"><div><span class="tl-eyebrow">02 / FIND YOUR FORM</span><h2>何を、伝えたい？</h2></div><label class="tl-search"><span>図版を検索</span><input id="tl-search" type="search" placeholder="例：比較、手順、比率" autocomplete="off"></label></div><div class="tl-filterbar"><div class="tl-filters" role="group" aria-label="図版の用途"><button type="button" data-filter="all" aria-pressed="true">すべて <span>30</span></button>{''.join(f'<button type="button" data-filter="{k}" aria-pressed="false">{v} <span>{sum(x["category"]==k for x in CATALOG)}</span></button>' for k,v in CATEGORIES.items())}</div><span id="tl-results" role="status">30種類</span></div><div class="tl-catalog-grid">{''.join(cards)}</div><p id="tl-empty" hidden>一致する図版がありません。別の言葉で探してみてください。</p></div></section>
-<section id="panel-parts" role="tabpanel" aria-labelledby="tab-parts" hidden><div class="tl-shell"><div class="tl-parts-intro"><span class="tl-eyebrow">BUILDING BLOCKS / 17 + 7</span><h2>図のまわりにも、<br>伝わる形を。</h2><p>数字・ことば・構成・強調の17種類と、触って試せる7種類。<br>本文の役割に合わせて選ぶ、24のパーツ。</p></div><div class="tl-part-filters" role="group" aria-label="本文パーツの用途">{''.join(f'<button type="button" data-part-filter="{v}" aria-pressed="{str(i==0).lower()}">{v}</button>' for i,v in enumerate(['すべて','数字','ことば','構成','強調','操作']))}</div><div class="tl-part-grid">{''.join(partcards)}</div></div></section>
+<div class="tl-section-head tl-catalog-head" id="tl-catalog"><div><span class="tl-eyebrow">02 / FIND YOUR FORM</span><h2>何を、伝えたい？</h2></div><label class="tl-search"><span>図版を検索</span><input id="tl-search" type="search" placeholder="例：比較、手順、比率" autocomplete="off"></label></div><div class="tl-filterbar"><div class="tl-filters" role="group" aria-label="図版の用途"><button type="button" data-filter="all" aria-pressed="true">すべて <span>{len(CATALOG)}</span></button>{''.join(f'<button type="button" data-filter="{k}" aria-pressed="false">{v} <span>{sum(x["category"]==k for x in CATALOG)}</span></button>' for k,v in CATEGORIES.items())}</div><span id="tl-results" role="status">{len(CATALOG)}種類</span></div><div class="tl-catalog-grid">{''.join(cards)}</div><p id="tl-empty" hidden>一致する図版がありません。別の言葉で探してみてください。</p></div></section>
+<section id="panel-parts" role="tabpanel" aria-labelledby="tab-parts" hidden><div class="tl-shell"><div class="tl-parts-intro"><span class="tl-eyebrow">WORDS / NUMBERS / INTERACTION</span><h2>図のまわりにも、<br>伝わる形を。</h2><p>数字をつかむ。言葉を届ける。その場で試す。<br>本文の役割に合わせて選ぶ、{len(BLOCKS)}のパーツ。</p></div><div class="tl-part-filters" role="group" aria-label="本文パーツの用途">{''.join(f'<button type="button" data-part-filter="{v}" aria-pressed="{str(i==0).lower()}">{v}</button>' for i,v in enumerate(['すべて','数字','ことば','構成','強調','操作']))}</div><div class="tl-part-grid">{''.join(partcards)}</div></div></section>
 <section id="panel-guide" role="tabpanel" aria-labelledby="tab-guide" hidden><div class="tl-shell">{guide}</div></section></main>
 <footer class="tl-footer"><div><b>OZAKEN</b><span>型があるから、伝えることに時間を使える。</span></div><a href="index.html">資料アーカイブに戻る ↗</a></footer><dialog id="tl-dialog" aria-label="図版を大きく表示"><form method="dialog"><button class="tl-dialog-close" aria-label="拡大表示を閉じる">閉じる ×</button></form><div id="tl-dialog-mount"></div></dialog>{''.join(templates)}<script type="application/json" id="tl-data">{catalogue_json}</script>
 {block_runtime}{apply_keynav.JS}<script>{runtime}</script></body></html>'''
