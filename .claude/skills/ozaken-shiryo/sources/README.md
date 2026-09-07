@@ -1,42 +1,43 @@
 # 資料の生成元
 
-公開されている資料の本文フラグメントを組み立てるスクリプト。
-**資料を直すときは、公開済みのHTMLではなく、ここを直して作り直す。**
+資料の本文・図・専用デザインを組み立てる生成元です。
+**資料を直すときは、暗号化HTMLの暗号文ではなく、生成元を直して作り直します。**
+全体の作成・改訂・公開手順は [運用手順](../../../../docs/operations.md)、最新の本人指定は [講演・印刷のデザイン規約](../../../../docs/lecture-design.md) を参照してください。
 
-```bash
-cd .claude/skills/ozaken-shiryo/sources
-python3 gen_xxx.py                       # /tmp/body_xxx.html を書き出す
-cd ../scripts
-OZAKEN_PW=マスター python3 publish.py \
-    /tmp/body_xxx.html 01_concept/xxx.html --update
+## 現在使う生成入口
+
+| 対象 | 生成入口 | 役割 |
+|---|---|---|
+| `template.html` | `build_template_gallery.py` | `gen_template.py` の見本データを読み、`template_gallery/lecture.py` で全34図・33本文パーツを常時表示 |
+| `01_concept/use-to-delegate.html` | `delegation_pilot/build.py` | `gen_use_to_delegate.py` を参照し、講演用の構成・背景・印刷を適用 |
+| その他の資料 | 対応する `gen_*.py` と `../scripts/publish.py` | 本文フラグメントの組版・検査・暗号化 |
+
+両方の現行ビルダーは `lecture_effects.css` を埋め込みます。背景や列ホバーを変えたら、依頼された対象を再生成してください。便覧だけの修正で他の資料まで一括更新しません。
+
+このディレクトリから実行する例：
+
+```sh
+python3 build_template_gallery.py --preview /absolute/private-preview/template.html
+python3 build_template_gallery.py --preview /absolute/private-preview/template.html --publish
+python3 delegation_pilot/build.py \
+  --output /absolute/private-preview/01_concept/use-to-delegate.html --update
 ```
 
-`--update` は鍵を作り直さないので、配布済みのパスワードはそのまま使える。
+`--publish` / `--update` は既存鍵を保持してローカルの暗号化HTMLを書き戻します。本番へのpushは行いません。マスターは非表示入力で受け取り、ソースやREADMEには記録しません。
 
-## 新しい資料は、`gen_template.py` を複製して作る
+## 新しい資料を作る場合
 
-`gen_template.py` はテンプレート便覧（`template.html`）の生成元であり、
-**同時に、新しい資料の雛形でもある。**
-表紙・明暗の交互・締めがすでに揃っているので、節と図版を差し替えるだけで
-規約を満たす。ゼロから組むと、必ずどこかで機械検査に引っかかる。
+`gen_template.py` は骨格・図の呼び出し・見本データの参考に使います。複製したら題・節・出力先を変更します。ただし、旧来の開閉・切り替え・段階表示まで流用しません。講演用の常時表示と背景・印刷は `template_gallery/lecture.py` と `delegation_pilot/` を参考に、専用ビルダーから再現できるように組み込みます。
 
-```bash
-cp gen_template.py gen_atarashii.py
-# 題と節を書き換える
-python3 gen_atarashii.py
-cd ../scripts
-OZAKEN_PW=マスター python3 publish.py \
-    /tmp/body_template.html 01_concept/atarashii.html --list "題 ─ 副題"
-```
-
-（複製したら、書き出し先のファイル名も書き換えること）
+汎用資料の更新は対応する生成元から本文フラグメントを作り、`publish.py --update` を通します。既存QR・関連リンク・独自の追加要素が保持されるか確認してください。詳しいコマンドと鍵の安全な渡し方は [運用手順](../../../../docs/operations.md#既存資料を直す) にあります。
 
 ## どの生成元が、どの資料を組むか
 
 題（`<!--META title=...-->`）から突き合わせたもの。
 空欄は、複数の資料をまとめて組む生成元か、題を変えたあとのもの。
 
-- `gen_template.py` … template.html（**雛形。新しい資料はこれを複製して作る**）
+- `build_template_gallery.py` ＋ `template_gallery/lecture.py` … template.html（現在の便覧）
+- `gen_template.py` … 便覧の見本データ、作図関数・旧フラグメントの参考
 - `gen_ai_drive.py` … 05_drive/ai-drive-handbook.html
 - `gen_ai_lead.py` … （要確認）
 - `gen_bizmodel.py` … 01_concept/business-model-shift.html
@@ -78,7 +79,8 @@ OZAKEN_PW=マスター python3 publish.py \
 - `gen_trend.py` … 02_models/three-axes.html
 - `gen_udemy_career.py` … Udemy/career-strategy.html
 - `gen_udemy_v2.py` … Udemy/career-strategy.html
-- `gen_use_to_delegate.py` … 01_concept/use-to-delegate.html
+- `delegation_pilot/build.py` … 01_concept/use-to-delegate.html（現在の講演版）
+- `gen_use_to_delegate.py` … 上記ビルダーが参照する内容の生成元
 - `gen_walls.py` … 05_drive/five-walls.html
 - `gen_webtan2026.py` … 03_tools/ai-trend-and-tools-2026.html
 - `gen_wf.py` … 04_practice/build-a-workflow.html

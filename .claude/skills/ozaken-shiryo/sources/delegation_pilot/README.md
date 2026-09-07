@@ -18,6 +18,8 @@ python3 build.py --output /absolute/local-preview/01_concept/use-to-delegate.htm
 
 `--baseline` は旧暗号化HTMLから既存ブロックを復元する場合だけ指定する。
 
-内容と構成は `build.py`、基礎CSSは `pilot.css`、常時表示・印刷のCSSは `lecture.css`、画面内の演出管理は `pilot.js`。共通の `publish.compose()` で組み立てと検査を行う。他の個別資料と台帳は更新しない。
+内容と構成は `build.py`、基礎CSSは `pilot.css`、常時表示・印刷のCSSは `lecture.css`、画面内の演出管理は `pilot.js`。便覧と共通の背景・列ホバーは `../lecture_effects.css`。各章と締めに `.lecture-air` を置き、白・紺それぞれの地に光とグリッドを表示する。`dp-inview` の間だけ再生し、画面外・非表示タブ・動きを減らす設定・印刷に対応する。
 
-ローカルの確認用ブランチ。本番公開は別の操作。
+共通の `publish.compose()` で組み立てと検査を行う。他の個別資料と台帳は更新しない。`gen_use_to_delegate.py` だけを汎用 `publish.py` に渡すと専用デザインを失うため、このビルダーを使う。
+
+上記はこのディレクトリを作業場所としたコマンド。ルートからの実行・公開・検証・鍵の扱いは [運用手順](../../../../../docs/operations.md)、見た目と印刷の基準は [デザイン規約](../../../../../docs/lecture-design.md) を参照。`--update` はローカルの書き戻しであり、本番公開は別の操作。
