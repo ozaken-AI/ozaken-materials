@@ -1,5 +1,5 @@
 .nx-scene{--nx-paper:#141d35;--nx-ink:#d8e4f0;--nx-blue:#9fc6f5;--nx-teal:#46c98a;--nx-warm:#c9762f;--nx-muted:#6b7a99;--nx-line:rgba(159,198,245,.27);--nx-tile:#1b3059;background:var(--nx-paper);color:var(--nx-ink);padding:22px 24px 20px;border-radius:4px;min-width:0}
-.nx-scene[data-kinetic=waiting]{--nx-paper:#fff;--nx-ink:#141d35;--nx-blue:#2e5496;--nx-teal:#2f8f8a;--nx-line:rgba(31,56,100,.2);background:transparent;padding:0}
+.nx-scene[data-kinetic=waiting]{--nx-paper:#fff;--nx-ink:#141d35;--nx-blue:#2e5496;--nx-teal:#2f8f8a;--nx-muted:#8fb0e0;--nx-line:rgba(31,56,100,.2);background:transparent;padding:0}
 .nx-drawing{width:100%;min-width:0}.nx-drawing svg{display:block;width:100%;height:auto;overflow:visible}
 .nx-drawing text{font:400 14px var(--font-ja-sans);fill:var(--nx-ink)}.nx-drawing .nx-minor{font-size:11px}.nx-drawing .nx-compact{font-size:12px}.nx-drawing .nx-inverse{font:500 12px var(--font-en);fill:var(--nx-paper)}
 .nx-line{fill:none;stroke:var(--nx-line);stroke-width:1.2}.nx-plane{fill:var(--nx-tile);fill-opacity:.8;stroke:var(--nx-blue);stroke-width:1;stroke-opacity:.55}.nx-model{fill:var(--nx-blue);fill-opacity:.3;stroke-opacity:1;stroke-width:1.5}
