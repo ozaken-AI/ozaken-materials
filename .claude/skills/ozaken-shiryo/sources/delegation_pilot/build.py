@@ -122,10 +122,10 @@ def body():
         '作業を減らすだけで終わらせない。何を判断するかを決めておく。', '「業務の名前」から「具体的な動詞」へ、粒度を下げる。',
         '5つの思い込みを、次の行動が決まる言葉に置き直す。', '全部を任せ続けることがゴールではない。', '派手さより、繰り返せること。自分の仕事から始める。']
     for i, (old, fig) in enumerate(zip(captured, figures()), 1):
-        lines.append('<section class="%s" id="chapter-%d" data-chapter="%d"><div class="dp-air" aria-hidden="true"></div><div class="inner">'
+        lines.append('<section class="%s" id="chapter-%d" data-chapter="%d"><div class="lecture-air" aria-hidden="true"><i></i></div><div class="inner">'
             '<span class="eyebrow">CHAPTER %02d / 09</span><h2 class="sec-title">%s</h2><p class="sec-sub">%s</p>%s<!-- chapter-references --></div></section>' %
             (old['tone'], i, i, i, titles[i-1], subtitles[i-1], fig))
-    lines.append('<section class="sec-navy" id="closing"><div class="inner"><span class="eyebrow">TAKE IT WITH YOU</span>'
+    lines.append('<section class="sec-navy" id="closing"><div class="lecture-air" aria-hidden="true"><i></i></div><div class="inner"><span class="eyebrow">TAKE IT WITH YOU</span>'
         '<h2 class="sec-title">任せるとは、<br><em>仕事を説明できる形にすること。</em></h2>'
         '<p class="dp-close-copy">仕事をほどく。範囲を決める。基準を言葉にする。<br>この力は、道具が変わっても持っていける。</p>'
         '<div class="dp-closing-words"><span>ほどく</span><i>→</i><span>範囲</span><i>→</i><span>基準</span></div>'
@@ -178,7 +178,9 @@ def main():
     page = apply_herofx.strip(page)
     page = re.sub(r'<script>\s*/\* パーティクル・ネットワーク背景[\s\S]*?</script>', '', page)
     page = page.replace('<body>', '<body class="delegation-pilot">')
-    page = page.replace('</head>', '<style>\n' + '\n'.join((HERE / name).read_text() for name in ('pilot.css', 'lecture.css')) + '\n</style>\n</head>')
+    styles = '\n'.join((HERE / name).read_text() for name in ('pilot.css', 'lecture.css'))
+    styles += '\n' + (HERE.parent / 'lecture_effects.css').read_text()
+    page = page.replace('</head>', '<style>\n' + styles + '\n</style>\n</head>')
     page = page.replace('</body>', '<script>\n' + (HERE / 'pilot.js').read_text() + '\n</script>\n</body>')
     target = ROOT / '01_concept/use-to-delegate.html'
     if master:

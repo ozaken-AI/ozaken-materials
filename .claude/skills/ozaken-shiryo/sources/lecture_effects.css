@@ -1,0 +1,52 @@
+/* Shared by the catalogue and the lecture pilot. Content never moves or changes. */
+.tl-lecture .tl-part-example{position:relative;isolation:isolate;overflow:hidden}
+.tl-lecture .lab-scene,.tl-lecture .tl-part-example>:not(.lecture-air){position:relative;z-index:1}
+.lecture-air{--air-rgb:46,84,150;--air-glow:.13;position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;contain:strict}
+.tl-lecture .tl-part-example>.lecture-air{width:auto}
+.delegation-pilot :is(.sec-navy,.sec-deep)>.lecture-air{--air-rgb:159,198,245;--air-glow:.18}
+.lecture-air::before,.lecture-air::after{content:'';position:absolute;inset:-25%;background:radial-gradient(ellipse at 24% 34%,rgba(var(--air-rgb),var(--air-glow)),transparent 48%);animation:lecture-glow 24s ease-in-out infinite alternate;animation-play-state:paused}
+.lecture-air::after{background:radial-gradient(ellipse at 76% 62%,rgba(var(--air-rgb),var(--air-glow)),transparent 42%);animation-name:lecture-glow-return;animation-duration:31s;animation-delay:-9s}
+.lecture-air>i{position:absolute;inset:-64px;background-image:linear-gradient(rgba(var(--air-rgb),.075) 1px,transparent 1px),linear-gradient(90deg,rgba(var(--air-rgb),.075) 1px,transparent 1px);background-size:64px 64px;mask-image:linear-gradient(115deg,#141d35,transparent 43%,transparent 64%,#141d35);animation:lecture-grid 32s linear infinite;animation-play-state:paused}
+.lecture-air>i::after{content:'';position:absolute;left:10%;top:65%;width:36%;height:1px;background:linear-gradient(90deg,transparent,rgba(var(--air-rgb),.5),transparent);box-shadow:0 0 12px rgba(var(--air-rgb),.2);animation:lecture-ray 12s ease-in-out infinite alternate;animation-play-state:paused}
+.is-inview .lecture-air::before,.is-inview .lecture-air::after,.is-inview .lecture-air>i,.is-inview .lecture-air>i::after,
+.dp-inview>.lecture-air::before,.dp-inview>.lecture-air::after,.dp-inview>.lecture-air>i,.dp-inview>.lecture-air>i::after{animation-play-state:running}
+@keyframes lecture-glow{from{transform:translate(-7%,-5%) scale(.96)}to{transform:translate(14%,12%) scale(1.1)}}
+@keyframes lecture-glow-return{from{transform:translate(10%,8%)}to{transform:translate(-15%,-10%)}}
+@keyframes lecture-grid{to{transform:translate(64px,64px)}}
+@keyframes lecture-ray{from{transform:translateX(-18%);opacity:.3}to{transform:translateX(90%);opacity:.8}}
+body:is(.tl-still,.tl-away,.dp-still,.dp-away) .lecture-air::before,
+body:is(.tl-still,.tl-away,.dp-still,.dp-away) .lecture-air::after,
+body:is(.tl-still,.tl-away,.dp-still,.dp-away) .lecture-air>i,
+body:is(.tl-still,.tl-away,.dp-still,.dp-away) .lecture-air>i::after{animation-play-state:paused!important}
+
+/* Hover lights the same column from its heading through every row. No click state. */
+@media screen and (min-width:701px){
+ .dp-compare-head>*,.dp-compare-row>*,.lab-compare-row>*{padding-inline:12px}
+}
+@media screen and (hover:hover) and (pointer:fine) and (min-width:701px){
+ .lab-matrix-row>*,.lab-sheet-head>*,.lab-sheet-row>*,.lab-versus>.lab-grid>*,.lab-compare-row>*,
+ .dp-compare-head>*,.dp-compare-row>*{transition:background-color .24s ease,box-shadow .24s ease}
+ .lab-matrix-row>*{align-self:stretch;display:grid;align-content:center}
+ .lab-matrix:has(.lab-matrix-row>:nth-child(1):hover) .lab-matrix-row>:nth-child(1),
+ .lab-sheet:has(:is(.lab-sheet-head,.lab-sheet-row)>:nth-child(1):hover) :is(.lab-sheet-head,.lab-sheet-row)>:nth-child(1),
+ .lab-versus:has(:is(.lab-grid,.lab-compare-row)>:nth-child(1):hover)>:is(.lab-grid,.lab-compare-row)>:nth-child(1),
+ .dp-canvas:has(:is(.dp-compare-head,.dp-compare-row)>:nth-child(1):hover) :is(.dp-compare-head,.dp-compare-row)>:nth-child(1),
+ .lab-matrix:has(.lab-matrix-row>:nth-child(2):hover) .lab-matrix-row>:nth-child(2),
+ .lab-sheet:has(:is(.lab-sheet-head,.lab-sheet-row)>:nth-child(2):hover) :is(.lab-sheet-head,.lab-sheet-row)>:nth-child(2),
+ .lab-versus:has(:is(.lab-grid,.lab-compare-row)>:nth-child(2):hover)>:is(.lab-grid,.lab-compare-row)>:nth-child(2),
+ .dp-canvas:has(:is(.dp-compare-head,.dp-compare-row)>:nth-child(2):hover) :is(.dp-compare-head,.dp-compare-row)>:nth-child(2),
+ .lab-matrix:has(.lab-matrix-row>:nth-child(3):hover) .lab-matrix-row>:nth-child(3),
+ .lab-sheet:has(:is(.lab-sheet-head,.lab-sheet-row)>:nth-child(3):hover) :is(.lab-sheet-head,.lab-sheet-row)>:nth-child(3),
+ .lab-versus:has(:is(.lab-grid,.lab-compare-row)>:nth-child(3):hover)>:is(.lab-grid,.lab-compare-row)>:nth-child(3),
+ .dp-canvas:has(:is(.dp-compare-head,.dp-compare-row)>:nth-child(3):hover) :is(.dp-compare-head,.dp-compare-row)>:nth-child(3),
+ .lab-matrix:has(.lab-matrix-row>:nth-child(4):hover) .lab-matrix-row>:nth-child(4){background-color:#eef3fa;box-shadow:inset 2px 0 #9fc6f5,inset -2px 0 #9fc6f5,0 0 24px rgba(159,198,245,.18)}
+ .lab-sheet:has(.lab-sheet-head>:hover) .lab-sheet-head>:hover,
+ .lab-sheet:has(.lab-sheet-row>:nth-child(1):hover) .lab-sheet-head>:nth-child(1),
+ .lab-sheet:has(.lab-sheet-row>:nth-child(2):hover) .lab-sheet-head>:nth-child(2),
+ .lab-sheet:has(.lab-sheet-row>:nth-child(3):hover) .lab-sheet-head>:nth-child(3){background-color:#2e5496;color:#fff}
+}
+@media (prefers-reduced-motion:reduce){
+ .lecture-air::before,.lecture-air::after,.lecture-air>i,.lecture-air>i::after{animation:none!important}
+ .lab-matrix-row>*,.lab-sheet-head>*,.lab-sheet-row>*,.lab-versus>.lab-grid>*,.lab-compare-row>*,.dp-compare-head>*,.dp-compare-row>*{transition:none!important}
+}
+@media print{.lecture-air{display:none!important}}

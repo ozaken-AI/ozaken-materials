@@ -97,14 +97,14 @@ def build(figures, parts, catalog, blocks, categories, base_style, keynav, asset
         k=item['id']
         content=dimensions(figures['fig_dims']['args']) if k=='dims' else scene(k,figures['fig_'+k]['args']) if 'fig_'+k in figures else new_figure(k)
         best=item['best'].replace('一つの形の変化で伝える','形の違いで見渡す')
-        figurecards.append(f'<article class="lt-figure" id="figure-{k}" data-ambient-zone><header><span>{i+1:02} / {e(categories[item["category"]])}</span><h3>{e(item["name"])}</h3><p>{e(item["purpose"])}</p></header><div class="tl-canvas"><div class="lab-scene scene-{k}">{content}</div></div><footer><p><b>向いている場面</b>{e(best)}</p><p><b>使うときの注意</b>{e(item["caution"])}</p></footer></article>')
+        figurecards.append(f'<article class="lt-figure" id="figure-{k}" data-ambient-zone><header><span>{i+1:02} / {e(categories[item["category"]])}</span><h3>{e(item["name"])}</h3><p>{e(item["purpose"])}</p></header><div class="tl-canvas"><div class="lecture-air" aria-hidden="true"><i></i></div><div class="lab-scene scene-{k}">{content}</div></div><footer><p><b>向いている場面</b>{e(best)}</p><p><b>使うときの注意</b>{e(item["caution"])}</p></footer></article>')
         index.append(f'<a href="#figure-{k}" class="lt-index-item">{mini(k)}<span>{i+1:02}</span><b>{e(item["name"])}</b></a>')
     partcards=[]
     for i,(k,meta) in enumerate(blocks.items()):
         name,purpose,group=PART_LABELS.get(k,meta)
         html=static_part(k,parts[k]).replace(' data-reveal', '')
         assert not re.search(r'<(?:button|input|select|details)\b|role="(?:button|tab)"',html), k
-        partcards.append(f'<article class="tl-part" id="part-{k}" data-part="{k}" data-ambient-zone><header><span>{i+1:02} / {e(group)}</span><h3>{e(name)}</h3><p>{e(purpose)}</p></header><div class="tl-part-example">{html}</div></article>')
+        partcards.append(f'<article class="tl-part" id="part-{k}" data-part="{k}" data-ambient-zone><header><span>{i+1:02} / {e(group)}</span><h3>{e(name)}</h3><p>{e(purpose)}</p></header><div class="tl-part-example"><div class="lecture-air" aria-hidden="true"><i></i></div>{html}</div></article>')
     guide=[('一つの面に、一つの主張。','導入で問いを置き、図で理解し、短い補足で結論を持ち帰る。話の単位で面を分けます。'),
        ('すべてを、最初から。','説明・比較・答えを開閉や切り替えの裏に置きません。静止した一枚で意味が通る構成にします。'),
        ('動くのは、視線の道筋。','光、接続線、背景にゆっくりした動きを添えます。単位・ラベル・出典は動かさず、読む時間を確保します。'),
@@ -112,6 +112,7 @@ def build(figures, parts, catalog, blocks, categories, base_style, keynav, asset
        ('書体と色に、役割を。','見出しは明朝、本文はゴシック、数字は欧文書体。紺・紙色・青を軸に、注意と区分にだけ差し色を使います。'),
        ('小さくする前に、組み替える。','小さな画面では比較を縦へ、表を行ごとのカードへ。文字を縮めすぎず、読む順番を保ちます。')]
     styles='\n'.join((assets/n).read_text() for n in ['style.css','atmosphere.css','next.css','lecture.css'])
+    styles+='\n'+(assets.parent/'lecture_effects.css').read_text()
     return f'''<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>テンプレート便覧 — 講演と印刷に、伝わる形を。 | おざけん</title><meta name="description" content="34の図版と33の本文パーツ。完成形を見渡せる、講演と印刷のためのテンプレート便覧。"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Shippori+Mincho+B1:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">{base_style}<style>{styles}</style></head>
 <body class="tl-body tl-lecture"><div class="tl-atmosphere" aria-hidden="true"><i></i><i></i></div><header class="tl-header"><a class="tl-brand" href="index.html">OZAKEN<span>DESIGN LIBRARY</span></a><nav class="lt-nav" aria-label="便覧の目次"><a href="#figures">図版 34</a><a href="#parts">本文パーツ 33</a><a href="#guide">設計ガイド</a></nav><a class="tl-back" href="index.html">資料アーカイブ ↗</a></header>
 <main><div class="tl-hero" data-ambient-zone><div class="tl-hero-copy"><span class="tl-eyebrow">OZAKEN TEMPLATE COLLECTION / LECTURE EDITION</span><h1><span><b>伝わる資料に、</b></span><span><b><em>動きを。</em></b></span></h1><p>言葉も、数字も、物語も。<br>一枚で届く。動きで、心に残る。</p><a href="#figures" class="tl-hero-link">テンプレートを見る <span>↓</span></a></div><div class="tl-hero-art" aria-hidden="true">{curtain()}<span class="tl-hero-art-caption">WORDS INTO EXPERIENCE</span></div><div class="tl-hero-bottom"><span>言葉が届く。理解が、つながる。</span><span>34 FIGURES ／ 33 BUILDING BLOCKS</span></div></div>

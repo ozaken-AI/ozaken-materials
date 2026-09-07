@@ -3,7 +3,7 @@
  'use strict';
  const body=document.body,reduce=matchMedia('(prefers-reduced-motion: reduce)');
  function sync(){body.classList.toggle('tl-still',reduce.matches);body.classList.toggle('tl-away',document.hidden);}
- const observer=new IntersectionObserver(entries=>entries.forEach(e=>e.target.classList.toggle('is-inview',e.isIntersecting)),{threshold:0.05});
+ const observer=new IntersectionObserver(entries=>entries.forEach(e=>e.target.classList.toggle('is-inview',e.isIntersecting)),{threshold:0});
  document.querySelectorAll('[data-ambient-zone]').forEach(el=>observer.observe(el));
  document.querySelectorAll('.lab-packet[data-travel]').forEach(el=>{
   el.style.offsetPath=`path('${el.dataset.travel}')`;

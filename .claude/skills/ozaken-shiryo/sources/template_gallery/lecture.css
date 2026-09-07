@@ -24,9 +24,10 @@
 .lt-figure>footer{display:grid;grid-template-columns:1fr 1fr;gap:30px;padding:20px 38px;border-top:1px solid var(--tl-line);text-align:left;background:#eef3fa;color:var(--tl-ink)}
 .lt-figure>footer p{font-size:13px;line-height:1.85}
 .lt-figure>footer b{display:block;font-size:11px;letter-spacing:.08em;color:var(--tl-muted);margin-bottom:5px}
-.lt-figure .tl-canvas{min-height:360px;padding:35px 45px}
+.lt-figure .tl-canvas{min-height:360px;padding:35px 45px;order:0}
 .tl-lecture .lab-scene{max-width:1050px}
-.tl-lecture .lab-scene [data-motion],.tl-lecture .tl-part [data-reveal]{opacity:1;transform:none;clip-path:none}
+/* Preserve positioning transforms on orbit nodes and map points. */
+.tl-lecture .lab-scene [data-motion],.tl-lecture .tl-part [data-reveal]{opacity:1;clip-path:none}
 .tl-lecture .lab-node p,.tl-lecture .lab-column p,.tl-lecture .lab-bar-row p{font-size:14px}
 .tl-lecture .lab-node>strong{font-size:23px}
 .tl-lecture .lab-footnote{font-size:12px}
