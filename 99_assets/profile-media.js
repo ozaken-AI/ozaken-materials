@@ -4,7 +4,7 @@
   var profile = document.getElementById('profile-fs');
   if (!profile) return;
   var keys = ['portrait', 'lecture', 'community', 'field', 'course', 'public', 'policy'];
-  var slides = Array.from(profile.querySelectorAll('.pd-slide'));
+  var chapters = Array.from(profile.querySelectorAll('.pd-chapter'));
   var media = [], ready = false;
   var script = document.currentScript;
   var configURL = script && script.getAttribute('data-profile-config') || '99_assets/profile-media.json';
@@ -43,11 +43,11 @@
 
   function loadNearby() {
     if (!ready || !profile.classList.contains('show')) return;
-    var active = slides.findIndex(function (slide) { return slide.classList.contains('is-active'); });
+    var active = chapters.findIndex(function (chapter) { return chapter.classList.contains('is-active'); });
     if (active < 0) active = 0;
-    // Start the visible image before the previous and next screen.
+    // Start the current chapter's images before the previous and next chapter.
     [active, active - 1, active + 1].forEach(function (index) {
-      media.forEach(function (item) { if (item.slide === index) loadImage(item); });
+      media.forEach(function (item) { if (item.chapter === index) loadImage(item); });
     });
   }
 
@@ -67,7 +67,7 @@
         img.hidden = true;
         img.removeAttribute('src');
         frame.classList.remove('has-media');
-        media.push({img:img, frame:frame, src:imageURL(source), slide:slides.indexOf(slot.closest('.pd-slide')), started:false});
+        media.push({img:img, frame:frame, src:imageURL(source), chapter:chapters.indexOf(slot.closest('.pd-chapter')), started:false});
       });
     });
     ready = true;
@@ -75,7 +75,7 @@
   }
 
   new MutationObserver(function (changes) {
-    if (changes.some(function (change) { return change.target === profile || change.target.matches('.pd-slide'); })) loadNearby();
+    if (changes.some(function (change) { return change.target === profile || change.target.matches('.pd-chapter'); })) loadNearby();
   }).observe(profile, {attributes:true, subtree:true, attributeFilter:['class']});
 
   if (window.OZAKEN_PROFILE_MEDIA) {
