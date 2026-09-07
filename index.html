@@ -1998,7 +1998,7 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
 <link rel="stylesheet" href="99_assets/stage-effects.css?v=eefe8f16c9daa9e8622fad4a414f90a1b28f2ecff33331589e04b1e036a95700">
 <script src="99_assets/profile-stage.js?v=94d1e4419334ed2ae90f01a6be009e654ae75e65a0c5050ad3e477d763106d34" defer></script>
 <script src="99_assets/profile-media.js?v=61abf3ec406fa80ee55793da8279229f54378117c96d867ab805e51971ca3146" defer data-profile-config="99_assets/profile-media.json?v=27313f65cf94c320d2967998f8dd2c9e87b826981bd1a6f6c83c542ad4f5acf5"></script>
-<link rel="stylesheet" href="99_assets/materials-home.css?v=798babd97a42f468d7f71d0561eafbb13c99d4c5aac36c1c50d235aeb3acea80">
+<link rel="stylesheet" href="99_assets/materials-home.css?v=881ed563b381fa0c715fd9a2289b7469094e811b2137d8a7cf5946a8759c985b">
 <link rel="stylesheet" href="99_assets/download-covers.css?v=aecf1b0c5ba5ffcacfc9d1400a6f044889323d5a58108c68509277e0298cc6d0">
 <script src="99_assets/materials-home.js?v=cbb9008deb633105dd38e48a26dc8ca07cc198a8441f187de885cb973d7d00af" defer></script>
 </head>
@@ -2042,6 +2042,17 @@ html.boot-locked,html.boot-locked body{overflow:hidden}
       <path d="M200 560 L440 420 L700 520 L980 460" stroke="#8fb0e0" stroke-width="1" fill="none" opacity="0.4"/>
       <path d="M360 320 L440 420" stroke="#ffffff" stroke-width="0.8" opacity="0.32"/>
       <path d="M620 200 L700 520" stroke="#ffffff" stroke-width="0.8" opacity="0.28"/>
+      <!-- Small signals follow the existing network; the parent SVG pauses offscreen. -->
+      <g class="mh-signal" fill="#d8e4f0" opacity="0">
+        <circle r="8" opacity=".22"/><circle r="2.5"/>
+        <animateMotion path="M120 160 L360 320 L620 200 L900 380 L1080 240" dur="18s" begin="3s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0;.9;.9;0;0" keyTimes="0;.08;.86;.94;1" dur="18s" begin="3s" repeatCount="indefinite"/>
+      </g>
+      <g class="mh-signal" fill="#9fc6f5" opacity="0">
+        <circle r="7" opacity=".2"/><circle r="2.2"/>
+        <animateMotion path="M980 460 L700 520 L440 420 L200 560" dur="23s" begin="8s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0;.8;.8;0;0" keyTimes="0;.1;.84;.94;1" dur="23s" begin="8s" repeatCount="indefinite"/>
+      </g>
       <circle cx="120" cy="160" r="3.5" fill="#d8e4f0"><animate attributeName="opacity" values="0.4;1;0.4" dur="4s" repeatCount="indefinite"/></circle>
       <circle cx="360" cy="320" r="4" fill="#ffffff"><animate attributeName="r" values="3;5;3" dur="5s" repeatCount="indefinite"/></circle>
       <circle cx="620" cy="200" r="3.5" fill="#ff5d6a"><animate attributeName="opacity" values="0.5;1;0.5" dur="3.5s" repeatCount="indefinite"/></circle>
