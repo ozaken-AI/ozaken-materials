@@ -22,7 +22,7 @@
 #profile-fs [data-pd-reveal] { transition:opacity .9s ease,transform .9s cubic-bezier(.2,.7,.2,1); }
 #profile-fs.pd-reveal-ready [data-pd-reveal]:not(.is-revealed) { opacity:0; transform:translateY(20px); }
 /* An opening composition rather than a title slide. The next thought follows in the same chapter. */
-#profile-fs .pd-opening { position:relative; min-height:100svh; padding:14vh 7vw 18vh; display:flex; align-items:center; isolation:isolate; }
+#profile-fs .pd-opening { position:relative; min-height:100svh; overflow:clip; padding:14vh 7vw 18vh; display:flex; align-items:center; isolation:isolate; }
 #profile-fs .pd-opening-copy { position:relative; z-index:3; width:55%; }
 #profile-fs .pd-opening-title { font-size:clamp(36px,4.7vw,76px); line-height:1.5; letter-spacing:.015em; }
 #profile-fs .pd-identity { margin-top:clamp(24px,5vh,64px); }
@@ -121,7 +121,7 @@
 #profile-fs .pd-public-roles h3 { margin-bottom:18px; }
 #profile-fs .pd-public-roles article > p:not(.pd-eyebrow) { color:var(--pd-muted); font-size:clamp(16px,1.35vw,21px); line-height:1.9; }
 #profile-fs .pd-proof { margin-top:28px; }
-#profile-fs .pd-proof-window { position:relative; aspect-ratio:7; min-height:54px; overflow:hidden; background:#eff2f7; }
+#profile-fs .pd-proof-window { position:relative; aspect-ratio:10; overflow:hidden; background:#eff2f7; }
 #profile-fs .pd-proof-window img { position:absolute; width:180%; max-width:none; height:auto; left:-20%; top:0; transform:translateY(-38%); }
 #profile-fs .pd-proof figcaption { font-size:12px; color:var(--pd-muted); margin-top:8px; }
 #profile-fs .pd-local-role { margin-top:48px; padding-top:30px; border-top:1px solid var(--pd-edge); }
@@ -236,7 +236,7 @@
   #profile-fs .pd-book-object { width:100%; }
   #profile-fs .pd-book-gallery figcaption { margin-top:0; }
   #profile-fs .pd-community-intro { padding-bottom:20px; }
-  #profile-fs .pd-association-mark { width:90px; right:6vw; bottom:34px; }
+  #profile-fs .pd-association-mark { width:90px; right:6vw; top:clamp(64px,10vh,130px); bottom:auto; }
   #profile-fs .pd-community-intro h2 { font-size:29px; }
   #profile-fs .pd-community-scene { margin-left:0; padding-top:65px; }
   #profile-fs .pd-community-impact { right:6vw; padding:20px 24px; }
@@ -248,8 +248,7 @@
   #profile-fs .pd-qualification h3 { font-size:21px; }
   #profile-fs .pd-practice-heading { margin-bottom:36px; }
   #profile-fs .pd-civic-image { height:340px; }
-  #profile-fs .pd-proof-window { min-height:50px; }
-  #profile-fs .pd-public-roles { padding-top:16px; }
+    #profile-fs .pd-public-roles { padding-top:16px; }
   #profile-fs .pd-stage-scene { min-height:78svh; padding:80px 7vw; }
   #profile-fs .pd-stage-title h2 { font-size:32px; }
   #profile-fs .pd-stage-caption { display:none; }
