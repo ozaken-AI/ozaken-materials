@@ -268,4 +268,5 @@ NO_CHIP_TO = {'Training/msa-life-training.html',
               # 公開資料からチップを送ると、その名前が外に出てしまう
               '05_drive/agent-management.html',
               '09_role/kanadevia-ict.html',
+              '09_role/sony-three-layer-platform.html',
               'template.html'}
