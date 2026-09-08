@@ -192,6 +192,9 @@ CONCEPTS = {
     'Brand Kit': ('03_tools/copilot-brand-kit.html',
         ['Brand Kit', 'ブランドキット', 'ブランドマネージャー', '組織資産ライブラリ'],
         'ブランドを、AIに渡せる形で組織に一度だけ置く仕組み'),
+    'Copilot+ PC': ('03_tools/copilot-plus-pc.html',
+        ['Copilot+ PC', 'Copilot+', 'NPU', 'Recall', 'オンデバイスAI', '手元で動くAI'],
+        'アプリでもサービスでもなくPCの規格。変わるのは賢さではなく置き場所'),
     'Copilot Credits': ('03_tools/copilot-credits.html',
         ['Copilot Credit', 'クレジット'], '使った分だけ課金される仕組み'),
 }
@@ -216,7 +219,7 @@ GROUPS = [
     ('技術動向', ['モデルの使い分け', 'フィジカルAI', 'トレンドの3軸',
                   'RAGとファインチューニング', '中国のAIモデル']),
     ('製品', ['Copilot', 'Gemini', 'Claude', 'ChatGPT Work',
-              'Copilot Cowork', 'Copilot Credits']),
+              'Copilot Cowork', 'Copilot Credits', 'Copilot+ PC']),
 ]
 
 # 資料そのものではない、置き場・索引のページ。マトリクスからは外す

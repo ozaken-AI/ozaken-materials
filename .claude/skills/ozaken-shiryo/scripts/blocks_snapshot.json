@@ -539,6 +539,20 @@
   ],
   "chars": 111566
  },
+ "03_tools/copilot-plus-pc.html": {
+  "blocks": [
+   "OZ-BG",
+   "OZ-BODYSTYLE",
+   "OZ-FIGFLOW",
+   "OZ-HEROFX",
+   "OZ-HEROSIZE",
+   "OZ-HOME",
+   "OZ-QR",
+   "OZ-SPACING",
+   "OZ-XREFCSS"
+  ],
+  "chars": 216451
+ },
  "03_tools/cowork.html": {
   "blocks": [
    "OZ-BG",
@@ -1676,19 +1690,11 @@
  },
  "matrix.html": {
   "blocks": [],
-  "chars": 246987
+  "chars": 251949
  },
  "template.html": {
-  "blocks": [
-   "OZ-BG",
-   "OZ-BODYSTYLE",
-   "OZ-FIGFLOW",
-   "OZ-HEROFX",
-   "OZ-HEROSIZE",
-   "OZ-HOME",
-   "OZ-SPACING"
-  ],
-  "chars": 323390
+  "blocks": [],
+  "chars": 263499
  },
  "weekly/2026-08-18.html": {
   "blocks": [
