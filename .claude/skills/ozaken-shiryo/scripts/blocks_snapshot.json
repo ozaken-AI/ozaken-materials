@@ -1023,6 +1023,20 @@
   ],
   "chars": 154005
  },
+ "06_people/human-capital-new-shape.html": {
+  "blocks": [
+   "OZ-BG",
+   "OZ-BODYSTYLE",
+   "OZ-FIGFLOW",
+   "OZ-HEROFX",
+   "OZ-HEROSIZE",
+   "OZ-HOME",
+   "OZ-QR",
+   "OZ-SPACING",
+   "OZ-XREFCSS"
+  ],
+  "chars": 211453
+ },
  "06_people/jinji-gyomu.html": {
   "blocks": [
    "OZ-BG",
@@ -1690,7 +1704,7 @@
  },
  "matrix.html": {
   "blocks": [],
-  "chars": 251950
+  "chars": 256952
  },
  "template.html": {
   "blocks": [],
