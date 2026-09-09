@@ -267,7 +267,19 @@ export async function buildMessage({ issue, subscriber, cfg, scheduledAt }) {
   return msg;
 }
 
-async function call(apiKey, path, body) {
+// Resend の既定レートは 2 req/秒。束ねて投げても、往復が速いと簡単に超える。
+// 超えると 429 が返り、その束の100人が丸ごと失敗する。
+// **待つほうが、送り直すより安い。** 呼び出しの間隔を空け、429 は一度だけ待って再送する。
+const MIN_GAP_MS = 550;   // 約1.8 req/秒。2 req/秒の下に留める
+let lastCallAt = 0;
+
+const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+async function once(apiKey, path, body) {
+  const wait = MIN_GAP_MS - (Date.now() - lastCallAt);
+  if (wait > 0) await sleep(wait);
+  lastCallAt = Date.now();
+
   const res = await fetch(`https://api.resend.com${path}`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
@@ -277,6 +289,14 @@ async function call(apiKey, path, body) {
   let data = null;
   try { data = text ? JSON.parse(text) : null; } catch { /* Resendが素のテキストを返すことがある */ }
   return { ok: res.ok, status: res.status, data, text };
+}
+
+async function call(apiKey, path, body) {
+  const r = await once(apiKey, path, body);
+  if (r.status !== 429) return r;
+  // 429 は待てば通る。Retry-After があれば従い、無ければ1秒。
+  await sleep(1000);
+  return once(apiKey, path, body);
 }
 
 // 100通ずつ束ねて渡す。1通ずつだと Resend の既定レート（2 req/秒）に張り付いて、

@@ -357,6 +357,37 @@ head('6. 送信に失敗したとき');
     (out.gave_up || []).length === 1 && out.gave_up[0].email === 'dead@x.co', JSON.stringify(out.gave_up));
 }
 
+// ── 6.5 Resend のレート制限 ──────────────────────────
+// 既定は 2 req/秒。束ねて投げても、往復が速いと超える。
+// 超えたぶんは429で丸ごと落ちるので、間隔を空けて投げる。
+head('6.5 Resendのレート制限');
+{
+  const { db, env } = fresh();
+  seed(db, Array.from({ length: 150 }, (_, i) => [`r${i}@x.co`, 'active']));
+
+  const at = [];
+  globalThis.fetch = async (url, opts) => {
+    at.push(Date.now());
+    const body = JSON.parse(opts.body);
+    return new Response(JSON.stringify({ data: body.map((_, i) => ({ id: 'id' + i })) }), { status: 200 });
+  };
+  const out = await (await send({ request: adminPost({ issue: ISSUE }), env })).json();
+  ok('100通ずつに割って投げる', at.length === 2 && out.sent === 150, `${at.length}回 / ${out.sent}通`);
+  ok('続けて投げずに間隔を空ける', at[1] - at[0] >= 500, `${at[1] - at[0]}ms`);
+
+  // 429 のあと投げ直せば通る。1回きりの制限超過で100人を落とさない。
+  const d2 = fresh();
+  seed(d2.db, [['once@x.co', 'active']]);
+  let n = 0;
+  globalThis.fetch = async () => {
+    n++;
+    if (n === 1) return new Response('{"message":"rate limit"}', { status: 429 });
+    return new Response(JSON.stringify({ data: [{ id: 'id0' }] }), { status: 200 });
+  };
+  const o2 = await (await send({ request: adminPost({ issue: ISSUE }), env: d2.env })).json();
+  ok('429は一度だけ待って投げ直す', o2.sent === 1 && n === 2, `${n}回 / 送信${o2.sent}`);
+}
+
 // ── 7. バウンス・迷惑メール報告 ──────────────────────
 head('7. バウンスと迷惑メール報告');
 {
