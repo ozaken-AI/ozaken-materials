@@ -55,7 +55,14 @@ export function config(env) {
     apiKey: need('RESEND_API_KEY'),
     from: need('NEWSLETTER_FROM'),                      // 例: 小澤健祐（おざけん） <ozaken@news.ozaken.ai>
     senderName: env.NEWSLETTER_SENDER_NAME || '小澤健祐（おざけん）',
-    senderAddress: need('NEWSLETTER_SENDER_ADDRESS'),   // 表示義務。住所を省くと違反になる
+    // 表示義務（特定電子メール法4条）。氏名・住所・苦情の受付先を出す義務がある。
+    // 総務省のガイドラインは、リンク先のページに書く形も認めている（1クリックで届くこと）。
+    // NEWSLETTER_PUBLISHER_URL があればそちらへ誘導し、無ければ住所を本文に出す。
+    // **どちらも無い状態は違反になるので、その時は送信を止める。**
+    publisherUrl: env.NEWSLETTER_PUBLISHER_URL || null,
+    senderAddress: env.NEWSLETTER_PUBLISHER_URL
+      ? (env.NEWSLETTER_SENDER_ADDRESS || null)
+      : need('NEWSLETTER_SENDER_ADDRESS'),
     replyTo: env.NEWSLETTER_REPLY_TO || null,
     unsubMailto: env.NEWSLETTER_UNSUB_MAILTO || null,
     sendMode: env.NEWSLETTER_SEND_MODE || 'batch',      // batch | single
@@ -180,7 +187,9 @@ export function buildEmail({ issue, subscriber, unsubUrl, cfg }) {
           <a href="${esc(unsubUrl)}" style="color:${AZURE}">配信を停止する</a>
           <br><br>
           発行：${esc(cfg.senderName)}<br>
-          所在地：${esc(cfg.senderAddress)}<br>
+          ${cfg.publisherUrl
+            ? `<a href="${esc(cfg.publisherUrl)}" style="color:${AZURE}">発行者情報（住所・お問い合わせ先）</a><br>`
+            : `所在地：${esc(cfg.senderAddress)}<br>`}
           ${cfg.replyTo ? `お問い合わせ：<a href="mailto:${esc(cfg.replyTo)}" style="color:${AZURE}">${esc(cfg.replyTo)}</a>` : ''}
         </td></tr>
       </table>
@@ -219,7 +228,7 @@ export function buildEmail({ issue, subscriber, unsubUrl, cfg }) {
     `配信停止：${unsubUrl}`,
     '',
     `発行：${cfg.senderName}`,
-    `所在地：${cfg.senderAddress}`,
+    cfg.publisherUrl ? `発行者情報：${cfg.publisherUrl}` : `所在地：${cfg.senderAddress}`,
     cfg.replyTo ? `お問い合わせ：${cfg.replyTo}` : '',
   ].filter(l => l !== undefined).join('\n').replace(/\n{3,}/g, '\n\n');
 
@@ -434,7 +443,9 @@ export async function buildWelcome({ subscriber, asset, cfg }) {
           <a href="${esc(unsubUrl)}" style="color:${AZURE}">配信を停止する</a>
           <br><br>
           発行：${esc(cfg.senderName)}<br>
-          所在地：${esc(cfg.senderAddress)}<br>
+          ${cfg.publisherUrl
+            ? `<a href="${esc(cfg.publisherUrl)}" style="color:${AZURE}">発行者情報（住所・お問い合わせ先）</a><br>`
+            : `所在地：${esc(cfg.senderAddress)}<br>`}
           ${cfg.replyTo ? `お問い合わせ：<a href="mailto:${esc(cfg.replyTo)}" style="color:${AZURE}">${esc(cfg.replyTo)}</a>` : ''}
         </td></tr>
       </table>
@@ -503,7 +514,7 @@ export async function buildWelcome({ subscriber, asset, cfg }) {
     `配信停止：${unsubUrl}`,
     '',
     `発行：${cfg.senderName}`,
-    `所在地：${cfg.senderAddress}`,
+    cfg.publisherUrl ? `発行者情報：${cfg.publisherUrl}` : `所在地：${cfg.senderAddress}`,
     cfg.replyTo ? `お問い合わせ：${cfg.replyTo}` : '',
   ].filter(l => l !== '').join('\n');
 

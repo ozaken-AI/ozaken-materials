@@ -135,6 +135,17 @@ Webからの申し込みは、ダブルオプトイン（確認メールのリ�
 住所を出すのが難しければ、バーチャルオフィスや事務所の住所を使う。
 **空欄にはしない。**
 
+#### 住所をメール本文に出したくないとき
+
+総務省のガイドラインは、表示義務の事項を**リンク先のページに書く**形も認めている。
+条件は、メール内にそのURLがあり、**1クリックで到達できる**こと。
+
+`NEWSLETTER_PUBLISHER_URL` を設定すると、フッターが
+「所在地：〇〇」の代わりに「発行者情報（住所・お問い合わせ先）」のリンクを出す。
+リンク先のページに、氏名・住所・問い合わせ先を書いておくこと。
+
+**住所も `NEWSLETTER_PUBLISHER_URL` も無い状態は違反になるので、`config()` が送信を止める。**
+
 ### 資料ダウンロードから来た人（index.html のリードゲート）
 
 トップページの資料ダウンロードは、お名前・会社名・メールアドレスを取ってから
@@ -244,7 +255,8 @@ Cloudflare のダッシュボードで、Pages プロジェクトに束ねる。
 | `NEWSLETTER_SITE` | `https://content.ozaken.ai` |
 | `NEWSLETTER_FROM` | `小澤健祐（おざけん） <ozaken@news.ozaken.ai>` |
 | `NEWSLETTER_SENDER_NAME` | `小澤健祐（おざけん）` |
-| `NEWSLETTER_SENDER_ADDRESS` | 登記上の住所 |
+| `NEWSLETTER_SENDER_ADDRESS` | 登記上の住所（`NEWSLETTER_PUBLISHER_URL` を使うなら不要） |
+| `NEWSLETTER_PUBLISHER_URL` | 発行者情報ページのURL（任意。住所を本文に出したくないとき） |
 | `NEWSLETTER_REPLY_TO` | **実際に受信できるアドレス**（下の注意を読む） |
 | `NEWSLETTER_UNSUB_MAILTO` | 同上（任意） |
 

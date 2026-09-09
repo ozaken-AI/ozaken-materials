@@ -28,6 +28,9 @@ NEWSLETTER_SITE = "https://content.ozaken.ai"
 NEWSLETTER_FROM = "小澤健祐（おざけん） <ozaken@news.ozaken.ai>"
 NEWSLETTER_SENDER_NAME = "小澤健祐（おざけん）"
 NEWSLETTER_SENDER_ADDRESS = "（登記上の住所を書く。表示義務がある）"
+# 住所を本文に出したくないときは、代わりに発行者情報ページのURLを入れる。
+# 氏名・住所・問い合わせ先を書いたページに、1クリックで届くこと。
+# NEWSLETTER_PUBLISHER_URL = "https://ozaken.ai/publisher"
 # news.ozaken.ai に受信箱はない。差出人あてに返信されても届かないので、
 # ここには**実際に読んでいるアドレス**を書く。空にするより害が大きいのは、
 # 受信できないアドレスを書くこと（返信が宛先不明で跳ね返る）。

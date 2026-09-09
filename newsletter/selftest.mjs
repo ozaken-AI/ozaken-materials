@@ -123,6 +123,23 @@ head('2. メール本文');
   ok('ワンクリック用のヘッダを付ける', msg.headers['List-Unsubscribe-Post'] === 'List-Unsubscribe=One-Click');
   ok('本文にも配信停止リンクがある', msg.html.includes('/unsubscribe?e=') && msg.text.includes('/unsubscribe?e='));
   ok('住所を載せている（表示義務）', msg.html.includes(BASE.NEWSLETTER_SENDER_ADDRESS));
+  // 表示義務は、リンク先のページに書く形も認められている（1クリックで届くこと）。
+  // 住所を本文から外したいときのために、その道を用意してある。
+  {
+    const PUB = 'https://ozaken.ai/publisher';
+    const linked = config({ ...BASE, NEWSLETTER_PUBLISHER_URL: PUB });
+    const m = await buildMessage({ issue: ISSUE, subscriber: { email: 'a@b.co', source: 'meishi' }, cfg: linked });
+    ok('発行者情報のリンクで住所の代わりになる', m.html.includes(PUB) && m.text.includes(PUB));
+    ok('そのとき住所は本文に出さない', !m.html.includes(BASE.NEWSLETTER_SENDER_ADDRESS));
+    ok('リンクにしても発行者名は残る', m.html.includes(linked.senderName));
+    // 住所もリンクも無い状態で送ると違反になる。設定漏れとして止める。
+    const bare = { ...BASE };
+    delete bare.NEWSLETTER_SENDER_ADDRESS;
+    ok('住所もリンクも無ければ設定漏れとして止める',
+      config(bare).missing.includes('NEWSLETTER_SENDER_ADDRESS'));
+    ok('リンクがあれば住所なしでも止めない',
+      !config({ ...bare, NEWSLETTER_PUBLISHER_URL: PUB }).missing.includes('NEWSLETTER_SENDER_ADDRESS'));
+  }
   ok('問い合わせ先を載せている（表示義務）', msg.html.includes(BASE.NEWSLETTER_REPLY_TO));
   ok('名刺の相手には経緯を書く', msg.html.includes('名刺交換'));
   ok('文字だけの版も作る', msg.text.length > 200);
