@@ -49,6 +49,30 @@ git worktree list
 
 ## 新しい資料を作る
 
+### AI-SECIと5レベル資料を改訂する
+
+2026-09-11の本人指定による本文改訂。AI-SECIは `sources/gen_seci.py`、5レベルのCopilot編・Gemini編は `sources/gen_five_levels.py` を使う（いずれも `.claude/skills/ozaken-shiryo/` 配下）。旧版の `/tmp/body_*.html` を `publish.py` に渡す手順は使わない。現行の完全なHTMLから指定した章だけを置換し、共通本文デザインを再適用する。
+
+- AI-SECI：共同化＝ワークショップ・棚卸しによる暗黙知の言語化、表出化＝AIエージェント化、連結化＝RAG・マルチAIエージェントによる拡張、内面化＝現場で使うことで生まれる新しい暗黙知。4工程を独立した章で説明し、改善点を次の共同化へ戻す。
+- これは小澤健祐による実務への応用モデル。原典の共同化は暗黙知の共有、言語化は表出化に当たる。本文冒頭の対応説明を削除せず、本人の実務モデルを原典の定義として引用しない。「連結化」は原典の「結合化」に対応する呼び方として扱う。
+- 5レベル：レベル2は設計・指示例・テストの3章。レベル3は処理の流れ・データ・画面設定・条件・テストの5章。製品差は同じ生成元で管理する。特にWorkspace Studioの `Check if` は条件未達なら後続を止めるため、Power Automateの真／偽分岐と同じ説明にしない。
+- 共通パーツは `sources/practical_guides.py` と `practical_guides.css`。図・指示・表は常時表示し、共通背景・接続線の装飾だけが動く。表の列ホバーは値を変えない。
+
+```sh
+python3 .claude/skills/ozaken-shiryo/sources/gen_seci.py \
+  --preview-dir /absolute/private-preview/seci-levels
+python3 .claude/skills/ozaken-shiryo/sources/gen_five_levels.py \
+  --preview-dir /absolute/private-preview/seci-levels
+```
+
+パスワードは非表示入力。確認後は各コマンドへ `--update` を加える。復号した控えを使う場合は `--input-dir /absolute/private-preview/before` を指定でき、更新時は現行資料と控えの一致を検査する。既存のラップ鍵 `W`、関連リンク、スクリプト、注入済みの共通スタイルを維持する。5レベルの対象外9章は各版とも本文・図をそのまま保持する。AI-SECIの表紙は導入文だけを実務モデルに合わせ、共通の構図を保持する。
+
+この本文改訂に「内容を一切変えない見た目の移行」の一致検査を適用しない。指定された章の内容変更は本人の依頼に含まれる。対象外の章と他資料の内容は変更しない。概念台帳の `crossref_data.py` は更新するが、全資料への `crossref.py apply` をついでに実行しない。
+
+確認範囲と評価は [2026-09-11の改訂記録](verification/2026-09-11-seci-levels.md) を参照。
+
+### 共通の作成手順
+
 1. [資料作成スキル](../.claude/skills/ozaken-shiryo/SKILL.md) と [講演デザイン規約](lecture-design.md) を読む。用途・対象読者・配布物の有無を、依頼と会話から確定する。ワークシートの有無が未決定で構成に影響する場合にだけ確認する。
 2. 提供資料と一次情報を読む。日付、数字、引用、出典を控える。推測・仮想例・試算と実績を区別する。料金・製品・制度など変化する情報は確認日を付ける。
 3. `find.py` と `crossref_data.py` で既存資料・概念の正典を確認する。同じ数字の更新が他の資料にも必要なら、その影響を記録し、依頼範囲を踏まえて揃える。

@@ -1,0 +1,67 @@
+{
+  "updated": true,
+  "documents": [
+    {
+      "path": "01_concept/ai-seci.html",
+      "cover_unchanged": false,
+      "cover_layout_unchanged": true,
+      "scripts_unchanged": true,
+      "links_preserved": true,
+      "unchanged_chapters": 0,
+      "chapters": 8,
+      "revised_chapters": 8,
+      "before_sha256": "effa07b2cb384103d9e019e4cbe8b5c58a68f6821ef8c4f0a25b2ac561410a98",
+      "after_sha256": "69ca36a0b01efff1587bd62a0ce7b0b8172d0922f0565a086844cc1a97ec98af",
+      "existing_injected_blocks_preserved": true
+    },
+    {
+      "path": "01_concept/five-levels-copilot.html",
+      "cover_unchanged": true,
+      "cover_layout_unchanged": true,
+      "scripts_unchanged": true,
+      "links_preserved": true,
+      "unchanged_chapters": 9,
+      "chapters": 18,
+      "revised_chapters": 9,
+      "before_sha256": "33cb947faa2c7253bc764c739a0e13b44b9a443212c9833729f11390a79b74a2",
+      "after_sha256": "c3f68984e3fde606017c10a58ba2f9b3479362b6f28411556475ca85a87d4758",
+      "existing_injected_blocks_preserved": true
+    },
+    {
+      "path": "01_concept/five-levels-gemini.html",
+      "cover_unchanged": true,
+      "cover_layout_unchanged": true,
+      "scripts_unchanged": true,
+      "links_preserved": true,
+      "unchanged_chapters": 9,
+      "chapters": 18,
+      "revised_chapters": 9,
+      "before_sha256": "62a7a761a9f46a3bb00cef299d5f5318509b3004f386a111909efbf50ba67d4f",
+      "after_sha256": "00b92c81a844f69445516feda5df0699364d8bf529fefc1d6308284afcafe644",
+      "existing_injected_blocks_preserved": true
+    }
+  ],
+  "browser": {
+    "checked_widths": [
+      1422,
+      390,
+      1010
+    ],
+    "print_mode": "print CSS applied in private fixture",
+    "actual_pdf_export": false,
+    "documents": 3,
+    "checks": 9,
+    "hidden_text": 0,
+    "page_horizontal_overflow": 0,
+    "outside_unscrollable_content": 0
+  },
+  "visual_review": {
+    "revised_chapters": 26,
+    "cover_reviewed": "ai-seci",
+    "motion_verified": [
+      "connector progresses with time",
+      "visible background runs",
+      "offscreen background pauses"
+    ]
+  }
+}
