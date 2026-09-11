@@ -113,6 +113,9 @@ def compose(body_path, extra=''):
     import apply_kit, apply_quiz
     page = apply_kit.patch(page) or page
     page = apply_quiz.patch(page) or page
+    # One cover implementation for new materials, updates and weekly issues.
+    import apply_cover
+    page = apply_cover.patch(page)
     os.path.exists(tmp) and os.remove(tmp)
     return page, summary
 

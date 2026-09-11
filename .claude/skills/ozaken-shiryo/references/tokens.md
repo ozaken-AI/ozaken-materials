@@ -98,14 +98,6 @@
 
 ## 表紙の地の色
 
-ファーストビューの背景は **index.html と同じ組み合わせで固定**。自分で書かない。
+2026-09-11の本人指定により、資料の表紙は承認済みテンプレートの深い紺（`#0a0f1c`）と青い光へ統一する。`sources/lecture_cover/cover.css` と `motion.css` を正典とし、`scripts/apply_cover.py` で適用する。装飾の青は `#2e5496`・`#9fc6f5`・`#d8e4f0`、補助の青緑は `#2f8f8a` の透過色を使う。本文用の色や背景循環は変更しない。
 
-```css
-radial-gradient(ellipse 60% 46% at 50% 40%, rgba(46,84,150,.35) 0%, transparent 55%),
-radial-gradient(ellipse 70% 55% at 50% -5%, rgba(46,84,150,.60), transparent 62%),
-radial-gradient(ellipse 55% 45% at 88% 94%, rgba(255,93,106,.16), transparent 60%),
-linear-gradient(165deg,#1f3864 0%,#182a52 42%,#141d35 100%)
-```
-
-単色の紺だと平坦に見える。光の当たり方と赤みの差し色で奥行きが出る。
-`apply_herofx.py` が全資料に当てるので、資料ごとに紺を選び直さない。
+トップページの独自表紙は別管理。旧来の「資料の表紙はindexと同一」というルールで共通表紙を上書きしない。写真表紙も今回の統一対象に含む。

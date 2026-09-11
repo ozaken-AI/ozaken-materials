@@ -206,7 +206,7 @@ JS = """
    資料の中身から本数を数えるので、加筆しても読み出しは自動で追従する。 */
 (function(){
   var hero = document.querySelector('.hero');
-  if (!hero || hero.querySelector('.oz-sweep')) return;
+  if (!hero || hero.hasAttribute('data-oz-cover') || hero.querySelector('.oz-sweep')) return;
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function mk(tag, cls){ var e = document.createElement(tag); if (cls) e.className = cls; return e; }
 

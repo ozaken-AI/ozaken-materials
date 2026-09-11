@@ -1,6 +1,6 @@
 # リポジトリ運用手順
 
-資料の作成・修正から公開後の確認までを、特定のAIや端末に依存せず引き継ぐための入口です。最終更新：2026-09-07。
+資料の作成・修正から公開後の確認までを、特定のAIや端末に依存せず引き継ぐための入口です。最終更新：2026-09-11。
 新しい担当者・AIは [AGENTS.md](../AGENTS.md) とこの手順を読み、担当分野の詳細へ進んでください。
 
 ## 作業開始時
@@ -30,6 +30,7 @@ git worktree list
 | テンプレート便覧 | `.claude/skills/ozaken-shiryo/sources/build_template_gallery.py`、`sources/template_gallery/lecture.py`・`lecture.css`・`lecture.js` | `template.html` |
 | 図形の構造 | `sources/template_gallery/scenes.py`、`scripts/domain_fig.py` | 個々の図版 |
 | 講演版の実装例 | `sources/delegation_pilot/build.py`・`pilot.css`・`lecture.css`・`pilot.js` | `01_concept/use-to-delegate.html` |
+| 全資料の共通表紙 | `scripts/apply_cover.py`、`sources/lecture_cover/` | 通常・AX Table・研修・Udemy・週次の全資料 |
 | 共通の背景・表の列ホバー | `sources/lecture_effects.css` | 便覧と講演版の両ビルダーで埋め込む |
 | その他の個別資料 | `.claude/skills/ozaken-shiryo/sources/gen_*.py` | [生成元対応表](../.claude/skills/ozaken-shiryo/sources/README.md) |
 | 共通の組版・暗号化 | `.claude/skills/ozaken-shiryo/scripts/` | `publish.py`、`lockbox.py`、`registry.py`等 |
@@ -110,6 +111,30 @@ python3 .claude/skills/ozaken-shiryo/sources/delegation_pilot/build.py \
 ```
 
 `--preserve` なしのプレビューには既存QR・関連チップが付かないため、最終確認は `--preserve` または `--update` で生成します。マスターは非表示入力。`--baseline` は旧暗号化HTMLから追加要素を復元するときだけ使います。詳しくは [実装例README](../.claude/skills/ozaken-shiryo/sources/delegation_pilot/README.md)。
+
+## 全資料の表紙を統一する
+
+2026-09-11の本人指定。`01_concept`〜`12_jobs`と`AX_Table`・`Training`・`Udemy`・`weekly`の119資料が対象。トップ・裏資料一覧・管理画面・配布済みPDFはこのHTML移行の対象に含めません。テンプレート便覧は専用ビルダーで同じ装飾を読み込みます。
+
+```sh
+# 外部の非公開ディレクトリへ全資料の確認版を生成
+python3 .claude/skills/ozaken-shiryo/scripts/apply_cover.py \
+  --preview-dir /absolute/private-preview
+
+# 同じ確認版に加え、既存HTMLを鍵を変えず再暗号化
+python3 .claude/skills/ozaken-shiryo/scripts/apply_cover.py \
+  --preview-dir /absolute/private-preview --update
+
+# 内容を必要としない移行ロジックの検査
+python3 -m unittest discover \
+  -s .claude/skills/ozaken-shiryo/scripts -p test_apply_cover.py
+```
+
+マスター未設定時は非表示入力。処理は全件を解析・検証してから暗号化HTMLを書き戻します。表紙以外の章が一致すること、既存リンクとスクリプトが保持されること、二重適用で変わらないことを検査し、更新時は `check_blocks.survey()` で注入ブロックの前後比較、`W` の一致、復号結果とプレビューの一致も検査します。未知の表紙やシンボリックリンクを経由した平文上書きはエラーになります。削除した旧表紙の写真・装飾だけでなく意味のある未分類情報が残った場合も、勝手に捨てず専用の対応処理を追加してください。
+
+新規資料・通常の改訂・週次資料は `publish.compose()` の最後で自動適用されます。講演版はさらに専用CSS適用後にも適用します。これらを通さない独自生成元では `apply_cover.patch(page)` を最後に通してください。古い `apply_herofx` は共通表紙の印を認識し、旧HUDやcanvasを起動しません。旧CSSの注入ブロックは移行時に保持します。
+
+プレビュー用の `cover-report.json` は対象パスと更新有無だけを持ち、Gitに追加する必要はありません。本文・QR・確認用画像は非公開の確認ディレクトリに保持します。`--update` は本番デプロイではありません。
 
 ## 鍵・個人情報の扱い
 

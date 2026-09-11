@@ -1,0 +1,29 @@
+.tl-curtain{position:absolute;inset:-12% -16%;pointer-events:none;perspective:950px}
+.tl-curtain-sheet{position:absolute;inset:8% 0 4%;transform:rotate(-18deg) rotateY(-22deg) rotateX(10deg);display:flex;align-items:center;animation:tl-unfold 1.6s cubic-bezier(.13,.65,.18,1) both}
+.tl-curtain-sheet i{flex:1;height:calc(68% + var(--rib)*1.25%);margin-left:-1px;background:linear-gradient(90deg,rgba(159,198,245,.035),rgba(159,198,245,.32) 47%,rgba(216,228,240,.5) 51%,rgba(46,84,150,.12) 66%,rgba(10,15,28,.01));border-radius:50% 50% 46% 42%;transform-origin:50% 50%;animation:tl-fold-wave 10s ease-in-out infinite;animation-delay:calc(var(--rib)*-.24s);box-shadow:inset 1px 0 rgba(216,228,240,.05)}
+.tl-curtain-glow{position:absolute;inset:4% -12%;background:radial-gradient(ellipse at 57% 46%,rgba(159,198,245,.13),transparent 59%);animation:tl-glow 13s ease-in-out infinite alternate}
+.tl-curtain-line{position:absolute;left:7%;right:0;top:52%;height:1px;background:linear-gradient(90deg,transparent,rgba(216,228,240,.5),transparent);transform:rotate(-18deg);animation:tl-thread 15s ease-in-out infinite}
+@keyframes tl-unfold{from{opacity:0;transform:rotate(-30deg) rotateY(55deg) rotateX(20deg) scale(.78)}to{opacity:1;transform:rotate(-18deg) rotateY(-22deg) rotateX(10deg) scale(1)}}
+@keyframes tl-fold-wave{0%,100%{transform:translateY(-4%) rotateY(-12deg) scaleY(.94);opacity:.66}50%{transform:translateY(5%) rotateY(24deg) scaleY(1.08);opacity:1}}
+@keyframes tl-glow{to{transform:translate(-5%,8%) scale(1.1);opacity:.45}}
+@keyframes tl-thread{0%,100%{opacity:.2;transform:translateY(-35px) rotate(-18deg)}50%{opacity:.65;transform:translateY(45px) rotate(-18deg)}}
+/* A second depth behind the curtain: drifting light, sparse points, passing rays. */
+.tl-cover-air{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;contain:paint;mask-image:linear-gradient(90deg,rgba(20,29,53,.12),rgba(20,29,53,.35) 35%,#141d35 62%)}
+.tl-cover-air::before,.tl-cover-air::after{content:'';position:absolute;inset:-25%;background:radial-gradient(ellipse at 67% 35%,rgba(46,84,150,.34),transparent 43%);animation:tl-cover-haze 18s ease-in-out infinite alternate;animation-play-state:paused}
+.tl-cover-air::after{background:radial-gradient(ellipse at 80% 75%,rgba(47,143,138,.18),transparent 37%);animation-direction:alternate-reverse;animation-duration:23s;animation-delay:-8s}
+.tl-cover-air>i{position:absolute;left:var(--x);top:var(--y);width:var(--size);height:var(--size);border-radius:50%;background:#d8e4f0;opacity:.5;box-shadow:0 0 9px rgba(159,198,245,.65);animation:tl-cover-drift var(--duration) var(--delay) ease-in-out infinite alternate;animation-play-state:paused}
+.tl-cover-ray{position:absolute;left:48%;top:22%;width:43%;height:1px;transform:rotate(-23deg);background:linear-gradient(90deg,transparent,rgba(159,198,245,.4) 75%,rgba(216,228,240,.8) 98%,transparent);box-shadow:0 0 13px rgba(159,198,245,.3);opacity:0;animation:tl-cover-pass 13s -3s ease-in-out infinite;animation-play-state:paused}
+.tl-cover-ray+.tl-cover-ray{left:64%;top:77%;width:32%;animation-duration:17s;animation-delay:-10s;opacity:0}
+.tl-hero.is-inview>.tl-cover-air::before,.tl-hero.is-inview>.tl-cover-air::after,.tl-hero.is-inview>.tl-cover-air>*,
+.nx-cover.is-inview>.tl-cover-air::before,.nx-cover.is-inview>.tl-cover-air::after,.nx-cover.is-inview>.tl-cover-air>*{animation-play-state:running}
+.nx-cover>.tl-cover-air{z-index:-1}
+.tl-still .tl-cover-air::before,.tl-still .tl-cover-air::after,.tl-still .tl-cover-air>*,
+.tl-away .tl-cover-air::before,.tl-away .tl-cover-air::after,.tl-away .tl-cover-air>*{animation-play-state:paused!important}
+@keyframes tl-cover-haze{from{transform:translate(-8%,5%) scale(.92)}to{transform:translate(9%,-8%) scale(1.12)}}
+@keyframes tl-cover-drift{from{transform:translate(-12px,18px);opacity:.2}to{transform:translate(var(--drift),-40px);opacity:.8}}
+@keyframes tl-cover-pass{0%,15%{transform:translate(-48%,95px) rotate(-23deg);opacity:0}30%,55%{opacity:.65}80%,100%{transform:translate(40%,-95px) rotate(-23deg);opacity:0}}
+@media(max-width:600px){.tl-cover-air{mask-image:linear-gradient(180deg,rgba(20,29,53,.12),#141d35 70%)}.tl-cover-air>i:nth-child(even){display:none}.tl-cover-ray{width:60%;left:30%;opacity:.4}.tl-cover-ray+.tl-cover-ray{display:none}}
+@media(prefers-reduced-motion:reduce){.tl-cover-air::before,.tl-cover-air::after,.tl-cover-air>*{animation:none!important}.tl-cover-air>i{opacity:.35}.tl-cover-ray{display:none}.tl-still .tl-curtain-sheet{animation:none!important;opacity:1}}
+@media print{.tl-cover-air{display:none!important}}
+
+@media(prefers-reduced-motion:reduce){.tl-curtain-sheet,.tl-curtain-sheet i,.tl-curtain-glow,.tl-curtain-line{animation:none!important;opacity:1}}

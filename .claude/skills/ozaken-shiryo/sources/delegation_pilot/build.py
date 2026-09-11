@@ -188,6 +188,9 @@ def main():
         page = preserve_extensions(page, old)
         assert page.count('class="xr-chips"') == old.count('class="xr-chips"')
         assert ('<!-- OZ-QR v1 -->' in page) == ('<!-- OZ-QR v1 -->' in old)
+    # Last, after pilot CSS: preserve the archive-wide cover on every rebuild.
+    import apply_cover
+    page = apply_cover.patch(page)
     errors, _ = check(page)
     if errors: raise SystemExit('\n'.join(errors))
     args.output.parent.mkdir(parents=True, exist_ok=True)

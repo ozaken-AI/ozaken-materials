@@ -19,17 +19,7 @@ PARTS = {
     'chapter': ('次章へつながる言葉', 'ひとつの言葉を残し、次の論点へ渡す。', 'ことば'),
 }
 
-def curtain():
-    return '<div class="tl-curtain" aria-hidden="true"><div class="tl-curtain-sheet">'+''.join(f'<i style="--rib:{i}"></i>' for i in range(20))+'</div><div class="tl-curtain-glow"></div><span class="tl-curtain-line"></span></div>'
-
-def cover_air():
-    """Sparse decorative light; deterministic positions keep rebuilds reproducible."""
-    points = [(18,18),(32,76),(43,12),(48,58),(54,87),(60,29),(65,69),
-              (70,10),(74,48),(78,83),(83,24),(87,61),(91,40),(95,77)]
-    particles = ''.join(
-        f'<i style="--x:{x}%;--y:{y}%;--drift:{24+i%4*14}px;--duration:{12+i%5*2}s;--delay:{-i*1.7}s;--size:{2+i%3}px"></i>'
-        for i,(x,y) in enumerate(points))
-    return '<div class="tl-cover-air" aria-hidden="true">'+particles+'<span class="tl-cover-ray"></span><span class="tl-cover-ray"></span></div>'
+from lecture_cover import curtain, cover_air
 
 def scene(kind):
     control = ''
@@ -41,7 +31,7 @@ def scene(kind):
 
 def parts():
     return {
-        'cover': '<div class="nx-cover" data-ambient-zone>'+cover_air()+curtain()+'<span class="nx-overline">A QUESTION WORTH ASKING</span><h4><span>問いを、</span><span>未来につなぐ。</span></h4><p>言葉から始まる、次の一歩。</p></div>',
+        'cover': '<div class="nx-cover" data-ambient-zone>'+cover_air()+curtain()+'<span class="nx-overline">A QUESTION WORTH ASKING</span><h4><span>問いを</span><span>未来につなぐ</span></h4><p>言葉から始まる 次の一歩</p></div>',
         'reactive_sentence': '<div class="nx-reactive"><p class="nx-sentence">週 <label><span class="nx-sr">1週間の回数</span><input type="number" min="1" max="20" value="3" data-frequency></label> 回、<br>1回 <label><span class="nx-sr">1回あたりの分数</span><input type="number" min="1" max="120" value="20" data-minutes></label> 分を短縮すると。</p><div class="nx-reactive-line"><i></i></div><p class="nx-result" aria-live="polite">4週間で <strong data-saving>4</strong> 時間</p><small>4週間として単純計算した仮想例。</small></div>',
         'evidence': '<div class="nx-evidence"><p class="nx-big-statement">待ち時間は、<br><em>全体の40%。</em></p><div class="nx-source-line"></div><details><summary>数字の根拠をひらく <span>＋</span></summary><dl><div><dt>対象</dt><dd>直列に進む提案業務の仮想例</dd></div><div><dt>計算</dt><dd>承認待ち12時間 ÷ 全体30時間</dd></div><div><dt>出典</dt><dd>この便覧の説明用データ</dd></div><div><dt>留意点</dt><dd>実際の業務に一般化しません。</dd></div></dl></details></div>',
         'focus_note': '<div class="nx-focus"><div class="nx-focus-path" role="group" aria-label="説明する工程">'+''.join(f'<button type="button" data-focus="{i}" aria-pressed="{str(i==1).lower()}"><span>0{i+1}</span>{name}</button>' for i,name in enumerate(['準備','判断','実行']))+'</div><div class="nx-focus-pointer"></div><p aria-live="polite">判断：任せる範囲と、人が確認する条件を決める。</p></div>',
