@@ -34,6 +34,7 @@ git worktree list
 | 全資料の共通表紙 | `scripts/apply_cover.py`、`sources/lecture_cover/` | 通常・AX Table・研修・Udemy・週次の全資料 |
 | 全資料の本文デザイン | `scripts/apply_body.py`、`sources/lecture_body/body.css`・`body.js` | 現在の本文を保持したまま組版と装飾を適用 |
 | 共通の背景・表の列ホバー | `sources/lecture_effects.css` | 便覧と講演版の両ビルダーで埋め込む |
+| AI-SECI・5レベル・SIPOCの実務解説 | `sources/gen_seci.py`・`gen_five_levels.py`・`gen_sipoc.py`、`practical_guides.py`・`.css` | 現行の完全なHTMLに対象章だけを改訂・追記 |
 | その他の個別資料 | `.claude/skills/ozaken-shiryo/sources/gen_*.py` | [生成元対応表](../.claude/skills/ozaken-shiryo/sources/README.md) |
 | 共通の組版・暗号化 | `.claude/skills/ozaken-shiryo/scripts/` | `publish.py`、`lockbox.py`、`registry.py`等 |
 | 相互参照・概念の正典 | `scripts/crossref_data.py`、`crossref.py` | 関連チップ、`matrix.html`等 |
@@ -53,8 +54,9 @@ git worktree list
 
 2026-09-11の本人指定による本文改訂。AI-SECIは `sources/gen_seci.py`、5レベルのCopilot編・Gemini編は `sources/gen_five_levels.py` を使う（いずれも `.claude/skills/ozaken-shiryo/` 配下）。旧版の `/tmp/body_*.html` を `publish.py` に渡す手順は使わない。現行の完全なHTMLから指定した章だけを置換し、共通本文デザインを再適用する。
 
-- AI-SECI：共同化＝ワークショップ・棚卸しによる暗黙知の言語化、表出化＝AIエージェント化、連結化＝RAG・マルチAIエージェントによる拡張、内面化＝現場で使うことで生まれる新しい暗黙知。4工程を独立した章で説明し、改善点を次の共同化へ戻す。
-- これは小澤健祐による実務への応用モデル。原典の共同化は暗黙知の共有、言語化は表出化に当たる。本文冒頭の対応説明を削除せず、本人の実務モデルを原典の定義として引用しない。「連結化」は原典の「結合化」に対応する呼び方として扱う。
+- AI-SECIは同日後半に提供された本人の4象限図を最新の基準とする。共同化＝暗黙知の自己認識・他者との共有、表出化＝プロンプトやワークフローへの変換、結合化＝ワークフロー・チャットボット・RAG・MCP等の連携、内面化＝実業務で使うことで人の暗黙知が更新され、新たな文句・改善点も生まれる。4工程を独立した章で説明し、次の共同化へ戻す。
+- 概観は左上S → 右上E → 右下C → 左下Iの時計回り。知の変換は暗黙知→暗黙知／暗黙知→形式知／形式知→形式知／形式知→暗黙知。小画面のDOM順はS・E・C・Iを維持する。表出化ではコンテキストエンジニアリングとシステムプロンプトの重要性を明示する。
+- 小澤健祐による実務への応用と原典の参照を区別する。最新図に合わせ、見える名称は「結合化」とする。過去の「共同化＝言語化」「連結化」という説明へ戻さない。概念台帳の「連結化」は検索用の別名としてのみ残す。
 - 5レベル：レベル2は設計・指示例・テストの3章。レベル3は処理の流れ・データ・画面設定・条件・テストの5章。製品差は同じ生成元で管理する。特にWorkspace Studioの `Check if` は条件未達なら後続を止めるため、Power Automateの真／偽分岐と同じ説明にしない。
 - 共通パーツは `sources/practical_guides.py` と `practical_guides.css`。図・指示・表は常時表示し、共通背景・接続線の装飾だけが動く。表の列ホバーは値を変えない。
 
@@ -65,11 +67,27 @@ python3 .claude/skills/ozaken-shiryo/sources/gen_five_levels.py \
   --preview-dir /absolute/private-preview/seci-levels
 ```
 
-パスワードは非表示入力。確認後は各コマンドへ `--update` を加える。復号した控えを使う場合は `--input-dir /absolute/private-preview/before` を指定でき、更新時は現行資料と控えの一致を検査する。既存のラップ鍵 `W`、関連リンク、スクリプト、注入済みの共通スタイルを維持する。5レベルの対象外9章は各版とも本文・図をそのまま保持する。AI-SECIの表紙は導入文だけを実務モデルに合わせ、共通の構図を保持する。
+パスワードは非表示入力。確認後は各コマンドへ `--update` を加える。復号した控えを使う場合は `--input-dir /absolute/private-preview/before` を指定でき、更新時は現行資料と控えの一致を検査する。既存のラップ鍵 `W`、関連リンク、スクリプト、注入済みの共通スタイルを維持する。5レベルの初回改訂では対象外9章を保持し、最新の参照図への改訂ではAI-SECIの接続章以外の17章を各版とも保持した。AI-SECIの表紙は導入文だけを実務モデルに合わせ、共通の構図を保持する。
 
 この本文改訂に「内容を一切変えない見た目の移行」の一致検査を適用しない。指定された章の内容変更は本人の依頼に含まれる。対象外の章と他資料の内容は変更しない。概念台帳の `crossref_data.py` は更新するが、全資料への `crossref.py apply` をついでに実行しない。
 
-確認範囲と評価は [2026-09-11の改訂記録](verification/2026-09-11-seci-levels.md) を参照。
+確認範囲と評価は [初回の改訂記録](verification/2026-09-11-seci-levels.md) と [参照図・SIPOCの改訂記録](verification/2026-09-11-seci-reference-sipoc.md) を参照。
+
+### 業務分解大全のSIPOCを改訂する
+
+`sources/gen_sipoc.py` を使う。対象は `04_practice/gyomu-bunkai.html`。現行のMethods章の直後に、週次定例会議資料のSIPOC記入例・書く順番・判断基準・工程別判定の4章を追加する。再実行時は自身の `data-practical-guide="sipoc--…"` の連続する章だけを置換し、重複追加しない。元の請求書処理の記入例・図・関連リンクは維持する。Worksheet 1の導入にあった「上から下」の説明だけは、新しい書く順番と矛盾しないよう更新する。
+
+- プロセスは5つ前後。書く順番は「業務名 → P → O・C → S・I」。表の表示順S・I・P・O・Cとは区別する。
+- 判断基準は本人指定の3つだけ：繰り返すか／入出力が決まっているか／最後に人が確認できるか。
+- ◎＝3つともYESでエージェントに任せる、○＝一部YESでAIに手伝わせる、×＝人がやる。週次会議資料の例は①抽出・②集計・④資料化が◎、③コメント収集が○、⑤マネージャー確認が×。独自の追加条件や推測したYES・NOを例の各工程に足さない。
+- 全情報を常時表示するHTMLの表・図で作る。列ホバーは装飾のみ。背景と接続線は共通の動作・印刷規約に従う。
+
+```sh
+python3 .claude/skills/ozaken-shiryo/sources/gen_sipoc.py \
+  --preview-dir /absolute/private-preview/sipoc
+```
+
+確認後は `--update` を追加する。`--input-dir`、既存鍵保持、控えとの一致検査は上の2ビルダーと共通。レポートは `gyomu-bunkai-report.json`。旧フラグメントから資料全体を再生成しない。
 
 ### 共通の作成手順
 

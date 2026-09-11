@@ -1,0 +1,164 @@
+{
+  "date": "2026-09-11",
+  "baseline_commit": "058eecf",
+  "documents": [
+    {
+      "path": "01_concept/ai-seci.html",
+      "cover_unchanged": false,
+      "cover_layout_unchanged": true,
+      "scripts_unchanged": true,
+      "links_preserved": true,
+      "unchanged_chapters": 0,
+      "chapters": 8,
+      "revised_chapters": 8,
+      "before_sha256": "69ca36a0b01efff1587bd62a0ce7b0b8172d0922f0565a086844cc1a97ec98af",
+      "after_sha256": "ef0bde98bb94b6ca22e5a49dd34b5b986eb1e2d440ac73096d3f5320e11f1a68",
+      "injected_blocks_preserved": true,
+      "screens": [
+        {
+          "mode": "desktop",
+          "width": 1422,
+          "overflow": 0,
+          "hidden_text": 0,
+          "outside_text": 0,
+          "backgrounds": 8
+        },
+        {
+          "mode": "mobile",
+          "width": 390,
+          "overflow": 0,
+          "hidden_text": 0,
+          "outside_text": 0,
+          "backgrounds": 8
+        },
+        {
+          "mode": "print-css",
+          "width": 1010,
+          "overflow": 0,
+          "hidden_text": 0,
+          "outside_text": 0,
+          "backgrounds": 8
+        }
+      ]
+    },
+    {
+      "path": "01_concept/five-levels-copilot.html",
+      "cover_unchanged": true,
+      "cover_layout_unchanged": true,
+      "scripts_unchanged": true,
+      "links_preserved": true,
+      "unchanged_chapters": 17,
+      "chapters": 18,
+      "revised_chapters": 9,
+      "before_sha256": "c3f68984e3fde606017c10a58ba2f9b3479362b6f28411556475ca85a87d4758",
+      "after_sha256": "059bc898322b7870ad9261b3ddcfd939f3ac6437d16d3d085d6a5df5532144c3",
+      "injected_blocks_preserved": true,
+      "screens": [
+        {
+          "mode": "desktop",
+          "width": 1422,
+          "overflow": 0,
+          "hidden_text": 0,
+          "outside_text": 0,
+          "backgrounds": 18
+        },
+        {
+          "mode": "mobile",
+          "width": 390,
+          "overflow": 0,
+          "hidden_text": 0,
+          "outside_text": 0,
+          "backgrounds": 18
+        },
+        {
+          "mode": "print-css",
+          "width": 1010,
+          "overflow": 0,
+          "hidden_text": 0,
+          "outside_text": 0,
+          "backgrounds": 18
+        }
+      ]
+    },
+    {
+      "path": "01_concept/five-levels-gemini.html",
+      "cover_unchanged": true,
+      "cover_layout_unchanged": true,
+      "scripts_unchanged": true,
+      "links_preserved": true,
+      "unchanged_chapters": 17,
+      "chapters": 18,
+      "revised_chapters": 9,
+      "before_sha256": "00b92c81a844f69445516feda5df0699364d8bf529fefc1d6308284afcafe644",
+      "after_sha256": "52fe02b8d361e243a26b9c1066159fbeb061cf2bb61b57a6795739a2c38c22b4",
+      "injected_blocks_preserved": true,
+      "screens": [
+        {
+          "mode": "desktop",
+          "width": 1422,
+          "overflow": 0,
+          "hidden_text": 0,
+          "outside_text": 0,
+          "backgrounds": 18
+        },
+        {
+          "mode": "mobile",
+          "width": 390,
+          "overflow": 0,
+          "hidden_text": 0,
+          "outside_text": 0,
+          "backgrounds": 18
+        },
+        {
+          "mode": "print-css",
+          "width": 1010,
+          "overflow": 0,
+          "hidden_text": 0,
+          "outside_text": 0,
+          "backgrounds": 18
+        }
+      ]
+    },
+    {
+      "path": "04_practice/gyomu-bunkai.html",
+      "cover_unchanged": true,
+      "cover_layout_unchanged": true,
+      "scripts_unchanged": true,
+      "links_preserved": true,
+      "unchanged_chapters": 9,
+      "chapters": 14,
+      "revised_chapters": 4,
+      "before_sha256": "bca96ebe2eb4c2bf9306ec7ee01cbdbf81c2be19b3b988b2bb217e86d1cf16de",
+      "after_sha256": "ff86d73231c24ca2dc96d8a6c93db940f069cfafde405044bf816af6e9d14f18",
+      "injected_blocks_preserved": true,
+      "screens": [
+        {
+          "mode": "desktop",
+          "width": 1422,
+          "overflow": 0,
+          "hidden_text": 0,
+          "outside_text": 0,
+          "backgrounds": 14
+        },
+        {
+          "mode": "mobile",
+          "width": 390,
+          "overflow": 0,
+          "hidden_text": 0,
+          "outside_text": 0,
+          "backgrounds": 14
+        },
+        {
+          "mode": "print-css",
+          "width": 1010,
+          "overflow": 0,
+          "hidden_text": 0,
+          "outside_text": 0,
+          "backgrounds": 14
+        }
+      ]
+    }
+  ],
+  "common_layout_tests": 12,
+  "actual_pdf_export": false
+}

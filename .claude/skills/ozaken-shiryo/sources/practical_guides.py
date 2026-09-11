@@ -95,6 +95,11 @@ def replace_chapters(page, groups):
         edits.append((matches[0].start, matches[-1].end, built.rstrip()))
     for a,b,built in sorted(edits, reverse=True):
         source = source[:a] + built + source[b:]
+    return apply_styles(source)
+
+
+def apply_styles(source):
+    source = STYLE_RE.sub('', source)
     source = apply_body.patch(source)
     css = (HERE / 'practical_guides.css').read_text()
     return source.replace('</head>', f'<style id="oz-practical-guide-style">\n{css}\n</style>\n</head>', 1)
@@ -150,7 +155,10 @@ def run(transforms, description):
             lockbox.encrypt(path,pw,new)
             assert lockbox.parse(path.read_text()).group('w') == w
             assert lockbox.decrypt(path,pw) == new
-    report_path = args.preview_dir / ('seci-report.json' if len(transforms)==1 else 'levels-report.json')
+    name = Path(next(iter(transforms))).stem if len(transforms)==1 else 'levels'
+    if name == 'ai-seci':
+        name = 'seci'
+    report_path = args.preview_dir / (name+'-report.json')
     safe_preview(report_path,root)
     report_path.write_text(json.dumps({'updated':args.update,'documents':report},ensure_ascii=False,indent=2))
     print(f'{len(pending)} documents verified; '+('encrypted outputs updated' if args.update else 'private previews ready'))

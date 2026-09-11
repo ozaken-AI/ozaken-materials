@@ -10,9 +10,12 @@
 |---|---|---|
 | `template.html` | `build_template_gallery.py` | `gen_template.py` の見本データを読み、`template_gallery/lecture.py` で全34図・33本文パーツを常時表示 |
 | `01_concept/use-to-delegate.html` | `delegation_pilot/build.py` | `gen_use_to_delegate.py` を参照し、講演用の構成・背景・印刷を適用 |
+| `01_concept/ai-seci.html` | `gen_seci.py` | 本人提供の4象限図を基準に8章を更新 |
+| `01_concept/five-levels-{copilot,gemini}.html` | `gen_five_levels.py` | L2・L3の詳説とAI-SECIへの接続を対象章だけに適用 |
+| `04_practice/gyomu-bunkai.html` のSIPOC | `gen_sipoc.py` | 現行資料へ4章を追記・置換し、元の請求書処理の図を保持 |
 | その他の資料 | 対応する `gen_*.py` と `../scripts/publish.py` | 本文フラグメントの組版・検査・暗号化 |
 
-両方の現行ビルダーは `lecture_effects.css` を埋め込みます。背景や列ホバーを変えたら、依頼された対象を再生成してください。便覧だけの修正で他の資料まで一括更新しません。
+便覧と講演版のビルダーは `lecture_effects.css` を埋め込みます。実務解説の3ビルダーは `practical_guides.py`・`practical_guides.css` と共通本文デザインを使います。背景や列ホバーを変えたら、依頼された対象を再生成してください。便覧だけの修正で他の資料まで一括更新しません。
 
 このディレクトリから実行する例：
 
@@ -21,6 +24,9 @@ python3 build_template_gallery.py --preview /absolute/private-preview/template.h
 python3 build_template_gallery.py --preview /absolute/private-preview/template.html --publish
 python3 delegation_pilot/build.py \
   --output /absolute/private-preview/01_concept/use-to-delegate.html --update
+python3 gen_seci.py --preview-dir /absolute/private-preview/guides
+python3 gen_five_levels.py --preview-dir /absolute/private-preview/guides
+python3 gen_sipoc.py --preview-dir /absolute/private-preview/guides
 ```
 
 `--publish` / `--update` は既存鍵を保持してローカルの暗号化HTMLを書き戻します。本番へのpushは行いません。マスターは非表示入力で受け取り、ソースやREADMEには記録しません。
@@ -82,6 +88,8 @@ python3 delegation_pilot/build.py \
 - `gen_s6.py` … AX_Table/s6-soshiki-saisekkei.html
 - `gen_s8.py` … AX_Table/s8-copilot.html
 - `gen_seci.py` … 01_concept/ai-seci.html
+- `gen_five_levels.py` … 01_concept/five-levels-copilot.html、01_concept/five-levels-gemini.html
+- `gen_sipoc.py` … 04_practice/gyomu-bunkai.htmlのSIPOC追記・改訂
 - `gen_skill.py` … 01_concept/agent-skills.html
 - `gen_suishin.py` … 05_drive/drive-phase.html
 - `gen_trend.py` … 02_models/three-axes.html
