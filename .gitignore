@@ -8,3 +8,6 @@ __pycache__/
 newsletter/*.csv
 newsletter/import*.sql
 newsletter/.env
+
+# note の下書き。鍵つき資料の中身を平文で持つので、公開リポジトリには入れない
+note_drafts/
