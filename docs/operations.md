@@ -119,6 +119,8 @@ python3 .claude/skills/ozaken-shiryo/scripts/apply_body.py \
   --preview-dir /absolute/private-preview/lecture-body --update
 ```
 
+特定の資料だけを修正する場合は `--only 01_concept/ax-article.html` のようにリポジトリ相対パスを指定する。複数パスも指定でき、対象外や未知のパスは更新しない。共通CSSの変更でも影響する資料だけを再適用できる。2026-09-11のAX記事の強調文では、読み物用の `20ch` 幅と画面全高の設定が重なって文字が左上へ偏ったため、文章の幅を広げ、説明段落を伴わない強調ページだけ縦中央へ配置した。本文や改行タグを書き換えて補正しない。確認記録は [AX記事の配置修正](verification/2026-09-11-ax-statement-layout.md)。
+
 リポジトリ外の復号した控えがある場合は `--input-dir /absolute/private-preview/before` を加えられる。`--update` と同時に使うと、現在の暗号化資料と控えが一致しない限り停止する。他のAIが途中で追記した内容を上書きしないための検査であり、停止時は最新内容を取り込み、再検証する。
 
 **プレビューの親フォルダがリポジトリへのシンボリックリンクでないかも確認する。** ファイル自体の `is_symlink()` だけでは不十分。保存先の `resolve()` がリポジトリ内を指す場合は書き込まない。既存のプレビューURLを更新する際にも `apply_cover.safe_preview()` を通す。ステージング後は各配信HTMLを `git show :相対パス` で読み、`<!--OZAKEN-LOCKED2-->` から始まり、平文の本文用属性・スタイルが含まれないことを検査する。暗号化直後の確認だけでなく、コミット対象そのものを確かめる。

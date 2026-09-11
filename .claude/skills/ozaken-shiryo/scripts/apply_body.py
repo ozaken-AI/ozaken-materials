@@ -99,15 +99,23 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--preview-dir', required=True, type=Path)
     ap.add_argument('--input-dir', type=Path)
+    ap.add_argument('--only', nargs='+', metavar='PATH', help='Limit the refresh to these repository-relative material paths')
     ap.add_argument('--update', action='store_true')
     args = ap.parse_args()
     root = Path(oz_root.root(str(HERE))).resolve()
+    selected = targets(root)
+    if args.only:
+        requested = {Path(p).as_posix() for p in args.only}
+        available = {p.relative_to(root).as_posix() for p in selected}
+        if requested - available:
+            ap.error('Unknown material path(s): ' + ', '.join(sorted(requested - available)))
+        selected = [p for p in selected if p.relative_to(root).as_posix() in requested]
     pw = None
     if args.update or not args.input_dir:
         pw = os.environ.get('OZAKEN_PW') or getpass.getpass('Master password: ')
     before = check_blocks.survey(pw) if args.update else None
     pending, report = [], []
-    for path in targets(root):
+    for path in selected:
         rel = path.relative_to(root)
         raw = path.read_text()
         if 'OZAKEN-LOCKED2' not in raw:
