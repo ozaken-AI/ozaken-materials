@@ -1,7 +1,7 @@
 """Projection/print catalogue. All information is server-rendered; no content controls."""
 import re
 from .scenes import e, scene, svg, node, grid
-from .next import curtain, parts as next_parts
+from .next import curtain, cover_air, parts as next_parts
 
 # Familiar identities remain stable for existing links; their presentations are now static.
 PART_LABELS = {
@@ -115,7 +115,7 @@ def build(figures, parts, catalog, blocks, categories, base_style, keynav, asset
     styles+='\n'+(assets.parent/'lecture_effects.css').read_text()
     return f'''<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>テンプレート便覧 — 講演と印刷に、伝わる形を。 | おざけん</title><meta name="description" content="34の図版と33の本文パーツ。完成形を見渡せる、講演と印刷のためのテンプレート便覧。"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Shippori+Mincho+B1:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">{base_style}<style>{styles}</style></head>
 <body class="tl-body tl-lecture"><div class="tl-atmosphere" aria-hidden="true"><i></i><i></i></div><header class="tl-header"><a class="tl-brand" href="index.html">OZAKEN<span>DESIGN LIBRARY</span></a><nav class="lt-nav" aria-label="便覧の目次"><a href="#figures">図版 34</a><a href="#parts">本文パーツ 33</a><a href="#guide">設計ガイド</a></nav><a class="tl-back" href="index.html">資料アーカイブ ↗</a></header>
-<main><div class="tl-hero" data-ambient-zone><div class="tl-hero-copy"><span class="tl-eyebrow">OZAKEN TEMPLATE COLLECTION / LECTURE EDITION</span><h1><span><b>伝わる資料に、</b></span><span><b><em>動きを。</em></b></span></h1><p>言葉も、数字も、物語も。<br>一枚で届く。動きで、心に残る。</p><a href="#figures" class="tl-hero-link">テンプレートを見る <span>↓</span></a></div><div class="tl-hero-art" aria-hidden="true">{curtain()}<span class="tl-hero-art-caption">WORDS INTO EXPERIENCE</span></div><div class="tl-hero-bottom"><span>言葉が届く。理解が、つながる。</span><span>34 FIGURES ／ 33 BUILDING BLOCKS</span></div></div>
+<main><div class="tl-hero" data-ambient-zone>{cover_air()}<div class="tl-hero-copy"><span class="tl-eyebrow">OZAKEN TEMPLATE COLLECTION / LECTURE EDITION</span><h1><span><b>伝わる資料に、</b></span><span><b><em>動きを。</em></b></span></h1><p>言葉も、数字も、物語も。<br>一枚で届く。動きで、心に残る。</p><a href="#figures" class="tl-hero-link">テンプレートを見る <span>↓</span></a></div><div class="tl-hero-art" aria-hidden="true">{curtain()}<span class="tl-hero-art-caption">WORDS INTO EXPERIENCE</span></div><div class="tl-hero-bottom"><span>言葉が届く。理解が、つながる。</span><span>34 FIGURES ／ 33 BUILDING BLOCKS</span></div></div>
 <div class="tl-shell"><section id="figures"><div class="lt-section-heading"><span class="tl-eyebrow">01 / FIGURES</span><h2>何を、伝えたい？</h2><p>比較、流れ、構造、数量。伝える内容から、形を見つける。</p></div><nav class="lt-index" aria-label="図版の目次">{''.join(index)}</nav><p class="lt-library-note">図と数値は構造を示すための見本です。実際の資料では、文言・数値・出典を内容に合わせます。</p><div class="lt-figure-list">{''.join(figurecards)}</div></section>
 <section id="parts"><div class="lt-section-heading"><span class="tl-eyebrow">02 / WORDS & NUMBERS</span><h2>図のまわりにも、<br>伝わる形を。</h2><p>数字をつかむ。言葉を届ける。理由まで見渡す。</p></div><div class="tl-part-grid">{''.join(partcards)}</div></section>
 <section id="guide"><div class="lt-section-heading"><span class="tl-eyebrow">03 / DESIGN NOTES</span><h2>見せる形と、<br>持ち帰る形を、ひとつに。</h2></div><div class="tl-guide-grid">{''.join(f'<article><span>0{i+1}</span><h3>{h}</h3><p>{t}</p></article>' for i,(h,t) in enumerate(guide))}</div></section></div></main>
