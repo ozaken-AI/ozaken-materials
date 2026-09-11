@@ -116,6 +116,9 @@ def compose(body_path, extra=''):
     # One cover implementation for new materials, updates and weekly issues.
     import apply_cover
     page = apply_cover.patch(page)
+    # Lecture body layout is also a final, repeatable design layer.
+    import apply_body
+    page = apply_body.patch(page)
     os.path.exists(tmp) and os.remove(tmp)
     return page, summary
 

@@ -173,6 +173,9 @@ def main():
         fragment = Path(tmp) / 'body.html'
         fragment.write_text(body(), encoding='utf-8')
         page, summary = compose(str(fragment))
+    # The pilot has its own complete layout; apply the body layer after its class/CSS.
+    import apply_body
+    page = apply_body.strip(page)
     # The new atmosphere replaces only decorative scripts; navigation stays intact.
     import apply_herofx
     page = apply_herofx.strip(page)
@@ -191,6 +194,7 @@ def main():
     # Last, after pilot CSS: preserve the archive-wide cover on every rebuild.
     import apply_cover
     page = apply_cover.patch(page)
+    page = apply_body.patch(page)
     errors, _ = check(page)
     if errors: raise SystemExit('\n'.join(errors))
     args.output.parent.mkdir(parents=True, exist_ok=True)

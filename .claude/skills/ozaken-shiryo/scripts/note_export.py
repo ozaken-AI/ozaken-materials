@@ -33,6 +33,7 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import lockbox
+import note_ledger
 import oz_root
 
 ROOT = oz_root.root(HERE)
@@ -191,6 +192,8 @@ def main():
     ap.add_argument('--no-figs', action='store_true')
     ap.add_argument('--no-intro', action='store_true')
     ap.add_argument('--no-outro', action='store_true')
+    ap.add_argument('--no-record', action='store_true',
+                    help='台帳に記録しない（既定は記録する）')
     a = ap.parse_args()
 
     pw = os.environ.get('OZAKEN_PW') or sys.exit('OZAKEN_PW を設定してください')
@@ -252,8 +255,25 @@ def main():
         print('  要確認（資料の中だけで通じる言い回し。記事では直す）:')
         for f in flags[:8]:
             print('    ・' + f[:70])
+
+    # 台帳に「下書きとして切り出した」ことを残す。次に note_pick.py を走らせたとき、
+    # この面がもう一度勧められないようにするため。**公開したことにはしない。**
+    # 公開ボタンは人が押すものなので、URL は押したあとに手で入れる
+    if not a.no_record:
+        ids = [note_ledger.digest(doc['sections'][k - 1]) for k in picks]
+        row, new = note_ledger.record(slug, a.rel, doc['title'], picks, ids,
+                                      meta['hashtags'])
+        print('  台帳: %s（%s）' % ('新しい行' if new else '既にある行を更新',
+                                    note_ledger.LEDGER))
+        if row['status'] == 'posted':
+            print('  ※ この面は %s に公開済みとして記録されています: %s'
+                  % (row['posted_at'], row['note_url']))
+
     print('  次: article.md を note のエディタに貼り、figs/ の画像を印の位置に入れる'
           '（自動投稿は note_post.mjs。未検証なので必ず下書きで止める）')
+    if not a.no_record:
+        print('  公開したら: python3 note_ledger.py posted %s --sections %s --url <note のURL>'
+              % (slug, ','.join(str(k) for k in picks)))
 
 
 if __name__ == '__main__':

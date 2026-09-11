@@ -35,7 +35,7 @@ SNAP = os.path.join(HERE, 'blocks_snapshot.json')
 
 # 注入される塊の印。増やしたらここに足す
 BLOCKS = ('OZ-SPACING', 'OZ-BG', 'OZ-HEROFX', 'OZ-FIGFLOW', 'OZ-HOME',
-          'OZ-BODYSTYLE', 'OZ-HEROSIZE', 'OZ-XREFCSS', 'OZ-QR', 'OZ-KIT', 'OZ-COVER')
+          'OZ-BODYSTYLE', 'OZ-HEROSIZE', 'OZ-XREFCSS', 'OZ-QR', 'OZ-KIT', 'OZ-COVER', 'OZ-LECTURE-BODY')
 
 
 def survey(pw):

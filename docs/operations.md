@@ -32,6 +32,7 @@ git worktree list
 | 図形の構造 | `sources/template_gallery/scenes.py`、`scripts/domain_fig.py` | 個々の図版 |
 | 講演版の実装例 | `sources/delegation_pilot/build.py`・`pilot.css`・`lecture.css`・`pilot.js` | `01_concept/use-to-delegate.html` |
 | 全資料の共通表紙 | `scripts/apply_cover.py`、`sources/lecture_cover/` | 通常・AX Table・研修・Udemy・週次の全資料 |
+| 全資料の本文デザイン | `scripts/apply_body.py`、`sources/lecture_body/body.css`・`body.js` | 現在の本文を保持したまま組版と装飾を適用 |
 | 共通の背景・表の列ホバー | `sources/lecture_effects.css` | 便覧と講演版の両ビルダーで埋め込む |
 | その他の個別資料 | `.claude/skills/ozaken-shiryo/sources/gen_*.py` | [生成元対応表](../.claude/skills/ozaken-shiryo/sources/README.md) |
 | 共通の組版・暗号化 | `.claude/skills/ozaken-shiryo/scripts/` | `publish.py`、`lockbox.py`、`registry.py`等 |
@@ -77,6 +78,36 @@ python3 .claude/skills/ozaken-shiryo/scripts/publish.py \
 - QR、関連資料チップ、個別の追記が生成元に含まれているか確認する。汎用 `publish.py --update` は台帳からQRを再挿入するが、任意の個別追記や既存チップを全て自動保存する仕組みではない。
 - 題名・概要の変更時は外側のOGPと共有カードも更新する。本文だけ変えて台帳や一覧とタイトルがずれないようにする。
 - 全体への `reapply.py`、`crossref.py apply`、正規化スクリプトは一括変更を伴う。1本のデザイン修正に無条件で実行しない。一括変更では事前・事後に `check_blocks.py` で注入ブロックの消失を検査する。
+
+### 本文の内容を変えずにデザインを統一する
+
+2026-09-11の本人指定では、全資料の本文をテンプレートの見た目へ揃える一方、内容の改変を禁止している。この用途で古い `gen_*.py` から本文を作り直さない。後から追加された章・関連資料・QR・講演先固有の情報を落とす可能性がある。
+
+`apply_body.py` は現在の復号HTMLを保持し、所有範囲が明確な属性・CSS・装飾用JSだけを追加する。表紙の文言・句読点も変更しない。旧背景キャンバスには除去可能な停止条件を挿入し、長い章の全高を使う巨大な描画領域を作らない。通常資料、読み物、統計ボード、一覧ポスターを区別し、承認済みの `use-to-delegate.html` は専用レイアウトを維持する。
+
+```sh
+# プレビューのみ。パスワードは非表示の対話入力
+python3 .claude/skills/ozaken-shiryo/scripts/apply_body.py \
+  --preview-dir /absolute/private-preview/lecture-body
+
+# 確認後に暗号化HTMLを更新。本番配信は別途gitで行う
+python3 .claude/skills/ozaken-shiryo/scripts/apply_body.py \
+  --preview-dir /absolute/private-preview/lecture-body --update
+```
+
+リポジトリ外の復号した控えがある場合は `--input-dir /absolute/private-preview/before` を加えられる。`--update` と同時に使うと、現在の暗号化資料と控えが一致しない限り停止する。他のAIが途中で追記した内容を上書きしないための検査であり、停止時は最新内容を取り込み、再検証する。
+
+**プレビューの親フォルダがリポジトリへのシンボリックリンクでないかも確認する。** ファイル自体の `is_symlink()` だけでは不十分。保存先の `resolve()` がリポジトリ内を指す場合は書き込まない。既存のプレビューURLを更新する際にも `apply_cover.safe_preview()` を通す。ステージング後は各配信HTMLを `git show :相対パス` で読み、`<!--OZAKEN-LOCKED2-->` から始まり、平文の本文用属性・スタイルが含まれないことを検査する。暗号化直後の確認だけでなく、コミット対象そのものを確かめる。
+
+```sh
+python3 .claude/skills/ozaken-shiryo/scripts/check_encrypted.py --staged
+```
+
+全件を変換・検証してから暗号化する。追加した指定を `apply_body.strip()` で除くと、元の文書にバイト単位で完全一致することを検査する。これは本文・図のラベル・数値・SVGの座標・属性・出典・リンク・既存スクリプトの保全を含む。さらに冪等性、暗号化後の復号一致、ラップ鍵 `W`、`check_blocks` の前後差を確認する。検査結果 `body-report.json` は非公開プレビューに置き、本文そのものをGitへ入れない。
+
+新規資料の `publish.compose()` は共通表紙に続けて `apply_body.patch(page)` を適用する。独自ビルダーで追記する場合も、クラスと専用CSSを決めた後・暗号化の前に同じ処理を行う。テンプレート便覧は自身が基準なので適用対象外。共通CSSを編集しただけでは既存の暗号化資料へ反映されない。
+
+確認は通常幅と390px幅で、全文の表示、図の位置、横はみ出し、図内のスクロール、背景の時間変化・画面外停止を行う。印刷は長い章を切り捨てず複数ページに流し、PDFを納品する場合は実際の書き出しも確認する。
 
 汎用資料の更新例：
 

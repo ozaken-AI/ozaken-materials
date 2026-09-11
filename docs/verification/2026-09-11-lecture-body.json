@@ -1,0 +1,633 @@
+{
+  "date": "2026-09-11",
+  "scope": "Content-preserving lecture body design",
+  "baseline_commit": "8f0074694b9a0539414dfa14b6a4498f7dbd2572",
+  "materials": 122,
+  "content_surfaces": 1148,
+  "original_document_bytes_recovered": true,
+  "encryption_round_trip_verified": true,
+  "wrapped_keys_preserved": true,
+  "original_blocks_preserved": true,
+  "browser_layout_checks": 366,
+  "browser_widths": {
+    "desktop": 1422,
+    "mobile": 390,
+    "print_css": 1010,
+    "pilot_print_css": 1123
+  },
+  "overflow_or_hidden_content_failures": 0,
+  "actual_pdf_export_checked": false,
+  "print_note": "Print CSS geometry checked in the browser; actual PDF pagination was not exported",
+  "documents": [
+    {
+      "path": "01_concept/agent-skills.html",
+      "content_sha256": "7e25218dec4f1b60af4876af6e93b0c59a3a3401b4dcebfaed061a7b8e72912b",
+      "pages": 8
+    },
+    {
+      "path": "01_concept/ai-seci.html",
+      "content_sha256": "da820b0cb4b09211e1d56b00f9200145b4bf5ded266789816f265a7153b72d86",
+      "pages": 8
+    },
+    {
+      "path": "01_concept/ax-article.html",
+      "content_sha256": "1e99fe30c57ff43231ce25bde8609dafaedf4c424c5c6da64fdae97022600c0b",
+      "pages": 9
+    },
+    {
+      "path": "01_concept/business-model-shift.html",
+      "content_sha256": "91c13128de68101a96c8ba140807b210aa77e3926be3546652934a39abdd1d77",
+      "pages": 10
+    },
+    {
+      "path": "01_concept/cx-ex-hub.html",
+      "content_sha256": "4d749d5d70bfff2169547eb41604268de4d5e20d48d604199c82900586f69549",
+      "pages": 10
+    },
+    {
+      "path": "01_concept/data-for-ai.html",
+      "content_sha256": "e3c9d40ab0bc73fe54b7cf0250affd710af504cb68db19e1221aad0d6796e9bd",
+      "pages": 8
+    },
+    {
+      "path": "01_concept/existing-business-first.html",
+      "content_sha256": "2f4b4cb389d731d867d8157a1d725e4b83fa20f9ca4d435a1e2855e2f888635e",
+      "pages": 10
+    },
+    {
+      "path": "01_concept/five-levels-copilot.html",
+      "content_sha256": "3e7185bba98a7e666821c151105a461c8b521da68f2674e7a05bcf14692011a0",
+      "pages": 12
+    },
+    {
+      "path": "01_concept/five-levels-gemini.html",
+      "content_sha256": "79f0085c825bcc85b9268143709bac396823e2efc3e71fae0077f1849e915ec2",
+      "pages": 12
+    },
+    {
+      "path": "01_concept/genai-and-dx.html",
+      "content_sha256": "9218e39c830b4771bba066999c26ef239d80614bbb593ffd3a69d790fec9cf4b",
+      "pages": 6
+    },
+    {
+      "path": "01_concept/hai-cognitive-science.html",
+      "content_sha256": "801119f3efd771bc66623d8dc388310b9ab99ae7164b084586c537dfb1a18726",
+      "pages": 10
+    },
+    {
+      "path": "01_concept/human-in-on-the-loop-v2.html",
+      "content_sha256": "b139787df43dacd49bcd6ef71d656a770f468a74cbec739dcf36a07686b9fdd3",
+      "pages": 6
+    },
+    {
+      "path": "01_concept/japan-revival-strategy.html",
+      "content_sha256": "e0e9f1bd9112602efa1b7651757b30ef4576717a12165f0592e3d5f0888531d6",
+      "pages": 8
+    },
+    {
+      "path": "01_concept/marginal-value-zero.html",
+      "content_sha256": "4f17434c0ea232a7a45e67dd96a97501adcd735c2ab2326d80cf73577e570558",
+      "pages": 10
+    },
+    {
+      "path": "01_concept/tacit-knowledge-and-data-box.html",
+      "content_sha256": "75e867ba2276debd04f2fe4a86a9e71e491a4b278415155395f8200e3a48ca72",
+      "pages": 6
+    },
+    {
+      "path": "01_concept/use-to-delegate.html",
+      "content_sha256": "65d3d79bba876fd189b6af8f5398930c505a818b48b7898f365ef8f26c5ea522",
+      "pages": 10
+    },
+    {
+      "path": "01_concept/what-is-agi.html",
+      "content_sha256": "77feb06914e131c2b8d46c4085f8062e679073ab795960f0a5b67809d91adfc7",
+      "pages": 10
+    },
+    {
+      "path": "01_concept/what-is-ai-agent.html",
+      "content_sha256": "41fc2deaf55b5551243a78ae09c1200fe891b1b0ce2de771d0f1f64cfeec170e",
+      "pages": 6
+    },
+    {
+      "path": "01_concept/what-is-genai.html",
+      "content_sha256": "5c63c22795cd2dc11b5e7e2dbf58eafa564a19335388f335e1bfa6da32488971",
+      "pages": 6
+    },
+    {
+      "path": "01_concept/zero-marginal-cost-transition.html",
+      "content_sha256": "5de515594ab752524e616f22ff9396158f45c9c42108be5a0c5df68a945a3790",
+      "pages": 10
+    },
+    {
+      "path": "02_models/ai-voice.html",
+      "content_sha256": "9e2b2ba970fc36438a73d56be8981102c595a6a7c7df8ee4bd88eb9cc0ce1af4",
+      "pages": 8
+    },
+    {
+      "path": "02_models/china-ai-models.html",
+      "content_sha256": "6a13f870e80d244f16b4cdcbc5fd69f241c918034304b95fcec7376dca9e8f16",
+      "pages": 10
+    },
+    {
+      "path": "02_models/google-io-2026-v2.html",
+      "content_sha256": "023e079b7647e3006d86854ab7a4d97d9208161aef8b0511e690b07554fbbc8d",
+      "pages": 6
+    },
+    {
+      "path": "02_models/hybrid-ai-model-routing.html",
+      "content_sha256": "70824159545e17560f753d417ae02437778591a79009d4726e9977144a65784f",
+      "pages": 8
+    },
+    {
+      "path": "02_models/local-llm.html",
+      "content_sha256": "49b6cf04f7996a47bcab023f8c49090d5dd3ed0c62c90306c0d32bedea693488",
+      "pages": 10
+    },
+    {
+      "path": "02_models/mcp-and-rag.html",
+      "content_sha256": "91d40eee23e6ae2484e3d1667565823654e22b0aa7c1904c7fea0797f93747f5",
+      "pages": 10
+    },
+    {
+      "path": "02_models/model-routing-16patterns.html",
+      "content_sha256": "838bc2657b67b014717db00d6ef416b72debfb5f56ef48e7ce785430aa0d0faa",
+      "pages": 8
+    },
+    {
+      "path": "02_models/model-selection.html",
+      "content_sha256": "7769d122ac2feb1fcf9057372851a99c42c3b8975cac9ab2633d7f1b740b44ea",
+      "pages": 6
+    },
+    {
+      "path": "02_models/mythos-1.html",
+      "content_sha256": "835561087710de3d76aa6e078346df318c58cb8bfcecaa133816a408b0cc5751",
+      "pages": 6
+    },
+    {
+      "path": "02_models/mythos-2.html",
+      "content_sha256": "ba4825992c2a2ec5926ebbb1c4db61262da1408b80f965130b8673fa1b937a59",
+      "pages": 6
+    },
+    {
+      "path": "02_models/physical-ai.html",
+      "content_sha256": "b74f9ea813871c4ba8fddb1232fc6dab544a1ed599446986f6a53a0def288117",
+      "pages": 8
+    },
+    {
+      "path": "02_models/rag-finetuning.html",
+      "content_sha256": "7f08362f159acd95d2e2cfcbcedcffc4b631cc7eaece968f990c60db6b827862",
+      "pages": 10
+    },
+    {
+      "path": "02_models/three-axes.html",
+      "content_sha256": "ca4008bb23a72815aace20720050d5c961c0f1fb6208c006ec1f014f43bd49da",
+      "pages": 8
+    },
+    {
+      "path": "03_tools/ai-trend-and-tools-2026.html",
+      "content_sha256": "6f98fd22e49af6f160ffdb158854a1e787fc6fe6ca0b2f535d83d9ba1e2ecedc",
+      "pages": 8
+    },
+    {
+      "path": "03_tools/chatgpt-work.html",
+      "content_sha256": "0bd6fba81155e0a5afe33e7f2c4f6dc2efed46b74703b05dd3d1be612392eef9",
+      "pages": 6
+    },
+    {
+      "path": "03_tools/claude-guide.html",
+      "content_sha256": "dda86c04de8d6285508404de82c960557b7f9f651170f034d5be72cad601936e",
+      "pages": 6
+    },
+    {
+      "path": "03_tools/copilot-brand-kit.html",
+      "content_sha256": "4e10efe02d06dad2ffcfadd286cda935e413ff59530dab29cee366cdbb8c5bf2",
+      "pages": 8
+    },
+    {
+      "path": "03_tools/copilot-credits.html",
+      "content_sha256": "6fed247f6b30401fc49c6f850e9e91d06d84cc51a57521ad3f926dda9b4c1b6f",
+      "pages": 10
+    },
+    {
+      "path": "03_tools/copilot-guide.html",
+      "content_sha256": "36a5b6db03e160d7d7be75e3f0a0bc397065a7ead513d75f6d5a0288f4133ddc",
+      "pages": 6
+    },
+    {
+      "path": "03_tools/copilot-plus-pc.html",
+      "content_sha256": "dcaa3571f194a1305daadf83ea15e2ff5ec4e7d840ba19d4d79b36f02559b91e",
+      "pages": 10
+    },
+    {
+      "path": "03_tools/cowork.html",
+      "content_sha256": "9e000a43ea3eb19051f9a5469c2cb663937e5f239db65deb87b8f59ca00deace",
+      "pages": 6
+    },
+    {
+      "path": "03_tools/gemini-guide.html",
+      "content_sha256": "205272e5b04f8c72052a92081b6dacd19c0ae9d0f2fcd09d67be4603f3caf534",
+      "pages": 8
+    },
+    {
+      "path": "03_tools/gemini-spark.html",
+      "content_sha256": "8257686e04cdb86ba4697a4a6eb5420fb7138ce5df7bf2c4ae63664b05280586",
+      "pages": 10
+    },
+    {
+      "path": "04_practice/build-a-bot.html",
+      "content_sha256": "2ef51403816eb8d45653b96410581b2a765bebd06c2234796811c6c62f4cd42d",
+      "pages": 10
+    },
+    {
+      "path": "04_practice/build-a-workflow.html",
+      "content_sha256": "491ca3c410e821eff806cc12a76b11bc67af4e69395e1d6de37d5ac7ae6293b2",
+      "pages": 10
+    },
+    {
+      "path": "04_practice/context-harness-engineering.html",
+      "content_sha256": "82dcb6a73d46e74e63379934ac5141f3f75233d330ca5329061a2d58e8961220",
+      "pages": 16
+    },
+    {
+      "path": "04_practice/deck-design.html",
+      "content_sha256": "8022f85bce6dc42d3c3ee0d522893b012285906ba117a827e6ddb28697580c89",
+      "pages": 8
+    },
+    {
+      "path": "04_practice/gyomu-bunkai.html",
+      "content_sha256": "3ad2877825c2db6298fe1d5204315a794510a7e88cf895a245a84955b4a754aa",
+      "pages": 10
+    },
+    {
+      "path": "04_practice/knowledge-platform.html",
+      "content_sha256": "8996c83ed651a8915a63cc134a113e132e783caa085862603ce8aea2d545bbd7",
+      "pages": 14
+    },
+    {
+      "path": "04_practice/prompt-engineering.html",
+      "content_sha256": "bd11abe5aa4dcf6f9913630b57b7fc120872d4bf5eadd52472dd917441492300",
+      "pages": 6
+    },
+    {
+      "path": "04_practice/site-ops.html",
+      "content_sha256": "79f7fe45104e13a20bbd5aafea7babbd361e3d4fba27d419aa4c9e00e6d2935a",
+      "pages": 12
+    },
+    {
+      "path": "04_practice/upstream-ux-design.html",
+      "content_sha256": "5deac980aad4bb849ca3d703bfaf4366705eb34bdddf055e7f1a2fe1b910e28b",
+      "pages": 10
+    },
+    {
+      "path": "05_drive/agent-as-os.html",
+      "content_sha256": "87b715241b3b6b769f2a3f4e6d22c5061eaeb2355702b22994d7c56055f7950e",
+      "pages": 10
+    },
+    {
+      "path": "05_drive/agent-budget-taxi.html",
+      "content_sha256": "bb2675db785cf3121ab7267be3603b02e2521a7fae0e5ebc5974d66c2c2d8291",
+      "pages": 6
+    },
+    {
+      "path": "05_drive/agent-budget-v1.html",
+      "content_sha256": "27312bf0e04b011f25198d6f13b0c14fd56cd99cb68e672f39a09d465e93e400",
+      "pages": 6
+    },
+    {
+      "path": "05_drive/agent-budget-v2.html",
+      "content_sha256": "937ec2e67600283d1ee3a33ffaac49e6eeb90e2d106638a78bd4e30117eb42fe",
+      "pages": 8
+    },
+    {
+      "path": "05_drive/agent-management.html",
+      "content_sha256": "a91e595828943293c51063e9f752f0a082326591b313254c172c21c835fee772",
+      "pages": 8
+    },
+    {
+      "path": "05_drive/agent-strategist.html",
+      "content_sha256": "8bc13fdd36a7e174de8914be9548500089b7b728d9186ea867b7e97f15c412c6",
+      "pages": 6
+    },
+    {
+      "path": "05_drive/ai-51-master.html",
+      "content_sha256": "5bb15dd270b2fde1e465b25fd07164569dcd65bd0e32ed406b1fd9ca234be6d1",
+      "pages": 1
+    },
+    {
+      "path": "05_drive/ai-budget.html",
+      "content_sha256": "7fc859a7450d28958e67fd34280e04967b118510cb9db574094032b48086c724",
+      "pages": 10
+    },
+    {
+      "path": "05_drive/ai-coe.html",
+      "content_sha256": "515bf3f9b34fa84ef78e20189c5895ab299147e50fa82a81d984a6f3c0b20edb",
+      "pages": 8
+    },
+    {
+      "path": "05_drive/ai-drive-handbook.html",
+      "content_sha256": "5043a710d6b4182b9c410635c142723400ca99b490baee10be79f3c34d131b57",
+      "pages": 16
+    },
+    {
+      "path": "05_drive/ai-measures-50.html",
+      "content_sha256": "6b04e411109fcb109ec4f4754334c2dc8ec81bd3a9ec908232a628d4b7b6a214",
+      "pages": 9
+    },
+    {
+      "path": "05_drive/backoffice-agent.html",
+      "content_sha256": "6fca967e51eeb6360a3963ea0a6bd0346b0319443fa6c0778cc84a02c5124e83",
+      "pages": 10
+    },
+    {
+      "path": "05_drive/drive-phase.html",
+      "content_sha256": "4008ccc37a4220c892cbf5b9a386a1219cecd248f78b1350e20da23f61d573ad",
+      "pages": 8
+    },
+    {
+      "path": "05_drive/five-walls.html",
+      "content_sha256": "2ba494d1188176619edc9fe88a6ce104adafb3d6b519b5a22cf526b3e2658a4e",
+      "pages": 10
+    },
+    {
+      "path": "05_drive/growth-phase.html",
+      "content_sha256": "e2df54194b188d475667581da85a46d75945e92ec220bc2abb94936c51f5a347",
+      "pages": 10
+    },
+    {
+      "path": "05_drive/keiei-data-kiban.html",
+      "content_sha256": "2e80fafcd65dfe32f3474c2dd5e5444d95020c968219df5ff4fafbeb4b9cc331",
+      "pages": 28
+    },
+    {
+      "path": "05_drive/kiban-phase.html",
+      "content_sha256": "74d30f21f7845f8dd3ab9ef24840a1cd85f2c582f569dbf1ecec92ba763b9d16",
+      "pages": 8
+    },
+    {
+      "path": "06_people/agent-talent-standard.html",
+      "content_sha256": "650faa9234c4f449f8db1d79b3d70898d98bb2d0f42a549eaed228b6b5ddb93f",
+      "pages": 10
+    },
+    {
+      "path": "06_people/ai-sidebusiness-talk.html",
+      "content_sha256": "54d7042cb790bc8e901fd489b64c07dbef54798cd51c6e03c5368d4e0d07c613",
+      "pages": 8
+    },
+    {
+      "path": "06_people/career-in-agent-era.html",
+      "content_sha256": "386ce1da7f3ae72300a8d173e555c0e3e0cbc7eba0ab5d87c9defaa3305a5750",
+      "pages": 14
+    },
+    {
+      "path": "06_people/hr-role.html",
+      "content_sha256": "05fb488bdad4d19678fecb4747bce16e8b1b5edad54e8249463efd65fda43a52",
+      "pages": 8
+    },
+    {
+      "path": "06_people/hr-transformation-v1.html",
+      "content_sha256": "4467bc4c0fe9c93e40664e94df85f7bf868d890336069032a26d386ad8a6f4de",
+      "pages": 8
+    },
+    {
+      "path": "06_people/human-capital-new-shape.html",
+      "content_sha256": "b5524059629e555dc878dfb7fe33759bffb27fd4e3824e3ae622cf05f707e392",
+      "pages": 10
+    },
+    {
+      "path": "06_people/jinji-gyomu.html",
+      "content_sha256": "7523d4e4fbee9601bff6542555606346f6e6713174ff334cc1b92479cbd8cc1c",
+      "pages": 6
+    },
+    {
+      "path": "06_people/jinji-seido.html",
+      "content_sha256": "cd8183e04dec6a40ceb47dc54eb8efc830454c9f7f7528d7fcabdb81b43cf90e",
+      "pages": 14
+    },
+    {
+      "path": "06_people/meti-ax-skill-wg5.html",
+      "content_sha256": "4e5f0010288e3af115ad81dc5f39810ae01c6d6a587e0d3dc36c3f91e88227ab",
+      "pages": 14
+    },
+    {
+      "path": "06_people/openai-fde.html",
+      "content_sha256": "4acc478ea3324da8e0f805c208d1fd7fedfd60b8e127ce855323a19dbc20a648",
+      "pages": 10
+    },
+    {
+      "path": "06_people/org-theory.html",
+      "content_sha256": "01f0efb274f9e2487a0219765383ea8af56a506230700ed5ea67904d5ab0e993",
+      "pages": 10
+    },
+    {
+      "path": "06_people/purpose-in-the-agent-era.html",
+      "content_sha256": "e67291e009345447c749dae8935802a1d19ec1bf969a0223eb44ac29537f4df4",
+      "pages": 6
+    },
+    {
+      "path": "06_people/roles-in-agent-era.html",
+      "content_sha256": "5cf2fbb10ae03aac4c74ae7e73bed94c562966b5e2d47090109e1f4ab82f7132",
+      "pages": 10
+    },
+    {
+      "path": "06_people/why-for-students.html",
+      "content_sha256": "c59891b798bdb4ccac3bcc80a3bb86fecdaade25bd9c7554106cd372204fb638",
+      "pages": 10
+    },
+    {
+      "path": "07_risk/ai-copyright.html",
+      "content_sha256": "e87136aef77f8a2dc8ae584a16ebfa41ea511dcbd7ec7bb523d5e166b576216b",
+      "pages": 8
+    },
+    {
+      "path": "07_risk/ai-guidelines.html",
+      "content_sha256": "0e65c26876387a43d74dd8c75854ee4b41c24e874e966968a593730ad887696e",
+      "pages": 8
+    },
+    {
+      "path": "07_risk/hallucination-and-facts.html",
+      "content_sha256": "f29f2fbee99e6e2b31b4334e6f114e2a1b2a7ce6975a0cefb81ecf4ed3be005a",
+      "pages": 8
+    },
+    {
+      "path": "07_risk/privacy-law.html",
+      "content_sha256": "10c643b67cfcb3dddaca898412a3e5a8ef05309d5f9101e95d161e936f256801",
+      "pages": 8
+    },
+    {
+      "path": "07_risk/rogue-agents.html",
+      "content_sha256": "aef08ea6998287dbe9aa684d4ac0c0ea51ed81dda4ac70a94beaed77072f7369",
+      "pages": 8
+    },
+    {
+      "path": "08_industry/iryo.html",
+      "content_sha256": "c514af2f090f0305bb8887a1e3f40e0f371c5e52618f140d7c8f89c3d2aa617b",
+      "pages": 8
+    },
+    {
+      "path": "08_industry/jichitai.html",
+      "content_sha256": "f513c04130c89d9aface108e68538644b87f1f95c872d2a3af36d3a81a7fcd7c",
+      "pages": 8
+    },
+    {
+      "path": "08_industry/kensetsu.html",
+      "content_sha256": "285f80c21b02d1e2b7ebf9b0bc9bfbe96d73ea3da9e8165d0bb98eaa42ef70ee",
+      "pages": 8
+    },
+    {
+      "path": "08_industry/kinyu.html",
+      "content_sha256": "154b71b67d78d95c47fbe7b434af78c11851d2d1b974384a59a70661c33598a4",
+      "pages": 8
+    },
+    {
+      "path": "08_industry/kouri.html",
+      "content_sha256": "949706bceab5a9e59c94013dbff252234e9410e85cbb2a2f489cf46650f8bd33",
+      "pages": 8
+    },
+    {
+      "path": "08_industry/seizogyo.html",
+      "content_sha256": "edf3bcf47be0aa5b7a1cf194f175f5bbba40f7843d08f0be9aa15d30e1c92538",
+      "pages": 8
+    },
+    {
+      "path": "09_role/cs.html",
+      "content_sha256": "db249d55fcbede705ad589c20285a53b87d5b0539f4330898466d442e47f985d",
+      "pages": 16
+    },
+    {
+      "path": "09_role/eigyo.html",
+      "content_sha256": "56ae63bd314968a9cbcc7f39b830ec94fdfdd0e4066f17dd17f54a5e3ae9a4eb",
+      "pages": 16
+    },
+    {
+      "path": "09_role/jinji.html",
+      "content_sha256": "d25ac2447149a7b3854373910d4f670b9a9a71889f31372f729497ff834ca0ce",
+      "pages": 16
+    },
+    {
+      "path": "09_role/joshis.html",
+      "content_sha256": "9a476ade59120204440a75a978e684ab367642f7f8bbdf74efe4117c7a239080",
+      "pages": 16
+    },
+    {
+      "path": "09_role/kanadevia-ict.html",
+      "content_sha256": "c282d66056171f4c2d14e744af3c6fb5956937a3db52d5d908d9fd234dbef371",
+      "pages": 13
+    },
+    {
+      "path": "09_role/keiri.html",
+      "content_sha256": "d60ac8e30e8b328128d64923e987dc926e06cd50d9fa082684ab01ffb86a0d6b",
+      "pages": 16
+    },
+    {
+      "path": "09_role/marketing.html",
+      "content_sha256": "1d1fe51eb79b6200fb7eedda07e7c4e4be841bd556e5b3e39115916495d51510",
+      "pages": 18
+    },
+    {
+      "path": "09_role/pm-in-agent-era.html",
+      "content_sha256": "a6e9c8c3d93f3d2ee5db4ac343e68f0c5517e0b9409ebd48cfbec54808348d01",
+      "pages": 10
+    },
+    {
+      "path": "09_role/sony-three-layer-platform.html",
+      "content_sha256": "98b2627c40cc3b8d3c3580eb1d2c4d22fde1c883cd06c4ee5b3b244aec24b2ca",
+      "pages": 12
+    },
+    {
+      "path": "09_role/york-union.html",
+      "content_sha256": "3d19621c1704d1858e13925c5b01a411c82c8e5c92631147b0a67a3caf48e896",
+      "pages": 17
+    },
+    {
+      "path": "10_policy/ai-policy-compare.html",
+      "content_sha256": "1a1c723413d2fe762134992d49be3983f84f417de8fb620da39197401cb526a7",
+      "pages": 10
+    },
+    {
+      "path": "10_policy/china-ai-strategy.html",
+      "content_sha256": "c8f3038b8fccfe2773f7cb87c43041ad1459c52755f25b4835c1eac9231a7ebc",
+      "pages": 10
+    },
+    {
+      "path": "10_policy/eu-ai-strategy.html",
+      "content_sha256": "f992e313cac56d25b7dd0f27f3ff79b5691a4debd1216f27ea1907af21f5b348",
+      "pages": 10
+    },
+    {
+      "path": "10_policy/japan-ai-strategy.html",
+      "content_sha256": "b7e16817a5e24968335f1002ef028c866124a3e79fcf61b37c0b07ccba7605b0",
+      "pages": 10
+    },
+    {
+      "path": "10_policy/usa-ai-strategy.html",
+      "content_sha256": "19c9f342796361081f11757d9881772d3487d03db72f52850cc436942c416ea0",
+      "pages": 10
+    },
+    {
+      "path": "11_stats/ai-stats-2026.html",
+      "content_sha256": "bdc3db225959d9d83094a8bca0e0c7bb96d1a883b68478871f73f4e79c3d8b45",
+      "pages": 10
+    },
+    {
+      "path": "12_jobs/us-jp-employment.html",
+      "content_sha256": "54855ae69d4ff314a12e8be084260af9ba08f5a71a8c817295c2fc50501ceb59",
+      "pages": 11
+    },
+    {
+      "path": "AX_Table/s1-nanimo-kawaranai.html",
+      "content_sha256": "3d826d1bee6fd2ab683c2471dcfcc756bd0749c93b66afe57f2f129ba519b133",
+      "pages": 6
+    },
+    {
+      "path": "AX_Table/s2-roadmap.html",
+      "content_sha256": "4cb78285dfd4294c78e04e6a484fb138ae552dbf418da76c41b750e17b0dc9a1",
+      "pages": 6
+    },
+    {
+      "path": "AX_Table/s3-poc.html",
+      "content_sha256": "4b75a7a21c6515168c5ae168dc771b0710d876f4cc89db1081543a8007c454ca",
+      "pages": 6
+    },
+    {
+      "path": "AX_Table/s4-setsumei-dekiru-seika.html",
+      "content_sha256": "3356421c9445ac0abc8255a6c3e8c1bf45dd44f76f35b74b6c38347624de5b89",
+      "pages": 6
+    },
+    {
+      "path": "AX_Table/s5-data-kiban.html",
+      "content_sha256": "098ddd9478a635676e4aa41e5efa3205f67898224ce615c92ac1ddc27a93fa56",
+      "pages": 6
+    },
+    {
+      "path": "AX_Table/s6-soshiki-saisekkei.html",
+      "content_sha256": "d453117e31e9d7c53ddd91824d0a8f0e892421c35bd077fa21f34a0078d5f2db",
+      "pages": 6
+    },
+    {
+      "path": "AX_Table/s7-gemini.html",
+      "content_sha256": "0c637a863e0e38c4bfaf475d44d684954d8923e134ae3d25f475740812a3f835",
+      "pages": 6
+    },
+    {
+      "path": "AX_Table/s8-copilot.html",
+      "content_sha256": "65cb9f5dc09b9a819d76d03f260bece2aae39cd1727c3a9a261d00f310070f04",
+      "pages": 6
+    },
+    {
+      "path": "Training/msa-life-training.html",
+      "content_sha256": "1df543e82280c5c1c7096a60a243473b9ef45ed8583b3e5b52dd7249decf4be5",
+      "pages": 8
+    },
+    {
+      "path": "Udemy/career-strategy.html",
+      "content_sha256": "fd1f792ec2fa62e4d1f9d19e5cef0e7f510b6c7288d7878a1bdfbb2c0992e5f1",
+      "pages": 18
+    },
+    {
+      "path": "weekly/2026-08-18.html",
+      "content_sha256": "ed376aa9eb8ad9b2874d0fe43c3a2537dbdcc2f6d9b6d3494dc3f9d02bc2583a",
+      "pages": 12
+    }
+  ]
+}
