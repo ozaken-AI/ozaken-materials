@@ -54,7 +54,9 @@ const esc = (s) => s.replace(/[&<>"]/g, (c) => (
   { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 // 図版があるときは文字を左に寄せ、無いときは中央に大きく置く
-const W = figData ? 660 : 1090;
+// 図版の板は right:72 / 幅452 なので、左端は x=756。
+// 文字の枠をそこまで広げると、行末が板に触れて窮屈に見える。60px 手前で止める
+const W = figData ? 600 : 1040;
 
 const html = `<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
 <style>
@@ -78,7 +80,7 @@ body{width:1280px;height:670px;overflow:hidden;position:relative;
   letter-spacing:.18em;background:rgba(255,255,255,.15);color:#fff;
   padding:8px 17px;border-radius:4px;margin-bottom:32px}
 h1{font-family:'OZ Mincho',serif;font-weight:700;line-height:1.36;
-  letter-spacing:.01em;max-height:330px;overflow:hidden}
+  letter-spacing:.01em;max-height:400px;overflow:hidden}
 /* 図版は読ませない。「図のある記事だ」と伝わればいい。
    白geの板に載せて、紺地から浮かせる */
 .fig{position:absolute;right:72px;top:50%;transform:translateY(-50%);
@@ -112,15 +114,23 @@ ${figData ? `<div class="fig"><img src="${figData}"></div>` : ''}
   <span class="u">content.ozaken.ai</span></div>
 </body></html>`;
 
-/* 題の長さはまちまちなので、枠に収まるまで少しずつ小さくする。
-   文字数で決め打ちにすると、英字まじりの題で行数を読み違える（make_ogp.mjs と同じ考え）。
-   短い題は大きくしたい。一覧に並んだとき、大きい文字ほど目に入る */
+/* 題の長さはまちまちなので、収まるまで少しずつ小さくする。
+   **高さだけで見ると、最後の1文字が次の行に落ちたまま止まる。**
+   「最初の90日で、どこまで進めるか」が3行になり、3行目が「か」だけになった。
+   だから行数で詰める。2行に収まる中でいちばん大きい字を選び、
+   それが小さくなりすぎるなら3行、4行と譲る。
+   一覧では大きい字ほど目に入るので、字を小さくするより行を増やすほうがまし */
 const fit = () => {
   const h = document.getElementById('t');
-  let s = 88;
-  h.style.fontSize = s + 'px';
-  while (s > 30 && h.scrollHeight > 330) { s -= 2; h.style.fontSize = s + 'px'; }
-  return s;
+  const lines = (s) => {
+    h.style.fontSize = s + 'px';
+    return Math.round(h.scrollHeight / parseFloat(getComputedStyle(h).lineHeight));
+  };
+  for (let max = 2; max <= 4; max++) {
+    for (let s = 88; s >= 44; s -= 2) if (lines(s) <= max) return s;
+  }
+  for (let s = 44; s > 26; s -= 2) { h.style.fontSize = s + 'px'; if (h.scrollHeight <= 400) return s; }
+  return 26;
 };
 
 const browser = await chromium.launch({

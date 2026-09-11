@@ -1,5 +1,43 @@
 {
   "version": 1,
   "updated": "2026-09-11",
-  "posts": []
+  "posts": [
+    {
+      "slug": "knowledge-platform",
+      "source": "04_practice/knowledge-platform.html",
+      "deck_title": "ナレッジプラットフォームの重要性 ─ AIに渡せる知識が、上限を決める",
+      "sections": [
+        4,
+        5,
+        13
+      ],
+      "section_ids": [
+        "8e3fb01f",
+        "a34aed6e",
+        "6661f6a6"
+      ],
+      "status": "draft",
+      "recorded_at": "2026-09-11",
+      "posted_at": null,
+      "note_url": null,
+      "hashtags": [
+        "AI",
+        "生成AI",
+        "AIエージェント",
+        "おざけん"
+      ],
+      "reactions": {
+        "checked_at": null,
+        "likes": null,
+        "comments": null
+      },
+      "shape": {
+        "title_kind": "section",
+        "order": "deck",
+        "cover": true,
+        "chars": 2621
+      },
+      "memo": ""
+    }
+  ]
 }

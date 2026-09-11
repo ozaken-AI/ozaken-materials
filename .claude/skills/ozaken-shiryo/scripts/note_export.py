@@ -43,6 +43,15 @@ ARCHIVE = 'https://content.ozaken.ai/'
 PORTFOLIO = 'https://ozaken.ai/'
 X_URL = 'https://x.com/ozaken_AI'
 DEFAULT_TAGS = ['AI', '生成AI', 'AIエージェント', 'おざけん']
+# 見出し画像の肩書き。資料の eyebrow は「Section 04」のことがあり、
+# note の読者には何の意味も持たないので、そのときは分類名を使う
+CATS = {
+    '01_concept': 'CONCEPT', '02_models': 'TECHNOLOGY', '03_tools': 'PRODUCT',
+    '04_practice': 'PRACTICE', '05_drive': 'ADOPTION', '06_people': 'CAREER',
+    '07_risk': 'RISK & LAW', '08_industry': 'INDUSTRY', '09_role': 'FUNCTION',
+    '10_policy': 'POLICY', '11_stats': 'STATISTICS', '12_jobs': 'EMPLOYMENT',
+}
+GENERIC_EYEBROW = re.compile(r'^(section|sec|part|chapter|no)[\s.]*\d*$', re.I)
 
 
 # ── HTML → 文 ──────────────────────────────────────────────
@@ -68,8 +77,30 @@ def first(pat, s, flags=re.S):
     return m.group(1) if m else ''
 
 
+def cls(tag, name):
+    """class にその名前を持つ要素を拾う正規表現。
+
+    **追加クラスがあっても拾う。** 資料によっては `class="hero-title rise d2"` と
+    登場アニメーションの指定が足されていて、完全一致だと題が丸ごと空になる。
+    いっぽう名前は語として一致させるので、`c-note` や `kicker-line` のような
+    別のクラスは拾わない（拾うと、図版の中の注記まで本文に混ざる）。
+    """
+    return r'<%s class="(?:[^"]*\s)?%s(?:\s[^"]*)?">(.*?)</%s>' % (tag, name, tag)
+
+
 # ── 面の解析 ────────────────────────────────────────────────
+class NotADeck(Exception):
+    """面で組まれた投影資料ではない。
+
+    アーカイブには、面を持たないものも混ざっている（記事の体裁のもの、
+    施策の一覧、ダッシュボードなど）。**それらは面では切り出せない。**
+    落ちるのではなく、そう言って飛ばす。
+    """
+
+
 def parse(page):
+    if '<section class="hero">' not in page:
+        raise NotADeck('面で組まれた資料ではありません（表紙の hero がない）')
     i0 = page.index('<section class="hero">')
     i1 = page.index('<div class="oz-return">') if '<div class="oz-return">' in page else len(page)
     body = page[i0:i1]
@@ -78,8 +109,8 @@ def parse(page):
     hero, close, mid = parts[0], parts[-1], parts[1:-1]
 
     doc = {
-        'title': text(first(r'<h1 class="hero-title">(.*?)</h1>', hero), md=False).replace('\n', ' ─ '),
-        'copy': text(first(r'<p class="hero-copy">(.*?)</p>', hero)),
+        'title': text(first(cls('h1', 'hero-title'), hero), md=False).replace('\n', ' ─ '),
+        'copy': text(first(cls('p', 'hero-copy'), hero)),
         'close_title': text(first(r'<h2 class="sec-title">(.*?)</h2>', close), md=False).replace('\n', ' '),
         'close_copy': text(first(r'<p class="kicker">(.*?)</p>', close)),
         'sections': [],
@@ -97,8 +128,18 @@ def parse(page):
             pass
         for m in re.finditer(r'<div class="figure">(.*?)(?=<div class="figure">|<div class="cards"|<div class="take"|<p class="note"|<div class="bare"|</section>)', s, re.S):
             blk = m.group(1)
-            t = text(first(r'<p class="fig-title">(.*?)</p>', blk), md=False)
-            t = re.sub(r'^Fig\.\d+\s*(?:──|—)?\s*', '', t).strip()
+            # 図版番号は <span class="fig-no">Fig.9</span>3つの仕掛け… と、
+            # 題にぴったり続けて書かれている（間に空白が無い）。
+            # **タグを落としてから ^Fig\.\d+ で剥がすと、\d+ が題の先頭の数字まで食う。**
+            #   「Fig.9」＋「3つの仕掛け」→「Fig.93つの…」→「つの仕掛け」
+            # アーカイブ全体で1131本中100本がこれで壊れていた。しかも数字で始まる題は
+            # 「4つとも、お金では買えない」のように、いちばん強い言い切りが多い。
+            # だからタグのあるうちに、番号の span ごと落とす
+            raw = re.sub(r'<span class="fig-no">.*?</span>', '',
+                         first(cls('p', 'fig-title'), blk), flags=re.S)
+            t = text(raw, md=False)
+            # 番号を素で書いてある資料のために、この剥がし方も残す
+            t = re.sub(r'^Fig\.\d+\s*(?:──|—)\s*', '', t).strip()
             cap = text(first(r'<p class="figure-cap">(.*?)</p>', blk), md=False)
             sec['figs'].append({'n': fig_i, 'title': t, 'cap': cap})
             fig_i += 1
@@ -111,6 +152,55 @@ def parse(page):
         sec['take'] = text(first(r'<p class="take-text">(.*?)</p>', s))
         doc['sections'].append(sec)
     return doc
+
+
+# 根拠になる数字。単位が付いているものだけを見る（「3つ」のような数え方は外す）
+EVIDENCE = re.compile(
+    r'[0-9０-９]+(?:[.,][0-9０-９]+)?\s*'
+    r'(?:[%％]|割|倍|円|万円|億円|人|時間|分|秒|日|か月|ヶ月|カ月|年|件|回|ポイント)')
+
+
+def blob(s):
+    """面の中の文を、ぜんぶ1本につなげる"""
+    return ' '.join([s['title'], s['sub'], s['lede'], s['take']] + list(s['paras'])
+                    + [h + p for h, p in s['cards']]
+                    + [f['title'] + f['cap'] for f in s['figs']])
+
+
+def orphan_numbers(doc, picks):
+    """選んだ面が使っている数字のうち、**その前の面で出したもの**。
+
+    数字は、根拠を見せた面とセットではじめて効く。切り出しでその面を落とすと、
+    数字だけが宙に浮く。「1日1時間5分が探すことに消えている」は面1で出した数字で、
+    面4から読み始める note の読者は、その根拠を見ていない。
+    **本名で出す記事に、出どころの無い数字を置かない。**
+
+    見るのは「選んだいちばん前の面より前」だけ。後ろの面にも同じ数字は出てくるが、
+    それは自分で出した数字を後ろでもう一度使っているだけで、宙には浮いていない。
+    ここを分けないと、誤検出が倍になる（実測: 3件の指摘に対して3件の誤検出）。
+    """
+    head = min(picks)
+    before = ' '.join(blob(s) for i, s in enumerate(doc['sections'], 1)
+                      if i < head and i not in picks)
+    if not before:
+        return []
+    out = []
+    for k in sorted(picks):
+        text_k = blob(doc['sections'][k - 1])
+        # 「1日」「1時間」「5分」と切れると読みにくいので、隣り合っているものは繋げる
+        runs, last = [], None
+        for m in EVIDENCE.finditer(text_k):
+            if m.group(0) not in before:
+                last = None
+                continue
+            if last is not None and m.start() == last[1]:
+                runs[-1] += m.group(0)
+            else:
+                runs.append(m.group(0))
+            last = (m.start(), m.end())
+        for r in dict.fromkeys(runs):
+            out.append((k, r.strip()))
+    return out
 
 
 # ── 記事にする ──────────────────────────────────────────────
@@ -240,8 +330,15 @@ def main():
     pw = os.environ.get('OZAKEN_PW') or sys.exit('OZAKEN_PW を設定してください')
     path = os.path.join(ROOT, a.rel)
     page = lockbox.decrypt(path, pw)
-    doc = parse(page)
+    try:
+        doc = parse(page)
+    except NotADeck as e:
+        sys.exit('%s: %s\n'
+                 'この資料は面で組まれていないので、面を選ぶ切り出しはできません。'
+                 % (a.rel, e))
     n = len(doc['sections'])
+    if not n:
+        sys.exit('%s: 本文の面が1つもありません' % a.rel)
     if a.sections:
         picks = [int(x) for x in a.sections.split(',') if x.strip()]
         bad = [k for k in picks if not 1 <= k <= n]
@@ -305,8 +402,12 @@ def main():
         'stub_sections': stubs,
     }
     flags = sorted({m.group(0) for m in re.finditer(
-        r'[^。\n]*(?:次の面|前の面|あとの面|この面|第\d+面|姉妹資料|この資料)[^。\n]*。?', tx)})
+        r'[^。\n]*(?:次の面|前の面|あとの面|この面|第\d+面|姉妹資料|この資料'
+        # 講演資料なので、会場に向けた言い回しが混ざっている。
+        # 「本日いちばん持ち帰っていただきたい1枚です」は、記事では宙に浮く
+        r'|本日|きょうは|会場|お手元|ご覧ください|皆さん|みなさん|登壇)[^。\n]*。?', tx)})
     meta['check'] = flags
+    meta['orphan_numbers'] = [{'section': k, 'text': t} for k, t in orphan_numbers(doc, picks)]
 
     print('書きました: %s' % out)
     print('  面 %s / 文字 %d / 画像 %d 点 / #%s'
@@ -323,7 +424,10 @@ def main():
     cover = None
     if not a.no_cover:
         phrase = a.phrase or (phrases[0]['text'] if phrases else '')
-        cat = (doc['sections'][picks[0] - 1]['eyebrow'] or 'OZAKEN ARCHIVE')[:24]
+        eyebrow = doc['sections'][picks[0] - 1]['eyebrow'] or ''
+        if not eyebrow or GENERIC_EYEBROW.match(eyebrow.strip()):
+            eyebrow = CATS.get(a.rel.split('/')[0], 'OZAKEN ARCHIVE')
+        cat = eyebrow[:24]
         fig0 = doc['sections'][picks[0] - 1]['figs']
         figarg = (os.path.join(out, 'figs', 'fig_%02d.png' % fig0[0]['n'])
                   if use_figs and fig0 else '')
@@ -361,6 +465,11 @@ def main():
         print('\n  ⚠ 中身が無くなった面: %s' % ' '.join('面%d' % k for k in stubs))
         print('    見出しとリードだけになっています。この面は --sections から外すか、'
               '--min-card-chars を下げてください')
+    if meta['orphan_numbers']:
+        print('\n  ⚠ 根拠が記事の外にある数字（選ばなかった面で出したもの）:')
+        for o in meta['orphan_numbers'][:8]:
+            print('    ・面%d の「%s」' % (o['section'], o['text']))
+        print('    出どころの面も一緒に出すか、記事の中で根拠を言い直してください')
     if flags:
         print('\n  要確認（資料の中だけで通じる言い回し。記事では直す）:')
         for f in flags[:8]:

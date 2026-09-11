@@ -23,6 +23,9 @@
 
 裏資料（AX_Table / Training / Udemy / weekly）は、相手先や受講者に向けたものなので
 既定では候補に入れない。要るときだけ `--backstage`。
+
+**分類フォルダの中にも、相手先のために作った資料がある。**
+置き場所では見分けられないので、note_exclude.txt に slug を書いて外す。
 """
 import argparse
 import io
@@ -36,16 +39,26 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import lockbox
 import note_export
+import note_hooks
 import note_ledger
 import oz_root
 
 ROOT = oz_root.root(HERE)
 CACHE = os.path.join(ROOT, 'note_drafts', '.pick_cache.json')
+# 相手先のために作った資料の一覧。スキルの直下に置いてあり、手で足せる
+EXCLUDE = os.path.join(os.path.dirname(HERE), 'note_exclude.txt')
 
 # 資料の中でしか通じない言い回し。記事にするときは必ず直す場所
 REF_RE = re.compile(
     r'次の面|前の面|あとの面|この面|最初の面|最後の面|第\d+面|次のページ|前のページ'
     r'|姉妹資料|この資料|本資料|後述|前述|先ほど|ここまで見て|冒頭で')
+
+# 題の中に出る、資料の中だけで通じる言い回し。
+# 「4極の中で、中国はどこに立っているのか」の「4極」は前の面で立てた枠で、
+# note の読者には通じない。実物を並べて見つかった型
+TITLE_REF = re.compile(
+    r'[0-9０-９一二三四五六七八九十]+\s*(?:極|つ|点|段階|層|類型|象限)の(?:中|うち)'
+    r'|いちばん[^。]{0,8}(?:話|点|こと)')
 
 # 前の面を受けて始まっている合図。単独で読むと、何を受けたのか分からない
 OPENER_RE = re.compile(
@@ -84,7 +97,7 @@ def measure(sec):
 
 
 def score(m, seen_from_deck=0, spread=True):
-    """3つの軸で点をつける。判断はしない、並べるだけ"""
+    """4つの軸で点をつける。判断はしない、並べるだけ"""
     fig = 24 if m['figs'] >= 2 else 18 if m['figs'] == 1 else 0
 
     own = 0
@@ -94,22 +107,46 @@ def score(m, seen_from_deck=0, spread=True):
         own += 10                      # 中の構造が自前にある
     if m['take']:
         own += 8                       # 締めの一言がある
-    n = m['chars']
-    if 700 <= n <= 1800:
-        own += 14                      # note の記事として素直な尺
-    elif 450 <= n < 700 or 1800 < n <= 2600:
-        own += 7
     if not m['dep']:
         own += 10                      # 前の面を受けて始まっていない
+    # 字数の帯は、アーカイブの実測に合わせてある。
+    # **中央値532字、9割が716字以下。** 面は投影用なので、記事の尺では測れない。
+    # 「700〜1800字が理想」という一般論を当てると、9割が部分点で並んで順位がつかなかった
+    n = m['chars']
+    if n >= 600:
+        own += 14
+    elif n >= 450:
+        own += 10
+    elif n >= 330:
+        own += 5
+
+    # 題が note の題として強いか。**ここがスキに直結する。**
+    # note_hooks と同じ物差し（長さ・対比・問い・具体・記号）で見て、重みを落として足す
+    title = round(note_hooks.score_title(m['title'])[0] * 0.45)
 
     # 参照は3つで頭打ち。4つあっても8つあっても「けっこう直す」で同じ
     ref = -min(m['refs'], 3) * 12
+    if TITLE_REF.search(m['title']) or REF_RE.search(m['title']):
+        ref -= 14                      # 題に出ていると、見出しを書き直すことになる
     # 同じ資料ばかり続けて出すと、読む側からは連載に見えて、1本の強さが落ちる
     spr = -min(seen_from_deck, 3) * 6 if spread else 0
-    return fig + own + ref + spr, {'図': fig, '独': own, '参': ref, '散': spr}
+    return (fig + own + title + ref + spr,
+            {'図': fig, '独': own, '題': title, '参': ref, '散': spr})
 
 
 # ── 資料を読む ──────────────────────────────────────────────
+def excluded():
+    """note に出さない資料の slug。相手先のために作ったもの"""
+    if not os.path.exists(EXCLUDE):
+        return set()
+    out = set()
+    for line in io.open(EXCLUDE, encoding='utf-8'):
+        name = line.split('#')[0].strip()
+        if name:
+            out.add(name)
+    return out
+
+
 def decks(backstage=False):
     """資料の一覧。registry.docs() と同じ数え方。
 
@@ -122,8 +159,10 @@ def decks(backstage=False):
     if backstage:
         for d in oz_root.BACKSTAGE_DIRS:
             out += sorted(glob(os.path.join(ROOT, d, '*.html')))
+    skip = excluded()
     return [f for f in out
-            if 'OZAKEN-LOCKED2' in io.open(f, encoding='utf-8').read(64)]
+            if os.path.splitext(os.path.basename(f))[0] not in skip
+            and 'OZAKEN-LOCKED2' in io.open(f, encoding='utf-8').read(64)]
 
 
 def read_deck(path, rel, pw, cache, use_cache):
@@ -172,7 +211,7 @@ def main():
         except Exception:
             cache = {}
 
-    rows, n_deck, n_sec = [], 0, 0
+    rows, skipped, n_deck, n_sec = [], [], 0, 0
     for path in decks(a.backstage):
         rel = os.path.relpath(path, ROOT)
         slug = os.path.splitext(os.path.basename(rel))[0]
@@ -182,9 +221,11 @@ def main():
             continue
         try:
             deck_title, secs = read_deck(path, rel, pw, cache, use_cache)
+        except note_export.NotADeck:
+            skipped.append((rel, '面で組まれていない'))
+            continue
         except SystemExit as e:
-            print('読めませんでした（別のパスワードの資料かもしれません）: %s — %s'
-                  % (rel, e), file=sys.stderr)
+            skipped.append((rel, '読めない（別のパスワードかもしれません）: %s' % e))
             continue
         n_deck += 1
         n_sec += len(secs)
@@ -216,6 +257,9 @@ def main():
 
     print('資料 %d 本 / 面 %d 面。出していない面 %d（台帳: %d 行）'
           % (n_deck, n_sec, sum(1 for r in rows if not r['seen']), len(posts)))
+    if skipped:
+        print('候補に入れなかった資料 %d 本: %s'
+              % (len(skipped), ' / '.join('%s（%s）' % s for s in skipped[:4])))
     print()
     print('%-4s %-2s %-24s %-3s %-3s %-5s %-3s %s'
           % ('点', '', '資料', '面', '図', '字', '参', '見出し'))
