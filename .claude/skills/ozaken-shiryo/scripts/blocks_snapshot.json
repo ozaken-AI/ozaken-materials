@@ -539,6 +539,20 @@
   ],
   "chars": 111566
  },
+ "03_tools/copilot-plus-pc.html": {
+  "blocks": [
+   "OZ-BG",
+   "OZ-BODYSTYLE",
+   "OZ-FIGFLOW",
+   "OZ-HEROFX",
+   "OZ-HEROSIZE",
+   "OZ-HOME",
+   "OZ-QR",
+   "OZ-SPACING",
+   "OZ-XREFCSS"
+  ],
+  "chars": 216451
+ },
  "03_tools/cowork.html": {
   "blocks": [
    "OZ-BG",
@@ -1009,6 +1023,20 @@
   ],
   "chars": 154005
  },
+ "06_people/human-capital-new-shape.html": {
+  "blocks": [
+   "OZ-BG",
+   "OZ-BODYSTYLE",
+   "OZ-FIGFLOW",
+   "OZ-HEROFX",
+   "OZ-HEROSIZE",
+   "OZ-HOME",
+   "OZ-QR",
+   "OZ-SPACING",
+   "OZ-XREFCSS"
+  ],
+  "chars": 211453
+ },
  "06_people/jinji-gyomu.html": {
   "blocks": [
    "OZ-BG",
@@ -1371,7 +1399,7 @@
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 246455
+  "chars": 319956
  },
  "09_role/pm-in-agent-era.html": {
   "blocks": [
@@ -1386,6 +1414,20 @@
    "OZ-XREFCSS"
   ],
   "chars": 215713
+ },
+ "09_role/sony-three-layer-platform.html": {
+  "blocks": [
+   "OZ-BG",
+   "OZ-BODYSTYLE",
+   "OZ-FIGFLOW",
+   "OZ-HEROFX",
+   "OZ-HEROSIZE",
+   "OZ-HOME",
+   "OZ-QR",
+   "OZ-SPACING",
+   "OZ-XREFCSS"
+  ],
+  "chars": 225449
  },
  "09_role/york-union.html": {
   "blocks": [
@@ -1642,7 +1684,7 @@
    "OZ-HEROSIZE",
    "OZ-SPACING"
   ],
-  "chars": 81672
+  "chars": 81881
  },
  "console.html": {
   "blocks": [
@@ -1661,22 +1703,12 @@
   "chars": 65739
  },
  "matrix.html": {
-  "blocks": [
-   "OZ-BODYSTYLE"
-  ],
-  "chars": 260716
+  "blocks": [],
+  "chars": 256952
  },
  "template.html": {
-  "blocks": [
-   "OZ-BG",
-   "OZ-BODYSTYLE",
-   "OZ-FIGFLOW",
-   "OZ-HEROFX",
-   "OZ-HEROSIZE",
-   "OZ-HOME",
-   "OZ-SPACING"
-  ],
-  "chars": 323390
+  "blocks": [],
+  "chars": 263499
  },
  "weekly/2026-08-18.html": {
   "blocks": [

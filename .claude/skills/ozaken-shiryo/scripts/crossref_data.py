@@ -122,6 +122,10 @@ CONCEPTS = {
         '任された一人が、12ヶ月で何をするか。自分がいなくても回る状態まで'),
 
     # ── 人・組織 ───────────────────────────────
+    # 経営が「何を資本と呼び、何に投資し、何を開示するか」。人の資本×型の資本
+    '人的資本経営': ('06_people/human-capital-new-shape.html',
+        ['人的資本', '人的資本経営', '伊藤レポート', 'ISO 30414', '型の資本', '型化の率'],
+        '労働力が人だけでなくなった日に、何を資本と呼ぶか'),
     '組織論': ('06_people/org-theory.html',
         ['属人化', 'AI-SECI', '標準化'], '属人化からAI型化モデルへ'),
     '人事のAI活用': ('06_people/hr-role.html',
@@ -192,6 +196,9 @@ CONCEPTS = {
     'Brand Kit': ('03_tools/copilot-brand-kit.html',
         ['Brand Kit', 'ブランドキット', 'ブランドマネージャー', '組織資産ライブラリ'],
         'ブランドを、AIに渡せる形で組織に一度だけ置く仕組み'),
+    'Copilot+ PC': ('03_tools/copilot-plus-pc.html',
+        ['Copilot+ PC', 'Copilot+', 'NPU', 'Recall', 'オンデバイスAI', '手元で動くAI'],
+        'アプリでもサービスでもなくPCの規格。変わるのは賢さではなく置き場所'),
     'Copilot Credits': ('03_tools/copilot-credits.html',
         ['Copilot Credit', 'クレジット'], '使った分だけ課金される仕組み'),
 }
@@ -210,13 +217,14 @@ GROUPS = [
               '資料作成']),
     ('推進', ['51施策', '基盤フェーズ', 'CoE', '予算の通し方', '5つの壁',
               'ストラテジスト', 'AI推進の進め方']),
-    ('人・組織', ['組織論', '人事のAI活用', 'キャリア', '職種の変化', 'FDE']),
+    ('人・組織', ['組織論', '人事のAI活用', 'キャリア', '職種の変化', 'FDE',
+                  '人的資本経営']),
     ('リスク・法務', ['ハルシネーション', '野良エージェント', 'ガイドライン',
                       '著作権', '個人情報保護法']),
     ('技術動向', ['モデルの使い分け', 'フィジカルAI', 'トレンドの3軸',
                   'RAGとファインチューニング', '中国のAIモデル']),
     ('製品', ['Copilot', 'Gemini', 'Claude', 'ChatGPT Work',
-              'Copilot Cowork', 'Copilot Credits']),
+              'Copilot Cowork', 'Copilot Credits', 'Copilot+ PC']),
 ]
 
 # 資料そのものではない、置き場・索引のページ。マトリクスからは外す
@@ -268,4 +276,5 @@ NO_CHIP_TO = {'Training/msa-life-training.html',
               # 公開資料からチップを送ると、その名前が外に出てしまう
               '05_drive/agent-management.html',
               '09_role/kanadevia-ict.html',
+              '09_role/sony-three-layer-platform.html',
               'template.html'}

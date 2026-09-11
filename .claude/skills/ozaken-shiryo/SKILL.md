@@ -458,6 +458,7 @@ python3 hero_fit.py "AIエージェントの教科書" "小売はどう変わる
 | `apply_keynav.py` | 資料上で2文字打つと投影画面へ飛ぶショートカット |
 | `apply_home.py` | 扉の左上と締めの直後に、トップページへの動線を置く |
 | `apply_stage.py` | 面の中身を話す順番に出す（見出し→導入→図版→カード1枚ずつ）。上端の進み具合と面番号、図版の赤（要点）が一度だけ光る仕掛けも |
+| `note_export.py` / `note_post.mjs` | 面を選んで切り出し、note の記事の下書きにする（article.md・図版PNG・meta.json）。全部は出さず、資料のURLも書かない。詳細は `references/note.md` |
 | `apply_kit.py` | 持ち帰りキットを動かす（**裏資料限定**。後述） |
 | `apply_quiz.py` | 隠しコマンドで開く確認テストを動かす（**裏資料限定**。後述） |
 | `apply_qr.py` | 会場に見せるQR画面を入れる（**裏資料限定**。後述） |
@@ -870,6 +871,8 @@ OZAKEN_PW=マスター python3 crossref.py matrix   # 資料×概念の一覧ペ
 そのまま抜けとして出るので、資料を足したあとに一度見ておく。
 
 ## 参照
+
+- `references/note.md` — 資料を切り出して note に載せる流れ。全部は出さない・資料のURLは書かない・下書きで止める
 
 - `references/tokens.md` — 色とフォントの規定。**色を書く前に必ず読む**
 - `references/figures.md` — 25種類の作図関数。選び方と文字数上限。**図を描く前に必ず読む**
