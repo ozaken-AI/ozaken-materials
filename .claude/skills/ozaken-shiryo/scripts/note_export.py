@@ -38,6 +38,7 @@ import oz_root
 ROOT = oz_root.root(HERE)
 ARCHIVE = 'https://content.ozaken.ai/'
 PORTFOLIO = 'https://ozaken.ai/'
+X_URL = 'https://x.com/ozaken_AI'
 DEFAULT_TAGS = ['AI', '生成AI', 'AIエージェント', 'おざけん']
 
 
@@ -152,9 +153,17 @@ def render(doc, picks, rel, use_figs, intro, outro):
         both('## ' + doc['close_title'], doc['close_title'])
         both(doc['close_copy'])
         both('')
+    # **末尾は、3つのURLを並べるだけ。** 資料そのもののURLは書かない。
+    # note の読者がその先に行ける場所を、ポートフォリオ・資料サイト・X の順に置く
     both('---', '')
-    both('この記事は、講演資料「%s」から一部を切り出したものです。' % doc['title'])
-    both('資料アーカイブ（%s）と、ポートフォリオ（%s）もどうぞ。' % (ARCHIVE, PORTFOLIO))
+    both('ポートフォリオサイト')
+    both(PORTFOLIO)
+    both('')
+    both('AI資料アーカイブ')
+    both(ARCHIVE)
+    both('')
+    both('X（旧Twitter）')
+    both(X_URL)
     return '\n'.join(md).strip() + '\n', re.sub(r'\*\*', '', '\n'.join(tx)).strip() + '\n'
 
 
