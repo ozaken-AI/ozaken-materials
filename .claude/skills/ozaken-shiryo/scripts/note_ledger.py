@@ -103,11 +103,15 @@ def deck_counts(posts=None):
 
 
 # ── 書く ────────────────────────────────────────────────────
-def record(slug, source, deck_title, sections, section_ids, hashtags):
+def record(slug, source, deck_title, sections, section_ids, hashtags, shape=None):
     """切り出した内容を下書きとして記録する。
 
     同じ資料・同じ面の組は1行にまとめて更新する。試しの切り出しを繰り返しても
     行は増えない。返すのは (行, 新しく作ったか)。
+
+    shape は「どういう形で出したか」（題の型・並び・見出し画像の有無・長さ）。
+    スキ数と突き合わせて、**どの型が効いたかを後から言えるようにする**ためのもの。
+    公開済みの行では、実際に使った型を人が posted --title-kind で上書きする。
     """
     d = load()
     hit = match(d['posts'], slug, list(sections))
@@ -121,6 +125,8 @@ def record(slug, source, deck_title, sections, section_ids, hashtags):
         # 「公開した」という記録を消してしまうと、台帳の意味がなくなる
         if p.get('status') != 'posted':
             p['recorded_at'] = today()
+            if shape:
+                p['shape'] = shape
         save(d)
         return p, False
     p = {
@@ -135,6 +141,7 @@ def record(slug, source, deck_title, sections, section_ids, hashtags):
         'note_url': None,
         'hashtags': list(hashtags),
         'reactions': {'checked_at': None, 'likes': None, 'comments': None},
+        'shape': shape or {},
         'memo': '',
     }
     d['posts'].append(p)
@@ -196,6 +203,9 @@ def cmd_posted(a):
     p['status'] = 'posted'
     p['note_url'] = a.url
     p['posted_at'] = a.at or today()
+    if a.title_kind:
+        # 実際に使った題の型。候補の1位をそのまま使うとは限らないので、ここで直す
+        p.setdefault('shape', {})['title_kind'] = a.title_kind
     save(d)
     print('公開として記録しました: %s 面%s → %s'
           % (p['slug'], p['sections'], a.url))
@@ -223,6 +233,53 @@ def cmd_memo(a):
     print('書きました: %s → %s' % (p['slug'], a.text))
 
 
+def cmd_stats(a):
+    """出した型ごとに、スキの平均を並べる。
+
+    **ここが、この仕組みで唯一「効いた／効かない」を言える場所。**
+    それ以外の採点は、すべて「効くとされている型」でしかない。
+    行が少ないうちは平均を信じない。件数を必ず一緒に見る。
+    """
+    rows = [p for p in load()['posts']
+            if p.get('status') == 'posted'
+            and (p.get('reactions') or {}).get('likes') is not None]
+    if not rows:
+        print('スキ数の入った行がまだありません。\n'
+              '  公開したら: note_ledger.py posted <slug> --url … --title-kind <型>\n'
+              '  数えたら:   note_ledger.py reactions <slug> --likes N')
+        return
+    print('スキ数の入っている記事 %d 本\n' % len(rows))
+
+    def group(name, key):
+        buckets = {}
+        for p in rows:
+            buckets.setdefault(key(p), []).append(p['reactions']['likes'])
+        print('── %s ──' % name)
+        for k, v in sorted(buckets.items(), key=lambda kv: -sum(kv[1]) / len(kv[1])):
+            print('  %-12s 平均 %6.1f （%d本: %s）'
+                  % (k, sum(v) / len(v), len(v), ' '.join(str(x) for x in sorted(v, reverse=True)[:8])))
+        print()
+
+    group('題の型', lambda p: (p.get('shape') or {}).get('title_kind') or '(未記録)')
+    group('見出し画像', lambda p: {True: 'あり', False: 'なし'}.get(
+        (p.get('shape') or {}).get('cover'), '(未記録)'))
+    group('面の並び', lambda p: (p.get('shape') or {}).get('order') or '(未記録)')
+
+    n = [(p['reactions']['likes'], (p.get('shape') or {}).get('chars')) for p in rows
+         if (p.get('shape') or {}).get('chars')]
+    if len(n) >= 4:
+        n.sort(key=lambda x: x[1])
+        half = len(n) // 2
+        lo = sum(x[0] for x in n[:half]) / half
+        hi = sum(x[0] for x in n[half:]) / (len(n) - half)
+        print('── 長さ ──')
+        print('  短いほう半分（〜%d字）平均 %.1f / 長いほう半分（%d字〜）平均 %.1f'
+              % (n[half - 1][1], lo, n[half][1], hi))
+    if len(rows) < 8:
+        print('\n※ %d本しかありません。型の差より、記事ごとのばらつきのほうが大きい段階です'
+              % len(rows))
+
+
 def cmd_drop(a):
     d = load()
     p = one(d, a.slug, parse_sections(a.sections))
@@ -248,6 +305,8 @@ def main():
     q.add_argument('slug')
     q.add_argument('--url', required=True)
     q.add_argument('--at', help='公開日（既定は今日）')
+    q.add_argument('--title-kind', dest='title_kind',
+                   help='実際に使った題の型（deck / deck-half / section / take / fig / custom）')
     q.add_argument('--sections', help='同じ資料の行が複数あるとき、どれかを選ぶ')
     q.set_defaults(fn=cmd_posted)
 
@@ -264,6 +323,9 @@ def main():
     q.add_argument('text')
     q.add_argument('--sections')
     q.set_defaults(fn=cmd_memo)
+
+    q = sub.add_parser('stats', help='型ごとのスキの平均を見る')
+    q.set_defaults(fn=cmd_stats)
 
     q = sub.add_parser('drop', help='行を消す')
     q.add_argument('slug')
