@@ -35,6 +35,7 @@ git worktree list
 | 全資料の本文デザイン | `scripts/apply_body.py`、`sources/lecture_body/body.css`・`body.js` | 現在の本文を保持したまま組版と装飾を適用 |
 | 共通の背景・表の列ホバー | `sources/lecture_effects.css` | 便覧と講演版の両ビルダーで埋め込む |
 | AI-SECI・5レベル・SIPOCの実務解説 | `sources/gen_seci.py`・`gen_five_levels.py`・`gen_sipoc.py`、`practical_guides.py`・`.css` | 現行の完全なHTMLに対象章だけを改訂・追記 |
+| AI時代の人事制度 | `sources/gen_jinji_seido.py`、`practical_guides.py`・`.css` | 現行HTMLの14章・目次・表紙リード・説明メタデータを改訂 |
 | その他の個別資料 | `.claude/skills/ozaken-shiryo/sources/gen_*.py` | [生成元対応表](../.claude/skills/ozaken-shiryo/sources/README.md) |
 | 共通の組版・暗号化 | `.claude/skills/ozaken-shiryo/scripts/` | `publish.py`、`lockbox.py`、`registry.py`等 |
 | 相互参照・概念の正典 | `scripts/crossref_data.py`、`crossref.py` | 関連チップ、`matrix.html`等 |
@@ -75,7 +76,9 @@ python3 .claude/skills/ozaken-shiryo/sources/gen_five_levels.py \
 
 ### 業務分解大全のSIPOCを改訂する
 
-`sources/gen_sipoc.py` を使う。対象は `04_practice/gyomu-bunkai.html`。現行のMethods章の直後に、週次定例会議資料のSIPOC記入例・書く順番・判断基準・工程別判定の4章を追加する。再実行時は自身の `data-practical-guide="sipoc--…"` の連続する章だけを置換し、重複追加しない。元の請求書処理の記入例・図・関連リンクは維持する。Worksheet 1の導入にあった「上から下」の説明だけは、新しい書く順番と矛盾しないよう更新する。
+`sources/gen_sipoc.py` を使う。対象は `04_practice/gyomu-bunkai.html`。現行のMethods章の直後に、週次定例会議資料の記入例・書く順番と、本人指定の講演構成14〜22（SIPOCから設計への対応／S・I／P／O・C／判定／標準化の中扉／担当者ごとのP／80点からの改善／来週の実践とQR）の計11章を置く。14〜22は本人の講演構成番号であり、大全全体の物理的なページ番号ではない。再実行時は自身の `data-practical-guide="sipoc--…"` の連続する章だけを置換し、重複追加しない。判断基準と工程別の判定は18に集約している。元のMethods・請求書処理の記入例・その他の章と図・関連リンクは維持する。Worksheet 1の導入にあった「上から下」の説明だけは、先の改訂で新しい書く順番に更新済み。
+
+Cは成果物の利用者であり、最終確認者と同一とは限らない。この例の確認者はマネージャー。判定は本人指定の①②④＝◎・③＝○・⑤＝×を維持する。標準化の80点はたたき台の完成度のたとえであり、成果物の品質基準ではない。講演時間は本人提示の18:17–18:23（標準化）と18:23–18:25（まとめ）。最後のQRは公開トップにあるXと問い合わせ先を `qrgen.svg(..., quiet=4)` で生成し、印刷でも表示する。既存の隠しQRの動作とは別の常時表示パーツ。
 
 - プロセスは5つ前後。書く順番は「業務名 → P → O・C → S・I」。表の表示順S・I・P・O・Cとは区別する。
 - 判断基準は本人指定の3つだけ：繰り返すか／入出力が決まっているか／最後に人が確認できるか。
@@ -88,6 +91,20 @@ python3 .claude/skills/ozaken-shiryo/sources/gen_sipoc.py \
 ```
 
 確認後は `--update` を追加する。`--input-dir`、既存鍵保持、控えとの一致検査は上の2ビルダーと共通。レポートは `gyomu-bunkai-report.json`。旧フラグメントから資料全体を再生成しない。
+
+### AI時代の人事制度を改訂する
+
+`sources/gen_jinji_seido.py` は2026-09-11に本人の依頼で記事全体を分かりやすく再整理した現行入口。旧来の `/tmp` 用本文生成スクリプトとしては使わない。問い合わせ対応チームへのAI導入を一貫した例として、採用・配置・役割と等級・評価と報酬・移行・開示・最初の90日を14章で説明する。統計・法律・制度の断定を増やすために旧版の本文を戻さない。
+
+```bash
+python3 .claude/skills/ozaken-shiryo/sources/gen_jinji_seido.py \
+  --preview-dir /absolute/private-preview
+# 現行HTMLから改訂し 検証後に暗号化して書き戻す場合は --update を追加
+```
+
+`--input-dir` に現在の復号HTMLがある外部ディレクトリを指定できる。`--update` 時は古いベースラインを拒否する。既存の表紙構造・スクリプト・関連リンク・ラップ鍵Wは保持し、表紙リード・目次・説明メタデータは本文に合わせる。`practical_guides.run()` の `public_metadata` は認証前のdescription/OGP説明を更新できるが、暗号化エンベロープが変わっていないことを検証する。
+
+内容改訂の許可はこの資料とSIPOCの指定範囲に限る。他資料の見た目だけを直す際に、要約や数値の削除まで同時に行わない。確認範囲と受講者視点の評価は [人事制度・SIPOCの改訂記録](verification/2026-09-11-hr-sipoc.md) を参照。
 
 ### 共通の作成手順
 

@@ -148,11 +148,17 @@ def run(transforms, description):
         dest = args.preview_dir / rel
         safe_preview(dest,root)
         dest.write_text(new)
-        pending.append((path,new,lockbox.parse(path.read_text()).group('w')))
+        pending.append((path,new,lockbox.parse(path.read_text()).group('w'),transform))
         report.append({'path':rel,**proof})
-    for path,new,w in pending:
+    for path,new,w,transform in pending:
         if args.update:
             lockbox.encrypt(path,pw,new)
+            metadata = getattr(transform,'public_metadata',None)
+            if metadata:
+                old_shell = path.read_text()
+                new_shell = metadata(old_shell)
+                assert lockbox.parse(old_shell).groupdict() == lockbox.parse(new_shell).groupdict(), 'Metadata update changed encryption envelope'
+                path.write_text(new_shell)
             assert lockbox.parse(path.read_text()).group('w') == w
             assert lockbox.decrypt(path,pw) == new
     name = Path(next(iter(transforms))).stem if len(transforms)==1 else 'levels'
