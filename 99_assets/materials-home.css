@@ -152,6 +152,31 @@
 #materials-home .stat-num { color: #2e5496; }
 #materials-home :is(.lead-btn,.profile-link) { border-radius: 3px; box-shadow: none; }
 #materials-home footer { background: #141d35; color: #bfcee4; border-top: 1px solid #ffffff20; padding: 25px 5vw; font-size: 12px; }
+/* Local, bounded atmospheric layers. Typography and layout stay still. */
+#materials-home .mh-air-surface { position: relative; isolation: isolate; --air-color: 46,84,150; --air-alpha: .45; --air-glow: .065; }
+#materials-home :is(.hero,.sec-navy,footer).mh-air-surface { --air-color: 159,198,245; --air-alpha: .72; --air-glow: .085; }
+#materials-home .mh-air { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; user-select: none; }
+#materials-home .hero > .mh-air { z-index: 2; }
+#materials-home .mh-air-tile { position: absolute; left: 0; width: 100%; height: 720px; overflow: hidden; contain: layout paint; }
+#materials-home .mh-air-tile::before { content: ''; position: absolute; width: min(70vw,580px); height: 440px; right: -8%; top: 12%; border-radius: 50%; background: radial-gradient(ellipse,rgba(var(--air-color),var(--air-glow)),transparent 70%); animation: mh-air-bloom 23s ease-in-out infinite alternate; animation-delay: var(--air-phase); animation-play-state: paused; }
+#materials-home .mh-air-tile:nth-child(even)::before { left: -10%; right: auto; animation-direction: alternate-reverse; }
+#materials-home .mh-air-mote { position: absolute; display: block; width: 3px; height: 3px; border-radius: 50%; background: rgb(var(--air-color)); box-shadow: 0 0 10px 2px rgba(var(--air-color),.16); opacity: .25; animation: mh-air-float calc(14s + var(--i)*1.2s) ease-in-out infinite alternate; animation-delay: calc(var(--air-phase) - var(--i)*2.3s); animation-play-state: paused; }
+#materials-home .mh-air-mote:nth-child(3n) { width: 2px; height: 2px; }
+#materials-home .mh-air-mote:nth-child(3n + 1) { width: 4px; height: 4px; }
+#materials-home .mh-air-ray { position: absolute; display: block; width: clamp(180px,32vw,460px); height: 1px; left: 12%; top: 25%; background: linear-gradient(90deg,transparent,rgba(var(--air-color),.4),transparent); box-shadow: 0 0 18px rgba(var(--air-color),.13); transform: rotate(-32deg); opacity: .25; animation: mh-air-traverse calc(17s + var(--i)*6s) ease-in-out infinite alternate; animation-delay: calc(var(--air-phase) - var(--i)*8s); animation-play-state: paused; }
+#materials-home .mh-air-ray:last-child { left: 69%; top: 75%; }
+#materials-home .mh-air-tile.is-active::before,#materials-home .mh-air-tile.is-active > i { animation-play-state: running; }
+#materials-home .mh-air-compact .mh-air-tile::before { top: -180px; }
+#materials-home .mh-air-compact .mh-air-mote:nth-child(even),#materials-home .mh-air-compact .mh-air-ray:last-child { display: none; }
+@keyframes mh-air-float { from { transform: translate3d(-12px,24px,0); opacity: .18; } to { transform: translate3d(25px,-36px,0); opacity: var(--air-alpha); } }
+@keyframes mh-air-traverse { from { transform: translate3d(-55px,55px,0) rotate(-32deg); opacity: .16; } to { transform: translate3d(90px,-56px,0) rotate(-32deg); opacity: .65; } }
+@keyframes mh-air-bloom { from { transform: translate3d(-35px,25px,0) scale(.9); opacity: .6; } to { transform: translate3d(30px,-35px,0) scale(1.12); opacity: 1; } }
+@media (max-width:700px) { #materials-home .mh-air-mote:nth-child(even),#materials-home .mh-air-ray:last-child { display: none; } }
+@media print {
+  #materials-home .mh-air,#materials-home .mh-ambient::before { display: none !important; }
+  #materials-home *,#materials-home *::before,#materials-home *::after { animation: none !important; transition: none !important; }
+  #materials-home [data-reveal] { opacity: 1 !important; transform: none !important; }
+}
 @keyframes mh-opening-scan { 0% { opacity: 0; transform: translateX(-70%); } 22% { opacity: 1; } 100% { opacity: 0; transform: translateX(60%); } }
 @keyframes mh-ambient-drift { from { transform: translate(-2%,-1%); opacity: .45; } to { transform: translate(2%,3%); opacity: .85; } }
 @keyframes mh-photo-arrive { from { filter: grayscale(1) contrast(1.12) blur(14px); clip-path: inset(0 0 0 45%); } to { filter: grayscale(1) contrast(1.12) blur(0); clip-path: inset(0); } }

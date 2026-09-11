@@ -24,6 +24,7 @@ git worktree list
 |---|---|---|
 | トップの構造・隠しコマンド | `index.html` | トップページ |
 | トップの見た目・通常の動き | `99_assets/materials-home.css`、`materials-home.js` | `#materials-home` の範囲 |
+| トップ下部の人物紹介・実績・3領域 | `index.html`、`99_assets/author-profile.css` | `#author`・`#author-record`・`#aicx`。PR画面とは別 |
 | 投影プロフィール | `index.html`、`99_assets/profile-stage.css`、`profile-stage.js` | PRの画面 |
 | プロフィール画像 | `99_assets/profile-media.json`、`profile-media.js`、`99_assets/profile/` | [画像差し替え手順](../99_assets/profile-media.md) |
 | 開始・終了の演出 | `index.html`、`99_assets/stage-effects.css` | ST / GO / EN等の画面 |
@@ -199,6 +200,22 @@ python3 -m http.server 8878 --bind 127.0.0.1 \
 スマートフォン用の長押し入口、`data-ozk` の順番タップ、既存ゲートも保持します。隠し操作は発見方法であってアクセス制御ではありません。
 
 プロフィールの内容・本人確認済み数値は [デザイン規約](lecture-design.md#pr開始終了の扱い)、写真は [画像の運用](../99_assets/profile-media.md) を参照。トップのCSSは `#materials-home` に限定し、PR / ST / GO / ENの画面へ汎用セレクターで波及させないようにします。
+
+### 公開トップのプロフィールと背景
+
+2026-09-11の本人指定。トップ下部は、人物紹介（`#author`）、活動実績（`#author-record`）、AICXの3領域と認定資格（`#aicx`）の順で構成します。HTMLは `index.html`、専用の組版は `99_assets/author-profile.css`。既存のPR用HTML・CSSへこの構成を複製しません。
+
+トップ全体の背景は `materials-home.js` が `#materials-home` 直下の全sectionとfooterへ `.mh-air` を挿入します。長い資料一覧も720px以下の `.mh-air-tile` に分け、各タイルの表示状態を監視します。`ResizeObserver` が改行・画像読み込み・内容量の変化に合わせて枚数と末尾の高さを更新します。要素は装飾専用で、JavaScriptが使えなくても本文は全て残ります。
+
+- 1タイルは粒8個と光の筋2本。幅700px以下、または高さ320px未満の短い帯は半数に減らす。
+- `IntersectionObserver` で画面内のタイルだけ `.is-active` にする。タブ非表示、動きを減らす設定、PR・ST等の `.thanks.show` とGO・ENの `.boot.is-on` 表示中は停止する。
+- 色・透明度・周期は `materials-home.css` の `--air-*` と `mh-air-*`。白い面では青、紺の面では淡い光を使う。各面の背景の内側に置き、文字は動かさない。
+- アーカイブの末尾、小画面で長くなったプロフィール、PRを閉じたあとの再開も確認する。ページ最上部のスクリーンショットだけで全体への適用を判断しない。
+- `prefers-reduced-motion` では静止、印刷では `.mh-air` を非表示にする。既存の表紙・プロフィールの背景もそれぞれの停止規則を維持する。
+
+更新後はアセットの内容ハッシュを再生成する。プロフィールの肩書き・実績・書籍名・発行予定日は既存の掲載値を基準とし、見た目の変更に合わせて数字を増やしたり集計日を推測したりしない。
+
+初回のローカル検証（2026-09-11）：実測1422×800と390×844で人物紹介・3領域を確認し、横はみ出しなし。トップの全11面に背景があり、アーカイブ下部の光点の時間変化と画面外停止を確認。PR・ST・ENの起動と背景停止、全リンク先・既存インラインスクリプト・講演用オーバーレイの保持を確認した。印刷用・動きを減らすCSSを非公開の確認ページで適用し、文字の保持と装飾の停止を確認。実際のPDF出力・OS設定の変更・本番配信はこの検証に含まない。
 
 ## 検証と完了条件
 
