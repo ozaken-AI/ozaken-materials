@@ -26,8 +26,13 @@ OZAKEN_PW=マスター python3 note_export.py 01_concept/what-is-agi.html --sect
 #    自動で下書きにするなら（未検証）:
 NOTE_STATE=~/note-state.json node note_post.mjs ../../../../note_drafts/what-is-agi
 
-# 4) 公開ボタンは人が押す。押したら、台帳に URL を入れる
-python3 note_ledger.py posted what-is-agi --sections 2,7,8 --url https://note.com/…
+# 4) 公開ボタンは人が押す。押したら、台帳に URL と「使った題の型」を入れる
+python3 note_ledger.py posted what-is-agi --sections 2,7,8 \
+        --url https://note.com/… --title-kind take
+
+# 5) 何日かして、スキの数を入れる。ここが唯一「効いた／効かない」を言える場所
+python3 note_ledger.py reactions what-is-agi --sections 2,7,8 --likes 120 --comments 3
+python3 note_ledger.py stats        # 型ごとの平均
 ```
 
 ## 決めていること
@@ -37,8 +42,13 @@ python3 note_ledger.py posted what-is-agi --sections 2,7,8 --url https://note.co
 - **末尾は、3つのURLを並べるだけ。** ポートフォリオ（ozaken.ai）、AI資料アーカイブ
   （content.ozaken.ai）、X（@ozaken_AI）の順。**資料そのもののURLは書かない**。
   「この記事は資料から切り出したものです」のような断り書きも置かない
-- **文は変えない。** 変えるのは形だけ。面の題→見出し、カードの見出し→小見出し、
-  図版→画像、おざけんのワンポイント→引用、締め→最後の見出し
+- **文はおざけんのもの。構成は note 向き。** 資料の文をそのまま使い、句読点も足さない。
+  そのうえで、note の読まれ方に合わせて**置き場所と並びは変える**:
+  - つかみの強い面を先頭に出す（`--order deck` で資料の順のまま）
+  - 記事の入り口は、資料の表紙のリードではなく**先頭の面の立ち上がり**。
+    表紙のリードは資料全体の話なので、3面だけ切り出した記事には合わない
+  - 投影では成立する一行カードを落とす（既定30字未満。落としたものは必ず画面に出る）
+  - 題・見出し画像・ハッシュタグは、目的を持って作る（下記）
 - **図版の出典行（「この整理は小澤健祐によるもの」）は外す。** 二次情報の確認日は残す
 - **note_drafts/ はリポジトリに入れない。** 平文の中身と画像がそのまま置かれる。.gitignore 済み
 - **自動投稿は「下書き保存」で止まる。** 公開ボタンには触らない。
@@ -78,6 +88,7 @@ python3 note_ledger.py posted what-is-agi --sections 2,7,8 --url https://note.co
   "note_url": null,
   "hashtags": ["AI", "生成AI", "AGI"],
   "reactions": {"checked_at": null, "likes": null, "comments": null},
+  "shape": {"title_kind": "take", "order": "strong", "cover": true, "chars": 2840},
   "memo": ""
 }
 ```
@@ -87,8 +98,9 @@ python3 note_ledger.py posted what-is-agi --sections 2,7,8 --url https://note.co
 
 ```bash
 python3 note_ledger.py list [--status draft] [--deck what-is-agi]
-python3 note_ledger.py posted <slug> --url https://note.com/… [--at 2026-09-11]
+python3 note_ledger.py posted <slug> --url https://note.com/… [--at 2026-09-11] [--title-kind take]
 python3 note_ledger.py reactions <slug> --likes 120 --comments 3
+python3 note_ledger.py stats                      # 型ごとのスキの平均
 python3 note_ledger.py memo <slug> "続きを別の記事で"
 python3 note_ledger.py drop <slug> [--sections 2,7,8]
 ```
@@ -129,6 +141,63 @@ OZAKEN_PW=… python3 note_pick.py --json               # 別の道具に渡す
 - 「次の面」「前の面」「あとの面」 … 記事では「次の章」か、その場で言い切る
 - 「姉妹資料〜」 … 記事では外すか、「別の記事で」に
 - 「この資料では」 … 「この記事では」に
-- 冒頭の1段落は資料のリード文そのまま。note では最初の2行で読むかが決まるので、
-  切り出した面に合わせて書き直すことが多い
+- 冒頭の1段落は、先頭に出した面の立ち上がりがそのまま入る（資料の表紙のリードではない）。
+  note では最初の2行で読むかが決まるので、ここだけは読み直す
+- 中身が無くなった面（カードが全部落ちて、見出しとリードだけになった面）は、
+  画面に ⚠ で出る。その面は `--sections` から外すほうが記事としては強い
 - ハッシュタグは meta.json の候補から。10個まで
+
+
+## スキを増やすために作っているもの
+
+**いま台帳に公開実績はゼロ。** だからここに書いてあるのは「効いたこと」ではなく、
+note公式と表示の実測から分かっている「効くとされている型」でしかない。
+本当の答えは `note_ledger.py stats` が出す。それまでは仮説として扱う。
+
+### 見出し画像（いちばん効き方がはっきりしている）
+
+note公式が **「見出し画像の有無で、ビュー数やスキ数に数十パーセントの差がつく」** と
+書いている。推奨は 1280×670（16:9）。`note_export.py` が `cover.png` を自動で作る。
+
+地の色・格子・星座は資料の表紙と同じ。note から資料に来た人に、同じ人のものだと伝わる。
+切り出した先頭の面の図版を白い板に載せて右に置く。**一覧では小さく出るので図版は読ませない。**
+「図のある記事だ」と伝わればいい。文字は `--phrase` に10〜20字のつかみを渡すのがいちばん強い。
+
+### 題（次に効く）
+
+| 根拠 | 数字 |
+|---|---|
+| note公式のすすめ | 15〜25字 |
+| スマホの note トップの一覧で切れる | 26字 |
+| 検索結果で切れる | 31字 |
+| クリエイターページで切れる | 36字 |
+
+**資料の題は、そのまま出すと note では切れる。** アーカイブの題は
+「◯◯とは何か ─ ……」の二部構成で28〜40字あり、実測した6本すべてが26字を超えていた。
+
+`note_hooks.py` は、**資料の中にすでにある文**から候補を集めて採点する。ゼロから作文すると、
+資料に書いていないことを言い出すので、そうはしない。集める先は
+資料の題（と、その前半・後半）／面の題／おざけんのワンポイント／図版の題。
+
+採点は、長さ・対比（「ではなく」「より」）・問い・具体の数字・かぎ括弧ひと組。
+**記号を盛ると減点**する。`！`や`【】`を並べると煽りに見えるが、おざけんは本名で出していて、
+代表理事・著者としての署名と釣り合わない。そこは割に合わない。
+
+選ぶのは人。`meta.json` の `title_candidates` に点と内訳が入っている。
+
+### 効いたかどうかを、あとで言えるようにする
+
+切り出すたびに、台帳へ**どういう形で出したか**（題の型・面の並び・見出し画像の有無・長さ）を
+残している。公開後に `posted --title-kind` で実際に使った型に直し、`reactions --likes` で
+スキ数を入れると、`stats` が型ごとの平均を出す。
+
+行が少ないうちは平均を信じない。8本に満たないうちは、型の差より記事ごとのばらつきのほうが大きい。
+
+## 試す
+
+鍵が要るのは復号だけなので、そこを差し替えれば残りは鍵なしで確かめられる。
+
+```bash
+python3 test_note_ledger.py   # 台帳と採点（22項目）
+python3 test_note_export.py   # 切り出しの全工程（37項目）
+```
