@@ -77,15 +77,33 @@ def first(pat, s, flags=re.S):
     return m.group(1) if m else ''
 
 
-def cls(tag, name):
-    """class にその名前を持つ要素を拾う正規表現。
+def _cls_attr(*names):
+    """class 属性に、この名前のどれかを**語として**持つことを求める部分式。
 
-    **追加クラスがあっても拾う。** 資料によっては `class="hero-title rise d2"` と
-    登場アニメーションの指定が足されていて、完全一致だと題が丸ごと空になる。
-    いっぽう名前は語として一致させるので、`c-note` や `kicker-line` のような
-    別のクラスは拾わない（拾うと、図版の中の注記まで本文に混ざる）。
+    追加クラスがあっても拾い、`c-note` や `kicker-line` のような別のクラスは拾わない
+    （拾うと、図版の中の注記まで本文に混ざる）。
     """
-    return r'<%s class="(?:[^"]*\s)?%s(?:\s[^"]*)?">(.*?)</%s>' % (tag, name, tag)
+    return r'class="(?:[^"]*\s)?(?:%s)(?:\s[^"]*)?"' % '|'.join(names)
+
+
+def cls(tag, *names):
+    """class にその名前を持つ要素の中身を拾う正規表現。
+
+    **追加クラスと、他の属性があっても拾う。**
+    アーカイブの資料は書き方が変わり続ける。実際に、表紙が
+    `<section class="hero" data-oz-cover="1" style="…">`、題が
+    `class="hero-title oz-cover-title"` に一斉に差し替えられたことがあり、
+    完全一致で書いてあった読み取りが111本中107本で止まった。
+    """
+    return r'<%s[^>]*\b%s[^>]*>(.*?)</%s>' % (tag, _cls_attr(*names), tag)
+
+
+def opens(tag, *names):
+    """開きタグだけを拾う正規表現（中身は取らない）"""
+    return r'<%s[^>]*\b%s[^>]*>' % (tag, _cls_attr(*names))
+
+
+HERO = re.compile(opens('section', 'hero'))
 
 
 # ── 面の解析 ────────────────────────────────────────────────
@@ -99,9 +117,10 @@ class NotADeck(Exception):
 
 
 def parse(page):
-    if '<section class="hero">' not in page:
+    m0 = HERO.search(page)
+    if not m0:
         raise NotADeck('面で組まれた資料ではありません（表紙の hero がない）')
-    i0 = page.index('<section class="hero">')
+    i0 = m0.start()
     i1 = page.index('<div class="oz-return">') if '<div class="oz-return">' in page else len(page)
     body = page[i0:i1]
     spans = [m.start() for m in re.finditer(r'<section[^>]*>', body)] + [len(body)]
@@ -111,22 +130,23 @@ def parse(page):
     doc = {
         'title': text(first(cls('h1', 'hero-title'), hero), md=False).replace('\n', ' ─ '),
         'copy': text(first(cls('p', 'hero-copy'), hero)),
-        'close_title': text(first(r'<h2 class="sec-title">(.*?)</h2>', close), md=False).replace('\n', ' '),
-        'close_copy': text(first(r'<p class="kicker">(.*?)</p>', close)),
+        'close_title': text(first(cls('h2', 'sec-title'), close), md=False).replace('\n', ' '),
+        'close_copy': text(first(cls('p', 'kicker'), close)),
         'sections': [],
     }
     fig_i = 0
     for s in mid:
         sec = {
-            'eyebrow': text(first(r'<span class="eyebrow">(.*?)</span>', s), md=False),
-            'title': text(first(r'<h2 class="sec-title">(.*?)</h2>', s), md=False).replace('\n', ' '),
-            'sub': text(first(r'<p class="sec-sub">(.*?)</p>', s)),
-            'lede': text(first(r'<p class="(?:lede|kicker)">(.*?)</p>', s)),
+            'eyebrow': text(first(cls('span', 'eyebrow'), s), md=False),
+            'title': text(first(cls('h2', 'sec-title'), s), md=False).replace('\n', ' '),
+            'sub': text(first(cls('p', 'sec-sub'), s)),
+            'lede': text(first(cls('p', 'lede', 'kicker'), s)),
             'figs': [], 'cards': [], 'paras': [], 'take': '',
         }
-        for f in re.findall(r'<div class="figure">(.*?)</div>\s*(?:<p class="figure-cap">(.*?)</p>)?', s, re.S):
-            pass
-        for m in re.finditer(r'<div class="figure">(.*?)(?=<div class="figure">|<div class="cards"|<div class="take"|<p class="note"|<div class="bare"|</section>)', s, re.S):
+        fig_open = opens('div', 'figure')
+        fig_stop = '|'.join([fig_open, opens('div', 'cards'), opens('div', 'take'),
+                             opens('p', 'note'), opens('div', 'bare'), '</section>'])
+        for m in re.finditer(fig_open + r'(.*?)(?=' + fig_stop + ')', s, re.S):
             blk = m.group(1)
             # 図版番号は <span class="fig-no">Fig.9</span>3つの仕掛け… と、
             # 題にぴったり続けて書かれている（間に空白が無い）。
@@ -135,21 +155,22 @@ def parse(page):
             # アーカイブ全体で1131本中100本がこれで壊れていた。しかも数字で始まる題は
             # 「4つとも、お金では買えない」のように、いちばん強い言い切りが多い。
             # だからタグのあるうちに、番号の span ごと落とす
-            raw = re.sub(r'<span class="fig-no">.*?</span>', '',
+            raw = re.sub(opens('span', 'fig-no') + r'.*?</span>', '',
                          first(cls('p', 'fig-title'), blk), flags=re.S)
             t = text(raw, md=False)
             # 番号を素で書いてある資料のために、この剥がし方も残す
             t = re.sub(r'^Fig\.\d+\s*(?:──|—)\s*', '', t).strip()
-            cap = text(first(r'<p class="figure-cap">(.*?)</p>', blk), md=False)
+            cap = text(first(cls('p', 'figure-cap'), blk), md=False)
             sec['figs'].append({'n': fig_i, 'title': t, 'cap': cap})
             fig_i += 1
-        for h3, p in re.findall(r'<div class="card">.*?<h3>(.*?)</h3>\s*<p>(.*?)</p>', s, re.S):
+        for h3, p in re.findall(opens('div', 'card')
+                                + r'.*?<h3[^>]*>(.*?)</h3>\s*<p[^>]*>(.*?)</p>', s, re.S):
             sec['cards'].append((text(h3), text(p)))
-        for p in re.findall(r'<div class="bare">(.*?)</div>', s, re.S):
-            sec['paras'] += [text(x) for x in re.findall(r'<p>(.*?)</p>', p, re.S)]
-        for p in re.findall(r'<p class="note">(.*?)</p>', s, re.S):
+        for p in re.findall(cls('div', 'bare'), s, re.S):
+            sec['paras'] += [text(x) for x in re.findall(r'<p[^>]*>(.*?)</p>', p, re.S)]
+        for p in re.findall(cls('p', 'note'), s, re.S):
             sec['paras'].append(text(p))
-        sec['take'] = text(first(r'<p class="take-text">(.*?)</p>', s))
+        sec['take'] = text(first(cls('p', 'take-text'), s))
         doc['sections'].append(sec)
     return doc
 
@@ -428,7 +449,9 @@ def main():
         if not eyebrow or GENERIC_EYEBROW.match(eyebrow.strip()):
             eyebrow = CATS.get(a.rel.split('/')[0], 'OZAKEN ARCHIVE')
         cat = eyebrow[:24]
-        fig0 = doc['sections'][picks[0] - 1]['figs']
+        # 図版も、つかみと同じ面から採る
+        src = (phrases[0].get('section') if phrases and not a.phrase else None) or picks[0]
+        fig0 = doc['sections'][src - 1]['figs']
         figarg = (os.path.join(out, 'figs', 'fig_%02d.png' % fig0[0]['n'])
                   if use_figs and fig0 else '')
         cmd = ['node', os.path.join(HERE, 'note_cover.mjs'),

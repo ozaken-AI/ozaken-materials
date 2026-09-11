@@ -227,6 +227,10 @@ def main():
         except SystemExit as e:
             skipped.append((rel, '読めない（別のパスワードかもしれません）: %s' % e))
             continue
+        if not secs:
+            # 表紙はあるが本文の面が無い（施策の一覧など）。切り出す単位が無い
+            skipped.append((rel, '本文の面が無い'))
+            continue
         n_deck += 1
         n_sec += len(secs)
         for i, m in enumerate(secs, 1):

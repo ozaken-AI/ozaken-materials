@@ -122,7 +122,10 @@ check('型が記録されている', all(t['kind'] in
 
 # ── つかみ（見出し画像用） ────────────────────────────────
 ph = meta['phrase_candidates']
-check('つかみの候補が20字以内', ph and all(p['chars'] <= 20 for p in ph), str(ph[:2]))
+check('つかみの候補が26字以内（note の一覧の幅）',
+      ph and all(p['chars'] <= 26 for p in ph), str(ph[:2]))
+check('つかみは先頭の面から採る（つかみと中身を合わせる）',
+      ph[0]['section'] == meta['sections'][0], str(ph[:2]))
 check('ワンポイントがつかみに拾われている',
       any('来る日ではない' in p['text'] for p in ph), str([p['text'] for p in ph]))
 

@@ -118,23 +118,40 @@ def title_candidates(doc, picks):
     return out
 
 
-def phrase_candidates(doc, picks, limit=20):
-    """見出し画像に載せるつかみ。**一覧では小さく出るので、短いほど効く**"""
+def phrase_candidates(doc, picks, limit=SAFE):
+    """見出し画像に載せるつかみ。**一覧では小さく出るので、短いほど効く**
+
+    どの面から採ったかを持たせる。見出し画像は記事の入り口なので、
+    **つかみと、そのすぐ下に来る中身は合っていないといけない。**
+    先頭の面と違う面から採ると、「最初の90日で」を見て開いた人が
+    「ファイルサーバとwikiでは」から読まされることになる。
+    """
     seen, out = set(), []
     for k in picks:
         s = doc['sections'][k - 1]
         for text, kind in [(s['take'], 'take'), (s['title'], 'section')] + \
                           [(f['title'], 'fig') for f in s['figs']]:
             t = _clean(text)
+            # 上限は題と同じ26字。見出し画像は行数で詰まるので、23字でも2行に収まる。
+            # 20字で切っていたときは「ファイルサーバとwikiでは、なぜ足りないのか」が
+            # 弾かれて、代わりに弱い図版の題が出ていた
             # 長いものは、最初の句で切ると一文の言い切りになることが多い
             if t and len(t) > limit and '。' in t:
                 t = t.split('。')[0] + '。'
             if not t or not (6 <= len(t) <= limit) or t in seen:
                 continue
             seen.add(t)
+            # **題と同じ物差しで見る。** 長さだけの独自の採点にしていたときは、
+            # 17字の図版の題が、23字の「ファイルサーバとwikiでは、なぜ足りないのか」に
+            # 勝ってしまっていた。対比や問いの強さは、つかみでも同じように効く
+            pt = score_title(t)[0]
             # 言い切りで終わるものを上に。体言止めより目が留まる
-            end = 10 if re.search(r'(。|ない|動く|変わる|終わる|始まる|だ|である)$', t) else 0
-            out.append({'text': t, 'kind': kind, 'score': end + (20 - abs(14 - len(t))),
+            end = 8 if re.search(r'(。|ない|動く|変わる|終わる|始まる|だ|である)$', t) else 0
+            # 先頭の面から採ったものを上に。つかみと、そのすぐ下の中身を合わせる
+            lead = 40 if k == picks[0] else 0
+            # 見出し画像では字が小さくなるぶん、長いものをわずかに下げる
+            out.append({'text': t, 'kind': kind, 'section': k,
+                        'score': pt + end + lead - max(0, len(t) - 20),
                         'chars': len(t)})
     out.sort(key=lambda c: -c['score'])
     return out
