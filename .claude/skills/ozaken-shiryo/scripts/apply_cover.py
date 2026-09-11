@@ -258,17 +258,30 @@ def main():
     import lockbox, oz_root, check_blocks
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--preview-dir', required=True, type=Path)
+    ap.add_argument('--input-dir', type=Path, help='Read an existing private decrypted baseline')
+    ap.add_argument('--only', nargs='+', metavar='PATH', help='Limit the refresh to these repository-relative materials')
     ap.add_argument('--update', action='store_true')
     args = ap.parse_args()
     root = Path(oz_root.root(str(HERE))).resolve()
-    pw = os.environ.get('OZAKEN_PW') or getpass.getpass('Master password: ')
-    before = check_blocks.survey(pw)
+    selected = targets(root)
+    if args.only:
+        requested = {Path(p).as_posix() for p in args.only}
+        available = {p.relative_to(root).as_posix() for p in selected}
+        if requested - available:
+            ap.error('Unknown material path(s): ' + ', '.join(sorted(requested - available)))
+        selected = [p for p in selected if p.relative_to(root).as_posix() in requested]
+    pw = None
+    if args.update or not args.input_dir:
+        pw = os.environ.get('OZAKEN_PW') or getpass.getpass('Master password: ')
+    before = check_blocks.survey(pw) if args.update else None
     pending = []
-    for path in targets(root):
+    for path in selected:
         raw = path.read_text()
         if 'OZAKEN-LOCKED2' not in raw:
             raise ValueError('Expected encrypted material: ' + str(path))
-        old = lockbox.decrypt(path, pw)
+        old = (args.input_dir / path.relative_to(root)).read_text() if args.input_dir else lockbox.decrypt(path, pw)
+        if args.update and args.input_dir and lockbox.decrypt(path, pw) != old:
+            raise ValueError('Baseline is stale; recheck current content: ' + str(path.relative_to(root)))
         new = patch(old)
         validate(old, new)
         dest = args.preview_dir / path.relative_to(root)
@@ -287,7 +300,9 @@ def main():
             assert rel in after and set(old['blocks']) <= set(after[rel]['blocks']), rel
             assert after[rel]['chars'] >= old['chars'] * .9, rel
     report = {'materials': len(pending), 'updated': args.update, 'paths': [str(p.relative_to(root)) for p,_,_ in pending]}
-    (args.preview_dir / 'cover-report.json').write_text(json.dumps(report, ensure_ascii=False, indent=2))
+    report_path = args.preview_dir / 'cover-report.json'
+    safe_preview(report_path, root)
+    report_path.write_text(json.dumps(report, ensure_ascii=False, indent=2))
     print(f'{len(pending)} material covers: preview ready' + ('; encrypted outputs verified; blocks preserved' if args.update else ''))
 
 

@@ -145,7 +145,10 @@ python3 .claude/skills/ozaken-shiryo/scripts/apply_body.py \
 
 ```sh
 python3 .claude/skills/ozaken-shiryo/scripts/check_encrypted.py --staged
+python3 .claude/skills/ozaken-shiryo/scripts/check_design.py --staged
 ```
+
+`check_design.py` は非表示でマスターを受け取り、ステージ上の全資料をメモリー内で復号する。共通表紙の属性・CSS・JS、本文レイヤーと各章の適用、表紙の句読点を検査する。復号本文は出力・保存しない。`--input-dir /absolute/private-preview` は既存の非公開プレビューを読む確認用。構造上の漏れを検出する検査であり、ブラウザーでの見た目の確認を省略する根拠にはしない。
 
 全件を変換・検証してから暗号化する。追加した指定を `apply_body.strip()` で除くと、元の文書にバイト単位で完全一致することを検査する。これは本文・図のラベル・数値・SVGの座標・属性・出典・リンク・既存スクリプトの保全を含む。さらに冪等性、暗号化後の復号一致、ラップ鍵 `W`、`check_blocks` の前後差を確認する。検査結果 `body-report.json` は非公開プレビューに置き、本文そのものをGitへ入れない。
 
@@ -211,6 +214,10 @@ python3 -m unittest discover \
 新規資料・通常の改訂・週次資料は `publish.compose()` の最後で自動適用されます。講演版はさらに専用CSS適用後にも適用します。これらを通さない独自生成元では `apply_cover.patch(page)` を最後に通してください。古い `apply_herofx` は共通表紙の印を認識し、旧HUDやcanvasを起動しません。旧CSSの注入ブロックは移行時に保持します。
 
 プレビュー用の `cover-report.json` は対象パスと更新有無だけを持ち、Gitに追加する必要はありません。本文・QR・確認用画像は非公開の確認ディレクトリに保持します。`--update` は本番デプロイではありません。
+
+表紙の取り残しを直す場合は、同じコマンドへ `--only 06_people/human-capital-new-shape.html` のように対象を指定できる。複数指定も可能。`--input-dir /absolute/private-preview/before` で既存の復号した控えを利用でき、`--update` 時には現行資料との一致を検査する。表紙移行後も本文の全章がバイト単位で一致することを確認する。
+
+2026-09-11に122資料を再点検したところ、人的資本経営・Copilot+ PC・マーケティング編・ソニー様向け資料の4件は本文統一済みでも表紙が旧版だった。4件の表紙を共通化し、印刷時に表紙の暗い疑似要素が残る指定の優先順位も修正して全122資料に適用した。全資料を別々の表紙・本文チェックで検査する運用を追加した。対象ファイルと検証範囲は [表紙の適用漏れ修正](verification/2026-09-11-cover-omissions.md) を参照。
 
 ## 鍵・個人情報の扱い
 
