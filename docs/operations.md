@@ -1,6 +1,6 @@
 # リポジトリ運用手順
 
-資料の作成・修正から公開後の確認までを、特定のAIや端末に依存せず引き継ぐための入口です。最終更新：2026-09-11。
+資料の作成・修正から公開後の確認までを、特定のAIや端末に依存せず引き継ぐための入口です。最終更新：2026-09-14。
 新しい担当者・AIは [AGENTS.md](../AGENTS.md) とこの手順を読み、担当分野の詳細へ進んでください。
 
 ## 作業開始時
@@ -39,7 +39,7 @@ git worktree list
 | その他の個別資料 | `.claude/skills/ozaken-shiryo/sources/gen_*.py` | [生成元対応表](../.claude/skills/ozaken-shiryo/sources/README.md) |
 | 共通の組版・暗号化 | `.claude/skills/ozaken-shiryo/scripts/` | `publish.py`、`lockbox.py`、`registry.py`等 |
 | 相互参照・概念の正典 | `scripts/crossref_data.py`、`crossref.py` | 関連チップ、`matrix.html`等 |
-| 無料配布PDF | `99_assets/pdf-src/` | `99_assets/`の対象PDF |
+| 無料配布PDF | `99_assets/pdf-src/` ／ トップの3資料は `beginner_guides/` | 分類フォルダまたは `99_assets/` の対象PDF |
 | 週次トレンド | `weekly/src/`、`weekly/threads/`、`weekly/watchlist.yml` | `weekly/YYYY-MM-DD.html` |
 | メルマガ・管理API | `newsletter/`、`functions/` | 購読、名簿、配信停止、送信 |
 
@@ -48,6 +48,14 @@ git worktree list
 **現在の便覧を `gen_template.py` だけで再生成しないでください。** このファイルは図・本文パーツの見本データと旧フラグメントの生成元です。現在の便覧全体は `build_template_gallery.py` が組み立てます。
 
 **`use-to-delegate.html` を `gen_use_to_delegate.py` → 汎用 `publish.py --update` だけで上書きしないでください。** 現在の講演版は `delegation_pilot/build.py` が旧生成元を参照して組み立て、専用の構成・背景・印刷CSSを適用します。
+
+## トップで配布する3資料を改訂する
+
+「5レベル」「業務変革大全」「51施策」の2026-09-14以降のPDF生成元は [`99_assets/pdf-src/beginner_guides/`](../99_assets/pdf-src/beginner_guides/README.md)。本文JSONとReportLabの組版から作る専用入口です。旧HTML、現在の講演HTML、古いPDFへの追記だけで更新しません。3資料以外の配布PDFは今回の改訂対象外です。
+
+5レベルは準備・コピー用指示・架空入力・期待結果・テスト・修正までを一続きにします。業務変革はSIPOCの週次報告例と4枚の記入シートを同じPDFに収めます。51施策は先頭のA4横一覧の全項目と番号を維持し、各項目に最初の行動と成果物を示します。章の追加時は物理ページの参照・トップのページ数・サムネイルまで揃えてください。
+
+手順と依存パッケージ、フォント、印刷の確認方法は上のREADMEを参照。暗号化HTMLとは別の公開配布物なのでパスワードは不要です。専用の内容・座標検査と全ページのPDF描画を行い、操作手順の一次情報確認と実アカウントでの動作確認を区別して記録します。
 
 ## 新しい資料を作る
 

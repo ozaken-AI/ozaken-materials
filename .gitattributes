@@ -1,0 +1,4 @@
+# Public PDF guides are binary even when the first 8 KiB contain only PDF syntax.
+/01_concept/five-levels-of-delegation.pdf binary
+/04_practice/business-transformation-guide.pdf binary
+/05_drive/ai-51-measures.pdf binary

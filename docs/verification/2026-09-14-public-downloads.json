@@ -1,0 +1,67 @@
+{
+  "outputs": [
+    {
+      "book": "levels",
+      "path": "01_concept/five-levels-of-delegation.pdf",
+      "pages": 29,
+      "links": 13,
+      "text_and_bounds": "pass"
+    },
+    {
+      "book": "business",
+      "path": "04_practice/business-transformation-guide.pdf",
+      "pages": 28,
+      "links": 9,
+      "text_and_bounds": "pass"
+    },
+    {
+      "book": "measures",
+      "path": "05_drive/ai-51-measures.pdf",
+      "pages": 16,
+      "links": 3,
+      "text_and_bounds": "pass"
+    }
+  ],
+  "measures_51_names_and_numbers": "pass",
+  "worked_example_arithmetic": "pass",
+  "build": {
+    "fonts": {
+      "ShipporiMinchoB1-Bold.ttf": {
+        "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/shipporiminchob1/ShipporiMinchoB1-Bold.ttf",
+        "sha256": "d20f3981afb8bceda5fdf8f0fb29ba51eb21518644612ccd8a183e5bd433e25a"
+      },
+      "ZenKakuGothicNew-Medium.ttf": {
+        "url": "https://raw.githubusercontent.com/googlefonts/zen-kakugothic/main/fonts/ttf/ZenKakuGothicNew-Medium.ttf",
+        "sha256": "651a3f7280b7f36262601ee76d8388a8dc4372dcc67aff025a608939a562b525"
+      },
+      "ZenKakuGothicNew-Bold.ttf": {
+        "url": "https://raw.githubusercontent.com/googlefonts/zen-kakugothic/main/fonts/ttf/ZenKakuGothicNew-Bold.ttf",
+        "sha256": "0081cedabc4921982fcd061f845a005664ac7fb642af2dd34b4007bc63ccd235"
+      },
+      "HankenGrotesk.ttf": {
+        "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/hankengrotesk/HankenGrotesk%5Bwght%5D.ttf",
+        "sha256": "813b3f8fa0965405669a89b38e51bbefd95eef6b8e20d1cb2d8c10cce062662f"
+      }
+    },
+    "outputs": [
+      {
+        "path": "01_concept/five-levels-of-delegation.pdf",
+        "pages": 29,
+        "bytes": 312700,
+        "sha256": "8bc0510b70ac37d77979ca822c4a3a832ff101bcdcf054f70f8bea4a06889ca1"
+      },
+      {
+        "path": "04_practice/business-transformation-guide.pdf",
+        "pages": 28,
+        "bytes": 278098,
+        "sha256": "7fb22c8fc49d865950b7b0b9dccc1e202a85e3f0dd387abcf3f4ad3135cd863a"
+      },
+      {
+        "path": "05_drive/ai-51-measures.pdf",
+        "pages": 16,
+        "bytes": 221468,
+        "sha256": "99b8e9d9a1ae3be6b28eb268987c47d246363a2bc2a8e77fc29e33d3d310220b"
+      }
+    ]
+  }
+}

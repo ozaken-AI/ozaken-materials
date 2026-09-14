@@ -1,0 +1,18 @@
+{
+  "ShipporiMinchoB1-Bold.ttf": {
+    "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/shipporiminchob1/ShipporiMinchoB1-Bold.ttf",
+    "sha256": "d20f3981afb8bceda5fdf8f0fb29ba51eb21518644612ccd8a183e5bd433e25a"
+  },
+  "ZenKakuGothicNew-Medium.ttf": {
+    "url": "https://raw.githubusercontent.com/googlefonts/zen-kakugothic/main/fonts/ttf/ZenKakuGothicNew-Medium.ttf",
+    "sha256": "651a3f7280b7f36262601ee76d8388a8dc4372dcc67aff025a608939a562b525"
+  },
+  "ZenKakuGothicNew-Bold.ttf": {
+    "url": "https://raw.githubusercontent.com/googlefonts/zen-kakugothic/main/fonts/ttf/ZenKakuGothicNew-Bold.ttf",
+    "sha256": "0081cedabc4921982fcd061f845a005664ac7fb642af2dd34b4007bc63ccd235"
+  },
+  "HankenGrotesk.ttf": {
+    "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/hankengrotesk/HankenGrotesk%5Bwght%5D.ttf",
+    "sha256": "813b3f8fa0965405669a89b38e51bbefd95eef6b8e20d1cb2d8c10cce062662f"
+  }
+}
