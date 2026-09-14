@@ -63,5 +63,60 @@
         "sha256": "99b8e9d9a1ae3be6b28eb268987c47d246363a2bc2a8e77fc29e33d3d310220b"
       }
     ]
+  },
+  "public_verification": {
+    "commit": "ccb8dc0",
+    "checked_at": "2026-09-14",
+    "resources": [
+      {
+        "path": "index.html",
+        "status": 200,
+        "sha256": "e4b833081ff45177c7bab9683b17471e5649e141438253d5cebd232884d5d380",
+        "expected": "e4b833081ff45177c7bab9683b17471e5649e141438253d5cebd232884d5d380",
+        "match": true
+      },
+      {
+        "path": "01_concept/five-levels-of-delegation.pdf",
+        "status": 200,
+        "sha256": "8bc0510b70ac37d77979ca822c4a3a832ff101bcdcf054f70f8bea4a06889ca1",
+        "expected": "8bc0510b70ac37d77979ca822c4a3a832ff101bcdcf054f70f8bea4a06889ca1",
+        "match": true
+      },
+      {
+        "path": "04_practice/business-transformation-guide.pdf",
+        "status": 200,
+        "sha256": "7fb22c8fc49d865950b7b0b9dccc1e202a85e3f0dd387abcf3f4ad3135cd863a",
+        "expected": "7fb22c8fc49d865950b7b0b9dccc1e202a85e3f0dd387abcf3f4ad3135cd863a",
+        "match": true
+      },
+      {
+        "path": "05_drive/ai-51-measures.pdf",
+        "status": 200,
+        "sha256": "99b8e9d9a1ae3be6b28eb268987c47d246363a2bc2a8e77fc29e33d3d310220b",
+        "expected": "99b8e9d9a1ae3be6b28eb268987c47d246363a2bc2a8e77fc29e33d3d310220b",
+        "match": true
+      },
+      {
+        "path": "99_assets/download-covers/five-levels-of-delegation.jpg",
+        "status": 200,
+        "sha256": "f962f8d3ddaf023966001878a7d93444bd45de32f41c5d5cb4e0b2250175476a",
+        "expected": "f962f8d3ddaf023966001878a7d93444bd45de32f41c5d5cb4e0b2250175476a",
+        "match": true
+      },
+      {
+        "path": "99_assets/download-covers/business-transformation-guide.jpg",
+        "status": 200,
+        "sha256": "d8141d19214087d5ffe1502e196f85d60bd659d5a82f8d4c6ac9c1cbfbc2fb95",
+        "expected": "d8141d19214087d5ffe1502e196f85d60bd659d5a82f8d4c6ac9c1cbfbc2fb95",
+        "match": true
+      },
+      {
+        "path": "99_assets/download-covers/ai-51-measures.jpg",
+        "status": 200,
+        "sha256": "be13a2804d552cd81a53e854a2065c6a17cb3eb3e5ebafb831b63bf547122e44",
+        "expected": "be13a2804d552cd81a53e854a2065c6a17cb3eb3e5ebafb831b63bf547122e44",
+        "match": true
+      }
+    ]
   }
 }
