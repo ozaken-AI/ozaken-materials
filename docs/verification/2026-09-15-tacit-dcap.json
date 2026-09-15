@@ -1,0 +1,17 @@
+{
+  "updated": true,
+  "documents": [
+    {
+      "path": "01_concept/tacit-knowledge-and-data-box.html",
+      "cover_unchanged": true,
+      "cover_layout_unchanged": true,
+      "scripts_unchanged": true,
+      "links_preserved": true,
+      "unchanged_chapters": 6,
+      "chapters": 8,
+      "revised_chapters": 2,
+      "before_sha256": "78dd6b9f48c009f81b4dcbf3accfa0c8632e9713b8b4ff9ca9be8c01e960563f",
+      "after_sha256": "a90120533eb3f1be0b0693b750e7b9e0a510c437adbf0a5c37af2272c670426b"
+    }
+  ]
+}

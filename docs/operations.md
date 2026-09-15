@@ -102,6 +102,19 @@ python3 .claude/skills/ozaken-shiryo/sources/gen_sipoc.py \
 
 確認後は `--update` を追加する。`--input-dir`、既存鍵保持、控えとの一致検査は上の2ビルダーと共通。レポートは `gyomu-bunkai-report.json`。旧フラグメントから資料全体を再生成しない。
 
+### 暗黙知資料のDCAP実践を改訂する
+
+対象は `01_concept/tacit-knowledge-and-data-box.html` のみ。入口は `sources/gen_tacit_dcap.py`、専用CSSは `sources/tacit_dcap.css`。現在の完全なHTMLに、Section 05の後・既存Summaryの前へ `tacit-dcap--cycle` と `tacit-dcap--context` の2章を挿入する。再実行時は `data-practical-guide="tacit-dcap--…"` が付いた連続する所有章だけを置き換える。既存6章・表紙・スクリプト・リンク・ラップ鍵Wを保持し、再適用しても重複しないことを検証する。追加図は `DCAP GUIDE 01/02` として既存のFig.番号・参照を変えない。
+
+DCAPは、Do → Check → Act → Planの順に小さく使って学ぶ筆者の実践提案として扱う。PDCAの定義と、AI導入への本資料の提案を区別し、計画をなくすという説明にしない。記録を残す箱は最小限先に用意し、コンテキストの中身は実際に使った後の文句・改善点から育てる。文句は原因を確かめ、前提条件・判断基準・具体例に変換する。データや接続先の不具合は原因自体を直す。週次定例会議資料の例は説明用の架空例と明示する。
+
+```sh
+python3 .claude/skills/ozaken-shiryo/sources/gen_tacit_dcap.py \
+  --preview-dir /absolute/private-preview/tacit-dcap
+```
+
+`--preview-dir` はリポジトリ外を指定する。現在の復号HTMLがある場合は `--input-dir /absolute/private-baseline` を追加できる（その配下に対象資料と同じ相対パスを置く）。画面確認後、同じ入力条件に `--update` を追加してこの資料だけ再暗号化する。パスワードは非表示入力とし、入力控えが現行暗号化HTMLと一致しない場合は更新を拒否する。専用CSSの変更もこのビルダーで埋め込み直す。レポートは `tacit-knowledge-and-data-box-report.json`。検証範囲と本番記録は [暗黙知資料へのDCAP追加](verification/2026-09-15-tacit-dcap.md) を参照する。
+
 ### AI時代の人事制度を改訂する
 
 `sources/gen_jinji_seido.py` は2026-09-11に本人の依頼で記事全体を分かりやすく再整理した現行入口。旧来の `/tmp` 用本文生成スクリプトとしては使わない。問い合わせ対応チームへのAI導入を一貫した例として、採用・配置・役割と等級・評価と報酬・移行・開示・最初の90日を14章で説明する。統計・法律・制度の断定を増やすために旧版の本文を戻さない。
