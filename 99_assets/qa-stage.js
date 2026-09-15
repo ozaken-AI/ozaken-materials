@@ -12,6 +12,7 @@
   var rangeBtn = document.getElementById('aqRange');
   if (!box || !list || !count || !feed) return;
   var seq = 0, timer = 0, seen = {}, first = true, latest = null;
+  var rows = Object.create(null), emptyText = null;
 
   /* 前の講演の質問まで出てこないよう、直近の分だけを映す。
      見出しの表示を押すと範囲が切り替わる。
@@ -57,11 +58,18 @@
   }
 
   /* 一覧が出せないときは、黙って空にせず理由を出す */
-  function notice(text){
-    list.innerHTML = '<li class="aq-empty">' + esc(text) + '</li>';
+  function empty(text){
+    if (emptyText !== text){
+      list.innerHTML = '<li class="aq-empty">' + esc(text) + '</li>';
+      emptyText = text;
+      rows = Object.create(null);
+    }
     count.textContent = '0';
-    first = true; seen = {};
     updateOverflow();
+  }
+  function notice(text){
+    empty(text);
+    first = true; seen = {};
   }
 
   /* まず Cookie を付けずに取りにいく。
@@ -131,43 +139,61 @@
     latest = { items: all, total: total };
     var items = inRange(all);
     if (!items.length){
-      list.innerHTML = '<li class="aq-empty">'
-        + (all.length ? 'この範囲にはまだありません。' : '最初のひとことを待っています。')
-        + '</li>';
-      count.textContent = '0';
+      empty(all.length ? 'この範囲にはまだありません。' : '最初のひとことを待っています。');
       first = false;
-      updateOverflow();
       return;
     }
-    var html = '', fresh = false;
+    var nextRows = Object.create(null), repeats = Object.create(null), nodes = [];
     for (var i = 0; i < items.length; i++){
       var it = items[i];
-      var key = it.t + '|' + it.q.slice(0, 24);
+      /* Keep each message node, including identical submissions. A short text
+         prefix is not a unique identity and can merge different questions. */
+      var identity = JSON.stringify([it.t, it.q, it.n || '']);
+      var occurrence = repeats[identity] || 0;
+      repeats[identity] = occurrence + 1;
+      var key = identity + '|' + occurrence;
       var isNew = !first && !seen[key];
-      if (isNew) fresh = true;
       seen[key] = 1;
       var who = (it.n ? '<span class="ja">' + esc(it.n) + '</span> ／ ' : '') + stamp(it.t);
-      html += '<li' + (isNew ? ' class="is-new"' : '') + '>'
-            + '<span class="who">' + who + '</span><p class="aq-message">' + esc(it.q) + '</p></li>';
-    }
-    /* Keep the visible message at the same offset when a new reply arrives.
-       Unchanged polls do not replace nodes or interrupt selection and reading. */
-    var oldTop = list.scrollTop, anchor = null, offset = 0;
-    var oldItems = Array.prototype.slice.call(list.querySelectorAll('li'));
-    for (var j = 0; j < oldItems.length; j++){
-      if (oldItems[j].offsetTop + oldItems[j].offsetHeight > oldTop + list.offsetTop){
-        anchor = oldItems[j].textContent;
-        offset = oldItems[j].offsetTop - list.offsetTop - oldTop;
-        break;
+      var row = rows[key];
+      if (!row){
+        var li = document.createElement('li');
+        li.innerHTML = '<span class="who">' + who + '</span><p class="aq-message">' + esc(it.q) + '</p>';
+        row = { node:li, who:who };
+      } else if (row.who !== who){
+        /* The date label can change at midnight without replacing the text. */
+        row.node.querySelector('.who').innerHTML = who;
+        row.who = who;
       }
+      row.node.classList.toggle('is-new', isNew);
+      nextRows[key] = row;
+      nodes.push(row.node);
     }
-    if (list.innerHTML !== html){
-      list.innerHTML = html;
-      if (oldTop > 4 && anchor){
-        var same = Array.prototype.find.call(list.querySelectorAll('li'), function(li){ return li.textContent === anchor; });
-        list.scrollTop = same ? same.offsetTop - list.offsetTop - offset : oldTop;
+    var oldItems = Array.prototype.slice.call(list.children);
+    var changed = oldItems.length !== nodes.length || nodes.some(function(node, i){ return node !== oldItems[i]; });
+    if (changed){
+      /* The desktop list scrolls, while the entire overlay scrolls on mobile.
+         Preserve the reading position in either layout and only measure when
+         the message order changes. Unchanged polls leave selection intact. */
+      var scroller = /auto|scroll/.test(window.getComputedStyle(list).overflowY) ? list : box;
+      var oldTop = scroller.scrollTop, anchor = null, anchorTop = 0;
+      var frame = scroller.getBoundingClientRect();
+      if (oldTop > 4){
+        for (var j = 0; j < oldItems.length; j++){
+          var rect = oldItems[j].getBoundingClientRect();
+          if (rect.bottom > frame.top && rect.top < frame.bottom && nodes.indexOf(oldItems[j]) !== -1){
+            anchor = oldItems[j]; anchorTop = rect.top; break;
+          }
+        }
       }
+      for (var k = 0; k < nodes.length; k++){
+        if (list.children[k] !== nodes[k]) list.insertBefore(nodes[k], list.children[k] || null);
+      }
+      while (list.children.length > nodes.length) list.removeChild(list.lastElementChild);
+      if (anchor) scroller.scrollTop += anchor.getBoundingClientRect().top - anchorTop;
+      else scroller.scrollTop = oldTop;
     }
+    rows = nextRows; emptyText = null;
     count.textContent = items.length;
     first = false;
     updateOverflow();
@@ -233,16 +259,20 @@
   function start(){ if (timer || document.hidden) return; misses = 0; pull(); timer = setInterval(pull, EVERY); }
   function stop(){ clearInterval(timer); timer = 0; }
 
-  /* 投影画面が開いているあいだだけ動かす */
-  new MutationObserver(function(){
-    document.addEventListener('visibilitychange', function(){
-    if (!document.hidden && box.classList.contains('show')) start(); else stop();
-  });
-  if (box.classList.contains('show')) start();
-    else { stop(); if (window.ozQrZoomClose) window.ozQrZoomClose(); }
-  }).observe(box, { attributes:true, attributeFilter:['class'] });
-  document.addEventListener('visibilitychange', function(){
-    if (!document.hidden && box.classList.contains('show')) start(); else stop();
-  });
-  if (box.classList.contains('show')) start();
+  /* One lifecycle listener controls polling and the decorative background.
+     Class mutations must not register extra visibility listeners each time. */
+  var reduced = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : { matches:false };
+  function syncVisibility(){
+    var shown = box.classList.contains('show');
+    var visible = shown && !document.hidden;
+    var moving = visible && !reduced.matches;
+    if (box.classList.contains('aq-motion-active') !== moving) box.classList.toggle('aq-motion-active', moving);
+    if (visible) start(); else stop();
+    if (!shown && window.ozQrZoomClose) window.ozQrZoomClose();
+  }
+  new MutationObserver(syncVisibility).observe(box, { attributes:true, attributeFilter:['class'] });
+  document.addEventListener('visibilitychange', syncVisibility);
+  if (reduced.addEventListener) reduced.addEventListener('change', syncVisibility);
+  else if (reduced.addListener) reduced.addListener(syncVisibility);
+  syncVisibility();
 })();
