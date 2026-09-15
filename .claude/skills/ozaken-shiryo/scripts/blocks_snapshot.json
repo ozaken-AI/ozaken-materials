@@ -3,1692 +3,1935 @@
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 130067
+  "chars": 174407
  },
  "01_concept/ai-seci.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 133879
+  "chars": 169635
  },
  "01_concept/ax-article.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 98028
+  "chars": 143472
  },
  "01_concept/business-model-shift.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 135318
+  "chars": 179731
  },
  "01_concept/cx-ex-hub.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 143280
+  "chars": 187688
  },
  "01_concept/data-for-ai.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 128174
+  "chars": 172510
  },
  "01_concept/existing-business-first.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING"
   ],
-  "chars": 208357
+  "chars": 252739
  },
  "01_concept/five-levels-copilot.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 215719
+  "chars": 275571
  },
  "01_concept/five-levels-gemini.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 215052
+  "chars": 275148
  },
  "01_concept/genai-and-dx.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 104519
+  "chars": 148784
  },
  "01_concept/hai-cognitive-science.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 214567
+  "chars": 258946
  },
  "01_concept/human-in-on-the-loop-v2.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 135159
+  "chars": 176861
  },
  "01_concept/japan-revival-strategy.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 142216
+  "chars": 184675
  },
  "01_concept/marginal-value-zero.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 204616
+  "chars": 249035
  },
  "01_concept/tacit-knowledge-and-data-box.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 133613
+  "chars": 173928
  },
  "01_concept/use-to-delegate.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
-   "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 184346
+  "chars": 216893
  },
  "01_concept/what-is-agi.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 214846
+  "chars": 259230
  },
  "01_concept/what-is-ai-agent.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 96834
+  "chars": 141093
  },
  "01_concept/what-is-genai.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 98747
+  "chars": 143009
  },
  "01_concept/zero-marginal-cost-transition.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 211177
+  "chars": 255562
  },
  "02_models/ai-voice.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 130759
+  "chars": 175487
  },
  "02_models/china-ai-models.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 143519
+  "chars": 187930
  },
  "02_models/google-io-2026-v2.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 95932
+  "chars": 140189
  },
  "02_models/hybrid-ai-model-routing.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 140416
+  "chars": 180825
  },
  "02_models/local-llm.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 212446
+  "chars": 256892
  },
  "02_models/mcp-and-rag.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 185908
+  "chars": 230332
  },
  "02_models/model-routing-16patterns.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 155211
+  "chars": 195342
  },
  "02_models/model-selection.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 138934
+  "chars": 178990
  },
  "02_models/mythos-1.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 95462
+  "chars": 139719
  },
  "02_models/mythos-2.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 95915
+  "chars": 140172
  },
  "02_models/physical-ai.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 139672
+  "chars": 181374
  },
  "02_models/rag-finetuning.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 153824
+  "chars": 198239
  },
  "02_models/three-axes.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 129456
+  "chars": 173792
  },
  "03_tools/ai-trend-and-tools-2026.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 166311
+  "chars": 210646
  },
  "03_tools/chatgpt-work.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 99549
+  "chars": 144483
  },
  "03_tools/claude-guide.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 108492
+  "chars": 152715
  },
  "03_tools/copilot-brand-kit.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 145640
+  "chars": 189983
  },
  "03_tools/copilot-credits.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 144397
+  "chars": 188809
  },
  "03_tools/copilot-guide.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 111566
+  "chars": 155791
  },
  "03_tools/copilot-plus-pc.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 216451
+  "chars": 260835
  },
  "03_tools/cowork.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 492910
+  "chars": 537846
  },
  "03_tools/gemini-guide.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 125554
+  "chars": 169853
  },
  "03_tools/gemini-spark.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 199946
+  "chars": 244394
  },
  "04_practice/build-a-bot.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 191314
+  "chars": 235725
  },
  "04_practice/build-a-workflow.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 187862
+  "chars": 232273
  },
  "04_practice/context-harness-engineering.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 240806
+  "chars": 285428
  },
  "04_practice/deck-design.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 126170
+  "chars": 171177
  },
  "04_practice/gyomu-bunkai.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 160510
+  "chars": 241510
  },
  "04_practice/knowledge-platform.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 227292
+  "chars": 271858
  },
  "04_practice/prompt-engineering.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 100766
+  "chars": 145003
  },
  "04_practice/site-ops.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 228638
+  "chars": 273132
  },
  "04_practice/upstream-ux-design.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 210263
+  "chars": 254649
  },
  "05_drive/agent-as-os.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 209570
+  "chars": 254014
  },
  "05_drive/agent-budget-taxi.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 114104
+  "chars": 159071
  },
  "05_drive/agent-budget-v1.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 100739
+  "chars": 145674
  },
  "05_drive/agent-budget-v2.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 103321
+  "chars": 148329
  },
  "05_drive/agent-management.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 234174
+  "chars": 278521
  },
  "05_drive/agent-strategist.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 90515
+  "chars": 135452
  },
  "05_drive/ai-51-master.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 80551
+  "chars": 125298
  },
  "05_drive/ai-budget.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 143624
+  "chars": 188039
  },
  "05_drive/ai-coe.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 158088
+  "chars": 202424
  },
  "05_drive/ai-drive-handbook.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 243103
+  "chars": 287745
  },
  "05_drive/ai-measures-50.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 133060
+  "chars": 178138
  },
  "05_drive/backoffice-agent.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 222460
+  "chars": 266877
  },
  "05_drive/drive-phase.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 167178
+  "chars": 211543
  },
  "05_drive/five-walls.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 160461
+  "chars": 204875
  },
  "05_drive/genba-built-agents.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 208935
+  "chars": 253838
  },
  "05_drive/growth-phase.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 185684
+  "chars": 230101
  },
  "05_drive/keiei-data-kiban.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 332461
+  "chars": 377563
  },
  "05_drive/kiban-phase.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 155770
+  "chars": 197841
  },
  "06_people/agent-talent-standard.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 223456
+  "chars": 267841
  },
  "06_people/ai-sidebusiness-talk.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 94980
+  "chars": 139963
  },
  "06_people/career-in-agent-era.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 221992
+  "chars": 266556
  },
  "06_people/hr-role.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 128911
+  "chars": 173273
  },
  "06_people/hr-transformation-v1.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 154005
+  "chars": 195432
  },
  "06_people/human-capital-new-shape.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 211453
+  "chars": 255838
  },
  "06_people/jinji-gyomu.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 132842
+  "chars": 177096
  },
  "06_people/jinji-seido.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 221341
+  "chars": 188667
  },
  "06_people/meti-ax-skill-wg5.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 211673
+  "chars": 256238
  },
  "06_people/openai-fde.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 133185
+  "chars": 177598
  },
  "06_people/org-theory.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 208641
+  "chars": 253060
  },
  "06_people/purpose-in-the-agent-era.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 126228
+  "chars": 167755
  },
  "06_people/roles-in-agent-era.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 183136
+  "chars": 227544
  },
  "06_people/why-for-students.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 208774
+  "chars": 253164
  },
  "07_risk/ai-copyright.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 122683
+  "chars": 167014
  },
  "07_risk/ai-guidelines.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 114341
+  "chars": 158676
  },
  "07_risk/hallucination-and-facts.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 115689
+  "chars": 160018
  },
  "07_risk/privacy-law.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 138414
+  "chars": 183422
  },
  "07_risk/rogue-agents.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 112408
+  "chars": 156708
  },
  "08_industry/iryo.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 122013
+  "chars": 166343
  },
  "08_industry/jichitai.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 122051
+  "chars": 166380
  },
  "08_industry/kensetsu.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 121865
+  "chars": 166196
  },
  "08_industry/kinyu.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 121889
+  "chars": 166219
  },
  "08_industry/kouri.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 121659
+  "chars": 165989
  },
  "08_industry/seizogyo.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 122309
+  "chars": 166640
  },
  "09_role/cs.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 245174
+  "chars": 289813
  },
  "09_role/eigyo.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 246574
+  "chars": 291212
  },
  "09_role/jinji.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 247302
+  "chars": 291940
  },
  "09_role/joshis.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 246953
+  "chars": 291591
  },
  "09_role/kanadevia-ict.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 254436
+  "chars": 298958
  },
  "09_role/keiri.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 246195
+  "chars": 290833
  },
  "09_role/marketing.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 319956
+  "chars": 364673
  },
  "09_role/pm-in-agent-era.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 215713
+  "chars": 260099
  },
  "09_role/sony-three-layer-platform.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 225449
+  "chars": 269910
  },
  "09_role/york-union.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 290674
+  "chars": 335328
  },
  "10_policy/ai-policy-compare.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 185996
+  "chars": 230415
  },
  "10_policy/china-ai-strategy.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 183370
+  "chars": 227790
  },
  "10_policy/eu-ai-strategy.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 188842
+  "chars": 233259
  },
  "10_policy/japan-ai-strategy.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 180965
+  "chars": 225386
  },
  "10_policy/usa-ai-strategy.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 185213
+  "chars": 229633
  },
  "11_stats/ai-stats-2026.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 176554
+  "chars": 220974
  },
  "12_jobs/us-jp-employment.html": {
   "blocks": [
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
-   "OZ-HOME"
+   "OZ-HOME",
+   "OZ-LECTURE-BODY"
   ],
-  "chars": 79832
+  "chars": 124861
  },
  "AX_Table/s1-nanimo-kawaranai.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 121668
+  "chars": 166505
  },
  "AX_Table/s2-roadmap.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 119169
+  "chars": 164007
  },
  "AX_Table/s3-poc.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 121617
+  "chars": 166455
  },
  "AX_Table/s4-setsumei-dekiru-seika.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 100373
+  "chars": 145210
  },
  "AX_Table/s5-data-kiban.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 122483
+  "chars": 167320
  },
  "AX_Table/s6-soshiki-saisekkei.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 123986
+  "chars": 168823
  },
  "AX_Table/s7-gemini.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 99707
+  "chars": 144545
  },
  "AX_Table/s8-copilot.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 124254
+  "chars": 169127
  },
  "Training/msa-life-training.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
    "OZ-KIT",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 181160
+  "chars": 225492
  },
  "Udemy/career-strategy.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
    "OZ-KIT",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 313797
+  "chars": 358516
  },
  "backstage.html": {
   "blocks": [
@@ -1722,20 +1965,22 @@
  },
  "template.html": {
   "blocks": [],
-  "chars": 263499
+  "chars": 250680
  },
  "weekly/2026-08-18.html": {
   "blocks": [
    "OZ-BG",
    "OZ-BODYSTYLE",
+   "OZ-COVER",
    "OZ-FIGFLOW",
    "OZ-HEROFX",
    "OZ-HEROSIZE",
    "OZ-HOME",
+   "OZ-LECTURE-BODY",
    "OZ-QR",
    "OZ-SPACING",
    "OZ-XREFCSS"
   ],
-  "chars": 162281
+  "chars": 206764
  }
 }
