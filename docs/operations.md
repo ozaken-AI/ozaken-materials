@@ -25,6 +25,7 @@ git worktree list
 | トップの構造・隠しコマンド | `index.html` | トップページ |
 | トップの見た目・通常の動き | `99_assets/materials-home.css`、`materials-home.js` | `#materials-home` の範囲 |
 | トップ下部の人物紹介・実績・3領域 | `index.html`、`99_assets/author-profile.css` | `#author`・`#author-record`・`#aicx`。PR画面とは別 |
+| 投影Q&AのQR・質問表示 | `index.html` の `#askqr`、`99_assets/qa-stage.css`・`qa-stage.js` | `qa` / `#ask`。登壇者専用の `inbox.html` とは別 |
 | 投影プロフィール | `index.html`、`99_assets/profile-stage.css`、`profile-stage.js` | PRの画面 |
 | プロフィール画像 | `99_assets/profile-media.json`、`profile-media.js`、`99_assets/profile/` | [画像差し替え手順](../99_assets/profile-media.md) |
 | 開始・終了の演出 | `index.html`、`99_assets/stage-effects.css` | ST / GO / EN等の画面 |
@@ -326,6 +327,19 @@ python3 -m http.server 8878 --bind 127.0.0.1 \
 スマートフォン用の長押し入口、`data-ozk` の順番タップ、既存ゲートも保持します。隠し操作は発見方法であってアクセス制御ではありません。
 
 プロフィールの内容・本人確認済み数値は [デザイン規約](lecture-design.md#pr開始終了の扱い)、写真は [画像の運用](../99_assets/profile-media.md) を参照。トップのCSSは `#materials-home` に限定し、PR / ST / GO / ENの画面へ汎用セレクターで波及させないようにします。
+
+### 投影Q&Aのデザインと運用（2026-09-15）
+
+本人のQR読み取り・質問とコメントの投影サイズの改善依頼により、`#askqr` のCSSと受信スクリプトを `99_assets/qa-stage.css`・`qa-stage.js` に分離した。トップの他のオーバーレイや、登壇者専用の `inbox.html`、投稿用の `ask.html` とは用途を分ける。
+
+- テンプレートの深い紺・紙色・明朝の見出し・ゴシックの本文を使う。PCでは左に大きなQR、右に明るい質問欄を置き、幅900px以下では縦に並べる。
+- QRは `qrgen.svg('https://content.ozaken.ai/ask.html', quiet=4)` の正方形モジュールで生成する。白地と4モジュール以上の余白を保ち、ロゴ・丸い点・走査線・ホバー拡縮を重ねない。SVG自体の余白をCSSで切らない。読み取り先と表示URLを一緒に確認する。
+- QR本体は1440×900で約414px、1920×1080で460px、1280×720で約310px。スマートフォンは最大300px。拡大表示はEnter・Spaceでも開け、Escで元へ戻る。QRと本文は初めから完成状態で表示する。
+- 質問・コメントはPCで26〜42px、スマートフォンで22px。投稿の改行を保ち、長いURLも折り返す。省略・行数制限をしない。PCは質問欄をスクロールし、小画面は画面全体を縦に読む。
+- 投影中の文字を自動で流さない。新しい投稿が届いても途中で読んでいる質問と位置を保つ。更新間隔9秒、1〜3時間の表示範囲、既存の取得先とfetch／JSONPの経路を維持。範囲の切り替えや質問欄の操作で全画面の状態を誤って変えない。画面を閉じたとき・タブ非表示時は定期取得を止める。
+- `index.html` のCSS／JS参照の `?v=` は各ファイルのSHA-256先頭12文字。内容を変えたら両方を更新する。リポジトリ外の架空投稿で0件・長文・多数・表示範囲・受信追加を検査し、テスト投稿を本番の受信箱へ送らない。
+
+確認範囲と本番記録は [Q&A投影の改修記録](verification/2026-09-15-qa-stage.md)。
 
 ### 公開トップのプロフィールと背景
 
