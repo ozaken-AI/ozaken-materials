@@ -35,7 +35,7 @@ git worktree list
 | 全資料の本文デザイン | `scripts/apply_body.py`、`sources/lecture_body/body.css`・`body.js` | 現在の本文を保持したまま組版と装飾を適用 |
 | 共通の背景・表の列ホバー | `sources/lecture_effects.css` | 便覧と講演版の両ビルダーで埋め込む |
 | AI-SECI・5レベル・SIPOCの実務解説 | `sources/gen_seci.py`・`gen_five_levels.py`・`gen_sipoc.py`、`practical_guides.py`・`.css` | 現行の完全なHTMLに対象章だけを改訂・追記 |
-| AIエージェント時代のキャリア | `sources/gen_career_omote.py`・`career_reasoning.py`・`career_clarity.css`、`practical_guides.py` | 雇用統計11面＋既存後半7章＋演繹・帰納4面＋計画的偶発性2面 |
+| AIエージェント時代のキャリア | `sources/gen_career_omote.py`・`career_reasoning.py`・`career_clarity.css`、`practical_guides.py` | 雇用統計11面＋既存後半7章＋演繹・帰納4面＋計画的偶発性2面＋会社のコミュニティ2面 |
 | AI時代の人事制度 | `sources/gen_jinji_seido.py`、`practical_guides.py`・`.css` | 現行HTMLの14章・目次・表紙リード・説明メタデータを改訂 |
 | その他の個別資料 | `.claude/skills/ozaken-shiryo/sources/gen_*.py` | [生成元対応表](../.claude/skills/ozaken-shiryo/sources/README.md) |
 | 共通の組版・暗号化 | `.claude/skills/ozaken-shiryo/scripts/` | `publish.py`、`lockbox.py`、`registry.py`等 |
@@ -127,9 +127,11 @@ python3 .claude/skills/ozaken-shiryo/sources/gen_career_omote.py \
 
 パスワードは非表示入力。対象外7章、表紙の構造、スクリプト、関連リンク、Wの保持と再適用一致を検証する。100人の図は架空の計算例であり実測値ではない。失業率・不完全雇用率・求人件数・企業の回答割合を混同しない。各数値は対象・期間・分母または比較対象・公表元とセットで更新する。時点の異なる他資料へ同じ数値を一括適用しない。
 
-同日の追加依頼により `career_reasoning.py` を同じビルダーから呼び出す。Section 11と12の間に `career11r--` の4面（帰納と演繹／非合理性と価値／キャリアへの適用／実践）を、Section 12と13の間に `career12h--` の2面（プランド・ハップンスタンス理論／行動例）を追加する。再生成では各接頭辞が指す連続した追加章だけを入れ替え、元の18章・表紙・図番号と参照を維持する。追加後は本文24章と表紙の計25セクション。`THINKING GUIDE` と `CHANCE GUIDE` は既存のFig.参照とは別のラベルとする。
+同日の追加依頼により `career_reasoning.py` を同じビルダーから呼び出す。Section 11と12の間に `career11r--` の4面（帰納と演繹／非合理性と価値／キャリアへの適用／実践）を、Section 12と13の間に `career12h--` の2面（プランド・ハップンスタンス理論／行動例）を追加する。再生成では各接頭辞が指す連続した追加章だけを入れ替え、元の18章・表紙・図番号と参照を維持する。さらに計画的偶発性の後へ `career12c--` の2面（12C 愛社精神とキャリア／12D 会社のコミュニティを育てる）を追加する。現行は本文26章と表紙の計27セクション。`THINKING GUIDE`・`CHANCE GUIDE`・`COMMUNITY GUIDE` は既存のFig.参照とは別のラベルとする。同じSection 13を追加先に使うため、所有章を取り除く際の区切り空白も正規化し、再適用による空行の増殖を防ぐ。
 
 「演繹＝非合理性」「AI＝帰納しかできない」と説明しない。帰納は事例から仮説を得る推論、妥当な演繹は前提から必然的に結論を導く推論。本人のいう非合理性は、効率や利益だけでは割り切れない偏愛・悔しさ・美意識の比喩として扱い、価値を前提に選ぶ部分と推論を区別する。計画的偶発性は偶然待ち・無計画・成功保証として扱わず、5スキルと探索行動を示す。理論の説明と本人のキャリア観、架空の行動例を分ける。今回の追加記録は [演繹・帰納と計画的偶発性](verification/2026-09-15-career-reasoning.md)。
+
+愛社精神は筆者の価値観として、仕事への共感・相談できる信頼・仲間への貢献から説明する。働く人が学びを持ち寄ることと、会社が学ぶ時間・挑戦の機会・公正な評価を整えることを併記する。コミュニティは部署を越えた相談・経験共有・共同の挑戦へ具体化する。15分の共有は本資料の実践例であり、研究で示された効果量や必須の時間ではない。組織コミットメントや心理的安全性の研究と、AI時代への応用を区別する。既存24章を保持した検証記録は [愛社精神と会社のコミュニティ](verification/2026-09-15-career-community.md)。
 
 ### 共通の作成手順
 

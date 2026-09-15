@@ -1,12 +1,15 @@
-"""演繹・帰納・非合理性と計画的偶発性を 既存本文を保って追加する"""
+"""演繹・帰納・計画的偶発性と会社のコミュニティを 既存本文を保って追加する"""
 from practical_guides import chapter, figure, route, sheet, rows, srcs, sections, apply_styles, apply_body
 
 LOGIC = 'https://plato.stanford.edu/entries/logic-inductive/'
 REASON = 'https://plato.stanford.edu/entries/practical-reason/'
 PREFIX = 'career11r--'
 CHANCE_PREFIX = 'career12h--'
+COMMUNITY_PREFIX = 'career12c--'
 CHANCE_ORIGINAL = 'https://doi.org/10.1002/j.1556-6676.1999.tb02431.x'
 CHANCE_RESEARCH = 'https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2022.899411/full'
+COMMITMENT = 'https://www.sciencedirect.com/science/article/pii/105348229190011Z'
+TEAM_LEARNING = 'https://web.mit.edu/curhan/www/docs/Articles/15341_Readings/Organizational_Learning_and_Change/Edmondson_1999_Psychological_safety.pdf'
 
 
 def step(label, text):
@@ -111,13 +114,49 @@ def build_happenstance():
     return html
 
 
+def build_community():
+    shared_why = ('<div class="cc-value-origin"><p class="cc-reason-en">A FUTURE WE CARE ABOUT</p>'
+        '<p class="cc-origin-quote">自分のWhyと<br><em>会社のWhyを重ねる</em></p>'
+        '<div class="cc-origin-path">'
+        + step('共感','この会社が届ける価値を<br>自分も大切にしたい')
+        + '<span aria-hidden="true">＋</span>'
+        + step('信頼','困ったときに相談し<br>違う意見も伝え合える')
+        + '<span aria-hidden="true">＋</span>'
+        + step('貢献','学んだことを持ち寄り<br>仲間と仕事をよくする') + '</div></div>')
+    html = chapter(COMMUNITY_PREFIX+'attachment','sec-light','12C / 愛社精神とキャリア',
+        '愛社精神は<br>「この仲間と いい仕事をしたい」',
+        '筆者が大切にしたい愛社精神は 会社の理念や仕事に共感し 仲間と育てる未来に愛着を持つこと<br>自分のキャリアを育てることと 会社をよくすることは 両立できる',
+        figure('COMMUNITY GUIDE 01','会社への愛着を 日々の関わりにする',shared_why,
+            '筆者の愛社精神の捉え方を表した概念図　組織への愛着と 残る必要性・義務感を区別する研究を参考にした'),
+        [('「この会社で こうしたい」も 自分のWhyになる','この製品をもっと使いやすくしたい この仲間と顧客の困りごとを解きたい<br>そんな思いは 学ぶ理由や 難しい仕事に取り組む理由になる'),
+         ('愛着は 働く人と会社の双方で育てる','働く人は知恵や経験を持ち寄り 会社は学ぶ時間・挑戦する機会・公正な評価を整える<br>改善の意見を伝え 受け止め合うことも 会社を大切にする行動になる')],
+        after=srcs([('参考：Meyer・Allen（1991）組織へのコミットメントの概念整理',COMMITMENT)]))
+
+    html += chapter(COMMUNITY_PREFIX+'learning','sec-navy','12D / 会社のコミュニティを育てる',
+        '会社のコミュニティは<br>学びと挑戦を育てる場所になる',
+        '会社のコミュニティは 部署を越えて相談し 学びや困りごとを持ち寄るつながり<br>AIの出力をどう直したか 現場で何に困ったかを話し合い 次の仕事に生かす',
+        figure('COMMUNITY GUIDE 02','社内のつながりを 成長の機会にする',
+            rows(['仕事の場面','仲間とすること','育つ経験・関係'],[
+                ('AIの出力を見直す','何を直したかに加え<br>なぜ直したかを見せ合う','現場に合う判断の基準を学ぶ<br>気軽に相談できる相手ができる'),
+                ('他部署の困りごとを知る','普段の仕事を聞き<br>自分の経験との接点を探す','部門をつなぐ力を磨く<br>思いがけない役割に出会う'),
+                ('新しい案を試す','小さな企画を一緒に動かし<br>結果と改善点を振り返る','一緒に成果を出す経験を積む<br>次も協力できる関係を育てる'),
+            ]),
+            '社内で実践するための設計例　研究では 質問・助言の依頼・失敗の共有などの学習行動と 話しやすいチーム環境の関連が示されている'),
+        [('来週 仕事の時間に15分だけ持ち寄る','同僚と「AIで助かったこと」「判断に迷ったこと」を一つずつ共有する<br>一緒に試す改善を一つ決め 結果を次の振り返りで話す　15分は実践例の目安'),
+         ('話せる場を 会社の側でも支える','質問や異論を歓迎し 初めて参加する人にも声をかける<br>上司は時間と機会を確保し 対面でもオンラインでも参加しやすくする<br>人を育てる協力も 仕事への貢献として認める')],
+        after=srcs([('参考：Edmondson（1999）心理的安全性とチームの学習行動',TEAM_LEARNING)]))
+    return html
+
+
 def insert_group(source, prefix, eyebrow, built):
     owned = [n for n in sections(source) if n.attrs.get('data-practical-guide','').startswith(prefix)]
     nodes = sections(source)
     if owned:
         positions = [nodes.index(n) for n in owned]
         assert positions == list(range(positions[0],positions[-1]+1)), 'Reasoning chapters are not adjacent'
-        source = source[:owned[0].start] + source[owned[-1].end:]
+        # Multiple owned groups can share an anchor. Do not accumulate the
+        # separators left behind when a group is moved past its neighbour.
+        source = source[:owned[0].start].rstrip() + '\n' + source[owned[-1].end:].lstrip()
     anchor = [n for n in sections(source) if f'>{eyebrow}<' in n.outer(source)]
     assert len(anchor) == 1, 'Cannot locate original chapter: '+eyebrow
     pos = anchor[0].start
@@ -126,8 +165,9 @@ def insert_group(source, prefix, eyebrow, built):
 
 
 def insert(page):
-    """Own only the six added sections. Original chapters stay byte-identical."""
+    """Own only the eight added sections. Original chapters stay byte-identical."""
     source = apply_body.strip(page)
     source = insert_group(source,PREFIX,'Section 12',build())
     source = insert_group(source,CHANCE_PREFIX,'Section 13',build_happenstance())
+    source = insert_group(source,COMMUNITY_PREFIX,'Section 13',build_community())
     return apply_styles(source)
