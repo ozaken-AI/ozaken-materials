@@ -35,4 +35,6 @@
 
 再暗号化後の復号一致とラップ鍵Wの保持を検証。`check_encrypted.py --staged` で124配信ファイルの暗号化、`check_design.py --staged` で123資料のデザイン適用漏れ0を確認。
 
-本番配信の照合後に公開記録を追記する。
+コードコミット `28a4bd1` を2026-09-15に `main` へ反映。[本番の暗黙知資料](https://content.ozaken.ai/01_concept/tacit-knowledge-and-data-box.html?v=28a4bd1) の配信内容がローカルの暗号化HTMLとバイト単位で一致した。配信SHA-256は `d6853003ebab87ee281a951e05e983eb109733ecbabb615bfd7f344d6b87a959`。
+
+本番ブラウザーで既存の鍵による復号を確認。追加2章・4工程・具体例3件が表示され、横はみ出しがないことを確認した。一時的なビューポート指定は解除済み。
