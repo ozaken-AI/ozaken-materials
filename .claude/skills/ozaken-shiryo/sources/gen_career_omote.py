@@ -2,7 +2,9 @@
 """キャリア資料の雇用統計を 初見でも読める常時表示の解説へ改訂する
 
 現行HTMLを入力として 旧Section 01〜07と表紙リード・説明メタデータを更新
-後半7章・既存スクリプト・関連リンク・Wを保持する
+後半7章を保持し Section 11と12の間に演繹・帰納の4面を加える
+Section 12と13の間にはプランド・ハップンスタンス理論の2面を加える
+既存スクリプト・関連リンク・Wを保持する
 旧フラグメント生成版はGit履歴にある 現行デザインへ再適用しない
 
 python3 gen_career_omote.py --preview-dir /absolute/private-preview
@@ -11,6 +13,7 @@ python3 gen_career_omote.py --preview-dir /absolute/private-preview
 """
 from pathlib import Path
 import re
+from career_reasoning import insert as insert_reasoning
 from practical_guides import (chapter, figure, route, rows, sheet, exchange,
     replace_chapters, cover_lead, srcs, run)
 
@@ -188,6 +191,7 @@ def build():
 def transform(page):
     page = STYLE_RE.sub('',page)
     page = replace_chapters(page,build())
+    page = insert_reasoning(page)
     page = metadata(cover_lead(page,COVER_COPY))
     css = Path(__file__).with_name('career_clarity.css').read_text()
     return page.replace('</head>',f'<style id="oz-career-clarity-style">\n{css}\n</style>\n</head>',1)
@@ -196,4 +200,4 @@ transform.cover_copy = COVER_COPY
 transform.public_metadata = metadata
 
 if __name__ == '__main__':
-    run({'06_people/career-in-agent-era.html':transform},'キャリア資料の雇用統計を分かりやすく改訂')
+    run({'06_people/career-in-agent-era.html':transform},'キャリア資料の雇用統計と演繹・帰納を分かりやすく改訂')
