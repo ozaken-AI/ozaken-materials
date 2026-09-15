@@ -35,6 +35,7 @@ git worktree list
 | 全資料の本文デザイン | `scripts/apply_body.py`、`sources/lecture_body/body.css`・`body.js` | 現在の本文を保持したまま組版と装飾を適用 |
 | 共通の背景・表の列ホバー | `sources/lecture_effects.css` | 便覧と講演版の両ビルダーで埋め込む |
 | AI-SECI・5レベル・SIPOCの実務解説 | `sources/gen_seci.py`・`gen_five_levels.py`・`gen_sipoc.py`、`practical_guides.py`・`.css` | 現行の完全なHTMLに対象章だけを改訂・追記 |
+| AIエージェント時代のキャリア | `sources/gen_career_omote.py`・`career_clarity.css`、`practical_guides.py` | 現行HTMLの雇用統計7章を11面へ改訂 後半7章は保持 |
 | AI時代の人事制度 | `sources/gen_jinji_seido.py`、`practical_guides.py`・`.css` | 現行HTMLの14章・目次・表紙リード・説明メタデータを改訂 |
 | その他の個別資料 | `.claude/skills/ozaken-shiryo/sources/gen_*.py` | [生成元対応表](../.claude/skills/ozaken-shiryo/sources/README.md) |
 | 共通の組版・暗号化 | `.claude/skills/ozaken-shiryo/scripts/` | `publish.py`、`lockbox.py`、`registry.py`等 |
@@ -113,6 +114,18 @@ python3 .claude/skills/ozaken-shiryo/sources/gen_jinji_seido.py \
 `--input-dir` に現在の復号HTMLがある外部ディレクトリを指定できる。`--update` 時は古いベースラインを拒否する。既存の表紙構造・スクリプト・関連リンク・ラップ鍵Wは保持し、表紙リード・目次・説明メタデータは本文に合わせる。`practical_guides.run()` の `public_metadata` は認証前のdescription/OGP説明を更新できるが、暗号化エンベロープが変わっていないことを検証する。
 
 内容改訂の許可はこの資料とSIPOCの指定範囲に限る。他資料の見た目だけを直す際に、要約や数値の削除まで同時に行わない。確認範囲と受講者視点の評価は [人事制度・SIPOCの改訂記録](verification/2026-09-11-hr-sipoc.md) を参照。
+
+### キャリア資料の雇用統計を改訂する
+
+`sources/gen_career_omote.py` は2026-09-15の本人依頼に対応した現行入口。旧フラグメント生成版で全ページを上書きせず、現在のHTMLのSection 01〜07と表紙リード・説明メタデータを更新する。生成後は11面の解説と既存の後半7章になる。数値の出典、比較年の訂正、整理した旧項目、検証範囲は [キャリア資料の改訂記録](verification/2026-09-15-career-clarity.md) を参照。
+
+```bash
+python3 .claude/skills/ozaken-shiryo/sources/gen_career_omote.py \
+  --preview-dir /absolute/private-preview
+# --input-dir で現在の非公開復号HTMLを指定できる 検証後に --update を追加
+```
+
+パスワードは非表示入力。対象外7章、表紙の構造、スクリプト、関連リンク、Wの保持と再適用一致を検証する。100人の図は架空の計算例であり実測値ではない。失業率・不完全雇用率・求人件数・企業の回答割合を混同しない。各数値は対象・期間・分母または比較対象・公表元とセットで更新する。時点の異なる他資料へ同じ数値を一括適用しない。
 
 ### 共通の作成手順
 
