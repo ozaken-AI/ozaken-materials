@@ -912,6 +912,20 @@
   ],
   "chars": 160461
  },
+ "05_drive/genba-built-agents.html": {
+  "blocks": [
+   "OZ-BG",
+   "OZ-BODYSTYLE",
+   "OZ-FIGFLOW",
+   "OZ-HEROFX",
+   "OZ-HEROSIZE",
+   "OZ-HOME",
+   "OZ-QR",
+   "OZ-SPACING",
+   "OZ-XREFCSS"
+  ],
+  "chars": 208935
+ },
  "05_drive/growth-phase.html": {
   "blocks": [
    "OZ-BG",
@@ -1704,7 +1718,7 @@
  },
  "matrix.html": {
   "blocks": [],
-  "chars": 256952
+  "chars": 262164
  },
  "template.html": {
   "blocks": [],
